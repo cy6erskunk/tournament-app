@@ -13,7 +13,7 @@ const Navbar = () => {
           alt="Helsingin Miekkailijat ry logo"
         />
       </div>
-      <div className="max-lg:hidden w-1/2">
+      <div className="max-lg:hidden lg:w-1/2 xl:w-1/3">
         <Image
           className="w-full"
           src="/pictures/HFMlogowhite.png"
