@@ -1,15 +1,16 @@
-/* eslint-disable @next/next/no-img-element */
 export default function Home() {
 
   return (
     // Logo centered
       <div className="flex-1 justify-center px-6 py-12 lg:px-8 min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0">
           <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-            <img
-              className="w-full mb-10"
-              src="/pictures/HFMlogo.png"
-              alt="Helsingin miekkailijat ry"
-            />
+          <Image
+          className="w-full mb-10"
+          src="/pictures/HFMlogo.png"
+          height={100}
+          width={100}
+          alt="Helsingin miekkailijat ry"
+          />
           </div>
 
         <form className="border-2 border-gray-900 w-full sm:max-w-md mt-6 px-6 py-4 bg-white shadow-md overflow-hidden sm:rounded-lg justify-center">
