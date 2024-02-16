@@ -13,7 +13,7 @@ export default function Home() {
           />
           </div>
 
-        <form className="border-2 border-gray-900 w-full sm:max-w-md mt-6 px-6 py-4 bg-white shadow-md overflow-hidden sm:rounded-lg justify-center">
+        <div className="border-2 border-gray-900 w-full sm:max-w-md mt-6 px-6 py-4 bg-white shadow-md overflow-hidden sm:rounded-lg justify-center">
           <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
           {/* <h2 className="mt-7 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900 pb-8">
               Kirjaudu sisään
@@ -64,7 +64,7 @@ export default function Home() {
             </form>
           </div>
             
-          </form>
+          </div>
           
         </div>
     );
