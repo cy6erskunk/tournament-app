@@ -1,4 +1,5 @@
 "use client";
+import { TrashIcon } from "@heroicons/react/24/outline";
 import { useState } from "react";
 
 const ResultsTable = () => {
@@ -12,6 +13,20 @@ const ResultsTable = () => {
     setPlayers((players) => [...players, newPlayer]);
   };
 
+  const filterPlayers = (user: string) => {
+    if (window.confirm(`Remove ${user}?`)) {
+      /**
+       * todo:
+       * remove player from database when using real data
+       * with player name or with id
+       * or
+       * remove player data from that day (not old data)
+       */
+      const filteredPlayers = players.filter((player) => player !== user);
+      setPlayers(filteredPlayers);
+    }
+  };
+
   return (
     <div>
       <button
@@ -20,11 +35,12 @@ const ResultsTable = () => {
       >
         testi
       </button>
-      <div className="overflow-auto max-h-[500px] border-2 border-slate-500">
+      <div className="overflow-auto max-h-[500px] border-2 border-slate-500 rounded-md shadow-md">
         <table className="table-auto w-full">
           <thead>
-            <tr className="text-white *:py-4 *:sticky *:top-0 *:bg-blue-500 z-10">
+            <tr className="text-white *:py-4 *:sticky *:top-0 *:bg-blue-500 *:z-20 *:outline *:outline-1 *:outline-blue-500">
               <th>Nimi</th>
+              <th>Poista</th>
               <th title="Id">#</th>
               {/* map through players and set <th>{player id}</th> */}
               {players.map((round, index) => (
@@ -62,7 +78,17 @@ const ResultsTable = () => {
                 key={player}
                 className="*:ring-1 *:p-4 *:text-center *:ring-slate-500 odd:bg-white even:bg-blue-50"
               >
-                <td className="font-semibold">{player}</td>
+                <td className="bg-blue-50 font-semibold sticky left-0 z-10 outline outline-1 outline-slate-500">
+                  {player}
+                </td>
+                <td>
+                  <button
+                    onClick={() => filterPlayers(player)}
+                    className="bg-red-400 p-1 rounded-full hover:bg-red-500"
+                  >
+                    <TrashIcon className="h-5 w-5 text-white" />
+                  </button>
+                </td>
                 <td className="bg-blue-500 text-white">{i + 1}</td>
                 {/* round results here. Now hard coded 'V' */}
                 {/* set darker bg color if player index same because can't play versus itself */}

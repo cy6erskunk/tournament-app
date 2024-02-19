@@ -5,7 +5,7 @@ const Page = () => {
   return (
     <div>
       <Navbar />
-      <section className="container mx-auto p-4">
+      <section className="container mx-auto p-2">
         <ResultsTable />
       </section>
     </div>
