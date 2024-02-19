@@ -1,7 +1,7 @@
 const Page = () => {
   return (
     <div className="min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0">
-       <form className="border-2 border-gray-900 w-full sm:max-w-md mt-1 px-8 py-6 bg-white shadow-md overflow-hidden sm:rounded-lg justify-center">
+       <form className="border-2 border-gray-900 w-full sm:max-w-md mt-1 px-8 py-6 bg-white shadow-md overflow-hidden rounded-lg justify-center">
       <h2 className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900 pb-8">
               Lisää ottelija
             </h2>
