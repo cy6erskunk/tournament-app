@@ -9,8 +9,8 @@ export default function Home() {
           <Image
           className="w-full mb-10"
           src="/pictures/HFMlogo.png"
-          height={100}
-          width={100}
+          height={500}
+          width={500}
           alt="Helsingin miekkailijat ry"
           />
           </div>
