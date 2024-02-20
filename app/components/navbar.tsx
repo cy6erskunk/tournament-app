@@ -29,13 +29,13 @@ const Navbar = () => {
             Empty table
           </button> */}
         <div className="flex flex-ro gap-5 absolute top-0 right-0 p-3 pr-4">
-          <button className="">
+          <button>
             <span className="fi fi-fi"></span>
           </button>
           <button>
             <span className="fi fi-se"></span>
           </button>
-          <button className="">
+          <button>
             <span className="fi fi-gb"></span>
           </button>
         </div>
