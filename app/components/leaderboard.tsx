@@ -1,7 +1,19 @@
+"use client";
+
+import { useRouter } from "next/navigation";
+import { TrophyIcon } from "@heroicons/react/24/solid";
+import { ArrowLeftEndOnRectangleIcon } from "@heroicons/react/24/solid";
+
 const Leaderboard = () => {
+  const router = useRouter();
   return (
     <div className="">
-      <h1 className="py-3">Leaderboard</h1>
+      <div className="flex flex-row gap-3">
+        <button type="button" onClick={() => router.push("/home")}>
+          <ArrowLeftEndOnRectangleIcon className="w-6 h-6 md:w-8 md:h-8 text-slate-500" />
+        </button>
+        <h1 className="py-3">Leaderboard</h1>
+      </div>
       <div className="overflow-auto max-h-[500px] border-2 rounded-md shadow-md border-slate-500 text-xs md:text-base">
         <table className="w-full">
           <thead>
@@ -54,7 +66,10 @@ const Leaderboard = () => {
               <td>10</td>
               <td>0</td>
               <td>10</td>
-              <td>1</td>
+              <td className="flex flex-row justify-center">
+                <p className="relative">1</p>
+                <TrophyIcon className="w-4 h-4 md:w-6 md:h-6 text-yellow-400 absolute ml-6 md:ml-10" />
+              </td>
             </tr>
             <tr className="*:ring-1 *:py-2 *:md:p-4 *:text-center *:ring-slate-500">
               <td>player2</td>
@@ -63,7 +78,10 @@ const Leaderboard = () => {
               <td>0</td>
               <td>10</td>
               <td>-10</td>
-              <td>2</td>
+              <td className="flex flex-row justify-center">
+                <p className="relative">2</p>
+                <TrophyIcon className="w-4 h-4 md:w-6 md:h-6 text-gray-700 absolute ml-6 md:ml-10" />
+              </td>
             </tr>
             <tr className="*:ring-1 *:py-2 *:md:p-4 *:text-center *:ring-slate-500">
               <td>player3</td>
@@ -72,7 +90,28 @@ const Leaderboard = () => {
               <td>0</td>
               <td>0</td>
               <td>0</td>
-              <td>3</td>
+              <td className="flex flex-row justify-center">
+                <p className="relative">3</p>
+                <TrophyIcon className="w-4 h-4 md:w-6 md:h-6 text-amber-950 absolute ml-6 md:ml-10" />
+              </td>
+            </tr>
+            <tr className="*:ring-1 *:py-2 *:md:p-4 *:text-center *:ring-slate-500">
+              <td>player3</td>
+              <td>0</td>
+              <td>0%</td>
+              <td>0</td>
+              <td>0</td>
+              <td>0</td>
+              <td className="flex flex-row justify-center">4</td>
+            </tr>
+            <tr className="*:ring-1 *:py-2 *:md:p-4 *:text-center *:ring-slate-500">
+              <td>player3</td>
+              <td>0</td>
+              <td>0%</td>
+              <td>0</td>
+              <td>0</td>
+              <td>0</td>
+              <td className="flex flex-row justify-center">5</td>
             </tr>
           </tbody>
         </table>
