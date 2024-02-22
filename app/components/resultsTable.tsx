@@ -28,7 +28,7 @@ const ResultsTable = () => {
   };
 
   return (
-    <div>
+    <div className="w-full md:w-2/3">
       <button
         onClick={addPlayer}
         className="border border-black rounded-lg px-4 py-2 mb-2 hover:bg-slate-100"
