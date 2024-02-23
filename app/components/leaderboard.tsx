@@ -9,7 +9,7 @@ const Leaderboard = () => {
   return (
     <div className="">
       <div className="flex flex-row gap-3">
-        <button type="button" onClick={() => router.push("/home")}>
+        <button type="button" onClick={() => router.back()}>
           <ArrowLeftEndOnRectangleIcon className="w-6 h-6 md:w-8 md:h-8 text-slate-500" />
         </button>
         <h1 className="py-3">Leaderboard</h1>

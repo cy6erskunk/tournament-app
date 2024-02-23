@@ -1,3 +1,9 @@
+import { createMatch } from "../actions";
+
+type AddmatchProps = {
+  closeModal: () => void;
+};
+
 // todo: delete this when using real data
 const mockPlayers = [
   "Pelaaja 2",
@@ -7,24 +13,32 @@ const mockPlayers = [
   "Pelaaja 9",
 ];
 
-const AddMatch = () => {
-  const createMatch = async (formData: FormData) => {
-    "use server";
-    const matchFormdata = {
-      player1: formData.get("player1"),
-      player1Points: formData.get("points1"),
-      player2: formData.get("player2"),
-      player2Points: formData.get("points2"),
-    };
-    // use form data here
-    console.log(matchFormdata);
+const AddMatch = ({ closeModal }: AddmatchProps) => {
+  const handleSubmit = async (formData: FormData) => {
+    await createMatch(formData);
   };
+
+  /** throws this error
+   * It is not allowed to define inline "use server"
+   * annotated Server Actions in Client Components.
+   */
+  //   const createMatch = async (formData: FormData) => {
+  //     "use server";
+  //     const matchFormdata = {
+  //       player1: formData.get("player1"),
+  //       player1Points: formData.get("points1"),
+  //       player2: formData.get("player2"),
+  //       player2Points: formData.get("points2"),
+  //     };
+  //     // use form data here
+  //     console.log(matchFormdata);
+  //   };
   return (
     <>
       <h1 className="mb-8 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
         1. Kierros
       </h1>
-      <form action={createMatch}>
+      <form action={handleSubmit}>
         <div className="flex justify-center items-center *:grow mb-4">
           <label className="flex gap-1 sm:gap-2 items-center">
             Ottelija 1
@@ -82,7 +96,10 @@ const AddMatch = () => {
           >
             Tallenna
           </button>
-          <button className="ring-2 ring-gray-900 ring-inset py-2 w-full rounded-md shadow-sm">
+          <button
+            onClick={closeModal}
+            className="ring-2 ring-gray-900 ring-inset py-2 w-full rounded-md shadow-sm"
+          >
             Takaisin
           </button>
         </div>
