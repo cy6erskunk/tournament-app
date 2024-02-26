@@ -1,5 +1,3 @@
-import { createMatch } from "../actions";
-
 type AddmatchProps = {
   closeModal: () => void;
 };
@@ -13,33 +11,25 @@ const mockPlayers = [
   "Pelaaja 9",
 ];
 
+// todo: fix warning message when clicking 'Takaisin'
+// message: Form submission canceled because the form is not connected
 const AddMatch = ({ closeModal }: AddmatchProps) => {
-  const handleSubmit = async (formData: FormData) => {
-    await createMatch(formData);
+  const createMatch = (formData: FormData) => {
+    const matchFormdata = {
+      player1: formData.get("player1"),
+      player1Points: formData.get("points1"),
+      player2: formData.get("player2"),
+      player2Points: formData.get("points2"),
+    };
+    console.log(matchFormdata);
   };
-
-  /** throws this error
-   * It is not allowed to define inline "use server"
-   * annotated Server Actions in Client Components.
-   */
-  //   const createMatch = async (formData: FormData) => {
-  //     "use server";
-  //     const matchFormdata = {
-  //       player1: formData.get("player1"),
-  //       player1Points: formData.get("points1"),
-  //       player2: formData.get("player2"),
-  //       player2Points: formData.get("points2"),
-  //     };
-  //     // use form data here
-  //     console.log(matchFormdata);
-  //   };
   return (
     <>
-      <h1 className="mb-8 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
+      <h1 className="mb-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
         1. Kierros
       </h1>
-      <form action={handleSubmit}>
-        <div className="flex justify-center items-center *:grow mb-4">
+      <form action={createMatch} className="flex flex-col gap-6">
+        <div className="flex justify-center items-center *:grow">
           <label className="flex gap-1 sm:gap-2 items-center">
             Ottelija 1
             <select
@@ -62,9 +52,10 @@ const AddMatch = ({ closeModal }: AddmatchProps) => {
             max="5"
             name="points1"
             defaultValue={0}
+            required
           />
         </div>
-        <div className="flex justify-center items-center *:grow mb-6">
+        <div className="flex justify-center items-center *:grow">
           <label className="flex gap-1 sm:gap-2 items-center">
             Ottelija 2
             <select
@@ -87,6 +78,7 @@ const AddMatch = ({ closeModal }: AddmatchProps) => {
             max="5"
             name="points2"
             defaultValue={0}
+            required
           />
         </div>
         <div className="flex items-center justify-center gap-2 text-sm font-semibold">

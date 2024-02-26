@@ -48,7 +48,9 @@ const Page = () => {
           </div>
         </section>
       </div>
-      <Modal isOpen={showModal}>{modalContent}</Modal>
+      <Modal isOpen={showModal} closeModal={closeModal}>
+        {modalContent}
+      </Modal>
       <section className="container mx-auto p-2">
         <div className="flex flex-col md:flex-row gap-3 *:grow">
           <ResultsTable />
