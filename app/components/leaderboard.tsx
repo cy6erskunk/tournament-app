@@ -7,7 +7,7 @@ import { ArrowLeftEndOnRectangleIcon } from "@heroicons/react/24/solid";
 const Leaderboard = () => {
   const router = useRouter();
   return (
-    <div className="">
+    <>
       <div className="flex flex-row gap-3">
         <button type="button" onClick={() => router.back()}>
           <ArrowLeftEndOnRectangleIcon className="w-6 h-6 md:w-8 md:h-8 text-slate-500" />
@@ -116,7 +116,7 @@ const Leaderboard = () => {
           </tbody>
         </table>
       </div>
-    </div>
+    </>
   );
 };
 

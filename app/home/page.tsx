@@ -20,33 +20,41 @@ const Page = () => {
     setModalContent(content);
     setShowModal(true);
   };
+
+  const emptyTable = () => {
+    if (window.confirm(`Remove table data`)) {
+      // logic here
+    }
+  };
   return (
     <div>
       <Navbar />
-      <div className="flex flex-row">
-        {/*Style later when everything figured out, desktop view looks bad  */}
-        <section className="container mx-auto p-2 flex flex-col md:flex-row">
-          <div className="flex flex-col my-auto gap-4 max-w-60">
-            <button
-              className="p-1 px-5 border rounded-md shadow-sm border-slate-600"
-              onClick={() => openModal(<AddMatch closeModal={closeModal} />)}
-            >
-              Add match
-            </button>
-            <button
-              className="p-1 px-5 border rounded-md shadow-sm border-slate-600"
-              onClick={() => openModal(<Addplayer closeModal={closeModal} />)}
-            >
-              Add player
-            </button>
-            <Link
-              href="/leaderboard"
-              className="p-1 px-5 border rounded-md shadow-sm border-slate-600 text-center"
-            >
-              Tulostaulu
-            </Link>
-          </div>
-        </section>
+      {/*Style later when everything figured out, desktop view looks bad  */}
+      <div className="container mx-auto p-2 flex flex-col md:flex-row gap-4">
+        <button
+          className="p-1 px-5 border rounded-md shadow-sm border-slate-600"
+          onClick={() => openModal(<AddMatch closeModal={closeModal} />)}
+        >
+          Add match
+        </button>
+        <button
+          className="p-1 px-5 border rounded-md shadow-sm border-slate-600"
+          onClick={() => openModal(<Addplayer closeModal={closeModal} />)}
+        >
+          Add player
+        </button>
+        <Link
+          href="/leaderboard"
+          className="p-1 px-5 border rounded-md shadow-sm border-slate-600 text-center"
+        >
+          Tulostaulu
+        </Link>
+        <button
+          className="p-1 px-5 border rounded-md shadow-sm border-slate-600"
+          onClick={emptyTable}
+        >
+          Empty table
+        </button>
       </div>
       <Modal isOpen={showModal} closeModal={closeModal}>
         {modalContent}
