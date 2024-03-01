@@ -1,4 +1,5 @@
 import { TrophyIcon } from "@heroicons/react/24/solid";
+import { useTranslations } from "next-intl";
 
 // todo: delete this when using real data
 const mockPlayers = [
@@ -22,13 +23,14 @@ const LeaderboardHome = () => {
   //   if (index === 2) return "bg-gradient-to-r from-amber-50 to-amber-300";
   //   return "odd:bg-white even:bg-gray-50";
   // };
+  const t = useTranslations("Leaderboard");
   return (
     <div className="overflow-hidden border-2 rounded-md shadow-md border-gray-400">
       <table className="table-auto w-full">
         <thead>
           <tr className="text-white *:py-4 bg-gray-400">
-            <th>SIJA</th>
-            <th>NIMI</th>
+            <th>{t("position")}</th>
+            <th>{t("name")}</th>
           </tr>
         </thead>
         <tbody>

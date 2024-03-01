@@ -1,0 +1,49 @@
+{
+  "Login": {
+    "name": "User",
+    "password": "Password",
+    "submit": "Sign in"
+  },
+  "Home": {
+    "Buttons": {
+      "addmatch": "Add match",
+      "addplayer": "Add player",
+      "leaderboard": "Leaderboard",
+      "empty": "Empty table",
+      "emptyConfirm": "Remove all matches and players?"
+    }
+  },
+  "Leaderboard": {
+    "title": "Leaderboard",
+    "name": "Name",
+    "wins": "W",
+    "hoverWins": "Wins",
+    "win%": "W%",
+    "hoverWin%": "Win percentage",
+    "hitsGiven": "HG",
+    "hoverHitsGiven": "Hits given",
+    "hitsReceived": "HR",
+    "hoverHitsReceived": "Hits received",
+    "AO-VO": "I",
+    "hoverAO-VO": "Hits given - hits received",
+    "position": "Rank",
+    "remove": "Remove"
+  },
+  "Logout": {
+    "logout": "Logout"
+  },
+  "NewMatch": {
+    "title": "Round",
+    "player1": "Player 1",
+    "player2": "Player 2",
+    "submit": "Submit",
+    "back": "Back",
+    "points": "Points"
+  },
+  "NewPlayer": {
+    "title": "Add player",
+    "name": "Name",
+    "submit": "Submit",
+    "back": "Back"
+  }
+}

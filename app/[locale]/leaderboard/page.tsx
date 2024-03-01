@@ -1,5 +1,5 @@
-import Leaderboard from "../components/leaderboard";
-import Navbar from "../components/navbar";
+import Leaderboard from "../../components/leaderboard";
+import Navbar from "../../components/navbar";
 
 const Page = () => {
   return (

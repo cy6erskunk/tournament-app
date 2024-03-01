@@ -1,10 +1,12 @@
 "use client";
 import { TrashIcon } from "@heroicons/react/24/outline";
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 
 const ResultsTable = () => {
   // test data can be removed
   const [players, setPlayers] = useState(["nimi1", "nimi2", "nimi3"]);
+  const t = useTranslations("Leaderboard");
 
   // test function can be removed
   const addPlayer = () => {
@@ -39,36 +41,36 @@ const ResultsTable = () => {
         <table className="table-auto w-full">
           <thead>
             <tr className="text-white *:py-4 *:sticky *:top-0 *:bg-blue-500 *:z-20 *:outline *:outline-1 *:outline-blue-500">
-              <th>Nimi</th>
-              <th>Poista</th>
+              <th>{t("name")}</th>
+              <th>{t("remove")}</th>
               <th title="Id">#</th>
               {/* map through players and set <th>{player id}</th> */}
               {players.map((round, index) => (
                 <th key={index}>{index + 1}</th>
               ))}
               <th
-                title="Voittoprosentti"
+                title={`${t("hoverWin%")}`}
                 className="underline decoration-dotted cursor-help underline-offset-2"
               >
-                V%
+                {t("win%")}
               </th>
               <th
-                title="Annetut osumat"
+                title={`${t("hoverHitsGiven")}`}
                 className="underline decoration-dotted cursor-help underline-offset-2"
               >
-                AO
+                {t("hitsGiven")}
               </th>
               <th
-                title="Vastaanotetut osumat"
+                title={`${t("hoverHitsReceived")}`}
                 className="underline decoration-dotted cursor-help underline-offset-2"
               >
-                VO
+                {t("hitsReceived")}
               </th>
               <th
-                title="AO - VO"
+                title={`${t("hoverAO-VO")}`}
                 className="underline decoration-dotted cursor-help underline-offset-2"
               >
-                I
+                {t("AO-VO")}
               </th>
             </tr>
           </thead>

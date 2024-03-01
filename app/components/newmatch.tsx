@@ -1,3 +1,5 @@
+import { useTranslations } from "next-intl";
+
 type AddmatchProps = {
   closeModal: () => void;
 };
@@ -14,6 +16,7 @@ const mockPlayers = [
 // todo: fix warning message when clicking 'Takaisin'
 // message: Form submission canceled because the form is not connected
 const AddMatch = ({ closeModal }: AddmatchProps) => {
+  const t = useTranslations("NewMatch");
   const createMatch = (formData: FormData) => {
     const matchFormdata = {
       player1: formData.get("player1"),
@@ -26,12 +29,12 @@ const AddMatch = ({ closeModal }: AddmatchProps) => {
   return (
     <>
       <h1 className="mb-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
-        1. Kierros
+        {t("title")}
       </h1>
       <form action={createMatch} className="flex flex-col gap-6">
         <div className="flex justify-center items-center *:grow">
           <label className="flex gap-1 sm:gap-2 items-center">
-            Ottelija 1
+            {t("player1")}
             <select
               className="border border-gray-600 rounded-md p-1"
               name="player1"
@@ -43,7 +46,7 @@ const AddMatch = ({ closeModal }: AddmatchProps) => {
               ))}
             </select>
           </label>
-          <label htmlFor="points1">Pisteet</label>
+          <label htmlFor="points1">{t("points")}</label>
           <input
             className="border border-gray-600 rounded-md text-center p-1"
             id="points1"
@@ -57,7 +60,7 @@ const AddMatch = ({ closeModal }: AddmatchProps) => {
         </div>
         <div className="flex justify-center items-center *:grow">
           <label className="flex gap-1 sm:gap-2 items-center">
-            Ottelija 2
+            {t("player2")}
             <select
               className="border border-gray-600 rounded-md p-1"
               name="player2"
@@ -69,7 +72,7 @@ const AddMatch = ({ closeModal }: AddmatchProps) => {
               ))}
             </select>
           </label>
-          <label htmlFor="points2">Pisteet</label>
+          <label htmlFor="points2">{t("points")}</label>
           <input
             className="border border-gray-600 rounded-md text-center p-1"
             id="points2"
@@ -86,13 +89,13 @@ const AddMatch = ({ closeModal }: AddmatchProps) => {
             type="submit"
             className="bg-blue-500 w-full py-2 px-3 text-white rounded-md shadow-sm"
           >
-            Tallenna
+            {t("submit")}
           </button>
           <button
             onClick={closeModal}
             className="ring-2 ring-gray-900 ring-inset py-2 w-full rounded-md shadow-sm"
           >
-            Takaisin
+            {t("back")}
           </button>
         </div>
       </form>
