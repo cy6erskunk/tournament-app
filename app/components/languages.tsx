@@ -24,6 +24,9 @@ const Languages = () => {
       <button onClick={() => changeLanguage("en")}>
         <span className="fi fi-gb"></span>
       </button>
+      <button onClick={() => changeLanguage("ee")}>
+        <span className="fi fi-ee"></span>
+      </button>
     </div>
   );
 };
