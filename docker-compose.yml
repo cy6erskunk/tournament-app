@@ -1,0 +1,41 @@
+version: "3"
+services:
+  helsingin-miekkailijat:
+    container_name: helsingin-miekkailijat
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - .:/app
+    restart: always
+    ports:
+      - 3000:3000
+    networks:
+      - hm_network
+  postgres-db:
+    image: postgres:latest
+    container_name: postgres-db
+    restart: always
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - 5432:5432
+    networks:
+      - hm_network
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./database.sql:/docker-entrypoint-initdb.d/database.sql
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 5433:8080
+    networks:
+      - hm_network
+networks:
+  hm_network:
+    external: true
+volumes:
+  hm_data:
