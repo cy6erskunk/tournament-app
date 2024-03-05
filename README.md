@@ -72,3 +72,18 @@ To switch languages, update the language in the URL (e.g., `/en` or `/fi`). To u
 ## Deployment & CI/CD
 
 The project is currently set up for deployment on Vercel. Connect your Vercel account to the repository or a fork of it and configure the deployment settings.
+
+## Troubleshooting
+
+### Error response from daemon: network local_network not found
+
+Running `docker network create hm_network` should fix the issue.
+
+### sh: next: not found
+
+If you get this error during your Docker build, make sure you installed the dependencies before running `docker compose`.
+
+### Failed to load SWC binary for linux/x64, see more info here: https://nextjs.org/docs/messages/failed-loading-swc
+
+Removing your node_modules folder and reinstalling fixes this. [Other Possible Ways to Fix It
+](https://nextjs.org/docs/messages/failed-loading-swc#possible-ways-to-fix-it)
