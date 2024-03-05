@@ -38,9 +38,15 @@ yarn
 pnpm install
 # or
 bun install
+
+# Define a network for Docker
+docker network create hm_network
 ```
 
 Run the development server
+
+> [!IMPORTANT]  
+> Do not forget creating the network on the setup step.
 
 ```bash
 docker compose up --build
