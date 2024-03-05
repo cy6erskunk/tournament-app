@@ -40,16 +40,10 @@ pnpm install
 bun install
 ```
 
-Run the development server:
+Run the development server
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+docker compose up --build
 ```
 
 Open http://localhost:3000 with your browser to see the result.
@@ -68,18 +62,6 @@ For example, the file pages/index.js corresponds to the home route (/). To creat
 The project supports internationalization for translations. Translation files are stored in the `languages` directory. You can add translations for different languages and use the next-i18next library to handle localization.
 
 To switch languages, update the language in the URL (e.g., `/en` or `/fi`). To use this in conjunction with the App Router, we use the [locale] folder name. For detailed configuration and usage of i18n in Next.js, refer to the [Next.js Internationalization (i18n) documentation](https://nextjs.org/docs/advanced-features/i18n)
-
-## Database
-
-This project uses PostgreSQL as the database.
-
-### Docker setup
-
-To run the project using Docker, run this
-
-```bash
-docker compose up --build
-```
 
 ## Deployment & CI/CD
 
