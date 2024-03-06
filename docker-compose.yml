@@ -1,21 +1,8 @@
 version: "3"
 services:
-  helsingin-miekkailijat:
-    container_name: helsingin-miekkailijat
-    build:
-      context: .
-      dockerfile: Dockerfile
-    volumes:
-      - .:/app
-    restart: always
-    ports:
-      - 3000:3000
-    networks:
-      - hm_network
-  postgres-db:
+  db:
     image: postgres:latest
-    container_name: postgres-db
-    restart: always
+    container_name: db
     environment:
       POSTGRES_DB: postgres
       POSTGRES_USER: postgres
@@ -37,5 +24,6 @@ services:
 networks:
   hm_network:
     external: true
+    driver: bridge
 volumes:
   hm_data:
