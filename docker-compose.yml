@@ -25,7 +25,7 @@ services:
     networks:
       - hm_network
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - hm_data:/var/lib/postgresql/data
       - ./database.sql:/docker-entrypoint-initdb.d/database.sql
   adminer:
     image: adminer
