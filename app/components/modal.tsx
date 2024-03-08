@@ -11,7 +11,7 @@ export default function Modal({ children, isOpen, closeModal }: ModalProps) {
     <>
       {isOpen ? (
         <div className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-40 outline-none focus:outline-none mx-4">
-          <div className="relative z-50 border-2 border-gray-900 w-full sm:max-w-md px-4 py-12 bg-white shadow-md overflow-hidden rounded-lg justify-center">
+          <div className="relative z-50 border-2 border-gray-900 w-full sm:max-w-xl px-4 py-12 bg-white shadow-md overflow-hidden rounded-lg justify-center">
             {children}
           </div>
           <div
