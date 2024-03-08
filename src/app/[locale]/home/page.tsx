@@ -1,7 +1,7 @@
-import Navbar from "../../components/navbar";
-import ResultsTable from "../../components/resultsTable";
-import LeaderboardHome from "../../components/leaderboardHome";
-import HomePageButtons from "@/app/components/homePageButtons";
+import Navbar from "@/components/navbar";
+import ResultsTable from "@/components/resultsTable";
+import LeaderboardHome from "@/components/leaderboardHome";
+import HomePageButtons from "@/components/homePageButtons";
 import { NextIntlClientProvider, useMessages } from "next-intl";
 
 const Page = () => {
