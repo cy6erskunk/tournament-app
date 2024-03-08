@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { useTranslations } from "next-intl";
-import Languages from "../components/languages";
+import Languages from "@/components/languages";
 import Link from "next/link";
 
 export default function Home() {
