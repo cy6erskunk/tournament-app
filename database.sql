@@ -5,7 +5,7 @@ CREATE TABLE "public"."matches" (
     "tournament_id" integer NOT NULL,
     "round" integer NOT NULL,
     "match" integer NOT NULL,
-    "winner" character varying(16) NOT NULL
+    "winner" character varying(16)
 ) WITH (oids = false);
 
 
