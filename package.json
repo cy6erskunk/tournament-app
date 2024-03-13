@@ -4,12 +4,14 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
+    "prod": "next build && next start",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"
   },
   "dependencies": {
     "@heroicons/react": "^2.1.1",
+    "@vercel/postgres-kysely": "^0.7.2",
     "flag-icons": "^7.1.0",
     "kysely": "^0.27.2",
     "next": "14.1.0",

@@ -1,17 +1,29 @@
 import { DB } from "./types";
 import { Pool } from "pg";
 import { Kysely, PostgresDialect } from "kysely";
+import { createKysely } from "@vercel/postgres-kysely";
 
 const dialect = new PostgresDialect({
   pool: new Pool({
-    // Give me node env variable here
-    database: process.env.DB_NAME ?? "postgres",
-    host: process.env.DB_HOST ?? "localhost",
-    user: process.env.DB_USER ?? "postgres",
-    password: process.env.DB_PASSWORD ?? "postgres",
-    port: parseInt(process.env.DB_PORT ?? "5434"),
-    max: parseInt(process.env.DB_MAX_CONNECTIONS ?? "10"),
+    database: process.env.POSTGRES_DB || "postgres",
+    host: process.env.POSTGRES_HOST || "localhost",
+    user: process.env.POSTGRES_USER || "postgres",
+    password: process.env.POSTGRESS_PASSWORD || "postgres",
+    port: Number(process.env.POSTGRES_PORT) || 5434,
+    max: 10,
   }),
 });
 
-export const db = new Kysely<DB>({ dialect });
+// Gets a Kysely connection based on application environment
+function getConnection() {
+  const env = process.env.NODE_ENV
+
+  if (env === "production") {
+    return createKysely<DB>();
+  }
+
+  return new Kysely<DB>({ dialect });
+}
+
+export const db = getConnection();
+export { sql } from "kysely";
