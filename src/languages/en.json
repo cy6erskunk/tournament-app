@@ -8,6 +8,7 @@
     "Buttons": {
       "addmatch": "Add match",
       "addplayer": "Add player",
+      "newplayer": "New player",
       "leaderboard": "Leaderboard",
       "empty": "Empty table",
       "emptyConfirm": "Remove all matches and players?"
@@ -40,8 +41,14 @@
     "back": "Back",
     "points": "Points"
   },
-  "NewPlayer": {
+  "AddPlayer": {
     "title": "Add player",
+    "name": "Name",
+    "submit": "Submit",
+    "back": "Back"
+  },
+  "NewPlayer": {
+    "title": "New player",
     "name": "Name",
     "submit": "Submit",
     "back": "Back"

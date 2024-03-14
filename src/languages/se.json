@@ -8,6 +8,7 @@
     "Buttons": {
       "addmatch": "Lägg till match",
       "addplayer": "Lägg till spelare",
+      "newplayer": "Ny spelare",
       "leaderboard": "Topplistan",
       "empty": "Tom tabell",
       "emptyConfirm": "Ta bort alla matcher och spelare?"
@@ -39,6 +40,12 @@
     "submit": "Lämna in",
     "back": "Tillbaka",
     "points": "Poäng"
+  },
+  "AddPlayer": {
+    "title": "Lägg till spelare",
+    "name": "Namn",
+    "submit": "Lämna in",
+    "back": "Tillbaka"
   },
   "NewPlayer": {
     "title": "Ny spelare",

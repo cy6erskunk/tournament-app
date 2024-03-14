@@ -8,6 +8,7 @@
     "Buttons": {
       "addmatch": "Lisa vaste",
       "addplayer": "Lisa mängija",
+      "newplayer": "Uus mängija",
       "leaderboard": "Edetabel",
       "empty": "Tühi laud",
       "emptyConfirm": "Eemaldage kõik mängud ja mängijad?"
@@ -40,8 +41,14 @@
     "back": "Tagasi",
     "points": "Punktid"
   },
-  "NewPlayer": {
+  "AddPlayer": {
     "title": "Lisa Mängija",
+    "name": "Nimi",
+    "submit": "Esita",
+    "back": "Tagasi"
+  },
+  "NewPlayer": {
+    "title": "Uus Mängija",
     "name": "Nimi",
     "submit": "Esita",
     "back": "Tagasi"

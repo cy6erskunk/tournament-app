@@ -7,13 +7,13 @@ type AddplayerProps = {
 
 // message: Form submission canceled because the form is not connected
 const Addplayer = ({ closeModal }: AddplayerProps) => {
-  const t = useTranslations("AddPlayer");
+  const t = useTranslations("NewPlayer");
   const submitForm = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
     const newPlayer = formData.get("name");
 
-    const res = await fetch("/api/addplayer", {
+    const res = await fetch("/api/newplayer", {
       method: "POST",
       body: formData,
     });
@@ -24,6 +24,8 @@ const Addplayer = ({ closeModal }: AddplayerProps) => {
     }
 
     const data = await res.json();
+    console.log(newPlayer);
+    console.log(data);
 
     closeModal();
     alert(`${newPlayer} added`);

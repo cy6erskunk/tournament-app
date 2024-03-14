@@ -4,6 +4,7 @@ import { useState, ReactNode } from "react";
 import Modal from "./modal";
 import AddMatch from "./newmatch";
 import Addplayer from "./addplayer";
+import NewPlayer from "./newplayer";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 
@@ -49,6 +50,12 @@ const HomePageButtons = () => {
         onClick={emptyTable}
       >
         {t("empty")}
+      </button>
+      <button
+        className="p-1 px-5 border rounded-md shadow-sm border-slate-600"
+        onClick={() => openModal(<NewPlayer closeModal={closeModal} />)}
+      >
+        {t("newplayer")}
       </button>
       <Modal isOpen={showModal} closeModal={closeModal}>
         {modalContent}
