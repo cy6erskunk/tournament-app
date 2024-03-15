@@ -48,6 +48,12 @@
     "submit": "Lämna in",
     "back": "Tillbaka"
   },
+  "AddPlayer": {
+    "title": "Lägg till spelare",
+    "name": "Namn",
+    "submit": "Lämna in",
+    "back": "Tillbaka"
+  },
   "NewPlayer": {
     "title": "Ny spelare",
     "name": "Namn",
