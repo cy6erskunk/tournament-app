@@ -39,7 +39,8 @@
     "player2": "Mängija 2",
     "submit": "Esita",
     "back": "Tagasi",
-    "points": "Punktid"
+    "points": "Punktid",
+    "noplayers": "Sellel turniiril pole mängijaid"
   },
   "AddPlayer": {
     "title": "Lisa Mängija",

@@ -39,7 +39,8 @@
     "player2": "Spelare 2",
     "submit": "Lämna in",
     "back": "Tillbaka",
-    "points": "Poäng"
+    "points": "Poäng",
+    "noplayers": "Inga spelare i denna turnering"
   },
   "AddPlayer": {
     "title": "Lägg till spelare",

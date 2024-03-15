@@ -39,7 +39,8 @@
     "player2": "Player 2",
     "submit": "Submit",
     "back": "Back",
-    "points": "Points"
+    "points": "Points",
+    "noplayers": "No players in this tournament"
   },
   "AddPlayer": {
     "title": "Add player",

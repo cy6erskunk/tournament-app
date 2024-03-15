@@ -39,7 +39,8 @@
     "player2": "Ottelija 2",
     "submit": "Tallenna",
     "back": "Takaisin",
-    "points": "Pisteet"
+    "points": "Pisteet",
+    "noplayers": "Ei pelaajia tässä turnauksessa"
   },
   "AddPlayer": {
     "title": "Lisää ottelija",
