@@ -1,3 +1,7 @@
 {
-  "extends": "next/core-web-vitals"
+  "plugins": ["i18next"],
+  "rules": {
+    "i18next/no-literal-string": 1
+  },
+  "extends": ["next/core-web-vitals"]
 }
