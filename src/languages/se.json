@@ -1,0 +1,63 @@
+{
+  "Login": {
+    "name": "Användarnamn",
+    "password": "Lösenord",
+    "submit": "Logga in"
+  },
+  "Home": {
+    "Buttons": {
+      "addmatch": "Lägg till match",
+      "addplayer": "Lägg till spelare",
+      "newplayer": "Ny spelare",
+      "leaderboard": "Topplistan",
+      "empty": "Tom tabell",
+      "emptyConfirm": "Ta bort alla matcher och spelare?"
+    }
+  },
+  "Leaderboard": {
+    "title": "Topplistan",
+    "name": "Namn",
+    "wins": "V",
+    "hoverWins": "Vinst",
+    "win%": "V%",
+    "hoverWin%": "Vinstprocent",
+    "hitsGiven": "GT",
+    "hoverHitsGiven": "Givna träffar",
+    "hitsReceived": "TT",
+    "hoverHitsReceived": "Tagna träffar",
+    "AO-VO": "I",
+    "hoverAO-VO": "Givna träffar - tagna träffar",
+    "position": "Rank",
+    "remove": "Ta bort"
+  },
+  "Logout": {
+    "logout": "Logga ut"
+  },
+  "NewMatch": {
+    "title": "Runda",
+    "player1": "Spelare 1",
+    "player2": "Spelare 2",
+    "submit": "Lämna in",
+    "back": "Tillbaka",
+    "points": "Poäng",
+    "noplayers": "Inga spelare i denna turnering"
+  },
+  "AddPlayer": {
+    "title": "Lägg till spelare",
+    "name": "Namn",
+    "submit": "Lämna in",
+    "back": "Tillbaka"
+  },
+  "AddPlayer": {
+    "title": "Lägg till spelare",
+    "name": "Namn",
+    "submit": "Lämna in",
+    "back": "Tillbaka"
+  },
+  "NewPlayer": {
+    "title": "Ny spelare",
+    "name": "Namn",
+    "submit": "Lämna in",
+    "back": "Tillbaka"
+  }
+}

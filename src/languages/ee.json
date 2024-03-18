@@ -1,0 +1,57 @@
+{
+  "Login": {
+    "name": "Kasutaja",
+    "password": "Parool",
+    "submit": "Logi sisse"
+  },
+  "Home": {
+    "Buttons": {
+      "addmatch": "Lisa vaste",
+      "addplayer": "Lisa mängija",
+      "newplayer": "Uus mängija",
+      "leaderboard": "Edetabel",
+      "empty": "Tühi laud",
+      "emptyConfirm": "Eemaldage kõik mängud ja mängijad?"
+    }
+  },
+  "Leaderboard": {
+    "title": "Edetabel",
+    "name": "Nimi",
+    "wins": "V",
+    "hoverWins": "Võidud",
+    "win%": "v%",
+    "hoverWin%": "Võiduprotsent",
+    "hitsGiven": "PS",
+    "hoverHitsGiven": "Puudutused skooritud",
+    "hitsReceived": "PV",
+    "hoverHitsReceived": "Puudutused vastu võetud",
+    "AO-VO": "I",
+    "hoverAO-VO": "Puudutused skooritud - Puudutused vastu võetud",
+    "position": "Koht",
+    "remove": "Eemalda"
+  },
+  "Logout": {
+    "logout": "Logi välja"
+  },
+  "NewMatch": {
+    "title": "Raund",
+    "player1": "Mängija 1",
+    "player2": "Mängija 2",
+    "submit": "Esita",
+    "back": "Tagasi",
+    "points": "Punktid",
+    "noplayers": "Sellel turniiril pole mängijaid"
+  },
+  "AddPlayer": {
+    "title": "Lisa Mängija",
+    "name": "Nimi",
+    "submit": "Esita",
+    "back": "Tagasi"
+  },
+  "NewPlayer": {
+    "title": "Uus Mängija",
+    "name": "Nimi",
+    "submit": "Esita",
+    "back": "Tagasi"
+  }
+}
