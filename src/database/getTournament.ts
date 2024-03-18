@@ -1,51 +1,26 @@
 "use server";
 
+import { Result } from "@/types/result";
 import { db } from "./database";
 import { Tournaments } from "./types";
 
-export async function getTournament(name: string) {
+export async function getTournament(
+  name: string,
+): Promise<Result<Tournaments, string>> {
   try {
-    return db
+    const tournaments = (await db
       .selectFrom("tournaments")
       .where("name", "=", name)
       .selectAll()
-      .executeTakeFirst() as Promise<Tournaments | undefined>;
+      .executeTakeFirst()) as Tournaments | undefined;
+
+    if (!tournaments) {
+      return { success: false, error: "No tournaments found" };
+    }
+
+    return { success: true, value: tournaments };
   } catch (error) {
     console.log(error);
-    return "Error getting users";
+    return { success: false, error: "Error fetching tournaments" };
   }
 }
-
-// Example usage
-// // State to hold the fetched data
-// const [data, setData] = useState<string>("");
-
-// // Fetch data using useEffect
-// useEffect(() => {
-//   const fetchDataAsync = async () => {
-//     try {
-//       const result = await getTournament("Miekkailu");
-//       setData(JSON.stringify(result));
-//     } catch (error) {
-//       console.error("Error fetching data:", error);
-//     }
-//   };
-
-//   fetchDataAsync();
-// }, []); // Empty dependency array ensures this effect runs only once
-// // State to hold the fetched data
-// const [data, setData] = useState<string>("");
-
-// // Fetch data using useEffect
-// useEffect(() => {
-//   const fetchDataAsync = async () => {
-//     try {
-//       const result = await getTournament("Miekkailu");
-//       setData(JSON.stringify(result));
-//     } catch (error) {
-//       console.error("Error fetching data:", error);
-//     }
-//   };
-
-//   fetchDataAsync();
-// }, []); // Empty dependency array ensures this effect runs only once

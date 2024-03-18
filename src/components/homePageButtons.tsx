@@ -7,14 +7,10 @@ import Addplayer from "./addplayer";
 import NewPlayer from "./newplayer";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
-import { TournamentPlayers } from "@/database/types";
 
-interface HomePageButtonsProps {
-  tournamentPlayers: TournamentPlayers[];
-}
-
-const HomePageButtons = ({ tournamentPlayers }: HomePageButtonsProps) => {
+const HomePageButtons = () => {
   const t = useTranslations("Home.Buttons");
+
   const [showModal, setShowModal] = useState(false);
   const [modalContent, setModalContent] = useState<ReactNode | null>(null);
   const closeModal = () => {
@@ -36,7 +32,7 @@ const HomePageButtons = ({ tournamentPlayers }: HomePageButtonsProps) => {
         className="p-1 px-5 border rounded-md shadow-sm border-slate-600"
         onClick={() =>
           openModal(
-            <AddMatch players={tournamentPlayers} closeModal={closeModal} />
+            <AddMatch closeModal={closeModal} />
           )
         }
       >

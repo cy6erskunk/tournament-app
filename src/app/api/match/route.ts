@@ -1,7 +1,6 @@
 import {
   addMatch,
   getTournamentToday,
-  createTournamentToday,
   updateHgAndHr,
 } from "@/database/addMatch";
 
@@ -25,28 +24,46 @@ export async function POST(request: Request) {
 
   // get tournament id for matches table
   const currentDate = new Date();
-  let tournament = await getTournamentToday(currentDate);
+  let tournamentResult = await getTournamentToday(currentDate);
 
   // create new tournament if no tournaments today
-  if (!tournament) {
-    tournament = await createTournamentToday(currentDate);
+  if (!tournamentResult.success) {
+    return new Response(tournamentResult.error, { status: 404 });
   }
+
+  const tournamentId = Number(tournamentResult.value.id);
 
   // update player points in tournament
-  updateHgAndHr(form.player1, tournament.id, form.points1, form.points2);
-  updateHgAndHr(form.player2, tournament.id, form.points2, form.points1);
+  // TODO: Combine these two queries
+  const p1Result = await updateHgAndHr(
+    form.player1,
+    tournamentId,
+    form.points1,
+    form.points2,
+  );
+
+  if (!p1Result.success) return new Response(p1Result.error, { status: 400 });
+
+  const p2Result = await updateHgAndHr(
+    form.player2,
+    tournamentId,
+    form.points2,
+    form.points1,
+  );
+
+  if (!p2Result.success) return new Response(p2Result.error, { status: 400 });
 
   // add match to matches table
-  try {
-    await addMatch(tournament.id, form.player1, form.player2, winner);
-    return Response.json("Success");
-  } catch (error) {
-    if (error instanceof Error) {
-      console.log(error.message);
-      return new Response(error.message, { status: 400 });
-    }
-    return new Response("error", {
-      status: 400,
-    });
+  const matchResult = await addMatch(
+    tournamentId,
+    form.player1,
+    form.player2,
+    winner,
+  );
+
+  if (!matchResult.success) {
+    return new Response(`Error adding match: ${matchResult.error}`, { status: 400 });
   }
+
+  return Response.json(matchResult.value);
 }

@@ -1,19 +1,10 @@
+"use client";
+
+import { useTournamentContext } from "@/context/TournamentContext";
+import { Player } from "@/types/Player";
 import { TrophyIcon } from "@heroicons/react/24/solid";
 import { useTranslations } from "next-intl";
-
-// todo: delete this when using real data
-const mockPlayers = [
-  "Pelaaja 2",
-  "Pelaaja 4",
-  "Pelaaja 1",
-  "Pelaaja 3",
-  "Pelaaja 9",
-  "Pelaaja 11",
-  "Pelaaja 12",
-  "Pelaaja 8",
-  "Pelaaja 7",
-  "Pelaaja 6",
-];
+import { useEffect, useState } from "react";
 
 const LeaderboardHome = () => {
   // linear gradient doesn't work with iphone / safari
@@ -24,6 +15,18 @@ const LeaderboardHome = () => {
   //   return "odd:bg-white even:bg-gray-50";
   // };
   const t = useTranslations("Leaderboard");
+  const context = useTournamentContext();
+  const [players, setPlayers] = useState<Player[]>([])
+
+  useEffect(() => {
+    const p = [...context.players].sort((a, b) => {
+      const indexA = a.player.hits_received - a.player.hits_given
+      const indexB = b.player.hits_received - b.player.hits_given
+      return indexA - indexB
+    });
+    setPlayers(p)
+  }, [context]);
+
   return (
     <div className="overflow-hidden border-2 rounded-md shadow-md border-gray-400">
       <table className="table-auto w-full">
@@ -34,7 +37,7 @@ const LeaderboardHome = () => {
           </tr>
         </thead>
         <tbody>
-          {mockPlayers.map((player, index) => (
+          {players.map((player, index) => (
             <tr
               key={index}
               className="*:text-center *:py-4 odd:bg-white even:bg-gray-100"
@@ -51,14 +54,14 @@ const LeaderboardHome = () => {
                         index === 0
                           ? "text-yellow-400"
                           : index === 1
-                          ? "text-gray-700"
-                          : "text-amber-950"
+                            ? "text-gray-700"
+                            : "text-amber-950"
                       }`}
                     />
                   </div>
                 )}
               </td>
-              <td>{player}</td>
+              <td>{player.player.player_name}</td>
             </tr>
           ))}
         </tbody>

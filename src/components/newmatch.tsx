@@ -1,19 +1,28 @@
+"use client";
+
 import { useTranslations } from "next-intl";
 import { FormEvent } from "react";
-import { TournamentPlayers } from "@/database/types";
+import { useTournamentContext } from "@/context/TournamentContext";
+import { Matches } from "@/database/types";
 
 type AddmatchProps = {
   closeModal: () => void;
-  players: TournamentPlayers[];
 };
 
-const AddMatch = ({ closeModal, players }: AddmatchProps) => {
+const AddMatch = ({ closeModal }: AddmatchProps) => {
   const t = useTranslations("NewMatch");
+  const context = useTournamentContext();
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
-    if (formData.get("player1") === formData.get("player2")) {
+    const form = {
+      player1: formData.get("player1") as string,
+      points1: Number(formData.get("points1")),
+      player2: formData.get("player2") as string,
+      points2: Number(formData.get("points2")),
+    };
+    if (form.player1 === form.player2) {
       alert("Same players");
       return;
     }
@@ -28,10 +37,42 @@ const AddMatch = ({ closeModal, players }: AddmatchProps) => {
       return;
     }
 
+    // UPDATE PLAYER OBJECTS INSIDE CONTEXT STATE
+    // This works by extracting objects out, modifying them
+    // and then pushing back to state
+    const match: Matches = await res.json();
+    context.setPlayers((prevPlayers) => {
+      // Find the player with the specific player name
+      const updatedPlayers = prevPlayers.map((player) => {
+        // Create a copy of the player and add the match to its matches array
+        switch (player.player.player_name) {
+          case form.player1:
+            player.player.hits_given += form.points1;
+            player.player.hits_received += form.points2;
+            return {
+              player: player.player,
+              matches: [...player.matches, match],
+            };
+          case form.player2:
+            player.player.hits_given += form.points2;
+            player.player.hits_received += form.points1;
+            return {
+              player: player.player,
+              matches: [...player.matches, match],
+            };
+          default:
+            return player;
+        }
+      });
+      return updatedPlayers;
+    });
+
+    console.log(context.players[0].player);
+
     closeModal();
   };
 
-  if (players.length === 0) {
+  if (context.players.length === 0) {
     return (
       <>
         <h1 className="mb-10 text-center text-2xl font-semibold leading-9 tracking-tight text-gray-900">
@@ -60,9 +101,12 @@ const AddMatch = ({ closeModal, players }: AddmatchProps) => {
               className="border border-gray-600 rounded-md p-1"
               name="player1"
             >
-              {players.map((player) => (
-                <option key={player.player_name} value={player.player_name}>
-                  {player.player_name}
+              {context.players.map((player) => (
+                <option
+                  key={player.player.player_name}
+                  value={player.player.player_name}
+                >
+                  {player.player.player_name}
                 </option>
               ))}
             </select>
@@ -86,9 +130,12 @@ const AddMatch = ({ closeModal, players }: AddmatchProps) => {
               className="border border-gray-600 rounded-md p-1"
               name="player2"
             >
-              {players.map((player) => (
-                <option key={player.player_name} value={player.player_name}>
-                  {player.player_name}
+              {context.players.map((player) => (
+                <option
+                  key={player.player.player_name}
+                  value={player.player.player_name}
+                >
+                  {player.player.player_name}
                 </option>
               ))}
             </select>

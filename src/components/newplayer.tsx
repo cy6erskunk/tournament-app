@@ -1,3 +1,4 @@
+import { useTournamentContext } from "@/context/TournamentContext";
 import { useTranslations } from "next-intl";
 import { FormEvent } from "react";
 
@@ -8,6 +9,7 @@ type AddplayerProps = {
 // message: Form submission canceled because the form is not connected
 const Addplayer = ({ closeModal }: AddplayerProps) => {
   const t = useTranslations("NewPlayer");
+  const context = useTournamentContext()
   const submitForm = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
@@ -23,9 +25,8 @@ const Addplayer = ({ closeModal }: AddplayerProps) => {
       return;
     }
 
-    const data = await res.json();
-    console.log(newPlayer);
-    console.log(data);
+    const player = await res.json()
+    context.setPlayers((players) => [...players, player])
 
     closeModal();
     alert(`${newPlayer} added`);
