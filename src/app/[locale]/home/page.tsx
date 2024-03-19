@@ -4,7 +4,7 @@ import LeaderboardHome from "@/components/leaderboardHome";
 import HomePageButtons from "@/components/homePageButtons";
 import { NextIntlClientProvider } from "next-intl";
 import { getMessages } from "next-intl/server";
-import { TournamentContextProvider } from "@/context/TournamentContext";
+import { TournamentContextProvider, useTournamentContext } from "@/context/TournamentContext";
 
 const Page = async () => {
   const messages = await getMessages();

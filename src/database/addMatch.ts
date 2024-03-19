@@ -2,7 +2,7 @@
 
 import { Result } from "@/types/result";
 import { db } from "./database";
-import { Matches, Tournaments } from "./types";
+import { Matches } from "./types";
 
 // add match
 export async function addMatch(
@@ -33,50 +33,6 @@ export async function addMatch(
   } catch (error) {
     console.log(error);
     return { success: false, error: "Could not insert match" };
-  }
-}
-
-// get tournament with Date
-export async function getTournamentToday(
-  dateToday: Date,
-): Promise<Result<Tournaments, string>> {
-  try {
-    const tournament = (await db
-      .selectFrom("tournaments")
-      .select("id")
-      .where("date", "=", dateToday)
-      .executeTakeFirst()) as Tournaments | undefined;
-
-    if (!tournament) {
-      return { success: false, error: "No tournament found" };
-    }
-
-    return { success: true, value: tournament };
-  } catch (error) {
-    console.log(error);
-    return { success: false, error: "Could not fetch tournament players" };
-  }
-}
-
-// create new tournament with Date
-export async function createTournamentToday(
-  dateToday: Date,
-): Promise<Result<number, string>> {
-  try {
-    const tournament = await db
-      .insertInto("tournaments")
-      .values({
-        name: "Tournament " + dateToday,
-        date: dateToday,
-        format: "old",
-      })
-      .returning("id")
-      .executeTakeFirstOrThrow();
-
-    return { success: true, value: tournament.id };
-  } catch (error) {
-    console.log(error);
-    return { success: false, error: "Could not insert new tournament" };
   }
 }
 
