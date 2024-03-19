@@ -1,4 +1,4 @@
-import { getTournamentToday } from "@/database/addMatch";
+import { getTournamentToday } from "@/database/getTournament";
 import { addPlayer } from "@/database/newPlayer";
 
 export async function POST(request: Request) {

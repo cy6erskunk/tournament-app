@@ -1,8 +1,8 @@
 import {
   addMatch,
-  getTournamentToday,
   updateHgAndHr,
 } from "@/database/addMatch";
+import { getTournamentToday } from "@/database/getTournament";
 
 // add new match
 export async function POST(request: Request) {
