@@ -1,7 +1,5 @@
-import { db } from "@/database/database";
 import { getTournamentToday } from "@/database/addMatch";
-import { TournamentPlayers } from "@/database/types";
-import { Player } from "@/types/Player";
+import { addPlayer } from "@/database/newPlayer";
 
 export async function POST(request: Request) {
   const formData = await request.formData();
@@ -21,30 +19,14 @@ export async function POST(request: Request) {
 
   const tournamentId = Number(tournamentResult.value.id);
 
-  try {
-    const result = await db
-      .insertInto("tournament_players")
-      .values({
-        player_name: name.toString(),
-        tournament_id: tournamentId,
-        hits_given: 0,
-        hits_received: 0,
-      })
-      .returningAll()
-      .executeTakeFirst() as TournamentPlayers | undefined;
+  // add existing player to tournament_players table
+  const addPlayerToTournament = await addPlayer(name.toString(), tournamentId);
 
-    if (!result) {
-      return new Response("Not able to add user", { status: 400 });
-    }
-
-    const player: Player = {
-      player: result,
-      matches: [],
-    }
-
-    console.log(player);
-    return Response.json(player);
-  } catch (error) {
-    return new Response("Error adding player", { status: 400 });
+  // check if player was added to tournament_players table
+  if (!addPlayerToTournament.success) {
+    return new Response("Error adding player to tournament_players table", {
+      status: 400,
+    });
   }
+  return Response.json(addPlayerToTournament.value);
 }
