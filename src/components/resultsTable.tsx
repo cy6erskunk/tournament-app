@@ -1,11 +1,7 @@
 "use client";
 
 import { TrashIcon } from "@heroicons/react/24/outline";
-import { useEffect } from "react";
 import { useTranslations } from "next-intl";
-
-import { getTournamentToday } from "@/database/addMatch";
-import { getTournamentPlayers } from "@/database/getTournamentPlayers";
 import { Player } from "@/types/Player";
 import { removeTournamentPlayer } from "@/database/removeTournamentPlayer";
 import { useTournamentContext } from "@/context/TournamentContext";
