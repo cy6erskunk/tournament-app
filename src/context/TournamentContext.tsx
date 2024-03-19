@@ -18,6 +18,10 @@ interface TournamentContext {
   setPlayers: React.Dispatch<
     React.SetStateAction<TournamentContext["players"]>
   >;
+  loading: boolean;
+  setLoading: React.Dispatch<
+    React.SetStateAction<TournamentContext["loading"]>
+  >;
 }
 
 export const TournamentContext = createContext<TournamentContext | null>(null);
@@ -27,7 +31,7 @@ export function TournamentContextProvider({
 }: React.PropsWithChildren<{}>) {
   const [tournament, setTournament] = useState<TournamentContext["tournament"]>();
   const [players, setPlayers] = useState<TournamentContext["players"]>([]);
-
+  const [loading, setLoading] = useState<TournamentContext["loading"]>(true);
   // Fetch players to context
   useEffect(() => {
     async function fetchTournamentData() {
@@ -43,13 +47,14 @@ export function TournamentContextProvider({
 
       if (!playerResult.success) return;
 
+      setLoading(false);
       setPlayers(playerResult.value);
     }
 
     fetchTournamentData();
   }, []);
 
-  const value = useMemo(() => ({ tournament, setTournament, players, setPlayers }), [players, tournament]);
+  const value = useMemo(() => ({ tournament, setTournament, players, setPlayers, loading, setLoading }), [players, tournament, loading]);
 
   return (
     <TournamentContext.Provider value={value}>
