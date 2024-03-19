@@ -1,6 +1,5 @@
-import { db } from "@/database/database";
 import { getTournamentToday } from "@/database/addMatch";
-import { Player } from "@/types/Player";
+import { newPlayer, addPlayer } from "@/database/newPlayer";
 
 export async function POST(request: Request) {
   const formData = await request.formData();
@@ -15,44 +14,26 @@ export async function POST(request: Request) {
   if (!tournamentResult.success) {
     return new Response(tournamentResult.error, { status: 400 });
   }
-
   const tournamentId = Number(tournamentResult.value.id);
 
-  try {
-    const result = await db
-      .insertInto("players")
-      .values({
-        player_name: name.toString(),
-      })
-      .executeTakeFirst();
-    console.log(result);
-  } catch (error) {
-    return new Response("Error adding player", { status: 400 });
+  // add new player
+  const createNewPlayer = await newPlayer(name.toString());
+
+  // check if player was added
+  if (!createNewPlayer.success) {
+    return new Response("Error adding player to players table", {
+      status: 400,
+    });
   }
 
-  try {
-    const result = await db
-      .insertInto("tournament_players")
-      .values({
-        player_name: name.toString(),
-        tournament_id: tournamentId,
-        hits_given: 0,
-        hits_received: 0,
-      })
-      .returningAll()
-      .executeTakeFirst();
+  // add existing player to tournament_players table
+  const addPlayerToTournament = await addPlayer(name.toString(), tournamentId);
 
-    if (!result) {
-      return new Response("Error adding player", { status: 400 });
-    }
-
-    const player: Player = {
-      player: result,
-      matches: [],
-    };
-
-    return Response.json(player);
-  } catch (error) {
-    return new Response("Error adding player", { status: 400 });
+  // check if player was added to tournament_players table
+  if (!addPlayerToTournament.success) {
+    return new Response("Error adding player to tournament_players table", {
+      status: 400,
+    });
   }
+  return Response.json(addPlayerToTournament.value);
 }
