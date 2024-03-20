@@ -14,12 +14,13 @@ function Round() {
     }
     context.setActiveRound(1);
   }
+
   return (
-    <section className="flex gap-3">
+    <section className="flex items-center gap-3 text-base">
       <p>{context.activeRound} kierros</p>
       <button
         onClick={toggleRound}
-        className="border-2 border-gray-300 px-3 rounded-md *:h-5 *:w-5"
+        className="disabled:bg-red-300 border-2 border-gray-300 px-3 py-2 rounded-md *:h-5 *:w-5"
       >
         {context.activeRound === 1 ? <ChevronRightIcon /> : <ChevronLeftIcon />}
       </button>
