@@ -50,10 +50,7 @@ export function TournamentContextProvider({
       setTournament(tournamentResult.value);
 
       const tournamentId = Number(tournamentResult.value.id);
-      const playerResult = await getTournamentPlayers(
-        tournamentId,
-        activeRound,
-      );
+      const playerResult = await getTournamentPlayers(tournamentId);
 
       if (!playerResult.success) return;
 
@@ -62,7 +59,7 @@ export function TournamentContextProvider({
     }
 
     fetchTournamentData();
-  }, [activeRound]);
+  }, []);
 
   const value = useMemo(
     () => ({

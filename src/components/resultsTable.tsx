@@ -155,11 +155,15 @@ function ResultPlayer({ player, nthRow, removePlayer }: PlayerProps) {
 
       {/* calculate win percentage based on matches associated with player */}
       <td className="bg-blue-100">
-        {player.matches.reduce(
-          (n, match) =>
-            match.winner === player.player.player_name ? n + 1 : n,
-          0,
-        )}
+        {player.matches.reduce((n, match) => {
+          if (
+            match.round === context.activeRound &&
+            match.winner === player.player.player_name
+          ) {
+            return n + 1;
+          }
+          return n;
+        }, 0)}
       </td>
       <td className="bg-blue-100">{player.player.hits_given}</td>
       <td className="bg-blue-100">{player.player.hits_received}</td>
