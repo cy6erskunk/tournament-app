@@ -9,7 +9,6 @@ export async function addMatch(
   tournamentId: number,
   player1: string,
   player2: string,
-  round: number,
   winner: string | null,
 ): Promise<Result<Matches, string>> {
   try {
@@ -19,7 +18,7 @@ export async function addMatch(
         match: 4,
         player1: player1,
         player2: player2,
-        round: round,
+        round: 1,
         tournament_id: tournamentId,
         winner: winner,
       })
