@@ -22,6 +22,10 @@ interface TournamentContext {
   setLoading: React.Dispatch<
     React.SetStateAction<TournamentContext["loading"]>
   >;
+  activeRound: number;
+  setActiveRound: React.Dispatch<
+    React.SetStateAction<TournamentContext["activeRound"]>
+  >;
 }
 
 export const TournamentContext = createContext<TournamentContext | null>(null);
@@ -29,9 +33,12 @@ export const TournamentContext = createContext<TournamentContext | null>(null);
 export function TournamentContextProvider({
   children,
 }: React.PropsWithChildren<{}>) {
-  const [tournament, setTournament] = useState<TournamentContext["tournament"]>();
+  const [tournament, setTournament] =
+    useState<TournamentContext["tournament"]>();
   const [players, setPlayers] = useState<TournamentContext["players"]>([]);
   const [loading, setLoading] = useState<TournamentContext["loading"]>(true);
+  const [activeRound, setActiveRound] =
+    useState<TournamentContext["activeRound"]>(1);
   // Fetch players to context
   useEffect(() => {
     async function fetchTournamentData() {
@@ -43,7 +50,10 @@ export function TournamentContextProvider({
       setTournament(tournamentResult.value);
 
       const tournamentId = Number(tournamentResult.value.id);
-      const playerResult = await getTournamentPlayers(tournamentId);
+      const playerResult = await getTournamentPlayers(
+        tournamentId,
+        activeRound,
+      );
 
       if (!playerResult.success) return;
 
@@ -52,9 +62,21 @@ export function TournamentContextProvider({
     }
 
     fetchTournamentData();
-  }, []);
+  }, [activeRound]);
 
-  const value = useMemo(() => ({ tournament, setTournament, players, setPlayers, loading, setLoading }), [players, tournament, loading]);
+  const value = useMemo(
+    () => ({
+      tournament,
+      setTournament,
+      players,
+      setPlayers,
+      loading,
+      setLoading,
+      activeRound,
+      setActiveRound,
+    }),
+    [players, tournament, loading, activeRound],
+  );
 
   return (
     <TournamentContext.Provider value={value}>
