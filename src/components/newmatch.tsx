@@ -26,10 +26,17 @@ const AddMatch = ({ closeModal }: AddmatchProps) => {
       alert("Same players");
       return;
     }
+    const requestBody = {
+      formData: form,
+      round: context.activeRound,
+    };
+
+    // Convert the object to JSON
+    const requestBodyJSON = JSON.stringify(requestBody);
 
     const res = await fetch("/api/match", {
       method: "POST",
-      body: formData,
+      body: requestBodyJSON,
     });
 
     if (!res.ok) {
