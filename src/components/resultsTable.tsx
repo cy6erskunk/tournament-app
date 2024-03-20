@@ -5,6 +5,8 @@ import { useTranslations } from "next-intl";
 import { Player } from "@/types/Player";
 import { removeTournamentPlayer } from "@/database/removeTournamentPlayer";
 import { useTournamentContext } from "@/context/TournamentContext";
+import Rounds from "./rounds";
+
 interface PlayerProps {
   player: Player;
   nthRow: number;
@@ -38,10 +40,11 @@ function ResultsTable() {
 
   return (
     <div className="w-full md:w-2/3">
-      <div className="my-2 text-4xl font-bold">
+      <div className="my-2 text-4xl font-bold flex justify-between">
         <span className={context.loading ? "invisible" : ""}>
           {context.loading ? "Lorem ipsum" : context.tournament?.name}
         </span>
+        <Rounds />
       </div>
 
       <div className="overflow-auto max-h-[500px] border-2 border-slate-500 rounded-md shadow-md">
