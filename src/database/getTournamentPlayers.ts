@@ -9,6 +9,7 @@ import { Player } from "@/types/Player";
 // list of players with their corresponding matches
 export async function getTournamentPlayers(
   tournamentId: number,
+  round: number,
 ): Promise<Result<Player[], string>> {
   let tournamentPlayers: TournamentPlayers[] = [];
   let matches: Matches[] = [];
@@ -35,6 +36,7 @@ export async function getTournamentPlayers(
       .selectFrom("matches")
       .selectAll()
       .where("tournament_id", "=", tournamentId)
+      .where("round", "=", round)
       .execute();
 
     if (!matches) {
@@ -55,7 +57,7 @@ export async function getTournamentPlayers(
         if (tp.player_name === m.player1) return true;
         if (tp.player_name === m.player2) return true;
         return false;
-      })
+      }),
     };
 
     players.push(player);
