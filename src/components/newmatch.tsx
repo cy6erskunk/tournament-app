@@ -31,12 +31,9 @@ const AddMatch = ({ closeModal }: AddmatchProps) => {
       round: context.activeRound,
     };
 
-    // Convert the object to JSON
-    const requestBodyJSON = JSON.stringify(requestBody);
-
     const res = await fetch("/api/match", {
       method: "POST",
-      body: requestBodyJSON,
+      body: JSON.stringify(requestBody),
     });
 
     if (!res.ok) {
