@@ -28,7 +28,9 @@
     "AO-VO": "I",
     "hoverAO-VO": "Annetut osumat - Vastaanotetut osumat",
     "position": "Sija",
-    "remove": "Poista"
+    "remove": "Poista",
+    "noPlayers": "Pelaajia ei löytynyt turnauksesta",
+    "noTournament": "Turnausta ei löytynyt"
   },
   "Logout": {
     "logout": "Kirjaudu ulos"

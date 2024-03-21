@@ -28,7 +28,9 @@
     "AO-VO": "I",
     "hoverAO-VO": "Puudutused skooritud - Puudutused vastu võetud",
     "position": "Koht",
-    "remove": "Eemalda"
+    "remove": "Eemalda",
+    "noPlayers": "Turniiril ei leitud ühtegi mängijat",
+    "noTournament": "Ühtegi turniiri ei leitud"
   },
   "Logout": {
     "logout": "Logi välja"
