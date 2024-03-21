@@ -5,6 +5,8 @@ import { useTranslations } from "next-intl";
 import { Player } from "@/types/Player";
 import { removeTournamentPlayer } from "@/database/removeTournamentPlayer";
 import { useTournamentContext } from "@/context/TournamentContext";
+import Rounds from "./rounds";
+
 interface PlayerProps {
   player: Player;
   nthRow: number;
@@ -38,10 +40,11 @@ function ResultsTable() {
 
   return (
     <div className="w-full md:w-2/3">
-      <div className="my-2 text-4xl font-bold">
+      <div className="my-2 text-4xl font-bold flex justify-between">
         <span className={context.loading ? "invisible" : ""}>
           {context.loading ? "Lorem ipsum" : context.tournament?.name}
         </span>
+        <Rounds />
       </div>
 
       <div className="overflow-auto max-h-[500px] border-2 border-slate-500 rounded-md shadow-md">
@@ -152,11 +155,15 @@ function ResultPlayer({ player, nthRow, removePlayer }: PlayerProps) {
 
       {/* calculate win percentage based on matches associated with player */}
       <td className="bg-blue-100">
-        {player.matches.reduce(
-          (n, match) =>
-            match.winner === player.player.player_name ? n + 1 : n,
-          0,
-        )}
+        {player.matches.reduce((n, match) => {
+          if (
+            match.round === context.activeRound &&
+            match.winner === player.player.player_name
+          ) {
+            return n + 1;
+          }
+          return n;
+        }, 0)}
       </td>
       <td className="bg-blue-100">{player.player.hits_given}</td>
       <td className="bg-blue-100">{player.player.hits_received}</td>

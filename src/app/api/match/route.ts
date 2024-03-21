@@ -1,18 +1,11 @@
-import {
-  addMatch,
-  updateHgAndHr,
-} from "@/database/addMatch";
+import { addMatch, updateHgAndHr } from "@/database/addMatch";
 import { getTournamentToday } from "@/database/getTournament";
 
 // add new match
 export async function POST(request: Request) {
-  const formData = await request.formData();
-  const form = {
-    player1: formData.get("player1") as string,
-    points1: Number(formData.get("points1")),
-    player2: formData.get("player2") as string,
-    points2: Number(formData.get("points2")),
-  };
+  const req = await request.json();
+  const form = req.formData;
+  const round = req.round;
 
   // check winner
   let winner: string | null = null;
@@ -58,11 +51,14 @@ export async function POST(request: Request) {
     tournamentId,
     form.player1,
     form.player2,
+    round,
     winner,
   );
 
   if (!matchResult.success) {
-    return new Response(`Error adding match: ${matchResult.error}`, { status: 400 });
+    return new Response(`Error adding match: ${matchResult.error}`, {
+      status: 400,
+    });
   }
 
   return Response.json(matchResult.value);
