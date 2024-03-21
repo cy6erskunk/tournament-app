@@ -28,7 +28,9 @@
     "AO-VO": "I",
     "hoverAO-VO": "Givna träffar - tagna träffar",
     "position": "Rank",
-    "remove": "Ta bort"
+    "remove": "Ta bort",
+    "noPlayers": "Inga spelare hittades i turneringen",
+    "noTournament": "Ingen turnering hittades"
   },
   "Logout": {
     "logout": "Logga ut"

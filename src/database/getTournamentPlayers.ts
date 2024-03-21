@@ -22,8 +22,8 @@ export async function getTournamentPlayers(
       .where("tournament_id", "=", tournamentId)
       .execute();
 
-    if (!tournamentPlayers) {
-      return { success: false, error: "No tournament players found" };
+    if (!tournamentPlayers.length) {
+      return { success: false, error: "No players found in tournament" };
     }
   } catch (error) {
     console.log(error);
