@@ -13,6 +13,8 @@ export interface Matches {
   round: number;
   tournament_id: number;
   winner: string | null;
+  player1_hits: number;
+  player2_hits: number;
 }
 
 export interface Players {
@@ -22,8 +24,6 @@ export interface Players {
 export interface TournamentPlayers {
   player_name: string;
   tournament_id: number;
-  hits_given: number;
-  hits_received: number;
 }
 
 export interface Tournaments {

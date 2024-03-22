@@ -45,14 +45,22 @@ export function TournamentContextProvider({
       const currentDate = new Date();
       const tournamentResult = await getTournamentToday(currentDate);
 
-      if (!tournamentResult.success) return;
+      if (!tournamentResult.success) {
+        console.log("Error: " + tournamentResult.error);
+        setLoading(false);
+        return;
+      }
 
       setTournament(tournamentResult.value);
 
       const tournamentId = Number(tournamentResult.value.id);
       const playerResult = await getTournamentPlayers(tournamentId);
 
-      if (!playerResult.success) return;
+      if (!playerResult.success) {
+        console.log("Error: " + playerResult.error);
+        setLoading(false);
+        return;
+      }
 
       setLoading(false);
       setPlayers(playerResult.value);

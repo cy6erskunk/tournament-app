@@ -6,37 +6,16 @@ import { Player } from "@/types/Player";
 import { removeTournamentPlayer } from "@/database/removeTournamentPlayer";
 import { useTournamentContext } from "@/context/TournamentContext";
 import Rounds from "./rounds";
+import { useEffect, useState } from "react";
 
 interface PlayerProps {
   player: Player;
   nthRow: number;
-  removePlayer: Function;
 }
 
 function ResultsTable() {
   const t = useTranslations("Leaderboard");
   const context = useTournamentContext();
-
-  async function removePlayer(player: Player) {
-    if (window.confirm(`Remove ${player.player.player_name}?`)) {
-      const result = await removeTournamentPlayer(
-        player.player.tournament_id,
-        player.player.player_name,
-      );
-
-      if (!result.success) {
-        const userAgrees = window.confirm(
-          "Could not delete user from database, delete anyway?",
-        );
-        if (!userAgrees) return;
-      }
-
-      const filteredPlayers = context.players.filter(
-        (state) => state.player.player_name !== player.player.player_name,
-      );
-      context.setPlayers(filteredPlayers);
-    }
-  }
 
   return (
     <div className="w-full md:w-2/3">
@@ -91,7 +70,6 @@ function ResultsTable() {
                   key={player.player.player_name}
                   player={player}
                   nthRow={i}
-                  removePlayer={removePlayer}
                 />
               ))}
             </tbody>
@@ -103,8 +81,99 @@ function ResultsTable() {
   );
 }
 
-function ResultPlayer({ player, nthRow, removePlayer }: PlayerProps) {
+type Hits = {
+  given: Record<number, number>;
+  taken: Record<number, number>;
+};
+
+interface Opponents {
+  [key: string]: { winner: string | null; hits: number }[];
+}
+
+function ResultPlayer({ player, nthRow }: PlayerProps) {
   const context = useTournamentContext();
+  const [hits, setHits] = useState<Hits>({ given: {}, taken: {} });
+  const [matchesByOpponent, setOpponents] = useState<Opponents>({});
+
+  async function removePlayer() {
+    if (window.confirm(`Remove ${player.player.player_name}?`)) {
+      const result = await removeTournamentPlayer(
+        player.player.tournament_id,
+        player.player.player_name,
+      );
+
+      if (!result.success) {
+        const userAgrees = window.confirm(
+          "Could not delete user from database, delete anyway?",
+        );
+        if (!userAgrees) return;
+      }
+
+      context.setPlayers((prevPlayers) => {
+        // Exclude player to be removed from context
+        const players = prevPlayers.filter(
+          (state) => state.player.player_name !== player.player.player_name,
+        );
+
+        // Loop remaining players
+        return players.map((p) => {
+          // Exclude matches involving removed player
+          // keeping ones without the player
+          const matches = p.matches.filter(
+            (match) =>
+              match.player1 !== player.player.player_name &&
+              match.player2 !== player.player.player_name,
+          );
+
+          return {
+            player: p.player,
+            matches,
+          } as Player;
+        });
+      });
+    }
+  }
+
+  useEffect(() => {
+    const newHits: Hits = { given: {}, taken: {} };
+    const newOpponents: Opponents = {};
+
+    // TODO: Make this look less hideous, currently it's very undreadable
+    // for such an important piece of code
+    player.matches.forEach((match) => {
+      const isPlayer1 = player.player.player_name === match.player1;
+      const isPlayer2 = player.player.player_name === match.player2;
+
+      if (isPlayer1 || isPlayer2) {
+        const playerHits = isPlayer1 ? match.player1_hits : match.player2_hits;
+        const opponentName = isPlayer1 ? match.player2 : match.player1;
+
+        newHits.given[match.round] =
+          (newHits.given[match.round] || 0) + playerHits;
+        newHits.taken[match.round] =
+          (newHits.taken[match.round] || 0) +
+          (isPlayer1 ? match.player2_hits : match.player1_hits);
+
+        if (opponentName) {
+          if (!newOpponents[opponentName]) {
+            newOpponents[opponentName] = [];
+          }
+          newOpponents[opponentName][match.round] = {
+            winner: match.winner,
+            hits: playerHits,
+          };
+        }
+      } else {
+        console.log(
+          `Player ${player.player.player_name} not found in hits info.`,
+        );
+      }
+    });
+
+    setHits(newHits);
+    setOpponents(newOpponents);
+
+  }, [context.players, player.matches, player.player]);
 
   return (
     <tr className="*:ring-1 *:p-4 *:text-center *:ring-slate-500 odd:bg-white even:bg-blue-50">
@@ -113,7 +182,7 @@ function ResultPlayer({ player, nthRow, removePlayer }: PlayerProps) {
       </td>
       <td>
         <button
-          onClick={() => removePlayer(player)}
+          onClick={() => removePlayer()}
           className="bg-red-400 p-1 rounded-full hover:bg-red-500"
         >
           <TrashIcon className="h-5 w-5 text-white" />
@@ -121,17 +190,51 @@ function ResultPlayer({ player, nthRow, removePlayer }: PlayerProps) {
       </td>
       <td className="bg-blue-500 text-white">{++nthRow}</td>
 
-      {/* round results here. Now hard coded 'V' */}
-      {/* set darker bg color if player index same because can't play versus itself */}
-      {context.players.map((_, i) => (
-        <td
-          key={player.player.player_name + ++i}
-          className={++i === nthRow ? "bg-gray-600" : ""}
-        >
-          {/* Mark everything as win for now */}
-          {i !== nthRow ? "W" : ""}
-        </td>
-      ))}
+      {context.players.map((opponent, index) => {
+        const key = player.player.player_name + index;
+        // Used to set dark bg color if players match, can't play versus self
+        const isHighlighted = index + 1 === nthRow;
+
+        const matches = matchesByOpponent[opponent.player.player_name];
+        const matchData = matches && matches[context.activeRound];
+
+        // Early return if no match data found between players
+        if (!matchData) {
+          return (
+            <td
+              key={key}
+              title="Testing"
+              className={isHighlighted ? "bg-gray-600" : ""}
+            ></td>
+          );
+        }
+
+        let result = "";
+        const { winner, hits } = matchData;
+
+        if (winner === player.player.player_name) {
+          result = `V`;
+        } else if (winner === opponent.player.player_name) {
+          result = `L`;
+        }
+
+        result += hits;
+
+        return (
+          <td
+            key={key}
+            title={`${player.player.player_name} vs. ${opponent.player.player_name}`}
+            className={
+              isHighlighted
+                ? "bg-gray-600"
+                : "" +
+                " underline decoration-dotted cursor-help underline-offset-2"
+            }
+          >
+            {result}
+          </td>
+        );
+      })}
 
       {/* calculate win percentage based on matches associated with player */}
       <td className="bg-blue-100">
@@ -145,10 +248,11 @@ function ResultPlayer({ player, nthRow, removePlayer }: PlayerProps) {
           return n;
         }, 0)}
       </td>
-      <td className="bg-blue-100">{player.player.hits_given}</td>
-      <td className="bg-blue-100">{player.player.hits_received}</td>
+      <td className="bg-blue-100">{hits.given[context.activeRound] ?? 0}</td>
+      <td className="bg-blue-100">{hits.taken[context.activeRound] ?? 0}</td>
       <td className="bg-blue-100">
-        {player.player.hits_given - player.player.hits_received}
+        {(hits.given[context.activeRound] ?? 0) -
+          (hits.taken[context.activeRound] ?? 0)}
       </td>
     </tr>
   );
@@ -157,7 +261,6 @@ function ResultPlayer({ player, nthRow, removePlayer }: PlayerProps) {
 function ResultLoading() {
   const context = useTournamentContext();
   const t = useTranslations("Leaderboard");
-
   return (
     <>
       {context.loading ? (

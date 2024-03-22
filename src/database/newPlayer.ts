@@ -6,7 +6,7 @@ import { Player } from "@/types/Player";
 
 // this function adds a new player to the players table
 export async function newPlayer(
-  name: string
+  name: string,
 ): Promise<Result<undefined, string>> {
   try {
     const result = await db
@@ -29,7 +29,7 @@ export async function newPlayer(
 // this function adds an existing player from the players table to the tournament_players table
 export async function addPlayer(
   name: string,
-  tournamentId: number
+  tournamentId: number,
 ): Promise<Result<Player, string>> {
   try {
     const result = (await db
@@ -37,8 +37,6 @@ export async function addPlayer(
       .values({
         player_name: name.toString(),
         tournament_id: tournamentId,
-        hits_given: 0,
-        hits_received: 0,
       })
       .returningAll()
       .executeTakeFirst()) as TournamentPlayers | undefined;

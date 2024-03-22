@@ -5,9 +5,12 @@ CREATE TABLE "public"."matches" (
     "tournament_id" integer NOT NULL,
     "round" integer NOT NULL,
     "match" integer NOT NULL,
-    "winner" character varying(16)
-) WITH (oids = false);
+    "winner" character varying(16),
+    "player1_hits" integer DEFAULT 0 NOT NULL,
+    "player2_hits" integer DEFAULT 0 NOT NULL
+) with (oids = false);
 
+CREATE UNIQUE INDEX "matches_player1_player2_round" ON "public"."matches" (LEAST("player1", "player2"), GREATEST("player1", "player2"), "round");
 
 DROP TABLE IF EXISTS "players";
 CREATE TABLE "public"."players" (
@@ -20,8 +23,6 @@ DROP TABLE IF EXISTS "tournament_players";
 CREATE TABLE "public"."tournament_players" (
     "player_name" character varying(16) NOT NULL,
     "tournament_id" integer NOT NULL,
-    "hits_given" integer NOT NULL,
-    "hits_received" integer NOT NULL,
     CONSTRAINT "tournament_players_player_name_tournament_id" PRIMARY KEY ("player_name", "tournament_id")
 ) WITH (oids = false);
 

@@ -16,16 +16,26 @@ const LeaderboardHome = () => {
   // };
   const t = useTranslations("Leaderboard");
   const context = useTournamentContext();
-  const [players, setPlayers] = useState<Player[]>([])
+  const [players, setPlayers] = useState<Player[]>([]);
 
   useEffect(() => {
     const p = [...context.players].sort((a, b) => {
-      const indexA = a.player.hits_received - a.player.hits_given
-      const indexB = b.player.hits_received - b.player.hits_given
-      return indexA - indexB
+      const winsA = a.matches.reduce((count, match) => {
+        if (match.round !== context.activeRound) return count
+        if (match.winner !== a.player.player_name) return count
+        return count + 1
+      },0)
+
+      const winsB = b.matches.reduce((count, match) => {
+        if (match.round !== context.activeRound) return count
+        if (match.winner !== b.player.player_name) return count
+        return count + 1
+      },0)
+
+      return winsB - winsA;
     });
-    setPlayers(p)
-  }, [context]);
+    setPlayers(p);
+  }, [context.activeRound, context.players]);
 
   return (
     <div className="overflow-hidden border-2 rounded-md shadow-md border-gray-400">
@@ -41,8 +51,8 @@ const LeaderboardHome = () => {
             <tr
               key={index}
               className="*:text-center *:py-4 odd:bg-white even:bg-gray-100"
-              // linear gradient doesn't work with iphone / safari.
-              // className={`*:text-center *:py-4 ${getRowBgColor(index)}`}
+            // linear gradient doesn't work with iphone / safari.
+            // className={`*:text-center *:py-4 ${getRowBgColor(index)}`}
             >
               <td className="relative">
                 <p>{index + 1}</p>
@@ -50,13 +60,12 @@ const LeaderboardHome = () => {
                 {index < 3 && (
                   <div className="absolute inset-y-0 left-6 flex items-center justify-center w-full">
                     <TrophyIcon
-                      className={`w-6 h-6 ${
-                        index === 0
-                          ? "text-yellow-400"
-                          : index === 1
-                            ? "text-gray-700"
-                            : "text-amber-950"
-                      }`}
+                      className={`w-6 h-6 ${index === 0
+                        ? "text-yellow-400"
+                        : index === 1
+                          ? "text-gray-700"
+                          : "text-amber-950"
+                        }`}
                     />
                   </div>
                 )}
