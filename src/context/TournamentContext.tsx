@@ -26,6 +26,8 @@ interface TournamentContext {
   setActiveRound: React.Dispatch<
     React.SetStateAction<TournamentContext["activeRound"]>
   >;
+  hidden: boolean;
+  setHidden: React.Dispatch<React.SetStateAction<TournamentContext["hidden"]>>;
 }
 
 export const TournamentContext = createContext<TournamentContext | null>(null);
@@ -39,6 +41,7 @@ export function TournamentContextProvider({
   const [loading, setLoading] = useState<TournamentContext["loading"]>(true);
   const [activeRound, setActiveRound] =
     useState<TournamentContext["activeRound"]>(1);
+  const [hidden, setHidden] = useState(true);
   // Fetch players to context
   useEffect(() => {
     async function fetchTournamentData() {
@@ -79,8 +82,10 @@ export function TournamentContextProvider({
       setLoading,
       activeRound,
       setActiveRound,
+      hidden,
+      setHidden,
     }),
-    [players, tournament, loading, activeRound],
+    [players, tournament, loading, activeRound, hidden]
   );
 
   return (

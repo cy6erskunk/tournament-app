@@ -5,11 +5,16 @@ import Modal from "./modal";
 import AddMatch from "./newmatch";
 import Addplayer from "./addplayer";
 import NewPlayer from "./newplayer";
-import Link from "next/link";
 import { useTranslations } from "next-intl";
+import { useTournamentContext } from "@/context/TournamentContext";
+
+type ButtonsProps = {
+  toggle: React.Dispatch<React.SetStateAction<boolean>>;
+};
 
 const HomePageButtons = () => {
   const t = useTranslations("Home.Buttons");
+  const context = useTournamentContext();
 
   const [showModal, setShowModal] = useState(false);
   const [modalContent, setModalContent] = useState<ReactNode | null>(null);
@@ -30,11 +35,7 @@ const HomePageButtons = () => {
     <div className="container mx-auto p-2 flex flex-col md:flex-row gap-4">
       <button
         className="p-1 px-5 border rounded-md shadow-sm border-slate-600"
-        onClick={() =>
-          openModal(
-            <AddMatch closeModal={closeModal} />
-          )
-        }
+        onClick={() => openModal(<AddMatch closeModal={closeModal} />)}
       >
         {t("addmatch")}
       </button>
@@ -44,12 +45,12 @@ const HomePageButtons = () => {
       >
         {t("addplayer")}
       </button>
-      <Link
-        href="/leaderboard"
+      <button
         className="p-1 px-5 border rounded-md shadow-sm border-slate-600 text-center"
+        onClick={() => context.setHidden(!context.hidden)}
       >
         {t("leaderboard")}
-      </Link>
+      </button>
       <button
         className="p-1 px-5 border rounded-md shadow-sm border-slate-600"
         onClick={emptyTable}
