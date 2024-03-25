@@ -1,17 +1,18 @@
 import { useTournamentContext } from "@/context/TournamentContext";
 import { useTranslations } from "next-intl";
-import { FormEvent } from "react";
+import { FormEvent, useState } from "react";
 
 type AddplayerProps = {
   closeModal: () => void;
 };
 
-// message: Form submission canceled because the form is not connected
 const Addplayer = ({ closeModal }: AddplayerProps) => {
+  const [loading, setLoading] = useState(false);
   const t = useTranslations("AddPlayer");
-  const context = useTournamentContext()
+  const context = useTournamentContext();
 
   const submitForm = async (event: FormEvent<HTMLFormElement>) => {
+    setLoading(true);
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
     const newPlayer = formData.get("name");
@@ -23,15 +24,17 @@ const Addplayer = ({ closeModal }: AddplayerProps) => {
 
     if (!res.ok) {
       alert("Error adding player");
-      console.log(res)
+      console.log(res);
+      setLoading(false);
       return;
     }
 
-    const player = await res.json()
+    const player = await res.json();
     context.setPlayers((players) => [...players, player]);
 
     closeModal();
     alert(`${newPlayer} added`);
+    setLoading(false);
   };
 
   return (
@@ -49,8 +52,9 @@ const Addplayer = ({ closeModal }: AddplayerProps) => {
       />
       <div className="flex items-center justify-center gap-2 text-sm font-semibold">
         <button
+          disabled={loading}
           type="submit"
-          className="bg-blue-500 w-full py-2 px-3 text-white rounded-md shadow-sm"
+          className="disabled:bg-blue-300 bg-blue-500 w-full py-2 px-3 text-white rounded-md shadow-sm"
         >
           {t("submit")}
         </button>

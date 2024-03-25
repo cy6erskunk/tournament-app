@@ -10,6 +10,7 @@ type AddmatchProps = {
 };
 
 const AddMatch = ({ closeModal }: AddmatchProps) => {
+  const [loading, setLoading] = useState(false);
   const t = useTranslations("NewMatch");
   const context = useTournamentContext();
   const [selectedRound, setSelectedRound] = useState("1");
@@ -19,11 +20,13 @@ const AddMatch = ({ closeModal }: AddmatchProps) => {
   };
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    setLoading(true);
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
 
     if (!context.tournament) {
       alert("No tournament found");
+      setLoading(false);
       return;
     }
 
@@ -40,11 +43,13 @@ const AddMatch = ({ closeModal }: AddmatchProps) => {
 
     if (!form.player1 || !form.player2) {
       alert("Select both players before submitting");
+      setLoading(false);
       return;
     }
 
     if (form.player1 === form.player2) {
       alert("Selected players can not be the same");
+      setLoading(false);
       return;
     }
 
@@ -60,9 +65,10 @@ const AddMatch = ({ closeModal }: AddmatchProps) => {
       body: JSON.stringify(form),
     });
 
-    console.log(form.player1, form.player2)
+    console.log(form.player1, form.player2);
 
     if (!res.ok) {
+      setLoading(false);
       switch (res.status) {
         case 400:
           return alert("Failed to add matches");
@@ -91,6 +97,7 @@ const AddMatch = ({ closeModal }: AddmatchProps) => {
     });
 
     closeModal();
+    setLoading(false);
   };
 
   if (context.players.length === 0) {
@@ -203,8 +210,9 @@ const AddMatch = ({ closeModal }: AddmatchProps) => {
         </div>
         <div className="flex items-center justify-center gap-2 text-sm font-semibold">
           <button
+            disabled={loading}
             type="submit"
-            className="bg-blue-500 w-full py-2 px-3 text-white rounded-md shadow-sm"
+            className="disabled:bg-blue-300 bg-blue-500 w-full py-2 px-3 text-white rounded-md shadow-sm"
           >
             {t("submit")}
           </button>
