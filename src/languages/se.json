@@ -8,7 +8,7 @@
     "password": "Lösenord",
     "submit": "Logga in"
   },
-  "Home": {
+  "Tournament": {
     "Buttons": {
       "addmatch": "Lägg till match",
       "addplayer": "Lägg till spelare",

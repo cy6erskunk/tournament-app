@@ -6,7 +6,7 @@ import { TrophyIcon } from "@heroicons/react/24/solid";
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 
-const LeaderboardHome = () => {
+const LeaderboardSidebar = () => {
   // linear gradient doesn't work with iphone / safari
   // const getRowBgColor = (index: number) => {
   //   if (index === 0) return "bg-gradient-to-r from-yellow-50 to-yellow-200";
@@ -21,16 +21,16 @@ const LeaderboardHome = () => {
   useEffect(() => {
     const p = [...context.players].sort((a, b) => {
       const winsA = a.matches.reduce((count, match) => {
-        if (match.round !== context.activeRound) return count
-        if (match.winner !== a.player.player_name) return count
-        return count + 1
-      },0)
+        if (match.round !== context.activeRound) return count;
+        if (match.winner !== a.player.player_name) return count;
+        return count + 1;
+      }, 0);
 
       const winsB = b.matches.reduce((count, match) => {
-        if (match.round !== context.activeRound) return count
-        if (match.winner !== b.player.player_name) return count
-        return count + 1
-      },0)
+        if (match.round !== context.activeRound) return count;
+        if (match.winner !== b.player.player_name) return count;
+        return count + 1;
+      }, 0);
 
       return winsB - winsA;
     });
@@ -51,8 +51,8 @@ const LeaderboardHome = () => {
             <tr
               key={index}
               className="*:text-center *:py-4 odd:bg-white even:bg-gray-100"
-            // linear gradient doesn't work with iphone / safari.
-            // className={`*:text-center *:py-4 ${getRowBgColor(index)}`}
+              // linear gradient doesn't work with iphone / safari.
+              // className={`*:text-center *:py-4 ${getRowBgColor(index)}`}
             >
               <td className="relative">
                 <p>{index + 1}</p>
@@ -60,12 +60,13 @@ const LeaderboardHome = () => {
                 {index < 3 && (
                   <div className="absolute inset-y-0 left-6 flex items-center justify-center w-full">
                     <TrophyIcon
-                      className={`w-6 h-6 ${index === 0
-                        ? "text-yellow-400"
-                        : index === 1
+                      className={`w-6 h-6 ${
+                        index === 0
+                          ? "text-yellow-400"
+                          : index === 1
                           ? "text-gray-700"
                           : "text-amber-950"
-                        }`}
+                      }`}
                     />
                   </div>
                 )}
@@ -79,4 +80,4 @@ const LeaderboardHome = () => {
   );
 };
 
-export default LeaderboardHome;
+export default LeaderboardSidebar;

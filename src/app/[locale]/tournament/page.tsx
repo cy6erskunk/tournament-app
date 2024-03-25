@@ -1,7 +1,7 @@
 import Navbar from "@/components/navbar";
-import HomePageButtons from "@/components/homePageButtons";
+import TournamentButtons from "@/components/Tournaments/TournamentButtons";
 import { TournamentContextProvider } from "@/context/TournamentContext";
-import HomePageInfo from "@/components/HomePageInfo";
+import TournamentInfo from "@/components/Tournaments/TournamentInfo";
 
 const Page = async () => {
   return (
@@ -9,8 +9,8 @@ const Page = async () => {
       <Navbar />
       {/*Style later when everything figured out, desktop view looks bad  */}
       <TournamentContextProvider>
-        <HomePageButtons />
-        <HomePageInfo />
+        <TournamentButtons />
+        <TournamentInfo />
       </TournamentContextProvider>
     </>
   );

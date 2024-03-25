@@ -8,7 +8,7 @@
     "password": "Password",
     "submit": "Sign in"
   },
-  "Home": {
+  "Tournament": {
     "Buttons": {
       "addmatch": "Add match",
       "addplayer": "Add player",

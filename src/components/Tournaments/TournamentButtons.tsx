@@ -1,19 +1,15 @@
 "use client";
 
 import { useState, ReactNode } from "react";
-import Modal from "./modal";
-import AddMatch from "./newmatch";
-import Addplayer from "./addplayer";
-import NewPlayer from "./newplayer";
+import Modal from "@/components/modal";
+import AddMatch from "@/components/newmatch";
+import Addplayer from "@/components/addplayer";
+import NewPlayer from "@/components/newplayer";
 import { useTranslations } from "next-intl";
 import { useTournamentContext } from "@/context/TournamentContext";
 
-type ButtonsProps = {
-  toggle: React.Dispatch<React.SetStateAction<boolean>>;
-};
-
-const HomePageButtons = () => {
-  const t = useTranslations("Home.Buttons");
+const TournamentButtons = () => {
+  const t = useTranslations("Tournament.Buttons");
   const context = useTournamentContext();
 
   const [showModal, setShowModal] = useState(false);
@@ -70,4 +66,4 @@ const HomePageButtons = () => {
   );
 };
 
-export default HomePageButtons;
+export default TournamentButtons;
