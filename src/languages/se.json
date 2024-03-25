@@ -1,4 +1,8 @@
 {
+  "Metadata": {
+    "title": "Helsingfors Fäktare",
+    "description": "Helsingfors fäktningsklubb turneringsapplikation"
+  },
   "Login": {
     "name": "Användarnamn",
     "password": "Lösenord",

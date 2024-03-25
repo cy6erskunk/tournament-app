@@ -1,4 +1,8 @@
 {
+  "Metadata": {
+    "title": "Helsingin miekkailijat",
+    "description": "Helsingin miekkailjioiden tulostaulu aplikaatio"
+  },
   "Login": {
     "name": "Käyttäjätunnus",
     "password": "Salasana",

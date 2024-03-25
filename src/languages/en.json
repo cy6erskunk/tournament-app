@@ -1,4 +1,8 @@
 {
+  "Metadata": {
+    "title": "Helsinki Fencers",
+    "description": "Fencing tournament application"
+  },
   "Login": {
     "name": "User",
     "password": "Password",
