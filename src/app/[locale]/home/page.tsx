@@ -1,10 +1,10 @@
 import Navbar from "@/components/navbar";
-import ResultsTable from "@/components/resultsTable";
+import ResultsTable from "@/components/Results/ResultsTable";
 import LeaderboardHome from "@/components/leaderboardHome";
 import HomePageButtons from "@/components/homePageButtons";
 import { NextIntlClientProvider } from "next-intl";
 import { getMessages } from "next-intl/server";
-import { TournamentContextProvider, useTournamentContext } from "@/context/TournamentContext";
+import { TournamentContextProvider } from "@/context/TournamentContext";
 
 const Page = async () => {
   const messages = await getMessages();
