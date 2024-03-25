@@ -10,7 +10,7 @@ CREATE TABLE "public"."matches" (
     "player2_hits" integer DEFAULT 0 NOT NULL
 ) with (oids = false);
 
-CREATE UNIQUE INDEX "matches_player1_player2_round" ON "public"."matches" (LEAST("player1", "player2"), GREATEST("player1", "player2"), "round");
+CREATE UNIQUE INDEX "matches_player1_player2_round" ON "public"."matches" (LEAST("player1", "player2"), GREATEST("player1", "player2"), "round", "tournament_id");
 
 DROP TABLE IF EXISTS "players";
 CREATE TABLE "public"."players" (
