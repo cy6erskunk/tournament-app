@@ -20,37 +20,45 @@ function ResultsTable() {
       </div>
 
       <div className="overflow-auto max-h-[500px] border-2 border-slate-500 rounded-md shadow-md">
-        <table className="table-auto w-full">
+        <table className="w-full">
           <thead>
-            <tr className="text-white *:py-4 *:sticky *:top-0 *:bg-blue-500 *:z-20 *:outline *:outline-1 *:outline-blue-500">
-              <th>{t("name")}</th>
-              <th>{t("remove")}</th>
-              <th title="Id">#</th>
+            <tr
+              className={`${
+                context.activeRound === 1 ? "*:bg-blue-500" : "*:bg-violet-500"
+              } text-white *:py-4 *:sticky *:top-0 *:z-20 *:transition-all *:duration-300 *:ease-in-out`}
+            >
+              <th className="w-20 min-w-20">{t("name")}</th>
+              <th className="w-20 min-w-20">{t("remove")}</th>
+              <th className="w-20 min-w-20" title="Id">
+                #
+              </th>
               {/* map through players and set <th>{player id}</th> */}
               {context.players.map((player, index) => (
-                <th key={player.player.player_name}>{index + 1}</th>
+                <th className="w-20 min-w-20" key={player.player.player_name}>
+                  {index + 1}
+                </th>
               ))}
               <th
                 title={`${t("hoverWin%")}`}
-                className="underline decoration-dotted cursor-help underline-offset-2"
+                className="underline decoration-dotted cursor-help underline-offset-2 w-20 min-w-20"
               >
                 {t("win%")}
               </th>
               <th
                 title={`${t("hoverHitsGiven")}`}
-                className="underline decoration-dotted cursor-help underline-offset-2"
+                className="underline decoration-dotted cursor-help underline-offset-2 w-20 min-w-20"
               >
                 {t("hitsGiven")}
               </th>
               <th
                 title={`${t("hoverHitsReceived")}`}
-                className="underline decoration-dotted cursor-help underline-offset-2"
+                className="underline decoration-dotted cursor-help underline-offset-2 w-20 min-w-20"
               >
                 {t("hitsReceived")}
               </th>
               <th
                 title={`${t("hoverAO-VO")}`}
-                className="underline decoration-dotted cursor-help underline-offset-2"
+                className="underline decoration-dotted cursor-help underline-offset-2 w-20 min-w-20"
               >
                 {t("AO-VO")}
               </th>

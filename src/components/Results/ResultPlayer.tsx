@@ -105,8 +105,18 @@ export function ResultPlayer({ player, nthRow }: PlayerProps) {
   }, [context.players, player.matches, player.player]);
 
   return (
-    <tr className="*:ring-1 *:p-4 *:text-center *:ring-slate-500 odd:bg-white even:bg-blue-50">
-      <td className="bg-blue-50 font-semibold sticky left-0 z-10 outline outline-1 outline-slate-500">
+    <tr
+      className={`${
+        context.activeRound === 1
+          ? "odd:bg-white even:bg-blue-50"
+          : "odd:bg-white even:bg-violet-50"
+      } *:ring-1 *:p-4 *:text-center *:ring-slate-500`}
+    >
+      <td
+        className={`${
+          context.activeRound === 1 ? "bg-blue-50" : "bg-violet-50"
+        } font-semibold sticky left-0 z-10 outline outline-1 outline-slate-500`}
+      >
         {player.player.player_name}
       </td>
       <td>
@@ -117,7 +127,13 @@ export function ResultPlayer({ player, nthRow }: PlayerProps) {
           <TrashIcon className="h-5 w-5 text-white" />
         </button>
       </td>
-      <td className="bg-blue-500 text-white">{++nthRow}</td>
+      <td
+        className={`${
+          context.activeRound === 1 ? "bg-blue-500" : "bg-violet-500"
+        } transition-all duration-300 ease-in-out text-white`}
+      >
+        {++nthRow}
+      </td>
 
       {context.players.map((opponent, index) => {
         const key = player.player.player_name + index;
@@ -164,22 +180,43 @@ export function ResultPlayer({ player, nthRow }: PlayerProps) {
       })}
 
       {/* calculate win percentage based on matches associated with player */}
-      <td className="bg-blue-100">
+      <td
+        className={`${
+          context.activeRound === 1 ? "bg-blue-50" : "bg-violet-50"
+        }`}
+      >
         {player.matches.reduce((n, match) => {
-          if (match.round === context.activeRound &&
-            match.winner === player.player.player_name) {
+          if (
+            match.round === context.activeRound &&
+            match.winner === player.player.player_name
+          ) {
             return n + 1;
           }
           return n;
         }, 0)}
       </td>
-      <td className="bg-blue-100">{hits.given[context.activeRound] ?? 0}</td>
-      <td className="bg-blue-100">{hits.taken[context.activeRound] ?? 0}</td>
-      <td className="bg-blue-100">
+      <td
+        className={`${
+          context.activeRound === 1 ? "bg-blue-50" : "bg-violet-50"
+        }`}
+      >
+        {hits.given[context.activeRound] ?? 0}
+      </td>
+      <td
+        className={`${
+          context.activeRound === 1 ? "bg-blue-50" : "bg-violet-50"
+        }`}
+      >
+        {hits.taken[context.activeRound] ?? 0}
+      </td>
+      <td
+        className={`${
+          context.activeRound === 1 ? "bg-blue-50" : "bg-violet-50"
+        }`}
+      >
         {(hits.given[context.activeRound] ?? 0) -
           (hits.taken[context.activeRound] ?? 0)}
       </td>
     </tr>
   );
 }
-
