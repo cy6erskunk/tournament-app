@@ -41,9 +41,9 @@ export function LeaderboardPlayer({ player, nthRow }: PlayerProps) {
   }, [context.players, player.matches, player.player]);
 
   return (
-    <tr className="*:ring-1 *:p-4 *:text-center *:ring-slate-500 odd:bg-white even:bg-blue-50">
-      <td className="relative outline outline-1 outline-slate-500">
-        <p>{nthRow + 1}</p>
+    <tr className="*:p-4 *:text-center odd:bg-white even:bg-blue-50 *:border *:border-slate-400">
+      <td className="relative">
+        <p>{nthRow + 1}.</p>
         {/* trophy icons to top 3 */}
         {nthRow < 3 && (
           <div className="absolute inset-y-0 left-6 flex items-center justify-center w-full">
@@ -59,12 +59,10 @@ export function LeaderboardPlayer({ player, nthRow }: PlayerProps) {
           </div>
         )}
       </td>
-      <td className="bg-blue-50 font-semibold sticky left-0 z-10 outline outline-1 outline-slate-500">
-        {player.player.player_name}
-      </td>
+      <td className="font-semibold">{player.player.player_name}</td>
 
       {/* calculate win percentage based on matches associated with player */}
-      <td className="bg-blue-100">
+      <td>
         {player.matches.reduce((n, match) => {
           if (match.winner === player.player.player_name) {
             return n + 1;
@@ -72,9 +70,9 @@ export function LeaderboardPlayer({ player, nthRow }: PlayerProps) {
           return n;
         }, 0)}
       </td>
-      <td className="bg-blue-100">{hits.given ?? 0}</td>
-      <td className="bg-blue-100">{hits.taken ?? 0}</td>
-      <td className="bg-blue-100">{(hits.given ?? 0) - (hits.taken ?? 0)}</td>
+      <td className="bg-blue-50">{hits.given ?? 0}</td>
+      <td className="bg-blue-50">{hits.taken ?? 0}</td>
+      <td className="bg-blue-50">{(hits.given ?? 0) - (hits.taken ?? 0)}</td>
     </tr>
   );
 }

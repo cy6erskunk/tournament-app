@@ -36,33 +36,33 @@ const Leaderboard = () => {
         </span>
       </div>
 
-      <div className="overflow-auto max-h-[500px] border-2 border-slate-500 rounded-md shadow-md">
-        <table className="table-auto w-full">
+      <div className="overflow-auto border-2 border-slate-500 rounded-md shadow-md">
+        <table className="w-full border-collapse border">
           <thead>
-            <tr className="text-white *:py-4 *:sticky *:top-0 *:bg-blue-500 *:z-20 *:outline *:outline-1 *:outline-blue-500">
-              <th>{t("position")}</th>
-              <th>{t("name")}</th>
+            <tr className="text-white *:py-4 *:bg-blue-500">
+              <th className="w-28 min-w-28">{t("position")}</th>
+              <th className="w-20 min-w-20">{t("name")}</th>
               <th
                 title={`${t("hoverWin%")}`}
-                className="underline decoration-dotted cursor-help underline-offset-2"
+                className="underline decoration-dotted cursor-help underline-offset-2 w-20 min-w-20"
               >
                 {t("win%")}
               </th>
               <th
                 title={`${t("hoverHitsGiven")}`}
-                className="underline decoration-dotted cursor-help underline-offset-2"
+                className="underline decoration-dotted cursor-help underline-offset-2 w-20 min-w-20"
               >
                 {t("hitsGiven")}
               </th>
               <th
                 title={`${t("hoverHitsReceived")}`}
-                className="underline decoration-dotted cursor-help underline-offset-2"
+                className="underline decoration-dotted cursor-help underline-offset-2 w-20 min-w-20"
               >
                 {t("hitsReceived")}
               </th>
               <th
                 title={`${t("hoverAO-VO")}`}
-                className="underline decoration-dotted cursor-help underline-offset-2"
+                className="underline decoration-dotted cursor-help underline-offset-2 w-20 min-w-20"
               >
                 {t("AO-VO")}
               </th>
