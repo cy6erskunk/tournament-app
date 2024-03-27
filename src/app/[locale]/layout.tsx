@@ -1,18 +1,24 @@
-import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { NextIntlClientProvider, useMessages } from "next-intl";
 import "./globals.css";
 import { getTranslations } from "next-intl/server";
 
 const inter = Inter({ subsets: ["latin"] });
-
-export async function generateMetadata({params: {locale}}: {params: {locale: string}}) {
+export async function generateMetadata({
+  params: { locale },
+}: {
+  params: { locale: string };
+}) {
   const t = await getTranslations({ locale, namespace: "Metadata" });
   return {
     title: t("title"),
     description: t("description"),
     openGraph: {
-      images: "/public/pictures/HFMlogo.png",
+      images: [
+        {
+          url: "/pictures/HFMlogoMetadata.png",
+        },
+      ],
     },
     twitter: {
       card: "summary_large_image",
