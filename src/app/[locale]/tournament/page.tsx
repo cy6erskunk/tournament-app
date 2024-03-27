@@ -6,9 +6,9 @@ import TournamentInfo from "@/components/Tournaments/TournamentInfo";
 const Page = async () => {
   return (
     <>
+      <TournamentContextProvider>
       <Navbar />
       {/*Style later when everything figured out, desktop view looks bad  */}
-      <TournamentContextProvider>
         <TournamentButtons />
         <TournamentInfo />
       </TournamentContextProvider>

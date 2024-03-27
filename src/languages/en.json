@@ -12,7 +12,6 @@
     "Buttons": {
       "addmatch": "Add match",
       "addplayer": "Add player",
-      "newplayer": "New player",
       "leaderboard": "Leaderboard",
       "empty": "Empty table",
       "emptyConfirm": "Remove all matches and players?"
@@ -37,7 +36,8 @@
     "noTournament": "No tournament found"
   },
   "Logout": {
-    "logout": "Logout"
+    "logout": "Logout",
+    "newplayer": "New player"
   },
   "NewMatch": {
     "title": "Round",

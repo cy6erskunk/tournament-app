@@ -4,7 +4,6 @@ import { useState, ReactNode } from "react";
 import Modal from "@/components/modal";
 import AddMatch from "@/components/newmatch";
 import Addplayer from "@/components/addplayer";
-import NewPlayer from "@/components/newplayer";
 import { useTranslations } from "next-intl";
 import { useTournamentContext } from "@/context/TournamentContext";
 
@@ -52,12 +51,6 @@ const TournamentButtons = () => {
         onClick={emptyTable}
       >
         {t("empty")}
-      </button>
-      <button
-        className="p-1 px-5 border rounded-md shadow-sm border-slate-600"
-        onClick={() => openModal(<NewPlayer closeModal={closeModal} />)}
-      >
-        {t("newplayer")}
       </button>
       <Modal isOpen={showModal} closeModal={closeModal}>
         {modalContent}

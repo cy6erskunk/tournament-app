@@ -12,7 +12,7 @@ function ResultsTable() {
 
   return (
     <div className="w-full md:w-2/3">
-      <div className="my-2 text-4xl font-bold flex justify-between">
+      <div className="sm:my-2 items-center text-xl sm:text-4xl font-bold flex justify-between">
         <span className={context.loading ? "invisible" : ""}>
           {context.loading ? "Lorem ipsum" : context.tournament?.name}
         </span>

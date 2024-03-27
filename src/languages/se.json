@@ -12,7 +12,6 @@
     "Buttons": {
       "addmatch": "Lägg till match",
       "addplayer": "Lägg till spelare",
-      "newplayer": "Ny spelare",
       "leaderboard": "Topplistan",
       "empty": "Tom tabell",
       "emptyConfirm": "Ta bort alla matcher och spelare?"
@@ -37,7 +36,8 @@
     "noTournament": "Ingen turnering hittades"
   },
   "Logout": {
-    "logout": "Logga ut"
+    "logout": "Logga ut",
+    "newplayer": "Ny spelare"
   },
   "NewMatch": {
     "title": "Runda",

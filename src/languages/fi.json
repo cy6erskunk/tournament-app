@@ -12,7 +12,6 @@
     "Buttons": {
       "addmatch": "Lisää ottelu",
       "addplayer": "Lisää ottelija",
-      "newplayer": "Uusi ottelija",
       "leaderboard": "Tulostaulu",
       "empty": "Tyhjennä",
       "emptyConfirm": "Haluatko varmasti tyhjentää tulostaulun?"
@@ -37,7 +36,8 @@
     "noTournament": "Turnausta ei löytynyt"
   },
   "Logout": {
-    "logout": "Kirjaudu ulos"
+    "logout": "Kirjaudu ulos",
+    "newplayer": "Uusi ottelija"
   },
   "NewMatch": {
     "title": "Kierros",

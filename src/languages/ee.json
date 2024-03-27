@@ -12,7 +12,6 @@
     "Buttons": {
       "addmatch": "Lisa vaste",
       "addplayer": "Lisa mängija",
-      "newplayer": "Uus mängija",
       "leaderboard": "Edetabel",
       "empty": "Tühi laud",
       "emptyConfirm": "Eemaldage kõik mängud ja mängijad?"
@@ -37,7 +36,8 @@
     "noTournament": "Ühtegi turniiri ei leitud"
   },
   "Logout": {
-    "logout": "Logi välja"
+    "logout": "Logi välja",
+    "newplayer": "Uus mängija"
   },
   "NewMatch": {
     "title": "Raund",
