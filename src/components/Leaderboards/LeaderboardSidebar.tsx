@@ -38,7 +38,7 @@ const LeaderboardSidebar = () => {
   }, [context.activeRound, context.players]);
 
   return (
-    <div className="overflow-hidden border-2 rounded-md shadow-md border-gray-400">
+    <div className="overflow-auto max-h-[556px] border-2 rounded-md shadow-md border-gray-400">
       <table className="table-auto w-full">
         <thead>
           <tr className="text-white *:py-4 bg-gray-400">
@@ -55,7 +55,7 @@ const LeaderboardSidebar = () => {
               // className={`*:text-center *:py-4 ${getRowBgColor(index)}`}
             >
               <td className="relative">
-                <p>{index + 1}</p>
+                <p>{index + 1}.</p>
                 {/* trophy icons to top 3 */}
                 {index < 3 && (
                   <div className="absolute inset-y-0 left-6 flex items-center justify-center w-full">
