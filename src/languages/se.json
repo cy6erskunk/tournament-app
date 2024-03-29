@@ -48,11 +48,11 @@
     "points": "Poäng",
     "noplayers": "Inga spelare i denna turnering",
     "notournamentfound": "Ingen turnering hittades",
-    "selectbothplayers": "Välj båda spelarna",
-    "duplicateplayers": "Välj två olika spelare",
+    "selectbothplayers": "Båda spelarna måste väljas innan resultatet kan skickas in",
+    "duplicateplayers": "Kan ej välja samma spelare",
     "addmatchfailed": "Kunde inte lägga till matchen",
     "matchexists": "Matchen mellan",
-    "matchexits2": "fins redan för runda",
+    "matchexits2": "finns redan för runda",
     "unexpectederror": "Ett oväntat fel uppstod"
   },
   "AddPlayer": {
