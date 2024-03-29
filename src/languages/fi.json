@@ -46,18 +46,22 @@
     "submit": "Tallenna",
     "back": "Takaisin",
     "points": "Pisteet",
-    "noplayers": "Ei pelaajia tässä turnauksessa"
+    "noplayers": "Ei pelaajia tässä turnauksessa",
+    "notournamentfound": "Turnausta ei löytynyt",
+    "selectbothplayers": "Valitse molemmat pelaajat",
+    "duplicateplayers": "Valitut pelaajat eivät voi olla samat",
+    "addmatchfailed": "Ottelun lisääminen epäonnistui",
+    "matchexists1": "Ottelu pelaajien",
+    "matchexists2": "välillä on jo olemassa kierroksella",
+    "unexpectederror": "Odottamaton virhe"
   },
   "AddPlayer": {
     "title": "Lisää ottelija",
+    "title2": "Uusi ottelija",
     "name": "Nimi",
     "submit": "Tallenna",
-    "back": "Takaisin"
-  },
-  "NewPlayer": {
-    "title": "Uusi ottelija",
-    "name": "Nimi",
-    "submit": "Lisää",
-    "back": "Takaisin"
+    "back": "Takaisin",
+    "erroraddingplayer": "Virhe pelaajan lisäämisessä",
+    "playeradded": "lisätty"
   }
 }

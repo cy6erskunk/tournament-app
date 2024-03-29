@@ -46,24 +46,22 @@
     "submit": "Lämna in",
     "back": "Tillbaka",
     "points": "Poäng",
-    "noplayers": "Inga spelare i denna turnering"
+    "noplayers": "Inga spelare i denna turnering",
+    "notournamentfound": "Ingen turnering hittades",
+    "selectbothplayers": "Välj båda spelarna",
+    "duplicateplayers": "Välj två olika spelare",
+    "addmatchfailed": "Kunde inte lägga till matchen",
+    "matchexists": "Matchen mellan",
+    "matchexits2": "fins redan för runda",
+    "unexpectederror": "Ett oväntat fel uppstod"
   },
   "AddPlayer": {
     "title": "Lägg till spelare",
+    "title2": "Ny spelare",
     "name": "Namn",
     "submit": "Lämna in",
-    "back": "Tillbaka"
-  },
-  "AddPlayer": {
-    "title": "Lägg till spelare",
-    "name": "Namn",
-    "submit": "Lämna in",
-    "back": "Tillbaka"
-  },
-  "NewPlayer": {
-    "title": "Ny spelare",
-    "name": "Namn",
-    "submit": "Lämna in",
-    "back": "Tillbaka"
+    "back": "Tillbaka",
+    "erroraddingplayer": "Ett fel uppstod när spelaren skulle läggas till",
+    "playeradded": "har lagts till"
   }
 }

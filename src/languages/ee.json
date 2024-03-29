@@ -46,18 +46,22 @@
     "submit": "Esita",
     "back": "Tagasi",
     "points": "Punktid",
-    "noplayers": "Sellel turniiril pole mängijaid"
+    "noplayers": "Sellel turniiril pole mängijaid",
+    "notournamentfound": "Turniiri ei leitud",
+    "selectbothplayers": "Valige mõlemad mängijad",
+    "duplicateplayers": "Mängijad ei saa olla samad",
+    "addmatchfailed": "Vastase lisamine ebaõnnestus",
+    "matchexists1": "Mängija",
+    "matchexists2": "on juba mänginud mängijaga",
+    "unexpectederror": "Ootamatu viga"
   },
   "AddPlayer": {
     "title": "Lisa Mängija",
+    "title2": "Uus Mängija",
     "name": "Nimi",
     "submit": "Esita",
-    "back": "Tagasi"
-  },
-  "NewPlayer": {
-    "title": "Uus Mängija",
-    "name": "Nimi",
-    "submit": "Esita",
-    "back": "Tagasi"
+    "back": "Tagasi",
+    "erroraddingplayer": "Mängija lisamine ebaõnnestus",
+    "playeradded": "lisatud"
   }
 }

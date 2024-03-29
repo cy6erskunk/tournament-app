@@ -23,7 +23,7 @@ const Addplayer = ({ closeModal }: AddplayerProps) => {
     });
 
     if (!res.ok) {
-      alert("Error adding player");
+      alert(t("erroraddingplayer"));
       console.log(res);
       setLoading(false);
       return;
@@ -33,7 +33,7 @@ const Addplayer = ({ closeModal }: AddplayerProps) => {
     context.setPlayers((players) => [...players, player]);
 
     closeModal();
-    alert(`${newPlayer} added`);
+    alert(`${newPlayer} ${t("playeradded")}`);
     setLoading(false);
   };
 

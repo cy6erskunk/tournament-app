@@ -46,18 +46,22 @@
     "submit": "Submit",
     "back": "Back",
     "points": "Points",
-    "noplayers": "No players in this tournament"
+    "noplayers": "No players in this tournament",
+    "notournamentfound": "No tournament found",
+    "selectbothplayers": "Select both players before submitting",
+    "duplicateplayers": "Selected players can not be the same",
+    "addmatchfailed": "Failed to add match",
+    "matchexists1": "Match between",
+    "matchexists2": "already exists for round",
+    "unexpectederror": "Unexpected error"
   },
   "AddPlayer": {
     "title": "Add player",
+    "title2": "New player",
     "name": "Name",
     "submit": "Submit",
-    "back": "Back"
-  },
-  "NewPlayer": {
-    "title": "New player",
-    "name": "Name",
-    "submit": "Submit",
-    "back": "Back"
+    "back": "Back",
+    "erroraddingplayer": "Error adding player",
+    "playeradded": "added"
   }
 }

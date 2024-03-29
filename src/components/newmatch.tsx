@@ -25,7 +25,7 @@ const AddMatch = ({ closeModal }: AddmatchProps) => {
     const formData = new FormData(event.currentTarget);
 
     if (!context.tournament) {
-      alert("No tournament found");
+      alert(t("notournamentfound"));
       setLoading(false);
       return;
     }
@@ -42,13 +42,13 @@ const AddMatch = ({ closeModal }: AddmatchProps) => {
     };
 
     if (!form.player1 || !form.player2) {
-      alert("Select both players before submitting");
+      alert(t("selectbothplayers"));
       setLoading(false);
       return;
     }
 
     if (form.player1 === form.player2) {
-      alert("Selected players can not be the same");
+      alert(t("duplicateplayers"));
       setLoading(false);
       return;
     }
@@ -71,15 +71,15 @@ const AddMatch = ({ closeModal }: AddmatchProps) => {
       setLoading(false);
       switch (res.status) {
         case 400:
-          return alert("Failed to add matches");
+          return alert(t("addmatchfailed"));
 
         case 409:
           return alert(
-            `Match between these players: (${form.player1} & ${form.player2}) already exists for selected round: (Round ${form.round})`,
+            `${t("matchexists1")} (${form.player1} & ${form.player2}) ${t("matchexists2")} (${form.round})`,
           );
 
         default:
-          return alert("Unexpected error");
+          return alert(t("unexpectederror"));
       }
     }
 

@@ -8,7 +8,7 @@ type AddplayerProps = {
 
 const Addplayer = ({ closeModal }: AddplayerProps) => {
   const [loading, setLoading] = useState(false);
-  const t = useTranslations("NewPlayer");
+  const t = useTranslations("AddPlayer");
   const context = useTournamentContext();
   const submitForm = async (event: FormEvent<HTMLFormElement>) => {
     setLoading(true);
@@ -22,7 +22,7 @@ const Addplayer = ({ closeModal }: AddplayerProps) => {
     });
 
     if (!res.ok) {
-      alert("Error adding player");
+      alert(t("erroraddingplayer"));
       setLoading(false);
       return;
     }
@@ -31,14 +31,14 @@ const Addplayer = ({ closeModal }: AddplayerProps) => {
     context.setPlayers((players) => [...players, player]);
 
     closeModal();
-    alert(`${newPlayer} added`);
+    alert(`${newPlayer} ${t("playeradded")}`);
     setLoading(false);
   };
 
   return (
     <form onSubmit={submitForm} className="space-y-10">
       <h2 className="text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
-        {t("title")}
+        {t("title2")}
       </h2>
       <input
         id="name"
