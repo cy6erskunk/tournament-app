@@ -14,7 +14,8 @@
       "addplayer": "Lisää ottelija",
       "leaderboard": "Tulostaulu",
       "empty": "Tyhjennä",
-      "emptyConfirm": "Haluatko varmasti tyhjentää tulostaulun?"
+      "emptyConfirm": "Haluatko varmasti tyhjentää tulostaulun?",
+      "tournaments": "Turnaukset"
     }
   },
   "Leaderboard": {
@@ -63,5 +64,12 @@
     "back": "Takaisin",
     "erroraddingplayer": "Virhe pelaajan lisäämisessä",
     "playeradded": "lisätty"
+  },
+  "Select": {
+    "selecttournament": "Valitse turnaus",
+    "notournamentsfound": "Ei turnauksia",
+    "createfailed": "Uutta turnausta ei voitu lisätä",
+    "createtournament": "Luo uusi turnaus",
+    "submit": "Tallenna"
   }
 }

@@ -7,8 +7,7 @@ const Page = async () => {
   return (
     <>
       <TournamentContextProvider>
-      <Navbar />
-      {/*Style later when everything figured out, desktop view looks bad  */}
+        <Navbar />
         <TournamentButtons />
         <TournamentInfo />
       </TournamentContextProvider>

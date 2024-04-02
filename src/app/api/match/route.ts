@@ -1,5 +1,5 @@
 import { addMatch } from "@/database/addMatch";
-import { Matches } from "@/database/types";
+import { Matches } from "@/types/Kysely";
 
 // add new match
 export async function POST(request: Request) {

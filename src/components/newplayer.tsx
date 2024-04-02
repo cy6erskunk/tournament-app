@@ -15,10 +15,14 @@ const Addplayer = ({ closeModal }: AddplayerProps) => {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
     const newPlayer = formData.get("name");
+    const newP = {
+      name: newPlayer,
+      tournamentId: context.tournament?.id,
+    };
 
     const res = await fetch("/api/newplayer", {
       method: "POST",
-      body: formData,
+      body: JSON.stringify(newP),
     });
 
     if (!res.ok) {

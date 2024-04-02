@@ -1,24 +1,31 @@
+"use server";
+
 import { Result } from "@/types/result";
 import { db } from "./database";
+import Tournament from "@/types/Tournament";
 
-// create new tournament with Date
+// create new tournament with date and format
 export async function createTournament(
   date: Date,
-  inputName?: string,
-): Promise<Result<number, string>> {
-  const name = inputName ? inputName : "Daily Tournament " + date;
+  format: string,
+  inputName: string,
+): Promise<Result<Tournament, string>> {
   try {
     const tournament = await db
       .insertInto("tournaments")
       .values({
-        name,
-        date,
-        format: "old",
+        name: inputName,
+        date: date,
+        format: format,
       })
-      .returning("id")
-      .executeTakeFirstOrThrow();
+      .returningAll()
+      .executeTakeFirst()
 
-    return { success: true, value: tournament.id };
+    if (!tournament) {
+      return { success: false, error: "No tournament returned on insert" };
+    }
+
+    return { success: true, value: tournament as Tournament };
   } catch (error) {
     console.log(error);
     return { success: false, error: "Could not insert new tournament" };

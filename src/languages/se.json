@@ -14,7 +14,8 @@
       "addplayer": "Lägg till spelare",
       "leaderboard": "Topplistan",
       "empty": "Tom tabell",
-      "emptyConfirm": "Ta bort alla matcher och spelare?"
+      "emptyConfirm": "Ta bort alla matcher och spelare?",
+      "tournaments": "Turneringar"
     }
   },
   "Leaderboard": {
@@ -63,5 +64,12 @@
     "back": "Tillbaka",
     "erroraddingplayer": "Ett fel uppstod när spelaren skulle läggas till",
     "playeradded": "har lagts till"
+  },
+  "Select": {
+    "selecttournament": "Välj turnering",
+    "notournamentsfound": "Inga turneringar hittades",
+    "createfailed": "Det gick inte att infoga en ny turnering",
+    "createtournament": "Skapa ny turnering",
+    "submit": "Lämna in"
   }
 }

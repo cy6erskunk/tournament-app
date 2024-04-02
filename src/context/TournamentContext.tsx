@@ -3,14 +3,15 @@
 import { Player } from "@/types/Player";
 import { createContext, useEffect, useMemo, useState } from "react";
 import useContextWrapper from "./hooks/TournamentContextHook";
-import { getTournamentToday } from "@/database/getTournament";
+import { getTournamentWithId } from "@/database/getTournament";
 import { getTournamentPlayers } from "@/database/getTournamentPlayers";
-import { Tournaments } from "@/database/types";
+import { useParams } from "next/navigation";
+import Tournament from "@/types/Tournament";
 
 // Source: https://medium.com/@nitinjha5121/mastering-react-context-with-typescript-a-comprehensive-tutorial-5bab5ef48a3b
 
 interface TournamentContext {
-  tournament: Tournaments | undefined;
+  tournament: Tournament | undefined;
   setTournament: React.Dispatch<
     React.SetStateAction<TournamentContext["tournament"]>
   >;
@@ -42,11 +43,11 @@ export function TournamentContextProvider({
   const [activeRound, setActiveRound] =
     useState<TournamentContext["activeRound"]>(1);
   const [hidden, setHidden] = useState(true);
+  const params = useParams();
   // Fetch players to context
   useEffect(() => {
     async function fetchTournamentData() {
-      const currentDate = new Date();
-      const tournamentResult = await getTournamentToday(currentDate);
+      const tournamentResult = await getTournamentWithId(Number(params.id));
 
       if (!tournamentResult.success) {
         console.log("Error: " + tournamentResult.error);
@@ -70,7 +71,7 @@ export function TournamentContextProvider({
     }
 
     fetchTournamentData();
-  }, []);
+  }, [params.id]);
 
   const value = useMemo(
     () => ({
@@ -85,7 +86,7 @@ export function TournamentContextProvider({
       hidden,
       setHidden,
     }),
-    [players, tournament, loading, activeRound, hidden]
+    [players, tournament, loading, activeRound, hidden],
   );
 
   return (

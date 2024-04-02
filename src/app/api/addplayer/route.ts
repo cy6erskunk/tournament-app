@@ -1,18 +1,16 @@
-import { getTournamentToday } from "@/database/getTournament";
+import { getTournamentWithId } from "@/database/getTournament";
 import { addPlayer } from "@/database/newPlayer";
 
 export async function POST(request: Request) {
-  const formData = await request.formData();
-  const name = formData.get("name");
-  if (name === null) {
+  const res = await request.json();
+
+  if (res.name === null) {
     return new Response("Must include a name", { status: 400 });
   }
 
   // get tournament id for matches table
-  const currentDate = new Date();
-  let tournamentResult = await getTournamentToday(currentDate);
+  let tournamentResult = await getTournamentWithId(res.tournamentId);
 
-  // TODO: create new tournament if no tournaments today
   if (!tournamentResult.success) {
     return new Response(tournamentResult.error, { status: 404 });
   }
@@ -20,7 +18,7 @@ export async function POST(request: Request) {
   const tournamentId = Number(tournamentResult.value.id);
 
   // add existing player to tournament_players table
-  const addPlayerToTournament = await addPlayer(name.toString(), tournamentId);
+  const addPlayerToTournament = await addPlayer(res.name, tournamentId);
 
   // check if player was added to tournament_players table
   if (!addPlayerToTournament.success) {

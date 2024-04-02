@@ -2,23 +2,23 @@
 
 import { Result } from "@/types/result";
 import { db } from "./database";
-import { Tournaments } from "./types";
+import Tournament from "@/types/Tournament";
 
 export async function getTournament(
   name: string,
-): Promise<Result<Tournaments, string>> {
+): Promise<Result<Tournament, string>> {
   try {
-    const tournaments = (await db
+    const tournaments = await db
       .selectFrom("tournaments")
       .where("name", "=", name)
       .selectAll()
-      .executeTakeFirst()) as Tournaments | undefined;
+      .executeTakeFirst()
 
     if (!tournaments) {
       return { success: false, error: "No tournaments found" };
     }
 
-    return { success: true, value: tournaments };
+    return { success: true, value: tournaments as Tournament };
   } catch (error) {
     console.log(error);
     return { success: false, error: "Error fetching tournaments" };
@@ -27,19 +27,19 @@ export async function getTournament(
 
 export async function getTournamentWithId(
   id: number,
-): Promise<Result<Tournaments, string>> {
+): Promise<Result<Tournament, string>> {
   try {
-    const tournaments = (await db
+    const tournaments = await db
       .selectFrom("tournaments")
       .where("id", "=", id)
       .selectAll()
-      .executeTakeFirst()) as Tournaments | undefined;
+      .executeTakeFirst()
 
     if (!tournaments) {
       return { success: false, error: "No tournaments found" };
     }
 
-    return { success: true, value: tournaments };
+    return { success: true, value: tournaments as Tournament };
   } catch (error) {
     console.log(error);
     return { success: false, error: "Error fetching tournaments" };
@@ -49,21 +49,44 @@ export async function getTournamentWithId(
 // get tournament with Date
 export async function getTournamentToday(
   dateToday: Date,
-): Promise<Result<Tournaments, string>> {
+): Promise<Result<Tournament, string>> {
   try {
-    const tournament = (await db
+    const tournament = await db
       .selectFrom("tournaments")
       .selectAll()
       .where("date", "=", dateToday)
-      .executeTakeFirst()) as Tournaments | undefined;
+      .executeTakeFirst()
 
     if (!tournament) {
       return { success: false, error: "No tournament found" };
     }
 
-    return { success: true, value: tournament };
+    return { success: true, value: tournament as Tournament };
   } catch (error) {
     console.log(error);
     return { success: false, error: "Could not fetch tournament players" };
+  }
+}
+
+// get recent tournaments
+export async function getRecentTournaments(): Promise<
+  Result<Tournament[], string>
+> {
+  try {
+    const tournaments = await db
+      .selectFrom("tournaments")
+      .selectAll()
+      .limit(5)
+      .orderBy("date desc")
+      .execute();
+
+    if (!tournaments.length) {
+      return { success: false, error: "No tournaments found" };
+    }
+
+    return { success: true, value: tournaments as Tournament[] };
+  } catch (error) {
+    console.log(error);
+    return { success: false, error: "Could not fetch tournaments" };
   }
 }

@@ -6,6 +6,7 @@ import AddMatch from "@/components/newmatch";
 import Addplayer from "@/components/addplayer";
 import { useTranslations } from "next-intl";
 import { useTournamentContext } from "@/context/TournamentContext";
+import Link from "next/link";
 
 const TournamentButtons = () => {
   const t = useTranslations("Tournament.Buttons");
@@ -52,6 +53,12 @@ const TournamentButtons = () => {
       >
         {t("empty")}
       </button>
+      <Link
+        href="/select"
+        className="p-1 px-5 border rounded-md shadow-sm border-slate-600 text-center"
+      >
+        {t("tournaments")}
+      </Link>
       <Modal isOpen={showModal} closeModal={closeModal}>
         {modalContent}
       </Modal>

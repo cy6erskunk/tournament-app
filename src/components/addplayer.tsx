@@ -17,9 +17,14 @@ const Addplayer = ({ closeModal }: AddplayerProps) => {
     const formData = new FormData(event.currentTarget);
     const newPlayer = formData.get("name");
 
+    const newP = {
+      name: newPlayer,
+      tournamentId: context.tournament?.id,
+    };
+
     const res = await fetch("/api/addplayer", {
       method: "POST",
-      body: formData,
+      body: JSON.stringify(newP),
     });
 
     if (!res.ok) {

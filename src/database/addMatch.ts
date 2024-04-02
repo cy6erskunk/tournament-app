@@ -2,7 +2,7 @@
 
 import { Result } from "@/types/result";
 import { db } from "./database";
-import { Matches } from "./types";
+import { Matches } from "../types/Kysely";
 
 // Type guard to check if the error has a code property
 function isErrorWithCode(error: any): error is { code: string } {
@@ -11,7 +11,7 @@ function isErrorWithCode(error: any): error is { code: string } {
 
 // add match
 export async function addMatch(
-  form: Matches,
+  form: Matches
 ): Promise<Result<Matches, { value: string; code?: number }>> {
   try {
     const res = await db

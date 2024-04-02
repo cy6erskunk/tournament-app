@@ -1,6 +1,6 @@
-import { Matches, TournamentPlayers } from "@/database/types"
+import { Matches, TournamentPlayers } from "@/types/Kysely";
 
 export type Player = {
-  player: TournamentPlayers
-  matches: Matches[]
-}
+  player: TournamentPlayers;
+  matches: Matches[];
+};

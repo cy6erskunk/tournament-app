@@ -2,13 +2,13 @@
 
 import { db } from "./database";
 import { Result } from "@/types/result";
-import { Matches, TournamentPlayers } from "./types";
+import { Matches, TournamentPlayers } from "../types/Kysely";
 import { Player } from "@/types/Player";
 
 // Get tournament players and matches and return
 // list of players with their corresponding matches
 export async function getTournamentPlayers(
-  tournamentId: number,
+  tournamentId: number
 ): Promise<Result<Player[], string>> {
   let tournamentPlayers: TournamentPlayers[] = [];
   let matches: Matches[] = [];
@@ -55,7 +55,7 @@ export async function getTournamentPlayers(
         if (tp.player_name === m.player1) return true;
         if (tp.player_name === m.player2) return true;
         return false;
-      })
+      }),
     };
 
     players.push(player);

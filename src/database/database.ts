@@ -1,4 +1,4 @@
-import { DB } from "./types";
+import { DB } from "../types/Kysely";
 import { Pool } from "pg";
 import { Kysely, PostgresDialect } from "kysely";
 import { createKysely } from "@vercel/postgres-kysely";
@@ -16,7 +16,7 @@ const dialect = new PostgresDialect({
 
 // Gets a Kysely connection based on application environment
 function getConnection() {
-  const env = process.env.NODE_ENV
+  const env = process.env.NODE_ENV;
 
   if (env === "production") {
     return createKysely<DB>();

@@ -9,7 +9,7 @@ export default function Home() {
     // Logo centered
     <div className="flex-1 justify-center px-6 py-12 lg:px-8 min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0">
       <Languages />
-      <Link href="/tournament" className="font-bold">
+      <Link href="/select" className="font-bold">
         go to todays tournament
       </Link>
       <div className="sm:mx-auto sm:w-full sm:max-w-sm">

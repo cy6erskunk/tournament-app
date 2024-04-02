@@ -14,7 +14,8 @@
       "addplayer": "Add player",
       "leaderboard": "Leaderboard",
       "empty": "Empty table",
-      "emptyConfirm": "Remove all matches and players?"
+      "emptyConfirm": "Remove all matches and players?",
+      "tournaments": "Tournaments"
     }
   },
   "Leaderboard": {
@@ -63,5 +64,12 @@
     "back": "Back",
     "erroraddingplayer": "Error adding player",
     "playeradded": "added"
+  },
+  "Select": {
+    "selecttournament": "Select tournament",
+    "notournamentsfound": "No tournaments found",
+    "createfailed": "Could not insert new tournament",
+    "createtournament": "Create new tournament",
+    "submit": "Submit"
   }
 }

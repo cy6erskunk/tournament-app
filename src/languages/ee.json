@@ -14,7 +14,8 @@
       "addplayer": "Lisa mängija",
       "leaderboard": "Edetabel",
       "empty": "Tühi laud",
-      "emptyConfirm": "Eemaldage kõik mängud ja mängijad?"
+      "emptyConfirm": "Eemaldage kõik mängud ja mängijad?",
+      "tournaments": "Turniirid"
     }
   },
   "Leaderboard": {
@@ -63,5 +64,12 @@
     "back": "Tagasi",
     "erroraddingplayer": "Mängija lisamine ebaõnnestus",
     "playeradded": "lisatud"
+  },
+  "Select": {
+    "selecttournament": "Valige turniir",
+    "notournamentsfound": "Ühtegi turniiri ei leitud",
+    "createfailed": "Uut turniiri ei saanud sisestada",
+    "createtournament": "Loo uus turniir",
+    "submit": "Esita"
   }
 }

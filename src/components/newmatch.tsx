@@ -3,7 +3,7 @@
 import { useTranslations } from "next-intl";
 import { FormEvent, useState } from "react";
 import { useTournamentContext } from "@/context/TournamentContext";
-import { Matches } from "@/database/types";
+import { Matches } from "@/types/Kysely";
 
 type AddmatchProps = {
   closeModal: () => void;
@@ -69,13 +69,16 @@ const AddMatch = ({ closeModal }: AddmatchProps) => {
 
     if (!res.ok) {
       setLoading(false);
+
       switch (res.status) {
         case 400:
           return alert(t("addmatchfailed"));
 
         case 409:
           return alert(
-            `${t("matchexists1")} (${form.player1} & ${form.player2}) ${t("matchexists2")} (${form.round})`,
+            `${t("matchexists1")} (${form.player1} & ${form.player2}) ${t(
+              "matchexists2"
+            )} (${form.round})`
           );
 
         default:
