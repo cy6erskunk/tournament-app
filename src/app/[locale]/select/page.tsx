@@ -6,6 +6,7 @@ import NewTournament from "@/components/newTournament";
 import { useEffect, useState } from "react";
 import { Tournaments } from "@/types/Kysely";
 import { useTranslations } from "next-intl";
+import Navbar from "@/components/navbar";
 
 export default function Page() {
   const t = useTranslations("Select");
@@ -32,34 +33,37 @@ export default function Page() {
   }
 
   return (
-    <section className="container mx-auto mt-10 p-4 flex flex-col items-center gap-6">
-      <div className="border border-gray-900 max-w-md p-6 rounded-md shadow-md w-full space-y-5">
-        <h1 className="font-bold text-xl">{t("selecttournament")}</h1>
-        {loading ? (
-          <Loading /> // Show loading indicator if loading is true
-        ) : recentTournaments.length > 0 ? (
-          // Show recent tournaments list if loading is false and there are tournaments
-          <ul className="flex flex-col gap-8 divide-y">
-            {recentTournaments.map((tour) => (
-              <li key={Number(tour.id)}>
-                <Link
-                  href={`/tournament/${tour.id}`}
-                  className="underline underline-offset-2"
-                >
-                  {tour.name}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        ) : (
-          // Show message if loading is false and there are no tournaments
-          <p>{t("notournamentsfound")}</p>
-        )}
-      </div>
-      <div className="border border-gray-900 max-w-md p-6 rounded-md shadow-md w-full">
-        <NewTournament handleAddTournament={addTournament} />
-      </div>
-    </section>
+    <div>
+      <Navbar showNewPlayerButton={false}/>
+      <section className="container mx-auto mt-10 p-4 flex flex-col items-center gap-6">
+        <div className="border border-gray-900 max-w-md p-6 rounded-md shadow-md w-full space-y-5">
+          <h1 className="font-bold text-xl">{t("selecttournament")}</h1>
+          {loading ? (
+            <Loading /> // Show loading indicator if loading is true
+          ) : recentTournaments.length > 0 ? (
+            // Show recent tournaments list if loading is false and there are tournaments
+            <ul className="flex flex-col gap-8 divide-y">
+              {recentTournaments.map((tour) => (
+                <li key={Number(tour.id)}>
+                  <Link
+                    href={`/tournament/${tour.id}`}
+                    className="underline underline-offset-2"
+                  >
+                    {tour.name}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            // Show message if loading is false and there are no tournaments
+            <p>{t("notournamentsfound")}</p>
+          )}
+        </div>
+        <div className="border border-gray-900 max-w-md p-6 rounded-md shadow-md w-full">
+          <NewTournament handleAddTournament={addTournament} />
+        </div>
+      </section>
+    </div>
   );
 }
 

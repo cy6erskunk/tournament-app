@@ -8,7 +8,11 @@ import Languages from "./languages";
 import NewPlayer from "@/components/newplayer";
 import { useTranslations } from "next-intl";
 
-const Navbar = () => {
+interface NavbarProps {
+  showNewPlayerButton?: boolean;
+}
+
+const Navbar = ({ showNewPlayerButton }: NavbarProps) => {
   const t = useTranslations("Logout");
 
   const [showModal, setShowModal] = useState(false);
@@ -47,19 +51,21 @@ const Navbar = () => {
             Empty table
           </button> */}
         <Languages />
-      <div className="flex flex-col sm:flex-row pt-5 sm:pt-0">
-      <button
-        className="bg-white hover:bg-violet-500 hover:text-white text-blue-500 text-sm font-bold py-2 px-4 border-2 w-full md:w-36 border-white rounded-full m-1 relative justify-center"
-        onClick={() => openModal(<NewPlayer closeModal={closeModal} />)}
-      >
-        {t("newplayer")}
-      </button>
-      <Modal isOpen={showModal} closeModal={closeModal}>
-        {modalContent}
-      </Modal>
-        <button className="bg-blue-500 hover:bg-blue-700 text-white text-sm font-bold py-2 px-4 border-2 w-full md:w-36 border-white rounded-full m-1 relative justify-center">
-          {t("logout")}
-        </button>
+        <div className="flex flex-col sm:flex-row pt-5 sm:pt-0">
+          {showNewPlayerButton ? (
+            <button
+              className="bg-white hover:bg-violet-500 hover:text-white text-blue-500 text-sm font-bold py-2 px-4 border-2 w-full md:w-36 border-white rounded-full m-1 relative justify-center"
+              onClick={() => openModal(<NewPlayer closeModal={closeModal} />)}
+            >
+              {t("newplayer")}
+            </button>
+          ) : null}
+          <Modal isOpen={showModal} closeModal={closeModal}>
+            {modalContent}
+          </Modal>
+          <button className="bg-blue-500 hover:bg-blue-700 text-white text-sm font-bold py-2 px-4 border-2 w-full md:w-36 border-white rounded-full m-1 relative justify-center">
+            {t("logout")}
+          </button>
         </div>
       </div>
     </nav>
