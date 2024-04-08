@@ -7,6 +7,7 @@ import "../../node_modules/flag-icons/css/flag-icons.min.css";
 import Languages from "./languages";
 import NewPlayer from "@/components/newplayer";
 import { useTranslations } from "next-intl";
+import { logout } from "@/helpers/logout";
 
 interface NavbarProps {
   showNewPlayerButton?: boolean;
@@ -63,7 +64,10 @@ const Navbar = ({ showNewPlayerButton }: NavbarProps) => {
           <Modal isOpen={showModal} closeModal={closeModal}>
             {modalContent}
           </Modal>
-          <button className="bg-blue-500 hover:bg-blue-700 text-white text-sm font-bold py-2 px-4 border-2 w-full md:w-36 border-white rounded-full m-1 relative justify-center">
+          <button
+            onClick={async () => logout()}
+            className="bg-blue-500 hover:bg-blue-700 text-white text-sm font-bold py-2 px-4 border-2 w-full md:w-36 border-white rounded-full m-1 relative justify-center"
+          >
             {t("logout")}
           </button>
         </div>

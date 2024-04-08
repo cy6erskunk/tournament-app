@@ -2,6 +2,7 @@ import { Inter } from "next/font/google";
 import { NextIntlClientProvider, useMessages } from "next-intl";
 import "./globals.css";
 import { getTranslations } from "next-intl/server";
+import { UserContextProvider } from "@/context/UserContext";
 
 const inter = Inter({ subsets: ["latin"] });
 export async function generateMetadata({
@@ -42,9 +43,11 @@ export default function LocaleLayout({
   return (
     <html lang={locale}>
       <body className={inter.className}>
-        <NextIntlClientProvider locale={locale} messages={messages}>
-          {children}
-        </NextIntlClientProvider>
+        <UserContextProvider>
+          <NextIntlClientProvider locale={locale} messages={messages}>
+            {children}
+          </NextIntlClientProvider>
+        </UserContextProvider>
       </body>
     </html>
   );

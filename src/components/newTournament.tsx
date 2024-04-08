@@ -3,14 +3,9 @@
 import { FormEvent, useState } from "react";
 import { createTournament } from "@/database/addTournament";
 import { useRouter } from "next/navigation";
-import Tournament from "@/types/Tournament";
 import { useTranslations } from "next-intl";
 
-type NewTournamentProps = {
-  handleAddTournament: (tournament: Tournament) => void;
-};
-
-function NewTournament({ handleAddTournament }: NewTournamentProps) {
+function NewTournament() {
   const t = useTranslations("Select");
   const router = useRouter();
   const [selectedFormat, setSelectedFormat] = useState("Round Robin");
@@ -47,8 +42,6 @@ function NewTournament({ handleAddTournament }: NewTournamentProps) {
       return;
     }
 
-    // add tournament to recentTournaments state
-    handleAddTournament(newTournament.value);
     router.push(`/tournament/${newTournament.value.id}`);
   };
 

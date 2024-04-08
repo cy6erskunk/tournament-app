@@ -21,6 +21,8 @@ Make sure you have the following prerequisites installed on your machine before 
 
 ## Getting Started
 
+### Setup
+
 To set up the project locally, follow these steps.
 
 ```bash
@@ -43,9 +45,24 @@ bun install
 docker network create hm_network
 ```
 
-Run the development server
+For local development you will want to create a file named `.env.development.local`.
+The `POSTGRES_URL` is important for connecting to the database. You can have the `JWT_SECRET` as anything, this will "sign" all user cookies with this secret, possibly causing issues if you change it later while logged in.
 
-> [!IMPORTANT]  
+```env
+POSTGRES_URL="postgres://postgres:postgres@localhost:5434/postgres"
+JWT_SECRET="secret"
+```
+
+For running `npm run prod` you will have to use the production `POSTGRES_URL` and `JWT_SECRET` from Vercel and put them in a `.env.production.local` file.
+
+```env
+POSTGRES_URL="PRODUCTION_POSTGRES_URL_HERE"
+JWT_SECRET="PRODUCTION_JWT_SECRET_HERE"
+```
+
+### Run the development server
+
+> [!IMPORTANT]
 > Do not forget creating the network on the setup step.
 
 ```bash
@@ -54,9 +71,18 @@ docker compose up --build
 
 Open http://localhost:3000 with your browser to see the result.
 
+### Admin/Testing credentials
+
+To add admin credentials in a debug environment you can use this SQL command to add a user with the name `admin` and password `password`.
+
+```sql
+INSERT INTO "users" ("username", "password", "role")
+VALUES ('admin', '$2b$10$pYjCPeAy8xbSHrI6nevNgOaG1nLadHmlJeDtuHvbk/oWci9EQcqD.', 'admin');
+```
+
 ## App Router
 
-> [!IMPORTANT]  
+> [!IMPORTANT]
 > [Read more about the Next.js App Router from here](https://nextjs.org/docs/app/building-your-application/routing#the-app-router). ([Frequently Asked Questions](https://nextjs.org/docs/app))
 
 Next.js uses a file-system-based router, where each .js or .tsx file in the pages directory automatically becomes a route. You can navigate the project using the app router.
