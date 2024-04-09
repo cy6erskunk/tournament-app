@@ -4,11 +4,12 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "prod": "next build && next start",
-    "build": "next build",
+    "prod": "vitest run && next build && next start",
+    "build": "vitest run && next build",
     "start": "next start",
     "lint": "next lint",
-    "test": "vitest"
+    "test": "vitest run",
+    "test:watch": "vitest run"
   },
   "dependencies": {
     "@heroicons/react": "^2.1.1",
