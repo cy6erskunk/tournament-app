@@ -4,6 +4,7 @@ import { useTranslations } from "next-intl";
 import { FormEvent, useState } from "react";
 import { useTournamentContext } from "@/context/TournamentContext";
 import { Matches } from "@/types/Kysely";
+import NormalizedId from "@/types/NormalizedId";
 
 type AddmatchProps = {
   closeModal: () => void;
@@ -30,7 +31,7 @@ const AddMatch = ({ closeModal }: AddmatchProps) => {
       return;
     }
 
-    const form: Matches = {
+    const form: Omit<Matches, "id"> = {
       match: 1,
       player1: formData.get("player1") as string,
       player1_hits: Number(formData.get("points1")),
@@ -87,7 +88,7 @@ const AddMatch = ({ closeModal }: AddmatchProps) => {
     }
 
     // Update player objects inside context state
-    const match: Matches = await res.json();
+    const match: NormalizedId<Matches> = await res.json();
     context.setPlayers((prevPlayers) => {
       // Find the player with the specific player name
       return prevPlayers.map((player) => {

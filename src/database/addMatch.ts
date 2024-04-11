@@ -2,7 +2,8 @@
 
 import { Result } from "@/types/result";
 import { db } from "./database";
-import { Matches } from "../types/Kysely";
+import { Matches } from "@/types/Kysely";
+import NormalizedId from "@/types/NormalizedId";
 
 // Type guard to check if the error has a code property
 function isErrorWithCode(error: any): error is { code: string } {
@@ -11,8 +12,8 @@ function isErrorWithCode(error: any): error is { code: string } {
 
 // add match
 export async function addMatch(
-  form: Matches
-): Promise<Result<Matches, { value: string; code?: number }>> {
+  form: Omit<Matches, "id">
+): Promise<Result<NormalizedId<Matches>, { value: string; code?: number }>> {
   try {
     const res = await db
       .insertInto("matches")

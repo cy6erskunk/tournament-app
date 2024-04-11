@@ -2,30 +2,28 @@
 
 import { useTranslations } from "next-intl";
 import { useTournamentContext } from "@/context/TournamentContext";
+import { Loading } from "./Loading";
+import { Player } from "./Player";
+import { TournamentTitle } from "@/components/Results/Title";
 import Rounds from "@/components/rounds";
-import { ResultLoading } from "./ResultLoading";
-import { ResultPlayer } from "./ResultPlayer";
 
-function ResultsTable() {
+function Tournament() {
   const t = useTranslations("Leaderboard");
   const context = useTournamentContext();
 
   return (
-    <div className="w-full md:w-2/3">
-      <div className="sm:my-2 items-center text-xl sm:text-4xl font-bold flex justify-between">
-        <span className={context.loading ? "invisible" : ""}>
-          {context.loading ? "Lorem ipsum" : context.tournament?.name}
-        </span>
-        <Rounds />
-      </div>
+    <div className="w-full mdd:w-2/3">
+    <div className="sm:my-2 items-center text-xl sm:text-4xl font-bold flex justify-between">
+      <TournamentTitle />
+      <Rounds />
+    </div>
 
       <div className="overflow-auto max-h-[500px] border-2 border-slate-500 rounded-md shadow-md">
         <table className="w-full">
           <thead>
             <tr
-              className={`${
-                context.activeRound === 1 ? "*:bg-blue-500" : "*:bg-violet-500"
-              } text-white *:py-4 *:sticky *:top-0 *:z-20 *:transition-all *:duration-300 *:ease-in-out`}
+              className={`${context.activeRound === 1 ? "*:bg-blue-500" : "*:bg-violet-500"
+                } text-white *:py-4 *:sticky *:top-0 *:z-20 *:transition-all *:duration-300 *:ease-in-out`}
             >
               <th className="w-20 min-w-20">{t("name")}</th>
               <th className="w-20 min-w-20">{t("remove")}</th>
@@ -67,7 +65,7 @@ function ResultsTable() {
           {!context.loading ? (
             <tbody>
               {context.players.map((player, i) => (
-                <ResultPlayer
+                <Player
                   key={player.player.player_name}
                   player={player}
                   nthRow={i}
@@ -76,10 +74,10 @@ function ResultsTable() {
             </tbody>
           ) : null}
         </table>
-        <ResultLoading />
+        <Loading />
       </div>
     </div>
   );
 }
 
-export default ResultsTable;
+export default Tournament;

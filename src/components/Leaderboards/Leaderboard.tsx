@@ -1,6 +1,6 @@
 "use client";
 import { useTournamentContext } from "@/context/TournamentContext";
-import { ResultLoading } from "@/components/Results/ResultLoading";
+import { Loading } from "@/components/Results/RoundRobin/Loading";
 import { useTranslations } from "next-intl";
 import { LeaderboardPlayer } from "@/components/Leaderboards/LeaderboardPlayer";
 import { useEffect, useState } from "react";
@@ -80,7 +80,7 @@ const Leaderboard = () => {
             </tbody>
           ) : null}
         </table>
-        <ResultLoading />
+        <Loading />
       </div>
     </div>
   );

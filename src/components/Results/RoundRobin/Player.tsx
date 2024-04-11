@@ -20,7 +20,7 @@ interface Opponents {
 }
 
 
-export function ResultPlayer({ player, nthRow }: PlayerProps) {
+export function Player({ player, nthRow }: PlayerProps) {
   const context = useTournamentContext();
   const [hits, setHits] = useState<Hits>({ given: {}, taken: {} });
   const [matchesByOpponent, setOpponents] = useState<Opponents>({});

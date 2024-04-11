@@ -4,6 +4,7 @@ import { db } from "./database";
 import { Result } from "@/types/result";
 import { Matches, TournamentPlayers } from "../types/Kysely";
 import { Player } from "@/types/Player";
+import NormalizedId from "@/types/NormalizedId";
 
 // Get tournament players and matches and return
 // list of players with their corresponding matches
@@ -11,7 +12,7 @@ export async function getTournamentPlayers(
   tournamentId: number
 ): Promise<Result<Player[], string>> {
   let tournamentPlayers: TournamentPlayers[] = [];
-  let matches: Matches[] = [];
+  let matches: NormalizedId<Matches>[] = [];
 
   //TODO: Combine query with selecting matches to prevent N+1 querying
   // https://docs.sentry.io/product/issues/issue-details/performance-issues/n-one-queries/

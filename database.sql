@@ -1,5 +1,9 @@
 DROP TABLE IF EXISTS "matches";
+DROP SEQUENCE IF EXISTS matches_id_seq;
+CREATE SEQUENCE matches_id_seq INCREMENT 1 MINVALUE 1 MAXVALUE 2147483647 START 2 CACHE 1;
+
 CREATE TABLE "public"."matches" (
+    "id" integer DEFAULT nextval('matches_id_seq') NOT NULL,
     "player1" character varying(16) NOT NULL,
     "player2" character varying(16) NOT NULL,
     "tournament_id" integer NOT NULL,
@@ -33,7 +37,7 @@ CREATE SEQUENCE tournaments_id_seq INCREMENT 1 MINVALUE 1 MAXVALUE 2147483647 ST
 
 CREATE TABLE "public"."tournaments" (
     "id" integer DEFAULT nextval('tournaments_id_seq') NOT NULL,
-    "name" character varying(32) NOT NULL,
+    "name" character varying(64) NOT NULL,
     "date" date NOT NULL,
     "format" character varying(16) NOT NULL,
     CONSTRAINT "tournaments_pkey" PRIMARY KEY ("id")

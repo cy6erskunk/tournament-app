@@ -3,7 +3,7 @@
 import { useTournamentContext } from "@/context/TournamentContext";
 import { useTranslations } from "next-intl";
 
-export function ResultLoading() {
+export function Loading() {
   const context = useTournamentContext();
   const t = useTranslations("Leaderboard");
   return (

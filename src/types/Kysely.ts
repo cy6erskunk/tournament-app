@@ -7,6 +7,7 @@ export type Generated<T> = T extends ColumnType<infer S, infer I, infer U>
 export type Timestamp = ColumnType<Date, Date | string, Date | string>;
 
 export interface Matches {
+  id: Generated<number>;
   match: number;
   player1: string;
   player2: string;
