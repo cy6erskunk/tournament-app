@@ -77,7 +77,7 @@ export async function getRecentTournaments(): Promise<
       .selectFrom("tournaments")
       .selectAll()
       .limit(5)
-      .orderBy("date desc")
+      .orderBy("id desc")
       .execute();
 
     if (!tournaments.length) {
