@@ -12,11 +12,11 @@ function Tournament() {
   const context = useTournamentContext();
 
   return (
-    <div className="w-full mdd:w-2/3">
-    <div className="sm:my-2 items-center text-xl sm:text-4xl font-bold flex justify-between">
-      <TournamentTitle />
-      <Rounds />
-    </div>
+    <div className="w-full lg:w-2/3">
+      <div className="sm:my-2 items-center text-xl sm:text-4xl font-bold flex justify-between">
+        <TournamentTitle />
+        <Rounds />
+      </div>
 
       <div className="overflow-auto max-h-[500px] border-2 border-slate-500 rounded-md shadow-md">
         <table className="w-full">

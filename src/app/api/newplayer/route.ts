@@ -1,39 +1,66 @@
 import { getTournamentWithId } from "@/database/getTournament";
 import { newPlayer, addPlayer } from "@/database/newPlayer";
+import { getSession } from "@/helpers/getsession";
+import { jsonParser } from "@/helpers/jsonParser";
+
+type PlayerData = {
+  name: string,
+  tournamentId: number,
+}
 
 export async function POST(request: Request) {
-  const res = await request.json();
+  const json = await request.text()
+  const data = jsonParser<PlayerData>(json)
 
-  if (res.name === null) {
-    return Response.json("Name cannot be null");
+  const token = await getSession()
+  if (!token.success) {
+    return Response.json(`Unauthorized access`, {
+      status: 403
+    })
   }
 
-  let tournamentResult = await getTournamentWithId(res.tournamentId);
+  if (!data.success) {
+    return Response.json(`Error inserting new user`, {
+      status: 400
+    })
+  }
+
+  if (!data.value.name) {
+    return Response.json("Name must be set", {
+      status: 500
+    });
+  }
+
+  if (!data.value.tournamentId) {
+    return Response.json("Tournament must be set", {
+      status: 500
+    });
+  }
+
+  let tournamentResult = await getTournamentWithId(data.value.tournamentId);
 
   if (!tournamentResult.success) {
     return new Response(tournamentResult.error, { status: 400 });
   }
 
-  const tournamentId = Number(tournamentResult.value.id);
-
   // add new player
-  const createNewPlayer = await newPlayer(res.name);
+  const player = await newPlayer(data.value.name);
 
   // check if player was added
-  if (!createNewPlayer.success) {
+  if (!player.success) {
     return new Response("Error adding player to players table", {
       status: 400,
     });
   }
 
   // add existing player to tournament_players table
-  const addPlayerToTournament = await addPlayer(res.name, tournamentId);
+  const tournamentPlayer = await addPlayer(data.value.name, data.value.tournamentId);
 
   // check if player was added to tournament_players table
-  if (!addPlayerToTournament.success) {
+  if (!tournamentPlayer.success) {
     return new Response("Error adding player to tournament_players table", {
       status: 400,
     });
   }
-  return Response.json(addPlayerToTournament.value);
+  return Response.json(tournamentPlayer.value);
 }

@@ -3,8 +3,10 @@ import { useTranslations } from "next-intl";
 import { FormEvent, useState } from "react";
 import { userLogin } from "../database/userLogin";
 import { useRouter } from "next/navigation";
+import { useUserContext } from "@/context/UserContext";
 
 export default function Login() {
+  const account = useUserContext()
   const [loading, setLoading] = useState(false);
   const t = useTranslations("Login");
   const router = useRouter();
@@ -22,14 +24,16 @@ export default function Login() {
     }
 
     const status = await userLogin(name, password);
+
     if (!status.success) {
       console.log("Error: " + status.error);
       setLoading(false);
       alert("Wrong username or password");
       return;
-    } else {
-      router.push("/select");
     }
+
+    account.setUser(status.value)
+    router.push("/select");
   };
 
   return (

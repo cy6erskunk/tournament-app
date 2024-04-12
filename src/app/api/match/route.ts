@@ -1,14 +1,28 @@
 import { addMatch } from "@/database/addMatch";
 import { Matches } from "@/types/Kysely";
+import { getSession } from "@/helpers/getsession";
+import { jsonParser } from "@/helpers/jsonParser";
 
 // add new match
 export async function POST(request: Request) {
-  const form: Matches = await request.json();
-  // const form = req.formData;
-  // const round = req.round;
+  const json = await request.text()
+  const data = jsonParser<Matches>(json)
+
+  const token = await getSession()
+  if (!token.success) {
+    return new Response(`Unauthorized access`, {
+      status: 403
+    })
+  }
+
+  if (!data.success) {
+    return new Response(`Error reading match`, {
+      status: 400
+    })
+  }
 
   // add match to matches table
-  const matchResult = await addMatch(form);
+  const matchResult = await addMatch(data.value);
 
   if (!matchResult.success) {
     let status = 400;

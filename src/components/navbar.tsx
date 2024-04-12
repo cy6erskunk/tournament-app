@@ -8,6 +8,7 @@ import Languages from "./languages";
 import NewPlayer from "@/components/newplayer";
 import { useTranslations } from "next-intl";
 import { logout } from "@/helpers/logout";
+import { useUserContext } from "@/context/UserContext";
 
 interface NavbarProps {
   showNewPlayerButton?: boolean;
@@ -15,6 +16,7 @@ interface NavbarProps {
 
 const Navbar = ({ showNewPlayerButton }: NavbarProps) => {
   const t = useTranslations("Logout");
+  const account = useUserContext();
 
   const [showModal, setShowModal] = useState(false);
   const [modalContent, setModalContent] = useState<ReactNode | null>(null);
@@ -65,7 +67,10 @@ const Navbar = ({ showNewPlayerButton }: NavbarProps) => {
             {modalContent}
           </Modal>
           <button
-            onClick={async () => logout()}
+            onClick={async () => {
+              account.setUser(null);
+              await logout();
+            }}
             className="bg-blue-500 hover:bg-blue-700 text-white text-sm font-bold py-2 px-4 border-2 w-full md:w-36 border-white rounded-full m-1 relative justify-center"
           >
             {t("logout")}

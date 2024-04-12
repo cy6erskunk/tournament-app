@@ -3,15 +3,16 @@ import { Result } from "@/types/result";
 import { db } from "./database";
 import { addCookie } from "@/helpers/addcookie";
 import { passwordCheck } from "@/helpers/hashing";
+import { UserAccountInfo } from "@/context/UserContext";
 
 export async function userLogin(
   username: string,
-  password: string
-): Promise<Result<boolean, string>> {
+  password: string,
+): Promise<Result<UserAccountInfo, string>> {
   try {
     const result = await db
       .selectFrom("users")
-      .select("users.password")
+      .selectAll()
       .where("username", "=", username)
       .where("role", "=", "admin")
       .executeTakeFirst();
@@ -25,14 +26,23 @@ export async function userLogin(
       return { success: false, error: isPasswordValid.error };
     }
 
-    const token = await addCookie();
+    const token = await addCookie(result.username, result.role);
     if (!token.success) {
       return { success: false, error: token.error };
     }
 
-    // NOTE: return token to client side if needed
+    if (result.role !== "user" && result.role !== "admin") {
+      return {
+        success: false,
+        error: `Invalid accout role, only supports lower case user or admin, got: ${result.role}`,
+      };
+    }
 
-    return { success: true, value: true };
+    const user = {
+      name: result.username,
+      role: result.role,
+    } as UserAccountInfo;
+    return { success: true, value: user };
   } catch (error) {
     return { success: false, error: "Error logging in" };
   }
