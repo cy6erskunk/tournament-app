@@ -1,7 +1,7 @@
 "use server";
 
 import { cookies } from "next/headers";
-import jwt, { JwtPayload } from "jsonwebtoken";
+import jwt, { JwtPayload, TokenExpiredError } from "jsonwebtoken";
 import { Result } from "@/types/result";
 import { UserAccountInfo } from "@/context/UserContext";
 
@@ -14,13 +14,13 @@ export async function getSession(): Promise<Result<UserAccountInfo, string>> {
     const cookie = cookieStore.get("token");
 
     if (!cookie) {
-      return { success: false, error: "Error with cookie" };
+      return { success: false, error: "No cookie found" };
     }
 
     const token = cookie.value;
 
     if (!token) {
-      return { success: false, error: "Error with token" };
+      return { success: false, error: `No cookie with name "token" found` };
     }
 
     const secret = process.env.JWT_SECRET;
@@ -44,7 +44,10 @@ export async function getSession(): Promise<Result<UserAccountInfo, string>> {
 
     return { success: true, value: userToken };
   } catch (error) {
-    console.log(error);
+    if (error instanceof TokenExpiredError) {
+      console.log(error.name);
+      return { success: false, error: error.name };
+    }
     return { success: false, error: "Error getting session" };
   }
 }

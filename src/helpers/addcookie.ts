@@ -22,7 +22,7 @@ export async function addCookie(
       role: role,
     };
 
-    const token = jwt.sign(user, secret);
+    const token = jwt.sign(user, secret, { expiresIn: "8h" }); // expires in 8 hours
 
     cookies().set("token", token);
 

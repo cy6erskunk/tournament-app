@@ -1,15 +1,29 @@
 "use client";
 import { useTranslations } from "next-intl";
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import { userLogin } from "../database/userLogin";
 import { useRouter } from "next/navigation";
 import { useUserContext } from "@/context/UserContext";
+import { getSession } from "@/helpers/getsession";
+import { removeCookie } from "@/helpers/removeCookie";
 
 export default function Login() {
-  const account = useUserContext()
+  const account = useUserContext();
   const [loading, setLoading] = useState(false);
   const t = useTranslations("Login");
   const router = useRouter();
+
+  useEffect(() => {
+    async function checkSession() {
+      const session = await getSession();
+      if (session.success) {
+        router.push("/select");
+        return;
+      }
+      await removeCookie("token");
+    }
+    checkSession();
+  }, [router]);
 
   const submitForm = async (event: FormEvent<HTMLFormElement>) => {
     setLoading(true);
@@ -32,7 +46,7 @@ export default function Login() {
       return;
     }
 
-    account.setUser(status.value)
+    account.setUser(status.value);
     router.push("/select");
   };
 

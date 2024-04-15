@@ -1,15 +1,8 @@
 import Image from "next/image";
 import Languages from "@/components/languages";
 import Login from "@/components/login";
-import { getSession } from "@/helpers/getsession";
-import { redirect } from "next/navigation";
 
 export default async function Home() {
-  const session = await getSession();
-  if (session.success) {
-    redirect("/select");
-  }
-
   return (
     <div className="flex-1 justify-center px-6 py-12 lg:px-8 min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0">
       <Languages />
