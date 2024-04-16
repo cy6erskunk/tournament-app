@@ -134,7 +134,7 @@ const AddMatch = ({ closeModal, bracketMatch }: AddmatchProps) => {
         </h1>
         <form onSubmit={handleSubmit} className="flex flex-col gap-6">
           <div className="flex *:grow gap-3">
-            <div className="flex flex-col gap-3">
+            <div className="w-1/2 flex flex-col gap-3">
               <label
                 htmlFor="player1"
                 className="flex gap-1 sm:gap-2 items-center"
@@ -150,7 +150,7 @@ const AddMatch = ({ closeModal, bracketMatch }: AddmatchProps) => {
                 required
               />
             </div>
-            <div className="flex flex-col gap-3">
+            <div className="w-1/2 flex flex-col gap-3">
               <label htmlFor="points1">{t("points")}</label>
               <input
                 className="w-full border border-gray-600 rounded-md text-center p-1"
@@ -165,7 +165,7 @@ const AddMatch = ({ closeModal, bracketMatch }: AddmatchProps) => {
             </div>
           </div>
           <div className="flex *:grow gap-3">
-            <div className="flex flex-col gap-3">
+            <div className="w-1/2 flex flex-col gap-3">
               <label
                 htmlFor="player2"
                 className="flex gap-1 sm:gap-2 items-center"
@@ -181,7 +181,7 @@ const AddMatch = ({ closeModal, bracketMatch }: AddmatchProps) => {
                 required
               />
             </div>
-            <div className="flex flex-col gap-3">
+            <div className="w-1/2 flex flex-col gap-3">
               <label htmlFor="points2">{t("points")}</label>
               <input
                 className="w-full border border-gray-600 rounded-md text-center p-1"
@@ -222,71 +222,79 @@ const AddMatch = ({ closeModal, bracketMatch }: AddmatchProps) => {
         {t("title")}
       </h1>
       <form onSubmit={handleSubmit} className="flex flex-col gap-6">
-        <div className="flex justify-center items-center *:grow">
-          <label className="flex gap-1 sm:gap-2 items-center">
-            {t("player1")}
-            <select
-              className="border border-gray-600 rounded-md p-1"
-              name="player1"
-              defaultValue={"default"}
-            >
-              <option disabled value="default">
-                {t("player1")}
-              </option>
-              {context.players.map((player) => (
-                <option
-                  key={player.player.player_name}
-                  value={player.player.player_name}
-                >
-                  {player.player.player_name}
+        <div className="flex gap-6 *:grow mb-5">
+          <div className="w-1/2">
+            <label className="flex flex-col items-center">
+              {t("player1")}
+              <select
+                className="w-full border border-gray-600 rounded-md p-1"
+                name="player1"
+                defaultValue={"default"}
+              >
+                <option disabled value="default">
+                  {t("player1")}
                 </option>
-              ))}
-            </select>
-          </label>
-          <label htmlFor="points1">{t("points")}</label>
-          <input
-            className="border border-gray-600 rounded-md text-center p-1"
-            id="points1"
-            type="number"
-            min="0"
-            max="5"
-            name="points1"
-            defaultValue={0}
-            required
-          />
+                {context.players.map((player) => (
+                  <option
+                    key={player.player.player_name}
+                    value={player.player.player_name}
+                  >
+                    {player.player.player_name}
+                  </option>
+                ))}
+              </select>
+            </label>
+          </div>
+          <div className="w-1/2">
+            <label htmlFor="points1">{t("points")}</label>
+            <input
+              className="w-full border border-gray-600 rounded-md text-center p-1"
+              id="points1"
+              type="number"
+              min="0"
+              max="5"
+              name="points1"
+              defaultValue={0}
+              required
+            />
+          </div>
         </div>
-        <div className="flex justify-center items-center *:grow">
-          <label className="flex gap-1 sm:gap-2 items-center">
-            {t("player2")}
-            <select
-              className="border border-gray-600 rounded-md p-1"
-              name="player2"
-              defaultValue={"default"}
-            >
-              <option disabled value="default">
-                {t("player2")}
-              </option>
-              {context.players.map((player) => (
-                <option
-                  key={player.player.player_name}
-                  value={player.player.player_name}
-                >
-                  {player.player.player_name}
+        <div className="flex gap-6 *:grow">
+          <div className="w-1/2">
+            <label className="flex flex-col items-center">
+              {t("player2")}
+              <select
+                className="w-full border border-gray-600 rounded-md p-1"
+                name="player2"
+                defaultValue={"default"}
+              >
+                <option disabled value="default">
+                  {t("player2")}
                 </option>
-              ))}
-            </select>
-          </label>
-          <label htmlFor="points2">{t("points")}</label>
-          <input
-            className="border border-gray-600 rounded-md text-center p-1"
-            id="points2"
-            type="number"
-            min="0"
-            max="5"
-            name="points2"
-            defaultValue={0}
-            required
-          />
+                {context.players.map((player) => (
+                  <option
+                    key={player.player.player_name}
+                    value={player.player.player_name}
+                  >
+                    {player.player.player_name}
+                  </option>
+                ))}
+              </select>
+            </label>
+          </div>
+          <div className="w-1/2">
+            <label htmlFor="points2">{t("points")}</label>
+            <input
+              className="w-full border border-gray-600 rounded-md text-center p-1"
+              id="points2"
+              type="number"
+              min="0"
+              max="5"
+              name="points2"
+              defaultValue={0}
+              required
+            />
+          </div>
         </div>
         <div className="flex gap-3">
           <input
