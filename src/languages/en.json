@@ -54,7 +54,8 @@
     "addmatchfailed": "Failed to add match",
     "matchexists1": "Match between",
     "matchexists2": "already exists for round",
-    "unexpectederror": "Unexpected error"
+    "unexpectederror": "Unexpected error",
+    "nodraws": "No draws allowed"
   },
   "AddPlayer": {
     "title": "Add player",

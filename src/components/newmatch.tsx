@@ -5,12 +5,14 @@ import { FormEvent, useState } from "react";
 import { useTournamentContext } from "@/context/TournamentContext";
 import { Matches } from "@/types/Kysely";
 import NormalizedId from "@/types/NormalizedId";
+import { Match } from "./Results/Brackets/Tournament";
 
 type AddmatchProps = {
   closeModal: () => void;
+  bracketMatch?: Match;
 };
 
-const AddMatch = ({ closeModal }: AddmatchProps) => {
+const AddMatch = ({ closeModal, bracketMatch }: AddmatchProps) => {
   const [loading, setLoading] = useState(false);
   const t = useTranslations("NewMatch");
   const context = useTournamentContext();
@@ -32,15 +34,21 @@ const AddMatch = ({ closeModal }: AddmatchProps) => {
     }
 
     const form: Omit<Matches, "id"> = {
-      match: 1,
+      match: bracketMatch?.match ?? 1,
       player1: formData.get("player1") as string,
       player1_hits: Number(formData.get("points1")),
       player2: formData.get("player2") as string,
       player2_hits: Number(formData.get("points2")),
       winner: null,
       tournament_id: Number(context.tournament.id),
-      round: Number(formData.get("round")),
+      round: bracketMatch?.round ?? Number(formData.get("round")),
     };
+
+    if (form.player1_hits === form.player2_hits) {
+      alert(t("nodraws"));
+      setLoading(false);
+      return;
+    }
 
     if (!form.player1 || !form.player2) {
       alert(t("selectbothplayers"));
@@ -66,8 +74,6 @@ const AddMatch = ({ closeModal }: AddmatchProps) => {
       body: JSON.stringify(form),
     });
 
-    console.log(form.player1, form.player2);
-
     if (!res.ok) {
       setLoading(false);
 
@@ -78,8 +84,8 @@ const AddMatch = ({ closeModal }: AddmatchProps) => {
         case 409:
           return alert(
             `${t("matchexists1")} (${form.player1} & ${form.player2}) ${t(
-              "matchexists2"
-            )} (${form.round})`
+              "matchexists2",
+            )} (${form.round})`,
           );
 
         default:
@@ -116,6 +122,96 @@ const AddMatch = ({ closeModal }: AddmatchProps) => {
         >
           {t("back")}
         </button>
+      </>
+    );
+  }
+
+  if (context.tournament?.format === "Brackets") {
+    return (
+      <>
+        <h1 className="mb-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
+          {t("title")}
+        </h1>
+        <form onSubmit={handleSubmit} className="flex flex-col gap-6">
+          <div className="flex *:grow gap-3">
+            <div className="flex flex-col gap-3">
+              <label
+                htmlFor="player1"
+                className="flex gap-1 sm:gap-2 items-center"
+              >
+                {t("player1")}
+              </label>
+              <input
+                className="w-full rounded-md shadow-sm border border-slate-300 px-3 py-1"
+                type="text"
+                name="player1"
+                defaultValue={bracketMatch?.player1?.player.player_name}
+                readOnly
+                required
+              />
+            </div>
+            <div className="flex flex-col gap-3">
+              <label htmlFor="points1">{t("points")}</label>
+              <input
+                className="w-full border border-gray-600 rounded-md text-center p-1"
+                id="points1"
+                type="number"
+                min="0"
+                max="5"
+                name="points1"
+                defaultValue={0}
+                required
+              />
+            </div>
+          </div>
+          <div className="flex *:grow gap-3">
+            <div className="flex flex-col gap-3">
+              <label
+                htmlFor="player2"
+                className="flex gap-1 sm:gap-2 items-center"
+              >
+                {t("player2")}
+              </label>
+              <input
+                className="w-full rounded-md shadow-sm border border-slate-300 px-3 py-1"
+                type="text"
+                name="player2"
+                defaultValue={bracketMatch?.player2?.player.player_name}
+                readOnly
+                required
+              />
+            </div>
+            <div className="flex flex-col gap-3">
+              <label htmlFor="points2">{t("points")}</label>
+              <input
+                className="w-full border border-gray-600 rounded-md text-center p-1"
+                id="points2"
+                type="number"
+                min="0"
+                max="5"
+                name="points2"
+                defaultValue={0}
+                required
+              />
+            </div>
+          </div>
+          <div className="flex items-center justify-center gap-2 text-sm font-semibold">
+            <button
+              disabled={loading}
+              type="submit"
+              className="disabled:bg-blue-300 bg-blue-500 w-full py-2 px-3 text-white rounded-md shadow-sm"
+            >
+              {t("submit")}
+            </button>
+            <button
+              type="button"
+              onClick={closeModal}
+              className="ring-2 ring-gray-900 ring-inset py-2 w-full rounded-md shadow-sm"
+            >
+              {t("back")}
+            </button>
+          </div>
+        </form>
       </>
     );
   }

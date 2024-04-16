@@ -54,7 +54,8 @@
     "addmatchfailed": "Vastase lisamine ebaõnnestus",
     "matchexists1": "Mängija",
     "matchexists2": "on juba mänginud mängijaga",
-    "unexpectederror": "Ootamatu viga"
+    "unexpectederror": "Ootamatu viga",
+    "nodraws": "viiki pole lubatud"
   },
   "AddPlayer": {
     "title": "Lisa Mängija",

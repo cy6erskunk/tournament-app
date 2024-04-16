@@ -54,7 +54,8 @@
     "addmatchfailed": "Kunde inte lägga till matchen",
     "matchexists": "Matchen mellan",
     "matchexits2": "finns redan för runda",
-    "unexpectederror": "Ett oväntat fel uppstod"
+    "unexpectederror": "Ett oväntat fel uppstod",
+    "nodraws": "inga dragningar tillåtna"
   },
   "AddPlayer": {
     "title": "Lägg till spelare",

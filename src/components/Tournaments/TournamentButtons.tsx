@@ -29,12 +29,14 @@ const TournamentButtons = () => {
   };
   return (
     <div className="container mx-auto p-2 flex flex-col md:flex-row gap-4">
-      <button
-        className="p-1 px-5 border rounded-md shadow-sm border-slate-600"
-        onClick={() => openModal(<AddMatch closeModal={closeModal} />)}
-      >
-        {t("addmatch")}
-      </button>
+      {context.tournament?.format === "Round Robin" ? (
+        <button
+          className="p-1 px-5 border rounded-md shadow-sm border-slate-600"
+          onClick={() => openModal(<AddMatch closeModal={closeModal} />)}
+        >
+          {t("addmatch")}
+        </button>
+      ) : null}
       <button
         className="p-1 px-5 border rounded-md shadow-sm border-slate-600"
         onClick={() => openModal(<Addplayer closeModal={closeModal} />)}

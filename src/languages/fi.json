@@ -54,7 +54,8 @@
     "addmatchfailed": "Ottelun lisääminen epäonnistui",
     "matchexists1": "Ottelu pelaajien",
     "matchexists2": "välillä on jo olemassa kierroksella",
-    "unexpectederror": "Odottamaton virhe"
+    "unexpectederror": "Odottamaton virhe",
+    "nodraws": "Tasapelit ei sallituja"
   },
   "AddPlayer": {
     "title": "Lisää ottelija",
