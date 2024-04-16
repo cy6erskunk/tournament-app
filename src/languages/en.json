@@ -34,7 +34,8 @@
     "position": "Rank",
     "remove": "Remove",
     "noPlayers": "No players found in tournament",
-    "noTournament": "No tournament found"
+    "noTournament": "No tournament found",
+    "add": "Add"
   },
   "Logout": {
     "logout": "Logout",

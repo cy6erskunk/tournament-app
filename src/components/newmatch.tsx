@@ -6,17 +6,27 @@ import { useTournamentContext } from "@/context/TournamentContext";
 import { Matches } from "@/types/Kysely";
 import NormalizedId from "@/types/NormalizedId";
 import { Match } from "./Results/Brackets/Tournament";
+import { Player } from "@/types/Player";
 
 type AddmatchProps = {
   closeModal: () => void;
   bracketMatch?: Match;
+  player?: Player;
+  opponent?: Player;
 };
 
-const AddMatch = ({ closeModal, bracketMatch }: AddmatchProps) => {
+const AddMatch = ({
+  closeModal,
+  bracketMatch,
+  player,
+  opponent,
+}: AddmatchProps) => {
   const [loading, setLoading] = useState(false);
   const t = useTranslations("NewMatch");
   const context = useTournamentContext();
-  const [selectedRound, setSelectedRound] = useState("1");
+  const [selectedRound, setSelectedRound] = useState(
+    context.activeRound.toString(),
+  );
 
   const onRoundChange = (e: FormEvent<HTMLInputElement>) => {
     setSelectedRound(e.currentTarget.value);
@@ -222,27 +232,38 @@ const AddMatch = ({ closeModal, bracketMatch }: AddmatchProps) => {
         {t("title")}
       </h1>
       <form onSubmit={handleSubmit} className="flex flex-col gap-6">
-        <div className="flex gap-6 *:grow mb-5">
+        <div className="flex gap-6 *:grow">
           <div className="w-1/2">
             <label className="flex flex-col items-center">
               {t("player1")}
-              <select
-                className="w-full border border-gray-600 rounded-md p-1"
-                name="player1"
-                defaultValue={"default"}
-              >
-                <option disabled value="default">
-                  {t("player1")}
-                </option>
-                {context.players.map((player) => (
-                  <option
-                    key={player.player.player_name}
-                    value={player.player.player_name}
-                  >
-                    {player.player.player_name}
+              {player ? (
+                <input
+                  className="w-full rounded-md shadow-sm border border-slate-300 px-3 py-1"
+                  type="text"
+                  name="player1"
+                  defaultValue={player.player.player_name}
+                  readOnly
+                  required
+                />
+              ) : (
+                <select
+                  className="w-full border border-gray-600 rounded-md p-1"
+                  name="player1"
+                  defaultValue={"default"}
+                >
+                  <option disabled value="default">
+                    {t("player1")}
                   </option>
-                ))}
-              </select>
+                  {context.players.map((player) => (
+                    <option
+                      key={player.player.player_name}
+                      value={player.player.player_name}
+                    >
+                      {player.player.player_name}
+                    </option>
+                  ))}
+                </select>
+              )}
             </label>
           </div>
           <div className="w-1/2">
@@ -263,23 +284,34 @@ const AddMatch = ({ closeModal, bracketMatch }: AddmatchProps) => {
           <div className="w-1/2">
             <label className="flex flex-col items-center">
               {t("player2")}
-              <select
-                className="w-full border border-gray-600 rounded-md p-1"
-                name="player2"
-                defaultValue={"default"}
-              >
-                <option disabled value="default">
-                  {t("player2")}
-                </option>
-                {context.players.map((player) => (
-                  <option
-                    key={player.player.player_name}
-                    value={player.player.player_name}
-                  >
-                    {player.player.player_name}
+              {opponent ? (
+                <input
+                  className="w-full rounded-md shadow-sm border border-slate-300 px-3 py-1"
+                  type="text"
+                  name="player2"
+                  defaultValue={opponent.player.player_name}
+                  readOnly
+                  required
+                />
+              ) : (
+                <select
+                  className="w-full border border-gray-600 rounded-md p-1"
+                  name="player2"
+                  defaultValue={"default"}
+                >
+                  <option disabled value="default">
+                    {t("player2")}
                   </option>
-                ))}
-              </select>
+                  {context.players.map((player) => (
+                    <option
+                      key={player.player.player_name}
+                      value={player.player.player_name}
+                    >
+                      {player.player.player_name}
+                    </option>
+                  ))}
+                </select>
+              )}
             </label>
           </div>
           <div className="w-1/2">

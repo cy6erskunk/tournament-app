@@ -1,5 +1,4 @@
-"use client";
-import { TrashIcon } from "@heroicons/react/24/outline";
+import { PlusCircleIcon, TrashIcon } from "@heroicons/react/24/outline";
 import { Player } from "@/types/Player";
 import { removeTournamentPlayer } from "@/database/removeTournamentPlayer";
 import { useTournamentContext } from "@/context/TournamentContext";
@@ -8,6 +7,7 @@ import { useEffect, useState } from "react";
 interface PlayerProps {
   player: Player;
   nthRow: number;
+  openModal: (player: Player, opponent?: Player) => void;
 }
 
 type Hits = {
@@ -19,8 +19,7 @@ interface Opponents {
   [key: string]: { winner: string | null; hits: number }[];
 }
 
-
-export function Player({ player, nthRow }: PlayerProps) {
+export function Player({ player, nthRow, openModal }: PlayerProps) {
   const context = useTournamentContext();
   const [hits, setHits] = useState<Hits>({ given: {}, taken: {} });
   const [matchesByOpponent, setOpponents] = useState<Opponents>({});
@@ -29,12 +28,12 @@ export function Player({ player, nthRow }: PlayerProps) {
     if (window.confirm(`Remove ${player.player.player_name}?`)) {
       const result = await removeTournamentPlayer(
         player.player.tournament_id,
-        player.player.player_name
+        player.player.player_name,
       );
 
       if (!result.success) {
         const userAgrees = window.confirm(
-          "Could not delete user from database, delete anyway?"
+          "Could not delete user from database, delete anyway?",
         );
         if (!userAgrees) return;
       }
@@ -42,7 +41,7 @@ export function Player({ player, nthRow }: PlayerProps) {
       context.setPlayers((prevPlayers) => {
         // Exclude player to be removed from context
         const players = prevPlayers.filter(
-          (state) => state.player.player_name !== player.player.player_name
+          (state) => state.player.player_name !== player.player.player_name,
         );
 
         // Loop remaining players
@@ -50,8 +49,9 @@ export function Player({ player, nthRow }: PlayerProps) {
           // Exclude matches involving removed player
           // keeping ones without the player
           const matches = p.matches.filter(
-            (match) => match.player1 !== player.player.player_name &&
-              match.player2 !== player.player.player_name
+            (match) =>
+              match.player1 !== player.player.player_name &&
+              match.player2 !== player.player.player_name,
           );
 
           return {
@@ -94,14 +94,13 @@ export function Player({ player, nthRow }: PlayerProps) {
         }
       } else {
         console.log(
-          `Player ${player.player.player_name} not found in hits info.`
+          `Player ${player.player.player_name} not found in hits info.`,
         );
       }
     });
 
     setHits(newHits);
     setOpponents(newOpponents);
-
   }, [context.players, player.matches, player.player]);
 
   return (
@@ -118,6 +117,11 @@ export function Player({ player, nthRow }: PlayerProps) {
         } font-semibold sticky left-0 z-10 outline outline-1 outline-slate-500`}
       >
         {player.player.player_name}
+      </td>
+      <td>
+        <button onClick={() => openModal(player)}>
+          <PlusCircleIcon className="h-8 w-8 text-blue-700" />
+        </button>
       </td>
       <td>
         <button
@@ -147,10 +151,14 @@ export function Player({ player, nthRow }: PlayerProps) {
         if (!matchData) {
           return (
             <td
+              className={isHighlighted ? "bg-gray-600" : "group"}
+              onClick={() => !isHighlighted && openModal(player, opponent)}
               key={key}
-              title="Testing"
-              className={isHighlighted ? "bg-gray-600" : ""}
-            ></td>
+            >
+              <button className="invisible group-hover:visible">
+                <PlusCircleIcon className="h-8 w-8 text-blue-700" />
+              </button>
+            </td>
           );
         }
 
@@ -169,10 +177,12 @@ export function Player({ player, nthRow }: PlayerProps) {
           <td
             key={key}
             title={`${player.player.player_name} vs. ${opponent.player.player_name}`}
-            className={isHighlighted
-              ? "bg-gray-600"
-              : "" +
-              " underline decoration-dotted cursor-help underline-offset-2"}
+            className={
+              isHighlighted
+                ? "bg-gray-600"
+                : "" +
+                  " underline decoration-dotted cursor-help underline-offset-2"
+            }
           >
             {result}
           </td>

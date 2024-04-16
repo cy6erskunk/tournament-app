@@ -34,7 +34,8 @@
     "position": "Koht",
     "remove": "Eemalda",
     "noPlayers": "Turniiril ei leitud ühtegi mängijat",
-    "noTournament": "Ühtegi turniiri ei leitud"
+    "noTournament": "Ühtegi turniiri ei leitud",
+    "add": "lisama"
   },
   "Logout": {
     "logout": "Logi välja",

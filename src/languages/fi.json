@@ -34,7 +34,8 @@
     "position": "Sija",
     "remove": "Poista",
     "noPlayers": "Pelaajia ei löytynyt turnauksesta",
-    "noTournament": "Turnausta ei löytynyt"
+    "noTournament": "Turnausta ei löytynyt",
+    "add": "Lisää"
   },
   "Logout": {
     "logout": "Kirjaudu ulos",

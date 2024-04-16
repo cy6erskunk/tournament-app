@@ -34,7 +34,8 @@
     "position": "Rank",
     "remove": "Ta bort",
     "noPlayers": "Inga spelare hittades i turneringen",
-    "noTournament": "Ingen turnering hittades"
+    "noTournament": "Ingen turnering hittades",
+    "add": "Lägg till"
   },
   "Logout": {
     "logout": "Logga ut",
