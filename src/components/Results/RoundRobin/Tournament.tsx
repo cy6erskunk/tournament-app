@@ -24,9 +24,13 @@ function Tournament() {
 
   const openModal = (player: TPlayer, opponent?: TPlayer) => {
     setModalPlayer(player);
+
     if (opponent) {
       setModalOpponent(opponent);
+    } else if (!opponent && modalOpponent) {
+      setModalOpponent(undefined);
     }
+
     setShowModal(true);
   };
 
