@@ -73,11 +73,13 @@ Open http://localhost:3000 with your browser to see the result.
 
 ### Admin/Testing credentials
 
-To add admin credentials in a debug environment you can use this SQL command to add a user with the name `admin` and password `password`.
+To add admin credentials in a debug environment you can use this SQL command to add an admin `admin`, `password` and a user account `user`, `password`.
 
 ```sql
 INSERT INTO "users" ("username", "password", "role")
-VALUES ('admin', '$2b$10$pYjCPeAy8xbSHrI6nevNgOaG1nLadHmlJeDtuHvbk/oWci9EQcqD.', 'admin');
+VALUES
+    ('admin', '$2b$10$pYjCPeAy8xbSHrI6nevNgOaG1nLadHmlJeDtuHvbk/oWci9EQcqD.', 'admin'),
+    ('user', '$2b$10$pYjCPeAy8xbSHrI6nevNgOaG1nLadHmlJeDtuHvbk/oWci9EQcqD.', 'user')
 ```
 
 ## App Router
