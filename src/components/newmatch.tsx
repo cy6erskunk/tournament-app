@@ -108,6 +108,11 @@ const AddMatch = ({
     context.setPlayers((prevPlayers) => {
       // Find the player with the specific player name
       return prevPlayers.map((player) => {
+        // Check if the player is in the match
+        if (player.player.player_name !== form.player1 && player.player.player_name !== form.player2) {
+          return player;
+        }
+
         // Create a copy of the player and add the match to its matches array
         return {
           player: player.player,

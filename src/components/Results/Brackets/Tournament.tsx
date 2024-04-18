@@ -24,10 +24,6 @@ export type Match = Omit<Matches, "id" | "player1" | "player2"> & {
 };
 
 export type Round = { id: number; matches: Match[] };
-export type Tournament = {
-  players: Player[];
-  rounds: Round[];
-};
 
 // Information passed up the bracket tournament to prevent
 // players from advancing when current match is not ready
@@ -37,9 +33,11 @@ type PlayerInfo = {
   futurePlayer: boolean; // Will there be a player here in the future?
 };
 
+type Pair = [PlayerInfo, PlayerInfo]
+
 export default function Tournament() {
   const context = useTournamentContext();
-  const [tournament, setTournament] = useState<Tournament | null>(null);
+  const [tournament, setTournament] = useState<Round[]>([]);
   const [capacity, setCapacity] = useState<number | undefined>(undefined);
 
   const getMatchByPlayer = (player: Player, round: Round) => {
@@ -66,102 +64,93 @@ export default function Tournament() {
   );
 
   const buildRound = useCallback(
-    (roundNumber: number, players: (Player | undefined)[]) => {
-      if (!context.tournament) return;
+    (roundNumber: number, tournamentId: number, pairs: Pair[]) => {
+      const msg = "%cBuilding round: " + roundNumber
+      if (!tournamentId) return;
+      const matches = new Map<number, Match>();
 
-      const round: Round = { id: roundNumber, matches: [] };
+      // Populate matches based on found match IDs
+      for (let pair of pairs) {
+        const [i1, i2] = pair;
+        const p1 = i1.player;
+        const p2 = i2.player;
 
-      for (let matchNumber = 0; matchNumber < players.length / 2; matchNumber++) {
-        const player1 = players[matchNumber * 2];
-        const player2 = players[matchNumber * 2 + 1];
+        if (!p1 || !p2) continue
 
-        if (!player1 || !player2) {
-          const match: Match = {
-            match: matchNumber + 1,
-            player1: player1,
-            player2: player2,
-            player1_hits: 0,
-            player2_hits: 0,
-            round: roundNumber,
-            tournament_id: context.tournament.id ?? 0,
-            winner: null,
-          };
-          round.matches.push(match);
-          continue
-        }
+        // If players share a match, add it to the round
+        const matchIds = p1.matches.map(match => match.id)
+        const hasMatch = p2.matches.find(match => matchIds.includes(match.id))
 
-        // Do the players share a match?
-        const matchIds = player1.matches.map((match) => match.id);
-        const hasMatch = player2.matches.find((match) =>
-          matchIds.includes(match.id),
-        );
+        if (!hasMatch) continue
+        if (hasMatch.round !== roundNumber) continue
 
-        if (hasMatch) {
-          round.matches.push(castToMatch(hasMatch));
-          continue;
-        }
+        // matches.set(`${hasMatch.match} ${hasMatch.round}`, castToMatch(hasMatch))
+        matches.set(hasMatch.match, castToMatch(hasMatch))
+      }
 
-        // If player1 and player2 don't share a match, create an empty one
-        // This is so we can still display the match in the bracket
-        // even if it hasn't been played yet
+      // Fill in the blanks for pairs that don't have matches
+      for (let i in pairs) {
+        const matchId = Number(i) + 1
+        if (matches.has(matchId)) continue
+
         const match: Match = {
-          match: matchNumber + 1,
-          player1: player1,
-          player2: player2,
+          match: matchId,
+          player1: pairs[i][0].player,
+          player2: pairs[i][1].player,
           player1_hits: 0,
           player2_hits: 0,
           round: roundNumber,
-          tournament_id: context.tournament.id ?? 0,
+          tournament_id: tournamentId,
           winner: null,
         };
-        round.matches.push(match);
+
+        matches.set(matchId, match)
       }
 
+      const round: Round = { id: roundNumber, matches: Array.from(matches.values()).sort((a, b) => a.match - b.match) };
       return round;
     },
-    [castToMatch, context.tournament],
+    [castToMatch],
   );
 
-  const buildTournament = useCallback((capacity?: number) => {
+  type RoundProps = {
+    capacity?: number;
+    tournamentId: number;
+    players: Player[];
+  }
+
+  const buildRounds = useCallback(({ capacity, tournamentId, players }: RoundProps) => {
     // Ensure there are enough players to build the tournament
-    if (!context.players || context.players.length < 2) {
+    if (!players || players.length < 2) {
       // TODO: Handle insufficient players case
       return;
     }
 
-    const tournament: Tournament = {
-      players: context.players,
-      rounds: [],
-    };
+    const rounds: Round[] = [];
 
     // If capacity is defined, fill the players array with placeholder data
-    let players: PlayerInfo[];
+    let playerInfo: PlayerInfo[];
     if (capacity) {
-      players = new Array<PlayerInfo>(capacity)
-      players.fill({ player: undefined, futurePlayer: false })
+      playerInfo = new Array<PlayerInfo>(capacity)
+      playerInfo.fill({ player: undefined, futurePlayer: false })
     } else {
-      players = []
+      playerInfo = []
     }
 
     // Populate the players array
     // This will also replace placeholder data if capacity was set
-    context.players.forEach((player, i) => {
-      players[i] = { player: player, futurePlayer: true }
+    players.forEach((player, i) => {
+      playerInfo[i] = { player: player, futurePlayer: true }
     });
 
     // Amount of rounds we should have based on players
-    const rounds = Math.ceil(Math.log2(context.players.length));
+    const roundCount = Math.ceil(Math.log2(players.length));
 
     // Loop through and build each round
-    for (let i = 1; i <= rounds; i++) {
-      const round = buildRound(i, players.map(info => info.player));
-      if (!round) continue;
-      tournament.rounds.push(round);
-
-      type Pair = [PlayerInfo, PlayerInfo]
+    for (let i = 1; i <= roundCount; i++) {
       const pairs: Pair[] = [];
       let latest: PlayerInfo = { player: undefined, futurePlayer: false }
-      players.forEach((player, i) => {
+      playerInfo.forEach((player, i) => {
         // If i + 1 is an equal number, last should exist and we create a pair
         if ((i + 1) % 2 == 0) {
           pairs.push([latest, player])
@@ -176,6 +165,10 @@ export default function Tournament() {
       if (latest.player) {
         pairs.push([latest, { player: undefined, futurePlayer: false }])
       }
+
+      const round = buildRound(i, tournamentId, pairs);
+      if (!round) continue;
+      rounds.push(round);
 
       const advancers = new Map<number, PlayerInfo>();
       pairs.forEach((pair, i) => {
@@ -221,7 +214,6 @@ export default function Tournament() {
         }
 
         if (!p1.player || !p2.player) {
-          console.log("Error checking for players")
           const res = { player: undefined, futurePlayer: false }
           advancers.set(i, res)
           return
@@ -232,21 +224,24 @@ export default function Tournament() {
         return
       })
 
-      console.log(`Round ${i}: (${players.map(p => [p.player?.player.player_name ?? "undefined", p.futurePlayer].join(" "))})`)
-      players = Array.from(advancers.values())
+      playerInfo = Array.from(advancers.values())
     }
 
-    return tournament;
-  }, [buildRound, context.players]);
+    return rounds;
+  }, [buildRound]);
 
   useEffect(() => {
+    if (context.loading) return
+    if (!context.tournament) return
+
     // Populate a tournament with rounds and matches from context.players using a pair of players for each match
     // If the players already have a match between them in context.players.matches then pair them up, if not
     // then still generate a empty match/element for them
-    const tournament = buildTournament(capacity);
+    const tournament = buildRounds({ capacity, tournamentId: context.tournament.id, players: context.players }) ?? []
+
     if (!tournament) return;
     setTournament(tournament);
-  }, [buildTournament, context.players, context.tournament, capacity]);
+  }, [buildRounds, context.players, context.tournament, capacity, context.loading]);
 
   // TODO: Handle the case where tournament is null
   if (!tournament) {
