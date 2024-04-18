@@ -65,7 +65,12 @@
     "submit": "Tallenna",
     "back": "Takaisin",
     "erroraddingplayer": "Virhe pelaajan lisäämisessä",
-    "playeradded": "lisätty"
+    "playerinplayerstable": "Nimimerkki on jo käytössä. Lisää pelaaja turnaukseen {title} kohdasta",
+    "playernotfound": "Pelaajaa ei löytynyt. Lisää uusi pelaaja {title2} kohdasta",
+    "nametoolong": "Maksimi pituus 16 merkkiä",
+    "playeradded": "lisätty",
+    "unauth": "Ei oikeuksia",
+    "alreadyintournament": "Pelaaja on jo turnauksessa"
   },
   "Select": {
     "selecttournament": "Valitse turnaus",

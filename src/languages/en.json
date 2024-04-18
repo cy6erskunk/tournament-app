@@ -65,7 +65,12 @@
     "submit": "Submit",
     "back": "Back",
     "erroraddingplayer": "Error adding player",
-    "playeradded": "added"
+    "playerinplayerstable": "Name is already taken. Add player to tournament from {title} button",
+    "playernotfound": "Player not found. Add new player from {title2} button",
+    "nametoolong": "Max length 16 characters",
+    "playeradded": "added",
+    "unauth": "Unauthorized access",
+    "alreadyintournament": "Player is already in the tournament"
   },
   "Select": {
     "selecttournament": "Select tournament",

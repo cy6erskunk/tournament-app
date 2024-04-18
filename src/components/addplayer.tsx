@@ -22,14 +22,46 @@ const Addplayer = ({ closeModal }: AddplayerProps) => {
       tournamentId: context.tournament?.id,
     };
 
+    // check name length
+    if (newP.name && newP.name?.toString().length > 16) {
+      alert(t("nametoolong"));
+      setLoading(false);
+      return;
+    }
+
+    // check if player is already in the tournament
+    const isAlreadyInTournament = context.players.filter(
+      (player) => player.player.player_name === newPlayer,
+    );
+    if (isAlreadyInTournament.length) {
+      alert(t("alreadyintournament"));
+      setLoading(false);
+      return;
+    }
+
     const res = await fetch("/api/addplayer", {
       method: "POST",
       body: JSON.stringify(newP),
     });
 
     if (!res.ok) {
-      alert(t("erroraddingplayer"));
-      console.log(res);
+      const errorMessage = await res.text();
+      switch (res.status) {
+        case 400:
+          if (
+            errorMessage === "Error adding player to tournament_players table"
+          ) {
+            alert(t("playernotfound", { title2: t("title2") }));
+            break;
+          }
+          alert(t("erroraddingplayer"));
+          break;
+        case 401:
+          alert(t("unauth"));
+          break;
+        default:
+          alert(t("erroraddingplayer"));
+      }
       setLoading(false);
       return;
     }
@@ -53,6 +85,7 @@ const Addplayer = ({ closeModal }: AddplayerProps) => {
         type="text"
         required
         placeholder={t("name")}
+        autoFocus
         className="flex w-full justify-center rounded-md border-0 py-1.5 px-3 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-500 focus:ring-2 focus:ring-inset focus:ring-blue-500 sm:text-sm sm:leading-6"
       />
       <div className="flex items-center justify-center gap-2 text-sm font-semibold">

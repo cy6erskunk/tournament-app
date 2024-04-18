@@ -65,7 +65,12 @@
     "submit": "Esita",
     "back": "Tagasi",
     "erroraddingplayer": "Mängija lisamine ebaõnnestus",
-    "playeradded": "lisatud"
+    "playerinplayerstable": "Nimi on juba võetud. Lisage mängija turniirile {title} nupust",
+    "playernotfound": "Mängijat ei leitud. Lisage uus mängija {title2} nupust",
+    "nametoolong": "Maksimaalne pikkus 16 tähemärki",
+    "playeradded": "lisatud",
+    "unauth": "Volitamata juurdepääs",
+    "alreadyintournament": "Mängija on juba turniiril"
   },
   "Select": {
     "selecttournament": "Valige turniir",

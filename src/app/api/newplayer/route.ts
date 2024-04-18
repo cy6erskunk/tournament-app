@@ -4,36 +4,36 @@ import { getSession } from "@/helpers/getsession";
 import { jsonParser } from "@/helpers/jsonParser";
 
 type PlayerData = {
-  name: string,
-  tournamentId: number,
-}
+  name: string;
+  tournamentId: number;
+};
 
 export async function POST(request: Request) {
-  const json = await request.text()
-  const data = jsonParser<PlayerData>(json)
+  const json = await request.text();
+  const data = jsonParser<PlayerData>(json);
 
-  const token = await getSession()
+  const token = await getSession();
   if (!token.success) {
     return Response.json(`Unauthorized access`, {
-      status: 403
-    })
+      status: 401,
+    });
   }
 
   if (!data.success) {
-    return Response.json(`Error inserting new user`, {
-      status: 400
-    })
+    return Response.json(data.error, {
+      status: 422,
+    });
   }
 
   if (!data.value.name) {
     return Response.json("Name must be set", {
-      status: 500
+      status: 500,
     });
   }
 
   if (!data.value.tournamentId) {
     return Response.json("Tournament must be set", {
-      status: 500
+      status: 500,
     });
   }
 
@@ -54,7 +54,10 @@ export async function POST(request: Request) {
   }
 
   // add existing player to tournament_players table
-  const tournamentPlayer = await addPlayer(data.value.name, data.value.tournamentId);
+  const tournamentPlayer = await addPlayer(
+    data.value.name,
+    data.value.tournamentId,
+  );
 
   // check if player was added to tournament_players table
   if (!tournamentPlayer.success) {

@@ -15,8 +15,8 @@ export async function POST(request: Request) {
   const token = await getSession()
   if (!token.success) {
     return new Response(`Unauthorized access`, {
-      status: 403
-    })
+      status: 401,
+    });
   }
 
   if (!data.success) {

@@ -65,7 +65,12 @@
     "submit": "Lämna in",
     "back": "Tillbaka",
     "erroraddingplayer": "Ett fel uppstod när spelaren skulle läggas till",
-    "playeradded": "har lagts till"
+    "playerinplayerstable": "Namnet är redan upptaget. Lägg till spelare till turneringen från knappen {title}",
+    "playernotfound": "Spelare hittades inte. Lägg till ny spelare från {title2} knappen",
+    "nametoolong": "Max längd 16 tecken",
+    "playeradded": "har lagts till",
+    "unauth": "Obehörig åtkomst",
+    "alreadyintournament": "Spelaren är redan med i turneringen"
   },
   "Select": {
     "selecttournament": "Välj turnering",
