@@ -33,7 +33,11 @@ export async function getSession(): Promise<Result<UserAccountInfo, string>> {
       return { success: false, error: "Error with token" };
     }
 
-    if (!verifyToken.role || verifyToken.role !== "admin") {
+    if (
+      !verifyToken.role ||
+      verifyToken.role !== "admin" &&
+      verifyToken.role !== "user"
+    ) {
       return { success: false, error: "Error with role" };
     }
 

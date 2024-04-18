@@ -14,7 +14,6 @@ export async function userLogin(
       .selectFrom("users")
       .selectAll()
       .where("username", "=", username)
-      .where("role", "=", "admin")
       .executeTakeFirst();
 
     if (!result) {
