@@ -6,9 +6,11 @@ import { useTranslations } from "next-intl";
 import Tournament from "@/types/Tournament";
 import { useEffect, useState } from "react";
 import { getRecentTournaments } from "@/database/getTournament";
+import { useUserContext } from "@/context/UserContext";
 
 export default function SelectTournament() {
   const t = useTranslations("Select");
+  const account = useUserContext();
   const [previousTournaments, setPreviousTournaments] = useState<Tournament[]>(
     [],
   );
@@ -51,9 +53,12 @@ export default function SelectTournament() {
           <p>{t("notournamentsfound")}</p>
         )}
       </div>
+      {account.user?.role === "admin" ? (
+
       <div className="border border-gray-900 max-w-md p-6 rounded-md shadow-md w-full">
         <NewTournament />
       </div>
+      ) : null}
     </section>
   );
 }
