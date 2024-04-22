@@ -20,7 +20,7 @@ export default function Round({ round }: RoundProps) {
   ));
 
   return (
-    <div className="grid w-full auto-rows-fr gap-32">
+    <div className="grid w-full auto-rows-fr gap-32 min-w-[450px]">
       {matches}
     </div>
   );

@@ -95,19 +95,21 @@ export default function Match({ competitors, match, round }: MatchProps) {
           : "bg-white *:text-gray-800"
           }`}
       >
-        <div className="flex gap-4 items-center w-full">
+        <div className="flex gap-4 items-center w-full p-2">
           <div className="flex w-10 aspect-square rounded-md items-center bg-slate-200">
             <span className="text-center w-full font-mono"> {match[`${playerKey}_hits`]}</span>
           </div>
 
           <div className="flex justify-between w-full">
             <div className="flex gap-4">
-              <span className={`text-xl font-bold ${isLoser ? "line-through" : ""}`}>
+              {getRemoveButton(competitor)}
+              <span
+                className={`text-xl font-bold ${isLoser ? "line-through" : ""}`}
+              >
                 {competitor.player.player_name}
               </span>
-              {getRemoveButton(competitor)}
             </div>
-            <div className="flex items-center gap-2 text-sm">
+            <div className="flex items-center gap-2 text-sm *:text-nowrap">
               <span>{`Match: ${match.match}`}</span>
               <span>{`Round: ${match.round}`}</span>
             </div>

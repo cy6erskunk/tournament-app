@@ -11,20 +11,20 @@ const TournamentInfo = () => {
   return (
     <>
       {context.hidden ? (
-        <section className="container mx-auto p-2 flex flex-col lg:flex-row gap-3 *:grow">
+        <>
           {context.tournament?.format === "Round Robin" ? (
-            <>
+            <section className="container mx-auto p-2 flex flex-col lg:flex-row gap-3 *:grow">
               <RoundRobin />
               <LeaderboardSidebar />
-            </>
+            </section>
           ) : null}
 
           {context.tournament?.format === "Brackets" ? (
-            <>
+            <section className="p-2">
               <Brackets />
-            </>
+            </section>
           ) : null}
-        </section>
+        </>
       ) : (
         <section className="container mx-auto p-2 flex flex-col md:flex-row gap-3 *:grow">
           <Leaderboard />
