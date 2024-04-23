@@ -39,7 +39,8 @@
   },
   "Logout": {
     "logout": "Logga ut",
-    "newplayer": "Ny spelare"
+    "newplayer": "Ny spelare",
+    "returntotournaments": "Turneringan"
   },
   "NewMatch": {
     "title": "Runda",

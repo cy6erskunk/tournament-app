@@ -14,7 +14,7 @@ const Page = async () => {
   return (
     <>
       <TournamentContextProvider>
-        <Navbar showNewPlayerButton={true}/>
+        <Navbar showNewPlayerButton={true} isTournamentSelectionPage={false}/>
         <TournamentButtons />
         <TournamentInfo />
       </TournamentContextProvider>

@@ -39,7 +39,8 @@
   },
   "Logout": {
     "logout": "Logi välja",
-    "newplayer": "Uus mängija"
+    "newplayer": "Uus mängija",
+    "returntotournaments": "Turniirid"
   },
   "NewMatch": {
     "title": "Raund",

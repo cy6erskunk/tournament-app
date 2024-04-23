@@ -39,7 +39,8 @@
   },
   "Logout": {
     "logout": "Logout",
-    "newplayer": "New player"
+    "newplayer": "New player",
+    "returntotournaments": "Tournaments"
   },
   "NewMatch": {
     "title": "Round",

@@ -39,7 +39,8 @@
   },
   "Logout": {
     "logout": "Kirjaudu ulos",
-    "newplayer": "Uusi ottelija"
+    "newplayer": "Uusi ottelija",
+    "returntotournaments": "Turnaukset"
   },
   "NewMatch": {
     "title": "Kierros",

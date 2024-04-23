@@ -55,12 +55,6 @@ const TournamentButtons = () => {
       >
         {t("empty")}
       </button>
-      <Link
-        href="/select"
-        className="p-1 px-5 border rounded-md shadow-sm border-slate-600 text-center"
-      >
-        {t("tournaments")}
-      </Link>
       <Modal isOpen={showModal} closeModal={closeModal}>
         {modalContent}
       </Modal>
