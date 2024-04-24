@@ -1,32 +1,62 @@
 "use client";
+
 import { useTournamentContext } from "@/context/TournamentContext";
 import { Loading } from "@/components/Results/RoundRobin/Loading";
 import { useTranslations } from "next-intl";
 import { LeaderboardPlayer } from "@/components/Leaderboards/LeaderboardPlayer";
 import { useEffect, useState } from "react";
 import { Player } from "@/types/Player";
+import {
+  LeaderboardBuilder,
+  LeaderboardColumns,
+  SortDirection,
+} from "@/helpers/leaderboardSort";
 
 const Leaderboard = () => {
   const t = useTranslations("Leaderboard");
   const context = useTournamentContext();
   const [players, setPlayers] = useState<Player[]>([]);
+  const [sortCol, setSortCol] = useState<LeaderboardColumns>("percentage");
+  const [direction, setDirection] = useState<SortDirection>("DEFAULT");
 
   useEffect(() => {
-    const p = [...context.players].sort((a, b) => {
-      const winsA = a.matches.reduce((count, match) => {
-        if (match.winner !== a.player.player_name) return count;
-        return count + 1;
-      }, 0);
+    const p = new LeaderboardBuilder()
+      .players([...context.players])
+      .direction(direction)
+      .column(sortCol)
+      .sort();
 
-      const winsB = b.matches.reduce((count, match) => {
-        if (match.winner !== b.player.player_name) return count;
-        return count + 1;
-      }, 0);
-
-      return winsB - winsA;
-    });
     setPlayers(p);
-  }, [context.players]);
+  }, [context.players, direction, sortCol]);
+
+  function sortHandler(col: LeaderboardColumns) {
+    if (sortCol === col && direction !== "DEFAULT") {
+      if (direction === "ASC") {
+        return setDirection("DESC");
+      }
+      setDirection("DEFAULT");
+      setSortCol("percentage");
+      return
+    }
+
+    setDirection("ASC");
+    setSortCol(col);
+  }
+
+  function sortIndicator(col: LeaderboardColumns) {
+    if (sortCol !== col) return;
+
+    // HTML Character codes for up and down chevron icons
+    // https://www.w3schools.com/charsets/ref_utf_arrows.asp
+    // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/fromCharCode
+    let dir = undefined;
+    if (direction === "ASC") dir = 11205;
+    if (direction === "DESC") dir = 11206;
+
+    if (!dir) return;
+
+    return <span>{String.fromCharCode(dir)}</span>;
+  }
 
   return (
     <div className="w-full md:w-2/3">
@@ -41,30 +71,49 @@ const Leaderboard = () => {
           <thead>
             <tr className="text-white *:py-4 *:bg-blue-500">
               <th className="w-28 min-w-28">{t("position")}</th>
-              <th className="w-20 min-w-20">{t("name")}</th>
+              <th className="w-20 min-w-20" onClick={() => sortHandler("name")}>
+                {t("name")}
+                {sortIndicator("name")}
+              </th>
               <th
-                title={`${t("hoverWin%")}`}
+                title={t("hoverWin%")}
                 className="underline decoration-dotted cursor-help underline-offset-2 w-20 min-w-20"
+                onClick={() => sortHandler("percentage")}
               >
                 {t("win%")}
+                {sortIndicator("percentage")}
               </th>
               <th
-                title={`${t("hoverHitsGiven")}`}
+                title={`${t("win")}/${t("loss")}`}
                 className="underline decoration-dotted cursor-help underline-offset-2 w-20 min-w-20"
+                onClick={() => sortHandler("wins")}
+              >
+                {`${t("winShort")}/${t("lossShort")}`}
+                {sortIndicator("wins")}
+              </th>
+              <th
+                title={t("hoverHitsGiven")}
+                className="underline decoration-dotted cursor-help underline-offset-2 w-20 min-w-20"
+                onClick={() => sortHandler("given")}
               >
                 {t("hitsGiven")}
+                {sortIndicator("given")}
               </th>
               <th
-                title={`${t("hoverHitsReceived")}`}
+                title={t("hoverHitsReceived")}
                 className="underline decoration-dotted cursor-help underline-offset-2 w-20 min-w-20"
+                onClick={() => sortHandler("taken")}
               >
                 {t("hitsReceived")}
+                {sortIndicator("taken")}
               </th>
               <th
-                title={`${t("hoverAO-VO")}`}
+                title={t("hoverAO-VO")}
                 className="underline decoration-dotted cursor-help underline-offset-2 w-20 min-w-20"
+                onClick={() => sortHandler("index")}
               >
                 {t("AO-VO")}
+                {sortIndicator("index")}
               </th>
             </tr>
           </thead>

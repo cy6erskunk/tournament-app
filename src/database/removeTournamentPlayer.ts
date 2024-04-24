@@ -14,7 +14,8 @@ export async function removeTournamentPlayer(
       .where("player_name", "=", playerName)
       .executeTakeFirst();
 
-    if (!res.numDeletedRows) {
+    const count = Number(res.numDeletedRows)
+    if (!count) {
       return { success: false, error: "No players deleted" };
     }
   } catch (error) {

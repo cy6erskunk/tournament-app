@@ -35,7 +35,11 @@
     "remove": "Ta bort",
     "noPlayers": "Inga spelare hittades i turneringen",
     "noTournament": "Ingen turnering hittades",
-    "add": "Lägg till"
+    "add": "Lägg till",
+    "win": "Vinna",
+    "loss": "Förlust",
+    "winShort": "V",
+    "lossShort": "F"
   },
   "Logout": {
     "logout": "Logga ut",

@@ -3,6 +3,7 @@ import { Player } from "@/types/Player";
 import { removeTournamentPlayer } from "@/database/removeTournamentPlayer";
 import { useTournamentContext } from "@/context/TournamentContext";
 import { useEffect, useState } from "react";
+import { useTranslations } from "next-intl";
 
 interface PlayerProps {
   player: Player;
@@ -23,6 +24,7 @@ export function Player({ player, nthRow, openModal }: PlayerProps) {
   const context = useTournamentContext();
   const [hits, setHits] = useState<Hits>({ given: {}, taken: {} });
   const [matchesByOpponent, setOpponents] = useState<Opponents>({});
+  const t = useTranslations("Leaderboard");
 
   async function removePlayer() {
     if (window.confirm(`Remove ${player.player.player_name}?`)) {
@@ -166,9 +168,9 @@ export function Player({ player, nthRow, openModal }: PlayerProps) {
         const { winner, hits } = matchData;
 
         if (winner === player.player.player_name) {
-          result = `V`;
+          result = t("winShort");
         } else if (winner === opponent.player.player_name) {
-          result = `L`;
+          result = t("lossShort");
         }
 
         result += hits;

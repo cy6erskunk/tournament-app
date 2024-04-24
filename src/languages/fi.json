@@ -35,7 +35,11 @@
     "remove": "Poista",
     "noPlayers": "Pelaajia ei löytynyt turnauksesta",
     "noTournament": "Turnausta ei löytynyt",
-    "add": "Lisää"
+    "add": "Lisää",
+    "win": "Voitto",
+    "loss": "Häviö",
+    "winShort": "V",
+    "lossShort": "H"
   },
   "Logout": {
     "logout": "Kirjaudu ulos",

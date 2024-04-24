@@ -3,7 +3,6 @@ import { Matches } from "@/types/Kysely";
 import { getSession } from "@/helpers/getsession";
 import { jsonParser } from "@/helpers/jsonParser";
 
-// add new match
 export async function POST(request: Request) {
   const json = await request.text()
   const data = jsonParser<Matches>(json)

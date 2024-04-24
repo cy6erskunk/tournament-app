@@ -35,7 +35,11 @@
     "remove": "Eemalda",
     "noPlayers": "Turniiril ei leitud ühtegi mängijat",
     "noTournament": "Ühtegi turniiri ei leitud",
-    "add": "lisama"
+    "add": "lisama",
+    "win": "Võit",
+    "loss": "Kaotus",
+    "winShort": "V",
+    "lossShort": "K"
   },
   "Logout": {
     "logout": "Logi välja",
