@@ -9,6 +9,7 @@ interface PlayerProps {
   player: Player;
   nthRow: number;
   openModal: (player: Player, opponent?: Player) => void;
+  openEditModal: (player: Player, opponent: Player) => void;
 }
 
 type Hits = {
@@ -20,7 +21,7 @@ interface Opponents {
   [key: string]: { winner: string | null; hits: number }[];
 }
 
-export function Player({ player, nthRow, openModal }: PlayerProps) {
+export function Player({ player, nthRow, openModal, openEditModal }: PlayerProps) {
   const context = useTournamentContext();
   const [hits, setHits] = useState<Hits>({ given: {}, taken: {} });
   const [matchesByOpponent, setOpponents] = useState<Opponents>({});
@@ -185,6 +186,7 @@ export function Player({ player, nthRow, openModal }: PlayerProps) {
                 : "" +
                   " underline decoration-dotted cursor-help underline-offset-2"
             }
+            onClick={() => openEditModal(player, opponent)}
           >
             {result}
           </td>

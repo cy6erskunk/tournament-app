@@ -11,19 +11,53 @@ function isErrorWithCode(error: any): error is { code: string } {
 }
 
 export async function updateMatch(
-  form: Omit<Matches, "id">, id: number
+  form: Omit<Matches, "id">,
 ): Promise<Result<NormalizedId<Matches>, { value: string; code?: number }>> {
   try {
+    const match = await db
+      .selectFrom("matches")
+      .select(["player1", "player2"])
+      .where((eb) =>
+        eb.or([
+          eb("player1", "=", form.player1),
+          eb("player1", "=", form.player2),
+        ]),
+      )
+      .where((eb) =>
+        eb.or([
+          eb("player2", "=", form.player2),
+          eb("player2", "=", form.player1),
+        ]),
+      )
+      .where("tournament_id", "=", form.tournament_id)
+      .where("round", "=", form.round)
+      .executeTakeFirst();
+
+    let p1 = form.player1;
+    let p1hits = form.player1_hits;
+    let p2 = form.player2;
+    let p2hits = form.player2_hits;
+
+    if (match?.player1 !== form.player1) {
+      p1 = form.player2;
+      p1hits = form.player2_hits;
+      p2 = form.player1;
+      p2hits = form.player1_hits;
+    }
+
     const res = await db
       .updateTable("matches")
       .set({
-        // TODO: Set required fields here
-        // https://kysely.dev/docs/examples/UPDATE/single-row
+        player1_hits: p1hits,
+        player2_hits: p2hits,
+        winner: form.winner,
       })
-      .where("id", "=", id)
+      .where("player1", "=", p1)
+      .where("player2", "=", p2)
+      .where("tournament_id", "=", form.tournament_id)
+      .where("round", "=", form.round)
       .returningAll()
       .executeTakeFirst();
-
     if (!res) {
       return { success: false, error: { value: "Could not insert match" } };
     }

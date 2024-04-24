@@ -1,23 +1,25 @@
 import { addMatch } from "@/database/addMatch";
+import { deleteMatch } from "@/database/deleteMatch";
+import { updateMatch } from "@/database/updateMatch";
 import { Matches } from "@/types/Kysely";
 import { getSession } from "@/helpers/getsession";
 import { jsonParser } from "@/helpers/jsonParser";
 
 export async function POST(request: Request) {
-  const json = await request.text()
-  const data = jsonParser<Matches>(json)
+  const json = await request.text();
+  const data = jsonParser<Matches>(json);
 
-  const token = await getSession()
+  const token = await getSession();
   if (!token.success) {
     return new Response(`Unauthorized access`, {
-      status: 403
-    })
+      status: 403,
+    });
   }
 
   if (!data.success) {
     return new Response(`Error reading match`, {
-      status: 400
-    })
+      status: 400,
+    });
   }
 
   // add match to matches table
@@ -33,6 +35,71 @@ export async function POST(request: Request) {
 
     return new Response(`Error adding match: ${matchResult.error}`, {
       status: status,
+    });
+  }
+
+  return new Response(JSON.stringify(matchResult.value));
+}
+
+export async function GET(request: Request) {
+  // Get the id from the request query
+
+  return new Response(`Hello world`, { status: 200 });
+}
+
+export async function PUT(request: Request) {
+  // Get the id from the request query
+  const json = await request.text();
+  const data = jsonParser<Matches>(json);
+
+  const token = await getSession();
+  if (!token.success) {
+    return new Response(`Unauthorized access`, {
+      status: 403,
+    });
+  }
+
+  if (!data.success) {
+    return new Response(`Error reading match`, {
+      status: 400,
+    });
+  }
+
+  // add match to matches table
+  const matchResult = await updateMatch(data.value);
+  if (!matchResult.success) {
+    return new Response(`Error updating match: ${matchResult.error}`, {
+      status: 400,
+    });
+  }
+
+  return new Response(JSON.stringify(matchResult.value));
+}
+
+export async function DELETE(request: Request) {
+  // Get the id from the request query
+  const json = await request.text();
+  const data = jsonParser<Matches>(json);
+
+  const token = await getSession();
+  if (!token.success) {
+    return new Response(`Unauthorized access`, {
+      status: 403,
+    });
+  }
+
+  if (!data.success) {
+    return new Response(`Error reading match`, {
+      status: 400,
+    });
+  }
+
+  // add match to matches table
+  const matchResult = await deleteMatch(data.value);
+
+  if (!matchResult.success) {
+    return new Response(`Error deleting match: ${matchResult.error}`, {
+      status: 400,
     });
   }
 

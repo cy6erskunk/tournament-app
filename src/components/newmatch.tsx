@@ -99,7 +99,7 @@ const AddMatch = ({
       form.winner = form.player2;
     }
 
-    const res = await fetch("/api/match", {
+    const res = await fetch("/api/matches", {
       method: "POST",
       body: JSON.stringify(form),
     });
