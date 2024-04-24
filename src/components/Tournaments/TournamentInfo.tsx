@@ -13,7 +13,7 @@ const TournamentInfo = () => {
       {context.hidden ? (
         <>
           {context.tournament?.format === "Round Robin" ? (
-            <section className="container mx-auto p-2 flex flex-col lg:flex-row gap-3 *:grow">
+            <section className="mx-auto p-2 flex flex-col lg:flex-row justify-center gap-3">
               <RoundRobin />
               <LeaderboardSidebar />
             </section>

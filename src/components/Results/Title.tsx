@@ -29,10 +29,8 @@ export function TournamentTitle() {
     )
   }
   return (
-    <div className="flex flex-col">
-      <span>
-        {name}
-      </span>
+    <div className="flex flex-col xl:flex-row xl:gap-10 xl:items-center">
+      <span>{name}</span>
       {getEditing()}
     </div>
   );

@@ -59,13 +59,13 @@ function Tournament() {
   };
 
   return (
-    <div className="w-full lg:w-2/3">
-      <div className="sm:my-2 items-center text-xl sm:text-4xl font-bold flex justify-between">
+    <div className="2xl:max-w-fit lg:w-4/5">
+      <div className="sm:my-2 items-center text-xl sm:text-4xl font-bold flex justify-between gap-4">
         <TournamentTitle />
         <Rounds />
       </div>
 
-      <div className="overflow-auto max-h-[500px] border-2 border-slate-500 rounded-md shadow-md">
+      <div className="overflow-auto border-2 border-slate-500 rounded-md shadow-md">
         <table className="w-full">
           <thead>
             <tr

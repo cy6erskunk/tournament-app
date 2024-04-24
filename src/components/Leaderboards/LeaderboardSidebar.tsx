@@ -29,7 +29,7 @@ const LeaderboardSidebar = () => {
   }, [context.players]);
 
   return (
-    <div className="overflow-auto max-h-[556px] border-2 rounded-md shadow-md border-gray-400">
+    <div className="lg:max-w-sm lg:w-1/5 border-2 rounded-md shadow-md border-gray-400">
       <table className="table-auto w-full">
         <thead>
           <tr className="text-white *:py-4 bg-gray-400">
