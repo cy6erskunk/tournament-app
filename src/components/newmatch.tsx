@@ -24,12 +24,32 @@ const AddMatch = ({
   const [loading, setLoading] = useState(false);
   const t = useTranslations("NewMatch");
   const context = useTournamentContext();
-  const [selectedRound, setSelectedRound] = useState(
-    context.activeRound.toString(),
-  );
 
-  const onRoundChange = (e: FormEvent<HTMLInputElement>) => {
-    setSelectedRound(e.currentTarget.value);
+  const getOpponent = (opp: Player) => {
+    const playerName = player?.player.player_name;
+    const opponentName = opp.player.player_name;
+
+    if (opponentName === playerName) return null;
+
+    // Check if player already played against opponent in current round
+    if (player?.matches && player.matches.length > 0) {
+      for (const match of player?.matches) {
+        if (
+          (match.player1 === opponentName &&
+            context.activeRound === match.round) ||
+          (match.player2 === opponentName &&
+            context.activeRound === match.round)
+        ) {
+          return null;
+        }
+      }
+    }
+
+    return (
+      <option key={opp.player.player_name} value={opp.player.player_name}>
+        {opp.player.player_name}
+      </option>
+    );
   };
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
@@ -51,7 +71,7 @@ const AddMatch = ({
       player2_hits: Number(formData.get("points2")),
       winner: null,
       tournament_id: Number(context.tournament.id),
-      round: bracketMatch?.round ?? Number(formData.get("round")),
+      round: bracketMatch?.round ?? context.activeRound,
     };
 
     if (form.player1_hits === form.player2_hits) {
@@ -145,7 +165,7 @@ const AddMatch = ({
     return (
       <>
         <h1 className="mb-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
-          {t("title")}
+          {`${bracketMatch?.round}. ${t("title")}`}
         </h1>
         <form onSubmit={handleSubmit} className="flex flex-col gap-6">
           <div className="flex *:grow gap-3">
@@ -174,7 +194,7 @@ const AddMatch = ({
                 min="0"
                 max="5"
                 name="points1"
-                defaultValue={0}
+                placeholder="0"
                 required
               />
             </div>
@@ -205,7 +225,7 @@ const AddMatch = ({
                 min="0"
                 max="5"
                 name="points2"
-                defaultValue={0}
+                placeholder="0"
                 required
               />
             </div>
@@ -234,9 +254,9 @@ const AddMatch = ({
   return (
     <>
       <h1 className="mb-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
-        {t("title")}
+        {`${context.activeRound}. ${t("title")}`}
       </h1>
-      <form onSubmit={handleSubmit} className="flex flex-col gap-6">
+      <form onSubmit={handleSubmit} className="flex flex-col gap-8">
         <div className="flex gap-6 *:grow">
           <div className="w-1/2">
             <label className="flex flex-col items-center">
@@ -280,7 +300,7 @@ const AddMatch = ({
               min="0"
               max="5"
               name="points1"
-              defaultValue={0}
+              placeholder="0"
               required
             />
           </div>
@@ -307,14 +327,7 @@ const AddMatch = ({
                   <option disabled value="default">
                     {t("player2")}
                   </option>
-                  {context.players.map((player) => (
-                    <option
-                      key={player.player.player_name}
-                      value={player.player.player_name}
-                    >
-                      {player.player.player_name}
-                    </option>
-                  ))}
+                  {context.players.map((player) => getOpponent(player))}
                 </select>
               )}
             </label>
@@ -328,30 +341,10 @@ const AddMatch = ({
               min="0"
               max="5"
               name="points2"
-              defaultValue={0}
+              placeholder="0"
               required
             />
           </div>
-        </div>
-        <div className="flex gap-3">
-          <input
-            type="radio"
-            name="round"
-            value="1"
-            id="1"
-            checked={selectedRound === "1"}
-            onChange={onRoundChange}
-          />
-          <label htmlFor="1">1. {t("title")}</label>
-          <input
-            type="radio"
-            name="round"
-            value="2"
-            id="2"
-            checked={selectedRound === "2"}
-            onChange={onRoundChange}
-          />
-          <label htmlFor="2">2. {t("title")}</label>
         </div>
         <div className="flex items-center justify-center gap-2 text-sm font-semibold">
           <button
