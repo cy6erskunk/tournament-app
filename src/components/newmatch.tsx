@@ -192,7 +192,7 @@ const AddMatch = ({
                 id="points1"
                 type="number"
                 min="0"
-                max="5"
+                max="99"
                 name="points1"
                 placeholder="0"
                 required
@@ -223,7 +223,7 @@ const AddMatch = ({
                 id="points2"
                 type="number"
                 min="0"
-                max="5"
+                max="99"
                 name="points2"
                 placeholder="0"
                 required
@@ -298,7 +298,7 @@ const AddMatch = ({
               id="points1"
               type="number"
               min="0"
-              max="5"
+              max="99"
               name="points1"
               placeholder="0"
               required
@@ -339,7 +339,7 @@ const AddMatch = ({
               id="points2"
               type="number"
               min="0"
-              max="5"
+              max="99"
               name="points2"
               placeholder="0"
               required

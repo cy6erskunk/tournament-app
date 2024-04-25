@@ -257,7 +257,7 @@ const EditMatch = ({ closeModal, player, opponent }: EditmatchProps) => {
               id="points1"
               type="number"
               min="0"
-              max="5"
+              max="99"
               name="points1"
               defaultValue={
                 findSharedMatch(player, opponent)?.player1_hits ?? 0
@@ -290,7 +290,7 @@ const EditMatch = ({ closeModal, player, opponent }: EditmatchProps) => {
               id="points2"
               type="number"
               min="0"
-              max="5"
+              max="99"
               name="points2"
               defaultValue={
                 findSharedMatch(player, opponent)?.player2_hits ?? 0
