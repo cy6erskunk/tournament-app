@@ -208,7 +208,10 @@ const EditMatch = ({ closeModal, player, opponent }: EditmatchProps) => {
   function findSharedMatch(player: Player, opponent: Player) {
     // If players share a match, add it to the round
     const matchIds = player.matches.map((match) => match.id);
-    const match = opponent.matches.find((match) => matchIds.includes(match.id));
+    const match = opponent.matches.find(
+      (match) =>
+        matchIds.includes(match.id) && match.round === context.activeRound,
+    );
 
     if (!match) return match;
 
