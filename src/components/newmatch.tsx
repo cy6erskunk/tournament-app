@@ -259,35 +259,38 @@ const AddMatch = ({
       <form onSubmit={handleSubmit} className="flex flex-col gap-8">
         <div className="flex gap-6 *:grow">
           <div className="w-1/2">
-            <label className="flex flex-col items-center">
+            <label className="flex flex-col items-center" htmlFor="player1">
               {t("player1")}
               {player ? (
                 <input
-                  className="w-full rounded-md shadow-sm border border-slate-300 px-3 py-1"
                   type="text"
                   name="player1"
+                  id="player1"
+                  className="w-full rounded-md shadow-sm border border-slate-300 px-3 py-1"
                   defaultValue={player.player.player_name}
                   readOnly
                   required
                 />
               ) : (
-                <select
-                  className="w-full border border-gray-600 rounded-md p-1"
-                  name="player1"
-                  defaultValue={"default"}
-                >
-                  <option disabled value="default">
-                    {t("player1")}
-                  </option>
-                  {context.players.map((player) => (
-                    <option
-                      key={player.player.player_name}
-                      value={player.player.player_name}
-                    >
-                      {player.player.player_name}
-                    </option>
-                  ))}
-                </select>
+                <>
+                  <input
+                    list="player1list"
+                    id="player1"
+                    name="player1"
+                    className="w-full border border-gray-600 rounded-md py-1 px-2"
+                    autoFocus
+                  />
+                  <datalist id="player1list">
+                    {context.players.map((player) => (
+                      <option
+                        key={player.player.player_name}
+                        value={player.player.player_name}
+                      >
+                        {player.player.player_name}
+                      </option>
+                    ))}
+                  </datalist>
+                </>
               )}
             </label>
           </div>
@@ -307,28 +310,30 @@ const AddMatch = ({
         </div>
         <div className="flex gap-6 *:grow">
           <div className="w-1/2">
-            <label className="flex flex-col items-center">
+            <label className="flex flex-col items-center" htmlFor="player2">
               {t("player2")}
               {opponent ? (
                 <input
-                  className="w-full rounded-md shadow-sm border border-slate-300 px-3 py-1"
                   type="text"
                   name="player2"
+                  id="player2"
+                  className="w-full rounded-md shadow-sm border border-slate-300 px-3 py-1"
                   defaultValue={opponent.player.player_name}
                   readOnly
                   required
                 />
               ) : (
-                <select
-                  className="w-full border border-gray-600 rounded-md p-1"
-                  name="player2"
-                  defaultValue={"default"}
-                >
-                  <option disabled value="default">
-                    {t("player2")}
-                  </option>
-                  {context.players.map((player) => getOpponent(player))}
-                </select>
+                <>
+                  <input
+                    list="player2list"
+                    id="player2"
+                    name="player2"
+                    className="w-full border border-gray-600 rounded-md py-1 px-2"
+                  />
+                  <datalist id="player2list">
+                    {context.players.map((player) => getOpponent(player))}
+                  </datalist>
+                </>
               )}
             </label>
           </div>

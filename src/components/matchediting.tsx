@@ -248,6 +248,7 @@ const EditMatch = ({ closeModal, player, opponent }: EditmatchProps) => {
               className="w-full rounded-md shadow-sm border border-slate-300 px-3 py-1"
               type="text"
               name="player1"
+              id="player1"
               defaultValue={player.player.player_name}
               readOnly
               required
@@ -281,6 +282,7 @@ const EditMatch = ({ closeModal, player, opponent }: EditmatchProps) => {
               className="w-full rounded-md shadow-sm border border-slate-300 px-3 py-1"
               type="text"
               name="player2"
+              id="player2"
               defaultValue={opponent.player.player_name}
               readOnly
               required
