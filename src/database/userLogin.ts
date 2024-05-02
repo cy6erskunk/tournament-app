@@ -17,7 +17,7 @@ export async function userLogin(
       .executeTakeFirst();
 
     if (!result) {
-      return { success: false, error: "Error logging in" };
+      return { success: false, error: "Wrong username or password" };
     }
 
     const isPasswordValid = await passwordCheck(password, result.password);

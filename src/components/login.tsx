@@ -29,10 +29,10 @@ export default function Login() {
     setLoading(true);
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
-    const name = formData.get("name")?.toString();
-    const password = formData.get("password")?.toString();
+    const name = formData.get("name")?.toString().trim();
+    const password = formData.get("password")?.toString().trim();
     if (!name || !password) {
-      console.log("Error: " + "Name or password is empty");
+      alert(t("userorpasswordempty"));
       setLoading(false);
       return;
     }
@@ -42,7 +42,7 @@ export default function Login() {
     if (!status.success) {
       console.log("Error: " + status.error);
       setLoading(false);
-      alert("Wrong username or password");
+      alert(t("wronguserorpassword"));
       return;
     }
 
@@ -66,6 +66,7 @@ export default function Login() {
             type="text"
             required
             className="block w-full rounded-md border-0 py-1.5 px-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-500 sm:text-sm sm:leading-6"
+            autoFocus
           />
         </div>
       </div>

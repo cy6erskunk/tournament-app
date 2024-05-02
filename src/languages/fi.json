@@ -6,7 +6,9 @@
   "Login": {
     "name": "Käyttäjätunnus",
     "password": "Salasana",
-    "submit": "Kirjaudu sisään"
+    "submit": "Kirjaudu sisään",
+    "userorpasswordempty": "Lisää käyttäjätunnus ja salasana",
+    "wronguserorpassword": "Väärä käyttäjätunnus tai salasana"
   },
   "Tournament": {
     "Buttons": {
@@ -76,7 +78,8 @@
     "nametoolong": "Maksimi pituus 16 merkkiä",
     "playeradded": "lisätty",
     "unauth": "Ei oikeuksia",
-    "alreadyintournament": "Pelaaja on jo turnauksessa"
+    "alreadyintournament": "Pelaaja on jo turnauksessa",
+    "emptyname": "Lisää nimi"
   },
   "Select": {
     "selecttournament": "Valitse turnaus",

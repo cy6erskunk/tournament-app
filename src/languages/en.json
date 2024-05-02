@@ -6,7 +6,9 @@
   "Login": {
     "name": "User",
     "password": "Password",
-    "submit": "Sign in"
+    "submit": "Sign in",
+    "userorpasswordempty": "User or password is empty",
+    "wronguserorpassword": "Wrong username or password"
   },
   "Tournament": {
     "Buttons": {
@@ -76,7 +78,8 @@
     "nametoolong": "Max length 16 characters",
     "playeradded": "added",
     "unauth": "Unauthorized access",
-    "alreadyintournament": "Player is already in the tournament"
+    "alreadyintournament": "Player is already in the tournament",
+    "emptyname": "Add name"
   },
   "Select": {
     "selecttournament": "Select tournament",

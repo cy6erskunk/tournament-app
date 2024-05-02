@@ -6,7 +6,9 @@
   "Login": {
     "name": "Kasutaja",
     "password": "Parool",
-    "submit": "Logi sisse"
+    "submit": "Logi sisse",
+    "userorpasswordempty": "Kasutaja või parool on tühi",
+    "wronguserorpassword": "Vale kasutajanimi või parool"
   },
   "Tournament": {
     "Buttons": {
@@ -76,7 +78,8 @@
     "nametoolong": "Maksimaalne pikkus 16 tähemärki",
     "playeradded": "lisatud",
     "unauth": "Volitamata juurdepääs",
-    "alreadyintournament": "Mängija on juba turniiril"
+    "alreadyintournament": "Mängija on juba turniiril",
+    "emptyname": "Lisa nimi"
   },
   "Select": {
     "selecttournament": "Valige turniir",

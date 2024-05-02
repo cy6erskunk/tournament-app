@@ -6,7 +6,9 @@
   "Login": {
     "name": "Användarnamn",
     "password": "Lösenord",
-    "submit": "Logga in"
+    "submit": "Logga in",
+    "userorpasswordempty": "Användaren eller lösenordet är tomt",
+    "wronguserorpassword": "fel användarnamn eller lösenord"
   },
   "Tournament": {
     "Buttons": {
@@ -76,7 +78,8 @@
     "nametoolong": "Max längd 16 tecken",
     "playeradded": "har lagts till",
     "unauth": "Obehörig åtkomst",
-    "alreadyintournament": "Spelaren är redan med i turneringen"
+    "alreadyintournament": "Spelaren är redan med i turneringen",
+    "emptyname": "Lägg till namn"
   },
   "Select": {
     "selecttournament": "Välj turnering",

@@ -15,15 +15,22 @@ const Addplayer = ({ closeModal }: AddplayerProps) => {
     setLoading(true);
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
-    const newPlayer = formData.get("name");
+    const newPlayer = formData.get("name")?.toString().trim();
 
     const newP = {
       name: newPlayer,
       tournamentId: context.tournament?.id,
     };
 
+    // check if name is empty
+    if (!newP.name) {
+      alert(t("emptyname"));
+      setLoading(false);
+      return;
+    }
+
     // check name length
-    if (newP.name && newP.name?.toString().length > 16) {
+    if (newP.name.length > 16) {
       alert(t("nametoolong"));
       setLoading(false);
       return;
@@ -31,7 +38,8 @@ const Addplayer = ({ closeModal }: AddplayerProps) => {
 
     // check if player is already in the tournament
     const isAlreadyInTournament = context.players.filter(
-      (player) => player.player.player_name === newPlayer,
+      (player) =>
+        player.player.player_name.toLowerCase() === newP.name?.toLowerCase(),
     );
     if (isAlreadyInTournament.length) {
       alert(t("alreadyintournament"));

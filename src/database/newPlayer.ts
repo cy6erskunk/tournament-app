@@ -6,9 +6,24 @@ import { Player } from "@/types/Player";
 
 // this function adds a new player to the players table
 export async function newPlayer(
-  name: string
+  name: string,
 ): Promise<Result<undefined, string>> {
   try {
+    const user = await db
+      .selectFrom("players")
+      .select("player_name")
+      .where((eb) =>
+        eb(eb.fn("lower", ["player_name"]), "=", name.toLowerCase()),
+      )
+      .executeTakeFirst();
+
+    if (user) {
+      return {
+        success: false,
+        error: "Player already exists in players table",
+      };
+    }
+
     const result = await db
       .insertInto("players")
       .values({
@@ -29,13 +44,28 @@ export async function newPlayer(
 // this function adds an existing player from the players table to the tournament_players table
 export async function addPlayer(
   name: string,
-  tournamentId: number
+  tournamentId: number,
 ): Promise<Result<Player, string>> {
   try {
+    const user = await db
+      .selectFrom("players")
+      .select("player_name")
+      .where((eb) =>
+        eb(eb.fn("lower", ["player_name"]), "=", name.toLowerCase()),
+      )
+      .executeTakeFirst();
+
+    if (!user) {
+      return {
+        success: false,
+        error: "No player found in players table",
+      };
+    }
+
     const result = (await db
       .insertInto("tournament_players")
       .values({
-        player_name: name.toString(),
+        player_name: user.player_name,
         tournament_id: tournamentId,
       })
       .returningAll()

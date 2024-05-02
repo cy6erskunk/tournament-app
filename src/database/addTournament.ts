@@ -14,7 +14,7 @@ export async function createTournament(
     const tournament = await db
       .insertInto("tournaments")
       .values({
-        name: inputName,
+        name: inputName.trim(),
         date: date,
         format: format,
       })

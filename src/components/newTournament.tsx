@@ -32,7 +32,7 @@ function NewTournament() {
     const newTournament = await createTournament(
       tournament.date,
       tournament.format,
-      tournament.name || defaultValue,
+      tournament.name.trim() || defaultValue,
     );
 
     if (!newTournament.success) {

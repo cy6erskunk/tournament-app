@@ -45,12 +45,17 @@ function EditButton() {
 
   const handleSave = async () => {
     if (!context.tournament) return
+    setLoading(true);
     const request = {
-      name: input,
-      id: Number(context.tournament.id)
-    }
+      name: input.trim(),
+      id: Number(context.tournament.id),
+    };
 
-    console.log(request)
+    if (!request.name) {
+      alert(t("emptyname"));
+      setLoading(false);
+      return;
+    }
 
     const res = await fetch("/api/tournament/name", {
       method: "POST",
@@ -58,12 +63,14 @@ function EditButton() {
     });
 
     if (res.ok) {
-      const update = { ...context.tournament, name: input }
-      context.setTournament(update)
+      const update = { ...context.tournament, name: request.name };
+      context.setTournament(update);
+      setLoading(false);
     }
 
-    closeModal()
-  }
+    setLoading(false);
+    closeModal();
+  };
 
   const closeModal = () => {
     setShowModal(false);

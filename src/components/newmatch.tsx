@@ -80,7 +80,7 @@ const AddMatch = ({
       return;
     }
 
-    if (!form.player1 || !form.player2) {
+    if (!form.player1.trim() || !form.player2.trim()) {
       alert(t("selectbothplayers"));
       setLoading(false);
       return;
@@ -97,6 +97,40 @@ const AddMatch = ({
       form.winner = form.player1;
     } else if (form.player2_hits > form.player1_hits) {
       form.winner = form.player2;
+    }
+
+    // NOTE: find match players
+    // for example if input has 'test' and tournament has 'TEST' it's the same player
+    if ((!player || !opponent) && !bracketMatch) {
+      const findPlayers = context.players.filter(
+        (player) =>
+          player.player.player_name.toLowerCase() ===
+            form.player1.toLowerCase() ||
+          player.player.player_name.toLowerCase() ===
+            form.player2.toLowerCase(),
+      );
+
+      if (findPlayers.length !== 2) {
+        alert(t("selectbothplayers"));
+        setLoading(false);
+        return;
+      }
+
+      if (
+        form.player1.toLowerCase() ===
+        findPlayers[0].player.player_name.toLowerCase()
+      ) {
+        form.player1 = findPlayers[0].player.player_name;
+        form.player2 = findPlayers[1].player.player_name;
+      } else {
+        form.player1 = findPlayers[1].player.player_name;
+        form.player2 = findPlayers[0].player.player_name;
+      }
+
+      form.winner =
+        form.player1.toLowerCase() === form.winner?.toLowerCase()
+          ? form.player1
+          : form.player2;
     }
 
     const res = await fetch("/api/matches", {
@@ -278,6 +312,8 @@ const AddMatch = ({
                     id="player1"
                     name="player1"
                     className="w-full border border-gray-600 rounded-md py-1 px-2"
+                    required
+                    autoComplete="off"
                     autoFocus
                   />
                   <datalist id="player1list">
@@ -329,6 +365,8 @@ const AddMatch = ({
                     id="player2"
                     name="player2"
                     className="w-full border border-gray-600 rounded-md py-1 px-2"
+                    required
+                    autoComplete="off"
                   />
                   <datalist id="player2list">
                     {context.players.map((player) => getOpponent(player))}
