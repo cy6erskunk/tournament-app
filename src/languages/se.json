@@ -15,7 +15,8 @@
       "leaderboard": "Topplistan",
       "empty": "Tom tabell",
       "emptyConfirm": "Ta bort alla matcher och spelare?",
-      "tournaments": "Turneringar"
+      "tournaments": "Turneringar",
+      "back": "Tillbaka"
     }
   },
   "Leaderboard": {

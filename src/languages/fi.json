@@ -15,7 +15,8 @@
       "leaderboard": "Tulostaulu",
       "empty": "Tyhjennä",
       "emptyConfirm": "Haluatko varmasti tyhjentää tulostaulun?",
-      "tournaments": "Turnaukset"
+      "tournaments": "Turnaukset",
+      "back": "Takaisin"
     }
   },
   "Leaderboard": {

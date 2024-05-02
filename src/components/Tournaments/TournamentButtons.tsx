@@ -14,6 +14,7 @@ const TournamentButtons = () => {
 
   const [showModal, setShowModal] = useState(false);
   const [modalContent, setModalContent] = useState<ReactNode | null>(null);
+  const [leaderboardText, setLeaderboardText] = useState(t("leaderboard"));
   const closeModal = () => {
     setShowModal(false);
   };
@@ -22,9 +23,12 @@ const TournamentButtons = () => {
     setShowModal(true);
   };
 
-  const emptyTable = () => {
-    if (window.confirm(t("emptyConfirm"))) {
-      // logic here
+  const toggleLeaderboard = () => {
+    context.setHidden(!context.hidden);
+    if (leaderboardText === t("leaderboard")) {
+      setLeaderboardText(t("back"));
+    } else {
+      setLeaderboardText(t("leaderboard"));
     }
   };
   return (
@@ -44,16 +48,10 @@ const TournamentButtons = () => {
         {t("addplayer")}
       </button>
       <button
-        className="p-1 px-5 border rounded-md shadow-sm border-slate-600 text-center"
-        onClick={() => context.setHidden(!context.hidden)}
+        className={`p-1 px-5 border rounded-md shadow-sm border-slate-600 text-center ${!context.hidden ? "bg-blue-700 text-white border-0 font-bold" : null}`}
+        onClick={toggleLeaderboard}
       >
-        {t("leaderboard")}
-      </button>
-      <button
-        className="p-1 px-5 border rounded-md shadow-sm border-slate-600"
-        onClick={emptyTable}
-      >
-        {t("empty")}
+        {leaderboardText}
       </button>
       <Modal isOpen={showModal} closeModal={closeModal}>
         {modalContent}

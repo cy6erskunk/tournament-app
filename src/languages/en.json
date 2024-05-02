@@ -15,7 +15,8 @@
       "leaderboard": "Leaderboard",
       "empty": "Empty table",
       "emptyConfirm": "Remove all matches and players?",
-      "tournaments": "Tournaments"
+      "tournaments": "Tournaments",
+      "back": "Back"
     }
   },
   "Leaderboard": {

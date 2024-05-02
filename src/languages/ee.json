@@ -15,7 +15,8 @@
       "leaderboard": "Edetabel",
       "empty": "Tühi laud",
       "emptyConfirm": "Eemaldage kõik mängud ja mängijad?",
-      "tournaments": "Turniirid"
+      "tournaments": "Turniirid",
+      "back": "Tagasi"
     }
   },
   "Leaderboard": {
