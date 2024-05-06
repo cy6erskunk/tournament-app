@@ -85,10 +85,10 @@ function Tournament() {
                 </th>
               ))}
               <th
-                title={`${t("hoverWin%")}`}
+                title={`${t("hoverWins")}`}
                 className="underline decoration-dotted cursor-help underline-offset-2 w-20 min-w-20"
               >
-                {t("win%")}
+                {t("winShort")}
               </th>
               <th
                 title={`${t("hoverHitsGiven")}`}
