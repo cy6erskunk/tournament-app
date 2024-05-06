@@ -11,10 +11,12 @@ import AddMatch from "@/components/newmatch";
 import EditMatch from "@/components/matchediting";
 import { useState } from "react";
 import { Player as TPlayer } from "@/types/Player";
+import { useUserContext } from "@/context/UserContext";
 
 function Tournament() {
   const t = useTranslations("Leaderboard");
   const context = useTournamentContext();
+  const account = useUserContext();
   const [showModal, setShowModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [modalPlayer, setModalPlayer] = useState<TPlayer>();
@@ -58,6 +60,13 @@ function Tournament() {
     );
   };
 
+  const getRemovePlayerHeading = () => {
+    if (!account.user) return;
+    if (account.user.role !== "admin") return;
+
+    return <th className="w-20 min-w-20">{t("remove")}</th>;
+  };
+
   return (
     <div className="2xl:max-w-fit lg:w-4/5">
       <div className="sm:my-2 items-center text-xl sm:text-4xl font-bold flex justify-between gap-4">
@@ -74,7 +83,7 @@ function Tournament() {
             >
               <th className="w-20 min-w-20">{t("name")}</th>
               <th className="w-20 min-w-20">{t("add")}</th>
-              <th className="w-20 min-w-20">{t("remove")}</th>
+              {getRemovePlayerHeading()}
               <th className="w-20 min-w-20" title="Id">
                 #
               </th>

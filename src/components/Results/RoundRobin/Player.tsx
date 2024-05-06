@@ -4,6 +4,7 @@ import { removeTournamentPlayer } from "@/database/removeTournamentPlayer";
 import { useTournamentContext } from "@/context/TournamentContext";
 import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
+import { useUserContext } from "@/context/UserContext";
 
 interface PlayerProps {
   player: Player;
@@ -23,6 +24,7 @@ interface Opponents {
 
 export function Player({ player, nthRow, openModal, openEditModal }: PlayerProps) {
   const context = useTournamentContext();
+  const account = useUserContext();
   const [hits, setHits] = useState<Hits>({ given: {}, taken: {} });
   const [matchesByOpponent, setOpponents] = useState<Opponents>({});
   const t = useTranslations("Leaderboard");
@@ -65,6 +67,22 @@ export function Player({ player, nthRow, openModal, openEditModal }: PlayerProps
       });
     }
   }
+
+  const getRemovePlayerButton = () => {
+    if (!account.user) return;
+    if (account.user.role !== "admin") return;
+
+    return (
+      <td>
+        <button
+          onClick={() => removePlayer()}
+          className="bg-red-400 p-1 rounded-full hover:bg-red-500"
+        >
+          <TrashIcon className="h-5 w-5 text-white" />
+        </button>
+      </td>
+    );
+  };
 
   useEffect(() => {
     const newHits: Hits = { given: {}, taken: {} };
@@ -126,14 +144,7 @@ export function Player({ player, nthRow, openModal, openEditModal }: PlayerProps
           <PlusCircleIcon className="h-8 w-8 text-blue-700" />
         </button>
       </td>
-      <td>
-        <button
-          onClick={() => removePlayer()}
-          className="bg-red-400 p-1 rounded-full hover:bg-red-500"
-        >
-          <TrashIcon className="h-5 w-5 text-white" />
-        </button>
-      </td>
+      {getRemovePlayerButton()}
       <td
         className={`${
           context.activeRound === 1 ? "bg-blue-500" : "bg-violet-500"
