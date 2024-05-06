@@ -230,6 +230,7 @@ const AddMatch = ({
                 name="points1"
                 placeholder="0"
                 required
+                autoFocus
               />
             </div>
           </div>
@@ -341,6 +342,7 @@ const AddMatch = ({
               name="points1"
               placeholder="0"
               required
+              autoFocus={player !== undefined}
             />
           </div>
         </div>

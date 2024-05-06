@@ -267,6 +267,7 @@ const EditMatch = ({ closeModal, player, opponent }: EditmatchProps) => {
                 findSharedMatch(player, opponent)?.player1_hits ?? 0
               }
               required
+              autoFocus
             />
           </div>
         </div>
