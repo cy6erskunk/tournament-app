@@ -21,12 +21,13 @@ const LeaderboardSidebar = () => {
 
   useEffect(() => {
     const p = new LeaderboardBuilder()
-      .players([...context.players])
+      .players(context.players)
+      .round(context.activeRound)
       .ascending()
-      .column("wins")
-      .sort()
+      .column("percentage")
+      .sort();
     setPlayers(p);
-  }, [context.players]);
+  }, [context.activeRound, context.players]);
 
   return (
     <div className="lg:max-w-sm lg:w-1/5 border-2 rounded-md shadow-md border-gray-400">
@@ -52,10 +53,10 @@ const LeaderboardSidebar = () => {
                   <div className="absolute inset-y-0 left-6 flex items-center justify-center w-full">
                     <TrophyIcon
                       className={`w-6 h-6 ${index === 0
-                        ? "text-yellow-400"
-                        : index === 1
-                          ? "text-gray-700"
-                          : "text-amber-950"
+                          ? "text-yellow-400"
+                          : index === 1
+                            ? "text-gray-700"
+                            : "text-amber-950"
                         }`}
                     />
                   </div>

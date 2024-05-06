@@ -10,29 +10,35 @@ export type LeaderboardColumns =
   | "given"
   | "taken";
 
-export type SortDirection = "ASC" | "DESC" | "DEFAULT"
+export type SortDirection = "ASC" | "DESC" | "DEFAULT";
 
 export class LeaderboardBuilder {
   private asc: boolean = true;
   private col: LeaderboardColumns = "percentage";
   private p: Player[] = [];
+  private r: number = 0;
 
   players(players: Player[]): LeaderboardBuilder {
-    this.p = players;
+    this.p = structuredClone(players);
+    return this;
+  }
+
+  round(round: number): LeaderboardBuilder {
+    this.r = round;
     return this;
   }
 
   direction(direction: SortDirection): LeaderboardBuilder {
     switch (direction) {
       case "ASC":
-        return this.ascending()
+        return this.ascending();
       case "DESC":
-        return this.descending()
+        return this.descending();
       case "DEFAULT":
-        this.column("wins")
-        return this
+        this.column("wins");
+        return this;
       default:
-        return this
+        return this;
     }
   }
 
@@ -66,6 +72,15 @@ export class LeaderboardBuilder {
     } else if (this.col === "index") {
       compareFunction = this.sortIndex;
     }
+
+    if (this.r !== 0) {
+      this.p.forEach((player) => {
+        player.matches = player.matches.filter(
+          (match) => match.round === this.r,
+        );
+      });
+    }
+
     this.p.sort((a, b) => {
       let comparison = compareFunction(a, b);
       return this.asc ? comparison : -comparison;
