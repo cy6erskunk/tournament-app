@@ -66,9 +66,9 @@ const AddMatch = ({
     const form: Omit<Matches, "id"> = {
       match: bracketMatch?.match ?? 1,
       player1: formData.get("player1") as string,
-      player1_hits: Number(formData.get("points1")),
+      player1_hits: Number(formData.get("points1")) ?? 0,
       player2: formData.get("player2") as string,
-      player2_hits: Number(formData.get("points2")),
+      player2_hits: Number(formData.get("points2")) ?? 0,
       winner: null,
       tournament_id: Number(context.tournament.id),
       round: bracketMatch?.round ?? context.activeRound,
@@ -229,7 +229,6 @@ const AddMatch = ({
                 max="99"
                 name="points1"
                 placeholder="0"
-                required
                 autoFocus
               />
             </div>
@@ -261,7 +260,6 @@ const AddMatch = ({
                 max="99"
                 name="points2"
                 placeholder="0"
-                required
               />
             </div>
           </div>
@@ -341,7 +339,6 @@ const AddMatch = ({
               max="99"
               name="points1"
               placeholder="0"
-              required
               autoFocus={player !== undefined}
             />
           </div>
@@ -387,7 +384,6 @@ const AddMatch = ({
               max="99"
               name="points2"
               placeholder="0"
-              required
             />
           </div>
         </div>
