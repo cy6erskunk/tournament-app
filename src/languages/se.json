@@ -86,6 +86,8 @@
     "notournamentsfound": "Inga turneringar hittades",
     "createfailed": "Det gick inte att infoga en ny turnering",
     "createtournament": "Skapa ny turnering",
-    "submit": "Lämna in"
+    "submit": "Lämna in",
+    "unexpectederror": "Ett oväntat fel uppstod",
+    "remove": "Ta bort"
   }
 }

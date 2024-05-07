@@ -86,6 +86,8 @@
     "notournamentsfound": "No tournaments found",
     "createfailed": "Could not insert new tournament",
     "createtournament": "Create new tournament",
-    "submit": "Submit"
+    "submit": "Submit",
+    "unexpectederror": "Unexpected error",
+    "remove": "Remove"
   }
 }

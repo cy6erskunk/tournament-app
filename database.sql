@@ -57,5 +57,5 @@ ALTER TABLE ONLY "public"."matches" ADD CONSTRAINT "matches_player2_tournament_i
 ALTER TABLE ONLY "public"."matches" ADD CONSTRAINT "matches_tournament_id_fkey" FOREIGN KEY (tournament_id) REFERENCES tournaments(id) ON UPDATE CASCADE ON DELETE CASCADE NOT DEFERRABLE;
 ALTER TABLE ONLY "public"."matches" ADD CONSTRAINT "matches_winner_tournament_id_fkey" FOREIGN KEY (winner, tournament_id) REFERENCES tournament_players(player_name, tournament_id) ON UPDATE CASCADE ON DELETE CASCADE NOT DEFERRABLE;
 
-ALTER TABLE ONLY "public"."tournament_players" ADD CONSTRAINT "tournament_players_player_name_fkey" FOREIGN KEY (player_name) REFERENCES players(player_name) NOT DEFERRABLE;
-ALTER TABLE ONLY "public"."tournament_players" ADD CONSTRAINT "tournament_players_tournament_id_fkey" FOREIGN KEY (tournament_id) REFERENCES tournaments(id) NOT DEFERRABLE;
+ALTER TABLE ONLY "public"."tournament_players" ADD CONSTRAINT "tournament_players_player_name_fkey" FOREIGN KEY (player_name) REFERENCES players(player_name) ON UPDATE CASCADE ON DELETE CASCADE NOT DEFERRABLE;
+ALTER TABLE ONLY "public"."tournament_players" ADD CONSTRAINT "tournament_players_tournament_id_fkey" FOREIGN KEY (tournament_id) REFERENCES tournaments(id) ON UPDATE CASCADE ON DELETE CASCADE NOT DEFERRABLE;

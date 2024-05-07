@@ -86,6 +86,8 @@
     "notournamentsfound": "Ühtegi turniiri ei leitud",
     "createfailed": "Uut turniiri ei saanud sisestada",
     "createtournament": "Loo uus turniir",
-    "submit": "Esita"
+    "submit": "Esita",
+    "unexpectederror": "Ootamatu viga",
+    "remove": "Eemalda"
   }
 }

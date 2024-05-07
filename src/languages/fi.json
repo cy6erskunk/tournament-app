@@ -86,6 +86,8 @@
     "notournamentsfound": "Ei turnauksia",
     "createfailed": "Uutta turnausta ei voitu lisätä",
     "createtournament": "Luo uusi turnaus",
-    "submit": "Tallenna"
+    "submit": "Tallenna",
+    "unexpectederror": "Odottamaton virhe",
+    "remove": "Poista"
   }
 }

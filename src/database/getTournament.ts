@@ -76,7 +76,6 @@ export async function getRecentTournaments(): Promise<
     const tournaments = await db
       .selectFrom("tournaments")
       .selectAll()
-      .limit(5)
       .orderBy("id desc")
       .execute();
 

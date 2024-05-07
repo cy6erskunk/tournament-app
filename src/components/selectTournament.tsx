@@ -7,6 +7,7 @@ import Tournament from "@/types/Tournament";
 import { useEffect, useState } from "react";
 import { getRecentTournaments } from "@/database/getTournament";
 import { useUserContext } from "@/context/UserContext";
+import { TrashIcon } from "@heroicons/react/24/outline";
 
 export default function SelectTournament() {
   const t = useTranslations("Select");
@@ -15,6 +16,48 @@ export default function SelectTournament() {
     [],
   );
   const [loading, setLoading] = useState(true);
+  const [removeTournamentLoading, setRemoveTournamentLoading] = useState(false);
+
+  const getRemoveTournamentButton = (tour: Tournament) => {
+    if (!account.user) return;
+    if (account.user.role !== "admin") return;
+
+    return (
+      <button
+        onClick={() => removeTournament(tour)}
+        className="bg-red-400 p-1 rounded-full hover:bg-red-500"
+        disabled={removeTournamentLoading}
+      >
+        <TrashIcon className="h-5 w-5 text-white" />
+      </button>
+    );
+  };
+
+  async function removeTournament(tour: Tournament) {
+    if (window.confirm(`${t("remove")} ${tour.name}?`)) {
+      setRemoveTournamentLoading(true);
+      const request = {
+        name: tour.name,
+        id: tour.id,
+      };
+
+      const res = await fetch("/api/tournament/name", {
+        method: "DELETE",
+        body: JSON.stringify(request),
+      });
+
+      if (res.ok) {
+        const updatedTournaments = previousTournaments.filter(
+          (tournament) => tournament.id !== tour.id,
+        );
+        setPreviousTournaments(updatedTournaments);
+        setRemoveTournamentLoading(false);
+        return;
+      }
+      alert(t("unexpectederror"));
+      setRemoveTournamentLoading(false);
+    }
+  }
 
   useEffect(() => {
     async function fetchTournaments() {
@@ -32,6 +75,11 @@ export default function SelectTournament() {
 
   return (
     <section className="container mx-auto mt-10 p-4 flex flex-col items-center gap-6">
+      {account.user?.role === "admin" ? (
+        <div className="border border-gray-900 max-w-md p-6 rounded-md shadow-md w-full">
+          <NewTournament />
+        </div>
+      ) : null}
       <div className="border border-gray-900 max-w-md p-6 rounded-md shadow-md w-full space-y-5">
         <h1 className="font-bold text-xl">{t("selecttournament")}</h1>
         {loading ? (
@@ -39,13 +87,14 @@ export default function SelectTournament() {
         ) : previousTournaments.length > 0 ? (
           <ul className="flex flex-col gap-8 divide-y">
             {previousTournaments.map((tour) => (
-              <li key={Number(tour.id)}>
+              <li className="flex justify-between" key={Number(tour.id)}>
                 <Link
                   href={`/tournament/${tour.id}`}
                   className="underline underline-offset-2"
                 >
                   {tour.name}
                 </Link>
+                {getRemoveTournamentButton(tour)}
               </li>
             ))}
           </ul>
@@ -53,12 +102,6 @@ export default function SelectTournament() {
           <p>{t("notournamentsfound")}</p>
         )}
       </div>
-      {account.user?.role === "admin" ? (
-
-      <div className="border border-gray-900 max-w-md p-6 rounded-md shadow-md w-full">
-        <NewTournament />
-      </div>
-      ) : null}
     </section>
   );
 }
