@@ -42,7 +42,8 @@
     "win": "Vinna",
     "loss": "Förlust",
     "winShort": "V",
-    "lossShort": "F"
+    "lossShort": "F",
+    "remove": "Ta bort"
   },
   "Logout": {
     "logout": "Logga ut",
@@ -51,6 +52,7 @@
   },
   "NewMatch": {
     "title": "Runda",
+    "title2": "Redigera",
     "player1": "Spelare 1",
     "player2": "Spelare 2",
     "submit": "Lämna in",
@@ -64,7 +66,10 @@
     "matchexists": "Matchen mellan",
     "matchexits2": "finns redan för runda",
     "unexpectederror": "Ett oväntat fel uppstod",
-    "nodraws": "inga dragningar tillåtna"
+    "nodraws": "inga dragningar tillåtna",
+    "matchupdated": "Matchen uppdaterad",
+    "matchdeleted": "Matchen raderad",
+    "delete": "Radera"
   },
   "AddPlayer": {
     "title": "Lägg till spelare",

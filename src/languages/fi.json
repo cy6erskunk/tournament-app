@@ -42,7 +42,8 @@
     "win": "Voitto",
     "loss": "Häviö",
     "winShort": "V",
-    "lossShort": "H"
+    "lossShort": "H",
+    "remove": "Poista"
   },
   "Logout": {
     "logout": "Kirjaudu ulos",
@@ -51,6 +52,7 @@
   },
   "NewMatch": {
     "title": "Kierros",
+    "title2": "Päivitä",
     "player1": "Ottelija 1",
     "player2": "Ottelija 2",
     "submit": "Tallenna",
@@ -64,7 +66,10 @@
     "matchexists1": "Ottelu pelaajien",
     "matchexists2": "välillä on jo olemassa kierroksella",
     "unexpectederror": "Odottamaton virhe",
-    "nodraws": "Tasapelit ei sallituja"
+    "nodraws": "Tasapelit ei sallituja",
+    "matchupdated": "Ottelu päivitetty",
+    "matchdeleted": "Ottelu poistettu",
+    "delete": "Poista"
   },
   "AddPlayer": {
     "title": "Lisää ottelija",

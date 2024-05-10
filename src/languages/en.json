@@ -42,7 +42,8 @@
     "win": "Win",
     "loss": "Loss",
     "winShort": "W",
-    "lossShort": "L"
+    "lossShort": "L",
+    "remove": "Remove"
   },
   "Logout": {
     "logout": "Logout",
@@ -51,6 +52,7 @@
   },
   "NewMatch": {
     "title": "Round",
+    "title2": "Edit",
     "player1": "Player 1",
     "player2": "Player 2",
     "submit": "Submit",
@@ -64,7 +66,10 @@
     "matchexists1": "Match between",
     "matchexists2": "already exists for round",
     "unexpectederror": "Unexpected error",
-    "nodraws": "No draws allowed"
+    "nodraws": "No draws allowed",
+    "matchupdated": "Match updated",
+    "matchdeleted": "Match deleted",
+    "delete": "Delete"
   },
   "AddPlayer": {
     "title": "Add player",

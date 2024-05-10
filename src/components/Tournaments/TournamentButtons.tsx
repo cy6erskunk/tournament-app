@@ -7,6 +7,7 @@ import Addplayer from "@/components/addplayer";
 import { useTranslations } from "next-intl";
 import { useTournamentContext } from "@/context/TournamentContext";
 import Link from "next/link";
+import { ChevronLeftIcon } from "@heroicons/react/24/outline";
 
 const TournamentButtons = () => {
   const t = useTranslations("Tournament.Buttons");
@@ -48,10 +49,10 @@ const TournamentButtons = () => {
         {t("addplayer")}
       </button>
       <button
-        className={`p-1 px-5 border rounded-md shadow-sm border-slate-600 text-center ${!context.hidden ? "bg-blue-700 text-white border-0 font-bold" : null}`}
+        className={`p-1 px-5 border rounded-md shadow-sm border-slate-600 text-center ${!context.hidden ? "bg-blue-700 border-blue-700 text-white border-1 font-bold" : null}`}
         onClick={toggleLeaderboard}
       >
-        {leaderboardText}
+        <div className="flex justify-center gap-2">{context.hidden === false ? <ChevronLeftIcon className="h-5 w-5 my-auto" /> : null}{leaderboardText}</div>
       </button>
       <Modal isOpen={showModal} closeModal={closeModal}>
         {modalContent}

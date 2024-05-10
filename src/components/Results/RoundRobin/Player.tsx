@@ -30,7 +30,7 @@ export function Player({ player, nthRow, openModal, openEditModal }: PlayerProps
   const t = useTranslations("Leaderboard");
 
   async function removePlayer() {
-    if (window.confirm(`Remove ${player.player.player_name}?`)) {
+    if (window.confirm(`${t("remove")} ${player.player.player_name}?`)) {
       const result = await removeTournamentPlayer(
         player.player.tournament_id,
         player.player.player_name,
@@ -127,8 +127,8 @@ export function Player({ player, nthRow, openModal, openEditModal }: PlayerProps
   return (
     <tr
       className={`${context.activeRound === 1
-          ? "odd:bg-white even:bg-blue-50"
-          : "odd:bg-white even:bg-violet-50"
+        ? "odd:bg-white even:bg-blue-50"
+        : "odd:bg-white even:bg-violet-50"
         } *:ring-1 *:p-4 *:text-center *:ring-slate-500`}
     >
       <td

@@ -141,8 +141,7 @@ const EditMatch = ({ closeModal, player, opponent }: EditmatchProps) => {
         };
       });
     });
-    // TODO: Add translations
-    alert("Match updated");
+    alert(t("matchupdated"));
   };
 
   const deleteHandler = async (form: Omit<Matches, "id">) => {
@@ -201,8 +200,7 @@ const EditMatch = ({ closeModal, player, opponent }: EditmatchProps) => {
     };
     context.setPlayers(filter);
 
-    //TODO: Add translations
-    alert("Match deleted");
+    alert(t("matchdeleted"));
   };
 
   function findSharedMatch(player: Player, opponent: Player) {
@@ -232,8 +230,7 @@ const EditMatch = ({ closeModal, player, opponent }: EditmatchProps) => {
   return (
     <>
       <h1 className="mb-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
-        {/* TODO: Create secondary title (e.g. "Update") to differentiate modals */}
-        {t("title")}
+        {t("title2")}
       </h1>
       <form onSubmit={handleSubmit} className="flex flex-col gap-6">
         <div className="flex *:grow gap-3">
@@ -325,7 +322,7 @@ const EditMatch = ({ closeModal, player, opponent }: EditmatchProps) => {
               className="disabled:bg-red-300 bg-red-400 py-2 px-3 text-white rounded-md shadow-sm mx-auto w-full"
               onClick={() => handleButtonClick("Delete")}
             >
-              Delete
+              {t("delete")}
             </button>
           </div>
           <button

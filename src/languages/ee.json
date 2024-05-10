@@ -42,7 +42,8 @@
     "win": "Võit",
     "loss": "Kaotus",
     "winShort": "V",
-    "lossShort": "K"
+    "lossShort": "K",
+    "remove": "Eemalda"
   },
   "Logout": {
     "logout": "Logi välja",
@@ -51,6 +52,7 @@
   },
   "NewMatch": {
     "title": "Raund",
+    "title2": "Muuda",
     "player1": "Mängija 1",
     "player2": "Mängija 2",
     "submit": "Esita",
@@ -64,7 +66,10 @@
     "matchexists1": "Mängija",
     "matchexists2": "on juba mänginud mängijaga",
     "unexpectederror": "Ootamatu viga",
-    "nodraws": "viiki pole lubatud"
+    "nodraws": "viiki pole lubatud",
+    "matchupdated": "Mäng uuendatud",
+    "matchdeleted": "Mäng kustutatud",
+    "delete": "Kustuta"
   },
   "AddPlayer": {
     "title": "Lisa Mängija",
