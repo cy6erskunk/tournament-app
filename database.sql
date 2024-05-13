@@ -27,6 +27,8 @@ DROP TABLE IF EXISTS "tournament_players";
 CREATE TABLE "public"."tournament_players" (
     "player_name" character varying(16) NOT NULL,
     "tournament_id" integer NOT NULL,
+    "bracket_match" integer,
+    "bracket_seed" integer,
     CONSTRAINT "tournament_players_player_name_tournament_id" PRIMARY KEY ("player_name", "tournament_id")
 ) WITH (oids = false);
 

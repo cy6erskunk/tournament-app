@@ -107,8 +107,10 @@ const EditMatch = ({ closeModal, player, opponent }: EditmatchProps) => {
     context.setPlayers((prevPlayers) => {
       // Find the player with the specific player name
       return prevPlayers.map((player) => {
+        if (!player) return player;
         // Check if the player is in the match
         if (
+          player &&
           player.player.player_name !== form.player1 &&
           player.player.player_name !== form.player2
         ) {
@@ -169,10 +171,10 @@ const EditMatch = ({ closeModal, player, opponent }: EditmatchProps) => {
     }
 
     // Update player objects inside context state
-    const match: number = await res.json();
-    const filter = (prevPlayers: Player[]) => {
+    const filter = (prevPlayers: (Player | null)[]): (Player | null)[] => {
       // Find the player with the specific player name
       return prevPlayers.map((player) => {
+        if (!player) return player;
         // Check if the player is in the match
         if (
           player.player.player_name !== form.player1 &&
@@ -181,7 +183,6 @@ const EditMatch = ({ closeModal, player, opponent }: EditmatchProps) => {
           return player;
         }
 
-        console.log("Removing matches from", player.player.player_name);
         const matches = player.matches.filter((m) => {
           const p1 = m.player1 === form.player1 ? "player1" : "player2";
           const p2 = m.player1 === form.player1 ? "player2" : "player1";

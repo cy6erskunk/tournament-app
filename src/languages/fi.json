@@ -94,5 +94,9 @@
     "submit": "Tallenna",
     "unexpectederror": "Odottamaton virhe",
     "remove": "Poista"
+  },
+  "Brackets": {
+    "selectseed": "Valitse ottelujärjestys turnauksesta",
+    "noRRtournamentsfound": "Ei vanhoja round robin turnauksia"
   }
 }

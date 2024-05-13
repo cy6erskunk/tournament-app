@@ -78,8 +78,9 @@ function Tournament() {
         <table className="w-full">
           <thead>
             <tr
-              className={`${context.activeRound === 1 ? "*:bg-blue-500" : "*:bg-violet-500"
-                } text-white *:py-4 *:sticky *:top-0 *:z-20 *:transition-all *:duration-300 *:ease-in-out`}
+              className={`${
+                context.activeRound === 1 ? "*:bg-blue-500" : "*:bg-violet-500"
+              } text-white *:py-4 *:sticky *:top-0 *:z-20 *:transition-all *:duration-300 *:ease-in-out`}
             >
               <th className="w-20 min-w-20">{t("name")}</th>
               <th className="w-20 min-w-20">{t("add")}</th>
@@ -88,11 +89,13 @@ function Tournament() {
                 #
               </th>
               {/* map through players and set <th>{player id}</th> */}
-              {context.players.map((player, index) => (
-                <th className="w-20 min-w-20" key={player.player.player_name}>
-                  {index + 1}
-                </th>
-              ))}
+              {context.players.map((player, index) =>
+                player ? (
+                  <th className="w-20 min-w-20" key={player.player.player_name}>
+                    {index + 1}
+                  </th>
+                ) : null,
+              )}
               <th
                 title={`${t("hoverWins")}`}
                 className="underline decoration-dotted cursor-help underline-offset-2 w-20 min-w-20"
@@ -121,15 +124,17 @@ function Tournament() {
           </thead>
           {!context.loading ? (
             <tbody>
-              {context.players.map((player, i) => (
-                <Player
-                  key={player.player.player_name}
-                  player={player}
-                  nthRow={i}
-                  openModal={openModal}
-                  openEditModal={openEditModal}
-                />
-              ))}
+              {context.players.map((player, i) =>
+                player ? (
+                  <Player
+                    key={player.player.player_name}
+                    player={player}
+                    nthRow={i}
+                    openModal={openModal}
+                    openEditModal={openEditModal}
+                  />
+                ) : null,
+              )}
             </tbody>
           ) : null}
         </table>

@@ -94,5 +94,9 @@
     "submit": "Lämna in",
     "unexpectederror": "Ett oväntat fel uppstod",
     "remove": "Ta bort"
+  },
+  "Brackets": {
+    "selectseed": "Välj matchordning från turneringen",
+    "noRRtournamentsfound": "Inga round robin-turneringar hittades"
   }
 }

@@ -20,8 +20,9 @@ const Leaderboard = () => {
   const [direction, setDirection] = useState<SortDirection>("DEFAULT");
 
   useEffect(() => {
+    const filteredPlayers:Player[] = context.players.filter((player)=>player !== null) as NonNullable<Player>[]
     const p = new LeaderboardBuilder()
-      .players([...context.players])
+      .players(filteredPlayers)
       .direction(direction)
       .column(sortCol)
       .sort();

@@ -22,7 +22,12 @@ interface Opponents {
   [key: string]: { winner: string | null; hits: number }[];
 }
 
-export function Player({ player, nthRow, openModal, openEditModal }: PlayerProps) {
+export function Player({
+  player,
+  nthRow,
+  openModal,
+  openEditModal,
+}: PlayerProps) {
   const context = useTournamentContext();
   const account = useUserContext();
   const [hits, setHits] = useState<Hits>({ given: {}, taken: {} });
@@ -46,11 +51,13 @@ export function Player({ player, nthRow, openModal, openEditModal }: PlayerProps
       context.setPlayers((prevPlayers) => {
         // Exclude player to be removed from context
         const players = prevPlayers.filter(
-          (state) => state.player.player_name !== player.player.player_name,
+          (state) =>
+            state && state.player.player_name !== player.player.player_name,
         );
 
         // Loop remaining players
         return players.map((p) => {
+          if (!p) return p;
           // Exclude matches involving removed player
           // keeping ones without the player
           const matches = p.matches.filter(
@@ -126,14 +133,16 @@ export function Player({ player, nthRow, openModal, openEditModal }: PlayerProps
 
   return (
     <tr
-      className={`${context.activeRound === 1
-        ? "odd:bg-white even:bg-blue-50"
-        : "odd:bg-white even:bg-violet-50"
-        } *:ring-1 *:p-4 *:text-center *:ring-slate-500`}
+      className={`${
+        context.activeRound === 1
+          ? "odd:bg-white even:bg-blue-50"
+          : "odd:bg-white even:bg-violet-50"
+      } *:ring-1 *:p-4 *:text-center *:ring-slate-500`}
     >
       <td
-        className={`${context.activeRound === 1 ? "bg-blue-50" : "bg-violet-50"
-          } font-semibold sticky left-0 z-10 outline outline-1 outline-slate-500`}
+        className={`${
+          context.activeRound === 1 ? "bg-blue-50" : "bg-violet-50"
+        } font-semibold sticky left-0 z-10 outline outline-1 outline-slate-500`}
       >
         {player.player.player_name}
       </td>
@@ -144,13 +153,15 @@ export function Player({ player, nthRow, openModal, openEditModal }: PlayerProps
       </td>
       {getRemovePlayerButton()}
       <td
-        className={`${context.activeRound === 1 ? "bg-blue-500" : "bg-violet-500"
-          } transition-all duration-300 ease-in-out text-white`}
+        className={`${
+          context.activeRound === 1 ? "bg-blue-500" : "bg-violet-500"
+        } transition-all duration-300 ease-in-out text-white`}
       >
         {++nthRow}
       </td>
 
       {context.players.map((opponent, index) => {
+        if (!opponent) return;
         const key = player.player.player_name + index;
         // Used to set dark bg color if players match, can't play versus self
         const isHighlighted = index + 1 === nthRow;
@@ -166,7 +177,10 @@ export function Player({ player, nthRow, openModal, openEditModal }: PlayerProps
               onClick={() => !isHighlighted && openModal(player, opponent)}
               key={key}
             >
-              <button className="invisible group-hover:visible" title={`${player.player.player_name} vs. ${opponent.player.player_name}`}>
+              <button
+                className="invisible group-hover:visible"
+                title={`${player.player.player_name} vs. ${opponent.player.player_name}`}
+              >
                 <PlusCircleIcon className="h-8 w-8 text-blue-700" />
               </button>
             </td>
@@ -192,7 +206,7 @@ export function Player({ player, nthRow, openModal, openEditModal }: PlayerProps
               isHighlighted
                 ? "bg-gray-600"
                 : "" +
-                " underline decoration-dotted cursor-help underline-offset-2"
+                  " underline decoration-dotted cursor-help underline-offset-2"
             }
             onClick={() => openEditModal(player, opponent)}
           >
@@ -203,8 +217,9 @@ export function Player({ player, nthRow, openModal, openEditModal }: PlayerProps
 
       {/* calculate win percentage based on matches associated with player */}
       <td
-        className={`${context.activeRound === 1 ? "bg-blue-50" : "bg-violet-50"
-          }`}
+        className={`${
+          context.activeRound === 1 ? "bg-blue-50" : "bg-violet-50"
+        }`}
       >
         {player.matches.reduce((n, match) => {
           if (
@@ -217,20 +232,23 @@ export function Player({ player, nthRow, openModal, openEditModal }: PlayerProps
         }, 0)}
       </td>
       <td
-        className={`${context.activeRound === 1 ? "bg-blue-50" : "bg-violet-50"
-          }`}
+        className={`${
+          context.activeRound === 1 ? "bg-blue-50" : "bg-violet-50"
+        }`}
       >
         {hits.given[context.activeRound] ?? 0}
       </td>
       <td
-        className={`${context.activeRound === 1 ? "bg-blue-50" : "bg-violet-50"
-          }`}
+        className={`${
+          context.activeRound === 1 ? "bg-blue-50" : "bg-violet-50"
+        }`}
       >
         {hits.taken[context.activeRound] ?? 0}
       </td>
       <td
-        className={`${context.activeRound === 1 ? "bg-blue-50" : "bg-violet-50"
-          }`}
+        className={`${
+          context.activeRound === 1 ? "bg-blue-50" : "bg-violet-50"
+        }`}
       >
         {(hits.given[context.activeRound] ?? 0) -
           (hits.taken[context.activeRound] ?? 0)}

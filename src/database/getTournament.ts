@@ -89,3 +89,27 @@ export async function getRecentTournaments(): Promise<
     return { success: false, error: "Could not fetch tournaments" };
   }
 }
+
+// get round robin tournaments for brackets seeding
+export async function getRoundRobinTournaments(): Promise<
+  Result<Tournament[], string>
+> {
+  try {
+    const tournaments = await db
+      .selectFrom("tournaments")
+      .selectAll()
+      .where("format", "=", "Round Robin")
+      .limit(10)
+      .orderBy("id desc")
+      .execute();
+
+    if (!tournaments.length) {
+      return { success: false, error: "No tournaments found" };
+    }
+
+    return { success: true, value: tournaments as Tournament[] };
+  } catch (error) {
+    console.log(error);
+    return { success: false, error: "Could not fetch tournaments" };
+  }
+}

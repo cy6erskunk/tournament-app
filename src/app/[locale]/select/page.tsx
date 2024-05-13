@@ -11,7 +11,7 @@ export default async function Page() {
 
   return (
     <>
-      <Navbar showNewPlayerButton={false} isTournamentSelectionPage={true} />
+      <Navbar />
       <SelectTournament />
     </>
   );

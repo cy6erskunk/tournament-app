@@ -94,5 +94,9 @@
     "submit": "Esita",
     "unexpectederror": "Ootamatu viga",
     "remove": "Eemalda"
+  },
+  "Brackets": {
+    "selectseed": "Valige turniirilt mängu järjekord",
+    "noRRtournamentsfound": "Ringmänguturniire ei leitud"
   }
 }

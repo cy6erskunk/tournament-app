@@ -39,6 +39,7 @@ const Addplayer = ({ closeModal }: AddplayerProps) => {
     // check if player is already in the tournament
     const isAlreadyInTournament = context.players.filter(
       (player) =>
+        player &&
         player.player.player_name.toLowerCase() === newP.name?.toLowerCase(),
     );
     if (isAlreadyInTournament.length) {

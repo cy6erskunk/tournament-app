@@ -1,12 +1,11 @@
 "use client";
 
-import { useState, ReactNode } from "react";
+import { useState, ReactNode, useEffect } from "react";
 import Modal from "@/components/modal";
 import AddMatch from "@/components/newmatch";
 import Addplayer from "@/components/addplayer";
 import { useTranslations } from "next-intl";
 import { useTournamentContext } from "@/context/TournamentContext";
-import Link from "next/link";
 import { ChevronLeftIcon } from "@heroicons/react/24/outline";
 
 const TournamentButtons = () => {
@@ -16,9 +15,19 @@ const TournamentButtons = () => {
   const [showModal, setShowModal] = useState(false);
   const [modalContent, setModalContent] = useState<ReactNode | null>(null);
   const [leaderboardText, setLeaderboardText] = useState(t("leaderboard"));
+  const [isSeeded, setIsSeeded] = useState(false);
+
+  useEffect(() => {
+    const hasSeededPlayers = context.players.some(
+      (player) => player && player.player.bracket_seed,
+    );
+    setIsSeeded(hasSeededPlayers);
+  }, [context.players]);
+
   const closeModal = () => {
     setShowModal(false);
   };
+
   const openModal = (content: ReactNode) => {
     setModalContent(content);
     setShowModal(true);
@@ -32,6 +41,11 @@ const TournamentButtons = () => {
       setLeaderboardText(t("leaderboard"));
     }
   };
+
+  if (isSeeded) {
+    return null;
+  }
+
   return (
     <div className="container mx-auto p-2 flex flex-col md:flex-row gap-4">
       {context.tournament?.format === "Round Robin" ? (
@@ -52,7 +66,12 @@ const TournamentButtons = () => {
         className={`p-1 px-5 border rounded-md shadow-sm border-slate-600 text-center ${!context.hidden ? "bg-blue-700 border-blue-700 text-white border-1 font-bold" : null}`}
         onClick={toggleLeaderboard}
       >
-        <div className="flex justify-center gap-2">{context.hidden === false ? <ChevronLeftIcon className="h-5 w-5 my-auto" /> : null}{leaderboardText}</div>
+        <div className="flex justify-center gap-2">
+          {context.hidden === false ? (
+            <ChevronLeftIcon className="h-5 w-5 my-auto" />
+          ) : null}
+          {leaderboardText}
+        </div>
       </button>
       <Modal isOpen={showModal} closeModal={closeModal}>
         {modalContent}

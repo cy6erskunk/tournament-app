@@ -4,6 +4,7 @@ import { TournamentContextProvider } from "@/context/TournamentContext";
 import TournamentInfo from "@/components/Tournaments/TournamentInfo";
 import { getSession } from "@/helpers/getsession";
 import { redirect } from "next/navigation";
+import TournamentNavbarContent from "@/components/tournamentNavbarContent";
 
 const Page = async () => {
   const session = await getSession();
@@ -14,7 +15,9 @@ const Page = async () => {
   return (
     <>
       <TournamentContextProvider>
-        <Navbar showNewPlayerButton={true} isTournamentSelectionPage={false}/>
+        <Navbar>
+          <TournamentNavbarContent />
+        </Navbar>
         <TournamentButtons />
         <TournamentInfo />
       </TournamentContextProvider>

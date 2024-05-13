@@ -25,6 +25,8 @@ export interface Players {
 export interface TournamentPlayers {
   player_name: string;
   tournament_id: number;
+  bracket_match: number | null;
+  bracket_seed: number | null;
 }
 
 export interface Tournaments {

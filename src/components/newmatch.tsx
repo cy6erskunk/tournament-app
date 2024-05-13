@@ -25,7 +25,9 @@ const AddMatch = ({
   const t = useTranslations("NewMatch");
   const context = useTournamentContext();
 
-  const getOpponent = (opp: Player) => {
+  const getOpponent = (opp: Player | null) => {
+    if (!opp) return null;
+
     const playerName = player?.player.player_name;
     const opponentName = opp.player.player_name;
 
@@ -102,13 +104,15 @@ const AddMatch = ({
     // NOTE: find match players
     // for example if input has 'test' and tournament has 'TEST' it's the same player
     if ((!player || !opponent) && !bracketMatch) {
-      const findPlayers = context.players.filter(
+      const findPlayers: Player[] = context.players.filter(
         (player) =>
-          player.player.player_name.toLowerCase() ===
-            form.player1.toLowerCase() ||
-          player.player.player_name.toLowerCase() ===
-            form.player2.toLowerCase(),
-      );
+          (player &&
+            player.player.player_name.toLowerCase() ===
+              form.player1.toLowerCase()) ||
+          (player &&
+            player.player.player_name.toLowerCase() ===
+              form.player2.toLowerCase()),
+      ) as NonNullable<Player>[];
 
       if (findPlayers.length !== 2) {
         alert(t("selectbothplayers"));
@@ -162,8 +166,13 @@ const AddMatch = ({
     context.setPlayers((prevPlayers) => {
       // Find the player with the specific player name
       return prevPlayers.map((player) => {
+        if (!player) return player;
         // Check if the player is in the match
-        if (player.player.player_name !== form.player1 && player.player.player_name !== form.player2) {
+        if (
+          player &&
+          player.player.player_name !== form.player1 &&
+          player.player.player_name !== form.player2
+        ) {
           return player;
         }
 
@@ -214,6 +223,7 @@ const AddMatch = ({
                 className="w-full rounded-md shadow-sm border border-slate-300 px-3 py-1"
                 type="text"
                 name="player1"
+                id="player1"
                 defaultValue={bracketMatch?.player1?.player.player_name}
                 readOnly
                 required
@@ -245,6 +255,7 @@ const AddMatch = ({
                 className="w-full rounded-md shadow-sm border border-slate-300 px-3 py-1"
                 type="text"
                 name="player2"
+                id="player2"
                 defaultValue={bracketMatch?.player2?.player.player_name}
                 readOnly
                 required
@@ -316,14 +327,16 @@ const AddMatch = ({
                     autoFocus
                   />
                   <datalist id="player1list">
-                    {context.players.map((player) => (
-                      <option
-                        key={player.player.player_name}
-                        value={player.player.player_name}
-                      >
-                        {player.player.player_name}
-                      </option>
-                    ))}
+                    {context.players.map((player) =>
+                      player ? (
+                        <option
+                          key={player.player.player_name}
+                          value={player.player.player_name}
+                        >
+                          {player.player.player_name}
+                        </option>
+                      ) : null,
+                    )}
                   </datalist>
                 </>
               )}

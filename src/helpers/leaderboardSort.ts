@@ -91,7 +91,7 @@ export class LeaderboardBuilder {
 
   private sortPercentage(a: Player, b: Player) {
     if (a.matches.length < 2) return -1;
-    if (b.matches.length < 2) return -1;
+    if (b.matches.length < 2) return 1;
 
     // Sort by win percentage
     const winA = winPercentage(a);

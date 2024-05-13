@@ -15,7 +15,7 @@ interface TournamentContext {
   setTournament: React.Dispatch<
     React.SetStateAction<TournamentContext["tournament"]>
   >;
-  players: Player[];
+  players: (Player | null)[];
   setPlayers: React.Dispatch<
     React.SetStateAction<TournamentContext["players"]>
   >;

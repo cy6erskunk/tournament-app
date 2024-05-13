@@ -20,8 +20,9 @@ const LeaderboardSidebar = () => {
   const [players, setPlayers] = useState<Player[]>([]);
 
   useEffect(() => {
+    const filteredPlayers:Player[] = context.players.filter((player)=>player !== null) as NonNullable<Player>[]
     const p = new LeaderboardBuilder()
-      .players(context.players)
+      .players(filteredPlayers)
       .round(context.activeRound)
       .ascending()
       .column("percentage")

@@ -45,6 +45,8 @@ export async function newPlayer(
 export async function addPlayer(
   name: string,
   tournamentId: number,
+  bracketMatch: number | null = null,
+  bracketSeed: number | null = null,
 ): Promise<Result<Player, string>> {
   try {
     const user = await db
@@ -67,6 +69,8 @@ export async function addPlayer(
       .values({
         player_name: user.player_name,
         tournament_id: tournamentId,
+        bracket_match: bracketMatch,
+        bracket_seed: bracketSeed,
       })
       .returningAll()
       .executeTakeFirst()) as TournamentPlayers | undefined;
@@ -85,6 +89,43 @@ export async function addPlayer(
     return {
       success: false,
       error: "Error adding player to tournament (catch)",
+    };
+  }
+}
+
+export async function addPlayers(
+  players: Player[],
+): Promise<Result<number, string>> {
+  const data = players
+    .filter((player) => player)
+    .map((player) => {
+      return {
+        player_name: player.player.player_name,
+        tournament_id: player.player.tournament_id,
+        bracket_match: player.player.bracket_match,
+        bracket_seed: player.player.bracket_seed,
+      };
+    });
+
+  try {
+    const res = await db
+      .insertInto("tournament_players")
+      .values(data)
+      .executeTakeFirst();
+
+
+    console.log(res);
+    const count = Number(res.numInsertedOrUpdatedRows);
+    if (!count) {
+      return { success: false, error: "Error adding players to tournament" };
+    }
+
+    return { success: true, value: count };
+  } catch (error) {
+    console.log(error);
+    return {
+      success: false,
+      error: "Error adding players to tournament (catch)",
     };
   }
 }

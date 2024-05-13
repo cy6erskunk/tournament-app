@@ -94,5 +94,9 @@
     "submit": "Submit",
     "unexpectederror": "Unexpected error",
     "remove": "Remove"
+  },
+  "Brackets": {
+    "selectseed": "Select match order from tournament",
+    "noRRtournamentsfound": "No round robin tournaments found"
   }
 }
