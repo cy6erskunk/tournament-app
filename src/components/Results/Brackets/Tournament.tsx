@@ -14,6 +14,8 @@ import { getRoundRobinTournaments } from "@/database/getTournament";
 import Tournament from "@/types/Tournament";
 import { useTranslations } from "next-intl";
 import { useUserContext } from "@/context/UserContext";
+import { RoundRobinCount } from "@/types/RoundRobinCount";
+import { UserIcon } from "@heroicons/react/24/outline";
 
 // These types describe a match on the frontend, not 1:1 with
 // database data as this is also used for displaying matches
@@ -45,7 +47,7 @@ export default function Tournament() {
   const context = useTournamentContext();
   const [tournament, setTournament] = useState<Round[]>([]);
   const [capacity, setCapacity] = useState<number | undefined>(undefined);
-  const [rrTournaments, setRrTournaments] = useState<Tournament[]>([]);
+  const [rrTournaments, setRrTournaments] = useState<RoundRobinCount[]>([]);
   const account = useUserContext();
 
   const getMatchByPlayer = (player: Player, round: Round) => {
@@ -375,12 +377,16 @@ export default function Tournament() {
           {rrTournaments.length > 0 ? (
             <ul className="flex flex-col gap-8">
               {rrTournaments.map((rrTour) => (
-                <li key={rrTour.id}>
+                <li className="max-w-sm" key={rrTour.id}>
                   <button
-                    className="py-3 px-2"
+                    className="flex justify-between gap-4 py-4 px-3 rounded-md shadow-sm border border-black hover:bg-gray-100 w-full"
                     onClick={() => seedTournament(rrTour.id)}
                   >
                     {rrTour.name}
+                    <div className="flex items-center">
+                      <UserIcon className="h-5 w-5" />
+                      {rrTour.playersCount}
+                    </div>
                   </button>
                 </li>
               ))}

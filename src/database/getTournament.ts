@@ -3,6 +3,8 @@
 import { Result } from "@/types/result";
 import { db } from "./database";
 import Tournament from "@/types/Tournament";
+import { sql } from "kysely";
+import { RoundRobinCount } from "@/types/RoundRobinCount";
 
 export async function getTournament(
   name: string,
@@ -90,24 +92,35 @@ export async function getRecentTournaments(): Promise<
   }
 }
 
-// get round robin tournaments for brackets seeding
+// get round robin tournaments and player count for brackets seeding
 export async function getRoundRobinTournaments(): Promise<
-  Result<Tournament[], string>
+  Result<RoundRobinCount[], string>
 > {
   try {
     const tournaments = await db
       .selectFrom("tournaments")
-      .selectAll()
+      .innerJoin(
+        "tournament_players",
+        "tournament_players.tournament_id",
+        "tournaments.id",
+      )
+      .select([
+        "tournaments.id",
+        "tournaments.name",
+        sql`count(tournament_players.player_name)`.as("playersCount"),
+      ])
       .where("format", "=", "Round Robin")
+      .groupBy("tournaments.id")
+      .having((eb) => eb.fn.count("tournament_players.player_name"), ">", 0)
       .limit(10)
-      .orderBy("id desc")
+      .orderBy("tournaments.id desc")
       .execute();
 
     if (!tournaments.length) {
       return { success: false, error: "No tournaments found" };
     }
 
-    return { success: true, value: tournaments as Tournament[] };
+    return { success: true, value: tournaments as RoundRobinCount[] };
   } catch (error) {
     console.log(error);
     return { success: false, error: "Could not fetch tournaments" };
