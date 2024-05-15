@@ -93,7 +93,8 @@
     "createtournament": "Skapa ny turnering",
     "submit": "Lämna in",
     "unexpectederror": "Ett oväntat fel uppstod",
-    "remove": "Ta bort"
+    "remove": "Ta bort",
+    "loadMore": "Ladda mer"
   },
   "Brackets": {
     "selectseed": "Välj matchordning från turneringen",

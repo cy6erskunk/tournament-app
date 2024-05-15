@@ -93,7 +93,8 @@
     "createtournament": "Loo uus turniir",
     "submit": "Esita",
     "unexpectederror": "Ootamatu viga",
-    "remove": "Eemalda"
+    "remove": "Eemalda",
+    "loadMore": "Lae rohkem"
   },
   "Brackets": {
     "selectseed": "Valige turniirilt mängu järjekord",

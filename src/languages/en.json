@@ -93,7 +93,8 @@
     "createtournament": "Create new tournament",
     "submit": "Submit",
     "unexpectederror": "Unexpected error",
-    "remove": "Remove"
+    "remove": "Remove",
+    "loadMore": "Load More"
   },
   "Brackets": {
     "selectseed": "Select match order from tournament",

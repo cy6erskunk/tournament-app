@@ -93,7 +93,8 @@
     "createtournament": "Luo uusi turnaus",
     "submit": "Tallenna",
     "unexpectederror": "Odottamaton virhe",
-    "remove": "Poista"
+    "remove": "Poista",
+    "loadMore": "Lataa lisää"
   },
   "Brackets": {
     "selectseed": "Valitse ottelujärjestys turnauksesta",

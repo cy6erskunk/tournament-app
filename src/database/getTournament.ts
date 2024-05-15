@@ -71,7 +71,7 @@ export async function getTournamentToday(
 }
 
 // get recent tournaments
-export async function getRecentTournaments(): Promise<
+export async function getRecentTournaments(getOffset: number): Promise<
   Result<Tournament[], string>
 > {
   try {
@@ -79,6 +79,8 @@ export async function getRecentTournaments(): Promise<
       .selectFrom("tournaments")
       .selectAll()
       .orderBy("id desc")
+      .offset(getOffset)
+      .limit(20)
       .execute();
 
     if (!tournaments.length) {
