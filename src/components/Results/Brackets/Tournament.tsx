@@ -11,7 +11,6 @@ import Rounds from "./Rounds";
 import NormalizedId from "@/types/NormalizedId";
 import { jsonParser } from "@/helpers/jsonParser";
 import { getRoundRobinTournaments } from "@/database/getTournament";
-import Tournament from "@/types/Tournament";
 import { useTranslations } from "next-intl";
 import { useUserContext } from "@/context/UserContext";
 import { RoundRobinCount } from "@/types/RoundRobinCount";
