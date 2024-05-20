@@ -20,7 +20,9 @@ const Leaderboard = () => {
   const [direction, setDirection] = useState<SortDirection>("DEFAULT");
 
   useEffect(() => {
-    const filteredPlayers:Player[] = context.players.filter((player)=>player !== null) as NonNullable<Player>[]
+    const filteredPlayers: Player[] = context.players.filter(
+      (player) => player !== null,
+    ) as NonNullable<Player>[];
     const p = new LeaderboardBuilder()
       .players(filteredPlayers)
       .direction(direction)
@@ -37,7 +39,7 @@ const Leaderboard = () => {
       }
       setDirection("DEFAULT");
       setSortCol("percentage");
-      return
+      return;
     }
 
     setDirection("ASC");

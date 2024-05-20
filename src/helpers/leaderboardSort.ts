@@ -90,8 +90,8 @@ export class LeaderboardBuilder {
   }
 
   private sortPercentage(a: Player, b: Player) {
-    if (a.matches.length < 2) return -1;
-    if (b.matches.length < 2) return 1;
+    if (a.matches.length < 2) return 1;
+    if (b.matches.length < 2) return -1;
 
     // Sort by win percentage
     const winA = winPercentage(a);
@@ -109,7 +109,7 @@ export class LeaderboardBuilder {
   }
 
   private sortWins(a: Player, b: Player) {
-    if (a.matches.length < 2) return -1;
+    if (a.matches.length < 2) return 1;
     if (b.matches.length < 2) return -1;
 
     // Sort by wins
@@ -118,6 +118,14 @@ export class LeaderboardBuilder {
 
     if (winA !== winB) {
       return winB - winA;
+    }
+
+    // Sort by win percentage
+    const percentageA = winPercentage(a);
+    const percentageB = winPercentage(b);
+
+    if (percentageA !== percentageB) {
+      return percentageB - percentageA;
     }
 
     // If win percentage is the same, sort by hit index

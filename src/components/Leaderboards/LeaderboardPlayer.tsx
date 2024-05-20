@@ -58,7 +58,10 @@ export function LeaderboardPlayer({ player, nthRow }: PlayerProps) {
   }
 
   return (
-    <tr className="*:p-4 *:text-center odd:bg-white even:bg-blue-50 *:border *:border-slate-400">
+    // Apply conditional styling to all table rows based on the number of matches the player has played.
+    <tr
+      className={`*:p-4 *:text-center odd:bg-white even:bg-blue-50 *:border *:border-slate-400 ${player.matches.length < 2 ? "text-slate-600" : "text-black"}`}
+    >
       <td className="relative">
         <p>{nthRow + 1}.</p>
         {/* trophy icons to top 3 */}
