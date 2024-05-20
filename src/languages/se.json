@@ -53,6 +53,7 @@
   "NewMatch": {
     "title": "Runda",
     "title2": "Redigera",
+    "match": "Match",
     "player1": "Spelare 1",
     "player2": "Spelare 2",
     "submit": "Lämna in",
@@ -84,7 +85,9 @@
     "playeradded": "har lagts till",
     "unauth": "Obehörig åtkomst",
     "alreadyintournament": "Spelaren är redan med i turneringen",
-    "emptyname": "Lägg till namn"
+    "emptyname": "Lägg till namn",
+    "renametournament": "Byt namn på turneringen",
+    "edittournamentname": "Redigera turneringens namn"
   },
   "Select": {
     "selecttournament": "Välj turnering",

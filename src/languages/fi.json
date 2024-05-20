@@ -53,6 +53,7 @@
   "NewMatch": {
     "title": "Kierros",
     "title2": "Päivitä",
+    "match": "Ottelu",
     "player1": "Ottelija 1",
     "player2": "Ottelija 2",
     "submit": "Tallenna",
@@ -84,7 +85,9 @@
     "playeradded": "lisätty",
     "unauth": "Ei oikeuksia",
     "alreadyintournament": "Pelaaja on jo turnauksessa",
-    "emptyname": "Lisää nimi"
+    "emptyname": "Lisää nimi",
+    "renametournament": "Nimeä turnaus uudelleen",
+    "edittournamentname": "Muuta turnauksen nimi"
   },
   "Select": {
     "selecttournament": "Valitse turnaus",

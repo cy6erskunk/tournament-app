@@ -53,6 +53,7 @@
   "NewMatch": {
     "title": "Raund",
     "title2": "Muuda",
+    "match": "Matš",
     "player1": "Mängija 1",
     "player2": "Mängija 2",
     "submit": "Esita",
@@ -84,7 +85,9 @@
     "playeradded": "lisatud",
     "unauth": "Volitamata juurdepääs",
     "alreadyintournament": "Mängija on juba turniiril",
-    "emptyname": "Lisa nimi"
+    "emptyname": "Lisa nimi",
+    "renametournament": "Nimeta turniir ümber",
+    "edittournamentname": "Muutke turniiri nime"
   },
   "Select": {
     "selecttournament": "Valige turniir",

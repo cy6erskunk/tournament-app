@@ -85,12 +85,12 @@ function EditButton() {
 
   return (
     <div className="flex gap-4 py-4">
-      <span className="text-base text-slate-500 cursor-pointer" onClick={(_) => openModal()}>Edit tournament name</span>
+      <span className="text-base text-slate-500 cursor-pointer" onClick={(_) => openModal()}>{t("edittournamentname")}</span>
 
       <Modal isOpen={showModal} closeModal={closeModal}>
         <div className="space-y-10">
           <h2 className="text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
-            Rename tournament
+            {t("renametournament")}
           </h2>
           <input
             id="name"

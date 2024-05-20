@@ -4,6 +4,7 @@ import Modal from "@/components/modal";
 import AddMatch from "@/components/newmatch";
 import { useState } from "react";
 import { PlusCircleIcon } from "@heroicons/react/24/outline";
+import { useTranslations } from "next-intl";
 
 type MatchProps = {
   competitors: (Player | null)[];
@@ -13,6 +14,7 @@ type MatchProps = {
 
 export default function Match({ competitors, match, round }: MatchProps) {
   const [showModal, setShowModal] = useState(false);
+  const t = useTranslations("NewMatch");
 
   const closeModal = () => {
     setShowModal(false);
@@ -51,11 +53,10 @@ export default function Match({ competitors, match, round }: MatchProps) {
     return (
       <div
         key={`${index}-${match.match}-${round.id}`}
-        className={`flex items-center px-1 py-1 leading-relaxed relative w-full border-2 border-slate-500 rounded-md shadow-md ${
-          isWinner || isWinnerByBye
-            ? "bg-green-500"
-            : "bg-white *:text-gray-800"
-        }`}
+        className={`flex items-center px-1 py-1 leading-relaxed relative w-full border-2 border-slate-500 rounded-md shadow-md ${isWinner || isWinnerByBye
+          ? "bg-green-500"
+          : "bg-white *:text-gray-800"
+          }`}
       >
         <div className="flex gap-4 items-center w-full p-2">
           <div className="flex w-10 aspect-square rounded-md items-center bg-slate-200">
@@ -74,8 +75,8 @@ export default function Match({ competitors, match, round }: MatchProps) {
               </span>
             </div>
             <div className="flex items-center gap-2 text-sm *:text-nowrap">
-              <span>{`Match: ${match.match}`}</span>
-              <span>{`Round: ${match.round}`}</span>
+              <span>{`${t("match")}: ${match.match}`}</span>
+              <span>{`${t("title")}: ${match.round}`}</span>
             </div>
           </div>
         </div>
