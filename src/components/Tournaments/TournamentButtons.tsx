@@ -7,15 +7,29 @@ import Addplayer from "@/components/addplayer";
 import { useTranslations } from "next-intl";
 import { useTournamentContext } from "@/context/TournamentContext";
 import { ChevronLeftIcon } from "@heroicons/react/24/outline";
+import { getPlayer } from "@/database/getPlayers";
 
 const TournamentButtons = () => {
   const t = useTranslations("Tournament.Buttons");
   const context = useTournamentContext();
 
+  const [playersList, setPlayersList] = useState<string[]>([]);
   const [showModal, setShowModal] = useState(false);
   const [modalContent, setModalContent] = useState<ReactNode | null>(null);
   const [leaderboardText, setLeaderboardText] = useState(t("leaderboard"));
   const [isSeeded, setIsSeeded] = useState(false);
+
+  useEffect(() => {
+    async function fetchPlayerNames() {
+      const fetchPlayers = await getPlayer();
+      if (!fetchPlayers.success) {
+        console.log("Error: " + fetchPlayers.error);
+        return;
+      }
+      setPlayersList(fetchPlayers.value);
+    }
+    fetchPlayerNames();
+  }, []);
 
   useEffect(() => {
     const hasSeededPlayers = context.players.some(
@@ -58,7 +72,11 @@ const TournamentButtons = () => {
       ) : null}
       <button
         className="p-1 px-5 border rounded-md shadow-sm border-slate-600"
-        onClick={() => openModal(<Addplayer closeModal={closeModal} />)}
+        onClick={() =>
+          openModal(
+            <Addplayer closeModal={closeModal} playerList={playersList} />,
+          )
+        }
       >
         {t("addplayer")}
       </button>

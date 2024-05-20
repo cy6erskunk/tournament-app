@@ -4,13 +4,13 @@ import { FormEvent, useState } from "react";
 
 type AddplayerProps = {
   closeModal: () => void;
+  playerList: string[];
 };
 
-const Addplayer = ({ closeModal }: AddplayerProps) => {
+const Addplayer = ({ closeModal, playerList }: AddplayerProps) => {
   const [loading, setLoading] = useState(false);
   const t = useTranslations("AddPlayer");
   const context = useTournamentContext();
-
   const submitForm = async (event: FormEvent<HTMLFormElement>) => {
     setLoading(true);
     event.preventDefault();
@@ -83,20 +83,30 @@ const Addplayer = ({ closeModal }: AddplayerProps) => {
     setLoading(false);
   };
 
+
   return (
     <form onSubmit={submitForm} className="space-y-10">
       <h2 className="text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
         {t("title")}
       </h2>
       <input
+        list="playerslist"
         id="name"
         name="name"
         type="text"
         required
         placeholder={t("name")}
         autoFocus
+        autoComplete="off"
         className="flex w-full justify-center rounded-md border-0 py-1.5 px-3 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-500 focus:ring-2 focus:ring-inset focus:ring-blue-500 sm:text-sm sm:leading-6"
       />
+      <datalist id="playerslist">
+        {playerList.map((fetchPlayerNames) => (
+          <option key={fetchPlayerNames} value={fetchPlayerNames}>
+            {fetchPlayerNames}
+          </option>
+        ))}
+      </datalist>
       <div className="flex items-center justify-center gap-2 text-sm font-semibold">
         <button
           disabled={loading}

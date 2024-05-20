@@ -17,7 +17,7 @@ export default function SelectTournament() {
   );
   const [loading, setLoading] = useState(true);
   const [removeTournamentLoading, setRemoveTournamentLoading] = useState(false);
-  const [tournamentsLength, setTournamentsLength] = useState(0)
+  const [tournamentsLength, setTournamentsLength] = useState(0);
 
   const getRemoveTournamentButton = (tour: Tournament) => {
     if (!account.user) return;
@@ -62,7 +62,9 @@ export default function SelectTournament() {
 
   useEffect(() => {
     async function fetchTournaments() {
-      const recentTournaments = await getRecentTournaments(previousTournaments.length);
+      const recentTournaments = await getRecentTournaments(
+        previousTournaments.length,
+      );
       if (!recentTournaments.success) {
         console.log("Error: " + recentTournaments.error);
         setLoading(false);
@@ -70,20 +72,23 @@ export default function SelectTournament() {
       }
       setPreviousTournaments(recentTournaments.value);
       setLoading(false);
-      setTournamentsLength(recentTournaments.value.length)
+      setTournamentsLength(recentTournaments.value.length);
     }
     fetchTournaments();
   }, []);
 
   async function loadMoreTournaments() {
-    const loadNewTournaments = await getRecentTournaments(previousTournaments.length)
+    const loadNewTournaments = await getRecentTournaments(
+      previousTournaments.length,
+    );
     if (!loadNewTournaments.success) {
-      console.log("Error: " + loadNewTournaments.error)
+      console.log("Error: " + loadNewTournaments.error);
       return;
     }
-    setPreviousTournaments(previousTournaments.concat(loadNewTournaments.value))
-    console.log(loadNewTournaments.value)
-    setTournamentsLength(loadNewTournaments.value.length)
+    setPreviousTournaments(
+      previousTournaments.concat(loadNewTournaments.value),
+    );
+    setTournamentsLength(loadNewTournaments.value.length);
   }
 
   function loadMoreButton() {
@@ -92,9 +97,14 @@ export default function SelectTournament() {
     }
     return (
       <div className="flex justify-center">
-        <button className="bg-blue-500 w-full py-2 px-3 text-white rounded-md shadow-sm font-semibold" onClick={loadMoreTournaments}>{t("loadMore")}</button>
+        <button
+          className="bg-blue-500 w-full py-2 px-3 text-white rounded-md shadow-sm font-semibold"
+          onClick={loadMoreTournaments}
+        >
+          {t("loadMore")}
+        </button>
       </div>
-    )
+    );
   }
 
   return (
