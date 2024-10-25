@@ -1,6 +1,12 @@
-# Helsingin Miekkailijat
+# Tournament App
 
-Next.js project that serves as an internal full-stack web application (CRUD) for Helsingin Miekkailijat. Managing events, tournaments and users.
+Next.js project that serves as an internal full-stack web application (CRUD). Managing events, tournaments and users.
+
+Project co-authored by:
+- [Mico Rintala](https://github.com/Miconen)
+- [Niko Söder](https://github.com/NikoSoder)
+- [Anton Kiiski](https://github.com/Kiiskii)
+- [Kasper Keske](https://github.com/Kaztu)
 
 > [!NOTE]
 > For the sake of consistency and collaboration, English is chosen as the primary language for documentation, comments, and codebase discussions.
