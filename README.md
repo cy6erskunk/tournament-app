@@ -8,6 +8,12 @@ Project co-authored by:
 - [Anton Kiiski](https://github.com/Kiiskii)
 - [Kasper Keske](https://github.com/Kaztu)
 
+
+> [!NOTE]
+> This repo does not include our issue history.
+
+https://github.com/user-attachments/assets/eb896090-337e-476b-91b6-40d93c0d6cb6
+
 > [!NOTE]
 > For the sake of consistency and collaboration, English is chosen as the primary language for documentation, comments, and codebase discussions.
 
