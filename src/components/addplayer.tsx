@@ -79,7 +79,6 @@ const Addplayer = ({ closeModal, playerList }: AddplayerProps) => {
     context.setPlayers((players) => [...players, player]);
 
     closeModal();
-    alert(`${newPlayer} ${t("playeradded")}`);
     setLoading(false);
   };
 
