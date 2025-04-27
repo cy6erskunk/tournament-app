@@ -2,21 +2,6 @@
 
 Next.js project that serves as an internal full-stack web application (CRUD). Managing events, tournaments and users.
 
-Project co-authored by:
-- [Mico Rintala](https://github.com/Miconen)
-- [Niko Söder](https://github.com/NikoSoder)
-- [Anton Kiiski](https://github.com/Kiiskii)
-- [Kasper Keske](https://github.com/Kaztu)
-
-
-> [!NOTE]
-> This repo does not include our issue history.
-
-https://github.com/user-attachments/assets/eb896090-337e-476b-91b6-40d93c0d6cb6
-
-> [!NOTE]
-> For the sake of consistency and collaboration, English is chosen as the primary language for documentation, comments, and codebase discussions.
-
 ### Tech stack
 - React for the frontend
 - Vercel for hosting
@@ -52,9 +37,6 @@ yarn
 pnpm install
 # or
 bun install
-
-# Define a network for Docker
-docker network create hm_network
 ```
 
 For local development you will want to create a file named `.env.development.local`.
@@ -73,9 +55,6 @@ JWT_SECRET="PRODUCTION_JWT_SECRET_HERE"
 ```
 
 ### Run the development server
-
-> [!IMPORTANT]
-> Do not forget creating the network on the setup step.
 
 ```bash
 docker compose up --build
@@ -115,10 +94,6 @@ The project is currently set up for deployment on Vercel. Connect your Vercel ac
 
 ## Troubleshooting
 
-### Error response from daemon: network local_network not found
-
-Running `docker network create hm_network` should fix the issue.
-
 ### sh: next: not found
 
 If you get this error during your Docker build, make sure you installed the dependencies before running `docker compose`.
@@ -127,3 +102,11 @@ If you get this error during your Docker build, make sure you installed the depe
 
 Removing your node_modules folder and reinstalling fixes this. [Other Possible Ways to Fix It
 ](https://nextjs.org/docs/messages/failed-loading-swc#possible-ways-to-fix-it)
+
+## Credits
+
+Originally forked from https://github.com/Miconen/tournament-app, project co-authored by:
+- [Mico Rintala](https://github.com/Miconen)
+- [Niko Söder](https://github.com/NikoSoder)
+- [Anton Kiiski](https://github.com/Kiiskii)
+- [Kasper Keske](https://github.com/Kaztu)
