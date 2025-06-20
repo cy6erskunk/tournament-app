@@ -1,7 +1,6 @@
 "use server";
 
 import { Result } from "@/types/result";
-import { db } from "./database";
 
 interface QRMatchPending {
   match_id: string;
@@ -11,6 +10,10 @@ interface QRMatchPending {
   round: number;
   match: number;
   created_at: Date;
+}
+
+declare global {
+  var qrMatchStorage: Map<string, QRMatchPending>;
 }
 
 export async function addQRMatch(
