@@ -31,7 +31,8 @@ export async function POST(request: Request) {
   const { player1, player2, tournamentId, round, match } = data.value;
 
   // Generate match ID and QR data
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 
+                  (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000');
   const qrMatchData = generateQRMatchData(player1, player2, tournamentId, round, baseUrl);
 
   // Store the match data for later retrieval
