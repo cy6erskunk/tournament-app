@@ -4,6 +4,25 @@ import { getQRMatch, removeQRMatch } from "@/database/addQRMatch";
 import { QRMatchResult } from "@/types/QRMatch";
 import { jsonParser } from "@/helpers/jsonParser";
 
+function getCorsHeaders() {
+  const isDev = process.env.NODE_ENV === 'development';
+  const allowedOrigins = isDev ? '*' : process.env.CORS_ALLOWED_ORIGINS || '';
+  
+  return {
+    'Access-Control-Allow-Origin': allowedOrigins,
+    'Access-Control-Allow-Methods': 'POST, OPTIONS',
+    'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+    'Access-Control-Max-Age': '86400',
+  };
+}
+
+export async function OPTIONS(request: Request) {
+  return new Response(null, {
+    status: 200,
+    headers: getCorsHeaders(),
+  });
+}
+
 export async function POST(request: Request) {
   const json = await request.text();
   const data = jsonParser<QRMatchResult>(json);
@@ -11,6 +30,7 @@ export async function POST(request: Request) {
   if (!data.success) {
     return new Response(`Error reading match result`, {
       status: 400,
+      headers: getCorsHeaders(),
     });
   }
 
@@ -21,6 +41,7 @@ export async function POST(request: Request) {
   if (!matchDataResult.success) {
     return new Response(`Invalid or expired match ID: ${matchDataResult.error}`, {
       status: 404,
+      headers: getCorsHeaders(),
     });
   }
 
@@ -56,6 +77,7 @@ export async function POST(request: Request) {
     if (!addResult.success) {
       return new Response(`Error adding/updating match: ${addResult.error}`, {
         status: 400,
+        headers: getCorsHeaders(),
       });
     }
     
@@ -70,5 +92,7 @@ export async function POST(request: Request) {
   return new Response(JSON.stringify({ 
     success: true, 
     match: matchResult.value 
-  }));
+  }), {
+    headers: getCorsHeaders(),
+  });
 }
