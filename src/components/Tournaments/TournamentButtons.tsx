@@ -4,6 +4,7 @@ import { useState, ReactNode, useEffect } from "react";
 import Modal from "@/components/modal";
 import AddMatch from "@/components/newmatch";
 import Addplayer from "@/components/addplayer";
+import QRMatchModal from "@/components/QRMatchModal";
 import { useTranslations } from "next-intl";
 import { useTournamentContext } from "@/context/TournamentContext";
 import { ChevronLeftIcon } from "@heroicons/react/24/outline";
@@ -70,6 +71,12 @@ const TournamentButtons = () => {
           {t("addmatch")}
         </button>
       ) : null}
+      <button
+        className="p-1 px-5 border rounded-md shadow-sm border-slate-600 bg-green-50 border-green-500 text-green-700"
+        onClick={() => openModal(<QRMatchModal closeModal={closeModal} />)}
+      >
+        Generate QR Match
+      </button>
       <button
         className="p-1 px-5 border rounded-md shadow-sm border-slate-600"
         onClick={() =>

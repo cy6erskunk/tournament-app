@@ -52,6 +52,7 @@ For running `npm run prod` you will have to use the production `POSTGRES_URL` an
 ```env
 POSTGRES_URL="PRODUCTION_POSTGRES_URL_HERE"
 JWT_SECRET="PRODUCTION_JWT_SECRET_HERE"
+CORS_ALLOWED_ORIGINS="https://your-external-app.com,https://another-app.com"
 ```
 
 ### Run the development server
@@ -81,6 +82,33 @@ VALUES
 Next.js uses a file-system-based router, where each .js or .tsx file in the pages directory automatically becomes a route. You can navigate the project using the app router.
 
 For example, the file pages/index.js corresponds to the home route (/). To create a new route, add a new file in the pages directory.
+
+## QR Code Match Integration
+
+The application supports QR code generation for external match result submission. Third-party applications can scan QR codes and submit match results through the API.
+
+### CORS Configuration
+
+The QR match submission endpoint (`/api/qr-match/submit`) is configured with CORS headers to allow cross-origin requests:
+
+- **Development**: Allows requests from all domains (`*`) for easy testing
+- **Production**: Restricts access to domains specified in the `CORS_ALLOWED_ORIGINS` environment variable
+
+### Environment Variables
+
+For production deployment, configure the allowed origins:
+
+```env
+CORS_ALLOWED_ORIGINS="https://your-qr-app.com,https://another-app.com"
+```
+
+Multiple domains can be specified as a comma-separated list. If not set in production, CORS will be restrictive (empty string).
+
+### API Endpoints
+
+- `POST /api/qr-match/generate` - Generate QR code data for a match (requires authentication)
+- `POST /api/qr-match/submit` - Submit match results via QR code (supports CORS)
+- `OPTIONS /api/qr-match/submit` - CORS preflight support
 
 ## Internationalization (i18n) Translations
 
