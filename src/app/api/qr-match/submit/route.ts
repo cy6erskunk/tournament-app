@@ -6,10 +6,10 @@ import { jsonParser } from "@/helpers/jsonParser";
 
 function getCorsHeaders() {
   const isDev = process.env.NODE_ENV === 'development';
-  const allowedOrigins = isDev ? '*' : process.env.CORS_ALLOWED_ORIGINS || '';
+  const allowedOrigin = isDev ? '*' : process.env.CORS_ALLOWED_ORIGIN || '';
   
   return {
-    'Access-Control-Allow-Origin': allowedOrigins,
+    'Access-Control-Allow-Origin': allowedOrigin,
     'Access-Control-Allow-Methods': 'POST, OPTIONS',
     'Access-Control-Allow-Headers': 'Content-Type, Authorization',
     'Access-Control-Max-Age': '86400',
