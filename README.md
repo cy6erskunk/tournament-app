@@ -52,7 +52,7 @@ For running `npm run prod` you will have to use the production `POSTGRES_URL` an
 ```env
 POSTGRES_URL="PRODUCTION_POSTGRES_URL_HERE"
 JWT_SECRET="PRODUCTION_JWT_SECRET_HERE"
-CORS_ALLOWED_ORIGINS="https://your-external-app.com,https://another-app.com"
+CORS_ALLOWED_ORIGIN="https://your-external-app.com"
 ```
 
 ### Run the development server
@@ -92,17 +92,21 @@ The application supports QR code generation for external match result submission
 The QR match submission endpoint (`/api/qr-match/submit`) is configured with CORS headers to allow cross-origin requests:
 
 - **Development**: Allows requests from all domains (`*`) for easy testing
-- **Production**: Restricts access to domains specified in the `CORS_ALLOWED_ORIGINS` environment variable
+- **Production**: Restricts access to the domain specified in the `CORS_ALLOWED_ORIGIN` environment variable
 
 ### Environment Variables
 
 For production deployment, configure the allowed origins:
 
 ```env
-CORS_ALLOWED_ORIGINS="https://your-qr-app.com,https://another-app.com"
+CORS_ALLOWED_ORIGIN="https://your-qr-app.com"
 ```
 
-Multiple domains can be specified as a comma-separated list. If not set in production, CORS will be restrictive (empty string).
+**Important CORS Limitations:**
+- Only a single origin can be specified due to CORS header limitations
+- Wildcard subdomain patterns (e.g., `*.vercel.app`) are not supported
+- If your server needs to support multiple origins, implement dynamic origin validation that returns the specific client's origin in the header
+- If not set in production, CORS will be restrictive (empty string)
 
 ### API Endpoints
 
