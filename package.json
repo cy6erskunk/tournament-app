@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "prod": "vitest run && next build && next start",
-    "build": "vitest run && next build",
+    "build": "vitest run && npm run migrate && next build",
     "start": "next start",
     "lint": "next lint",
     "test": "vitest run",
