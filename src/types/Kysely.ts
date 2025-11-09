@@ -15,7 +15,7 @@ export interface Matches {
   player2_hits: Generated<number>;
   round: number;
   tournament_id: number;
-  winner: string | null;
+  winner: string;
 }
 
 export interface Players {
