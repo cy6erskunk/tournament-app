@@ -2,11 +2,11 @@
 
 import { Result } from "@/types/result";
 import { db } from "./database";
-import { Matches } from "@/types/Kysely";
+import { NewMatch } from "@/types/MatchTypes";
 
 // TODO: Implement match deleting from this insert call
 export async function deleteMatch(
-  form: Omit<Matches, "id">,
+  form: NewMatch,
 ): Promise<Result<number, string>> {
   try {
     const match = await db

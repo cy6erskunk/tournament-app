@@ -1,13 +1,13 @@
 import { addMatch } from "@/database/addMatch";
 import { deleteMatch } from "@/database/deleteMatch";
 import { updateMatch } from "@/database/updateMatch";
-import { Matches } from "@/types/Kysely";
 import { getSession } from "@/helpers/getsession";
 import { jsonParser } from "@/helpers/jsonParser";
+import { NewMatch } from "@/types/MatchTypes";
 
 export async function POST(request: Request) {
   const json = await request.text();
-  const data = jsonParser<Matches>(json);
+  const data = jsonParser<NewMatch>(json);
 
   const token = await getSession();
   if (!token.success) {
@@ -18,6 +18,12 @@ export async function POST(request: Request) {
 
   if (!data.success) {
     return new Response(`Error reading match`, {
+      status: 400,
+    });
+  }
+
+  if (data.value.winner === null) {
+    return new Response(`Winner cannot be null`, {
       status: 400,
     });
   }
@@ -50,7 +56,7 @@ export async function GET(request: Request) {
 export async function PUT(request: Request) {
   // Get the id from the request query
   const json = await request.text();
-  const data = jsonParser<Matches>(json);
+  const data = jsonParser<NewMatch>(json);
 
   const token = await getSession();
   if (!token.success) {
@@ -61,6 +67,12 @@ export async function PUT(request: Request) {
 
   if (!data.success) {
     return new Response(`Error reading match`, {
+      status: 400,
+    });
+  }
+
+  if (data.value.winner === null) {
+    return new Response(`Winner cannot be null`, {
       status: 400,
     });
   }
@@ -79,7 +91,7 @@ export async function PUT(request: Request) {
 export async function DELETE(request: Request) {
   // Get the id from the request query
   const json = await request.text();
-  const data = jsonParser<Matches>(json);
+  const data = jsonParser<NewMatch>(json);
 
   const token = await getSession();
   if (!token.success) {
@@ -90,6 +102,12 @@ export async function DELETE(request: Request) {
 
   if (!data.success) {
     return new Response(`Error reading match`, {
+      status: 400,
+    });
+  }
+
+  if (data.value.winner === null) {
+    return new Response(`Winner cannot be null`, {
       status: 400,
     });
   }

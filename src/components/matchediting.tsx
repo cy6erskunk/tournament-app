@@ -3,8 +3,7 @@
 import { useTranslations } from "next-intl";
 import { FormEvent, useState } from "react";
 import { useTournamentContext } from "@/context/TournamentContext";
-import { Matches } from "@/types/Kysely";
-import NormalizedId from "@/types/NormalizedId";
+import { MatchForm, MatchRow, NewMatch } from "@/types/MatchTypes";
 import { Player } from "@/types/Player";
 
 type EditmatchProps = {
@@ -33,7 +32,7 @@ const EditMatch = ({ closeModal, player, opponent }: EditmatchProps) => {
       return;
     }
 
-    const form: Omit<Matches, "id"> = {
+    const form: MatchForm = {
       match: 1,
       player1: formData.get("player1") as string,
       player1_hits: Number(formData.get("points1")),
@@ -73,15 +72,19 @@ const EditMatch = ({ closeModal, player, opponent }: EditmatchProps) => {
     setLoading(false);
   };
 
-  const updateHandler = async (form: Omit<Matches, "id">) => {
+  const updateHandler = async (form: MatchForm) => {
     if (form.player1_hits === form.player2_hits) {
       alert(t("nodraws"));
       setLoading(false);
       return;
     }
+    /*
+    TODO: add validation that formData should always contain winner
+    */
+    const formData = form as NewMatch;
     const res = await fetch("/api/matches", {
       method: "PUT",
-      body: JSON.stringify(form),
+      body: JSON.stringify(formData),
     });
     if (!res.ok) {
       setLoading(false);
@@ -92,9 +95,9 @@ const EditMatch = ({ closeModal, player, opponent }: EditmatchProps) => {
 
         case 409:
           return alert(
-            `${t("matchexists1")} (${form.player1} & ${form.player2}) ${t(
+            `${t("matchexists1")} (${formData.player1} & ${formData.player2}) ${t(
               "matchexists2",
-            )} (${form.round})`,
+            )} (${formData.round})`,
           );
 
         default:
@@ -103,7 +106,7 @@ const EditMatch = ({ closeModal, player, opponent }: EditmatchProps) => {
     }
 
     // Update player objects inside context state
-    const match: NormalizedId<Matches> = await res.json();
+    const match: MatchRow = await res.json();
     context.setPlayers((prevPlayers) => {
       // Find the player with the specific player name
       return prevPlayers.map((player) => {
@@ -111,8 +114,8 @@ const EditMatch = ({ closeModal, player, opponent }: EditmatchProps) => {
         // Check if the player is in the match
         if (
           player &&
-          player.player.player_name !== form.player1 &&
-          player.player.player_name !== form.player2
+          player.player.player_name !== formData.player1 &&
+          player.player.player_name !== formData.player2
         ) {
           return player;
         }
@@ -125,14 +128,14 @@ const EditMatch = ({ closeModal, player, opponent }: EditmatchProps) => {
           // ...as they are not always consistent
           let p1 = form["player1_hits"];
           let p2 = form["player2_hits"];
-          if (playerMatch.player1 !== form.player1) {
+          if (playerMatch.player1 !== form["player1"]) {
             p1 = form["player2_hits"];
             p2 = form["player1_hits"];
           }
 
           playerMatch.player1_hits = p1;
           playerMatch.player2_hits = p2;
-          playerMatch.winner = form.winner;
+          playerMatch.winner = formData.winner;
 
           return playerMatch;
         });
@@ -146,7 +149,7 @@ const EditMatch = ({ closeModal, player, opponent }: EditmatchProps) => {
     alert(t("matchupdated"));
   };
 
-  const deleteHandler = async (form: Omit<Matches, "id">) => {
+  const deleteHandler = async (form: MatchForm) => {
     const res = await fetch("/api/matches", {
       method: "DELETE",
       body: JSON.stringify(form),

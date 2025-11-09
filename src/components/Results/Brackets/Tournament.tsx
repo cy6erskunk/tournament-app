@@ -5,10 +5,9 @@ import Round from "./Round";
 import Match from "./Match";
 import { useTournamentContext } from "@/context/TournamentContext";
 import { Player } from "@/types/Player";
-import { Matches } from "@/types/Kysely";
+import { MatchRow } from "@/types/MatchTypes";
 import { useCallback, useEffect, useState } from "react";
 import Rounds from "./Rounds";
-import NormalizedId from "@/types/NormalizedId";
 import { jsonParser } from "@/helpers/jsonParser";
 import { getRoundRobinTournaments } from "@/database/getTournament";
 import { useTranslations } from "next-intl";
@@ -24,7 +23,7 @@ import { UserIcon } from "@heroicons/react/24/outline";
 // Also omits the id field completely from the original db type
 // So we don't have to manually set it as it's only used for matching
 // players matches when fetched from the database
-export type Match = Omit<Matches, "id" | "player1" | "player2"> & {
+export type Match = Omit<MatchRow, "id" | "player1" | "player2"> & {
   player1: Player | null;
   player2: Player | null;
 };
@@ -55,9 +54,9 @@ export default function Tournament() {
     );
   };
 
-  // Casts a Matches object into a Match object
+  // Casts a MatchRow object into a Match object
   const castToMatch = useCallback(
-    (match: Matches | NormalizedId<Matches>) => {
+    (match: MatchRow) => {
       const { id, player1, player2, ...rest } = match;
       return {
         ...rest,
@@ -111,7 +110,7 @@ export default function Tournament() {
           player2_hits: 0,
           round: roundNumber,
           tournament_id: tournamentId,
-          winner: null,
+          winner: "",  // Empty string for unplayed matches
         };
 
         matches.set(matchId, match);
