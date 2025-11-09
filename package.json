@@ -10,8 +10,8 @@
     "lint": "next lint",
     "test": "vitest run",
     "test:watch": "vitest run",
-    "migrate": "node src/database/migrator.ts",
-    "migrate:create": "node scripts/create-migration.ts",
+    "migrate": "tsx --env-file=.env.development.local src/database/migrator.ts",
+    "migrate:create": "tsx scripts/create-migration.ts",
     "db:codegen": "kysely-codegen --out-file src/types/Kysely.ts"
   },
   "dependencies": {
@@ -46,6 +46,7 @@
     "kysely-codegen": "^0.13.1",
     "postcss": "^8",
     "tailwindcss": "^3.3.0",
+    "tsx": "^4.20.6",
     "typescript": "^5",
     "vitest": "^1.4.0"
   }

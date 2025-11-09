@@ -1,7 +1,7 @@
 import * as path from 'path'
 import { promises as fs } from 'fs'
 import { Migrator, FileMigrationProvider } from 'kysely'
-import { db } from './database.js'
+import { db } from './database'
 
 async function migrateToLatest() {
   const migrator = new Migrator({
