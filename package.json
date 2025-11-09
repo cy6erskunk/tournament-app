@@ -5,7 +5,8 @@
   "scripts": {
     "dev": "next dev",
     "prod": "vitest run && next build && next start",
-    "build": "vitest run && npm run migrate && next build",
+    "build": "vitest run && next build",
+    "postbuild": "tsx src/database/migrator.ts",
     "start": "next start",
     "lint": "next lint",
     "test": "vitest run",

@@ -124,6 +124,25 @@ To switch languages, update the language in the URL (e.g., `/en` or `/fi`). To u
 
 The project is currently set up for deployment on Vercel. Connect your Vercel account to the repository or a fork of it and configure the deployment settings.
 
+### Environment Variables on Vercel
+
+Set the following environment variables in your Vercel project dashboard:
+
+- `POSTGRES_URL` - Production database connection string
+- `JWT_SECRET` - Production JWT signing secret (use a strong random value)
+- `CORS_ALLOWED_ORIGIN` - Allowed origin for QR match submissions (e.g., `https://your-app.com`)
+
+### Database Migrations
+
+Migrations run automatically after each deployment via the `postbuild` script. The deployment process:
+
+1. Tests run (`vitest run`)
+2. Build completes (`next build`)
+3. Migrations apply (`postbuild` hook runs `tsx src/database/migrator.ts`)
+4. App starts
+
+Migrations use environment variables from Vercel dashboard - no `.env` file needed in production.
+
 ## Troubleshooting
 
 ### sh: next: not found
