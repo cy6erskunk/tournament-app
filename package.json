@@ -9,7 +9,10 @@
     "start": "next start",
     "lint": "next lint",
     "test": "vitest run",
-    "test:watch": "vitest run"
+    "test:watch": "vitest run",
+    "migrate": "node --experimental-strip-types src/database/migrator.ts",
+    "migrate:create": "node --experimental-strip-types scripts/create-migration.ts",
+    "db:codegen": "kysely-codegen --out-file src/types/Kysely.ts"
   },
   "dependencies": {
     "@heroicons/react": "^2.1.1",
