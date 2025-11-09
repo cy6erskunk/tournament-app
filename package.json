@@ -10,8 +10,8 @@
     "lint": "next lint",
     "test": "vitest run",
     "test:watch": "vitest run",
-    "migrate": "node --experimental-strip-types src/database/migrator.ts",
-    "migrate:create": "node --experimental-strip-types scripts/create-migration.ts",
+    "migrate": "node src/database/migrator.ts",
+    "migrate:create": "node scripts/create-migration.ts",
     "db:codegen": "kysely-codegen --out-file src/types/Kysely.ts"
   },
   "dependencies": {
