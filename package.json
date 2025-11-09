@@ -10,9 +10,9 @@
     "lint": "next lint",
     "test": "vitest run",
     "test:watch": "vitest run",
-    "migrate": "tsx --env-file=.env.development.local src/database/migrator.ts",
+    "migrate": "tsx --env-file=.env src/database/migrator.ts",
     "migrate:create": "tsx scripts/create-migration.ts",
-    "db:codegen": "kysely-codegen --out-file src/types/Kysely.ts"
+    "db:codegen": "kysely-codegen --url 'env(POSTGRES_URL)' --out-file src/types/Kysely.ts"
   },
   "dependencies": {
     "@heroicons/react": "^2.1.1",

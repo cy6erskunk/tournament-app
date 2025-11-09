@@ -39,7 +39,7 @@ pnpm install
 bun install
 ```
 
-For local development you will want to create a file named `.env.development.local`.
+For local development you will want to create a file named `.env`.
 The `POSTGRES_URL` is important for connecting to the database. You can have the `JWT_SECRET` as anything, this will "sign" all user cookies with this secret, possibly causing issues if you change it later while logged in.
 
 ```env
