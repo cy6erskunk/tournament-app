@@ -2,8 +2,7 @@
 
 import { Result } from "@/types/result";
 import { db } from "./database";
-import { Matches } from "@/types/Kysely";
-import NormalizedId from "@/types/NormalizedId";
+import { NewMatch, MatchRow } from "@/types/MatchTypes";
 
 // Type guard to check if the error has a code property
 function isErrorWithCode(error: any): error is { code: string } {
@@ -11,8 +10,8 @@ function isErrorWithCode(error: any): error is { code: string } {
 }
 
 export async function updateMatch(
-  form: Omit<Matches, "id">,
-): Promise<Result<NormalizedId<Matches>, { value: string; code?: number }>> {
+  form: NewMatch,
+): Promise<Result<MatchRow, { value: string; code?: number }>> {
   try {
     const match = await db
       .selectFrom("matches")

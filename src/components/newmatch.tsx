@@ -3,8 +3,7 @@
 import { useTranslations } from "next-intl";
 import { FormEvent, useState } from "react";
 import { useTournamentContext } from "@/context/TournamentContext";
-import { Matches } from "@/types/Kysely";
-import NormalizedId from "@/types/NormalizedId";
+import { MatchForm, MatchRow } from "@/types/MatchTypes";
 import { Match } from "./Results/Brackets/Tournament";
 import { Player } from "@/types/Player";
 
@@ -65,7 +64,7 @@ const AddMatch = ({
       return;
     }
 
-    const form: Omit<Matches, "id"> = {
+    const form: MatchForm = {
       match: bracketMatch?.match ?? 1,
       player1: formData.get("player1") as string,
       player1_hits: Number(formData.get("points1")) ?? 0,
@@ -162,7 +161,7 @@ const AddMatch = ({
     }
 
     // Update player objects inside context state
-    const match: NormalizedId<Matches> = await res.json();
+    const match: MatchRow = await res.json();
     context.setPlayers((prevPlayers) => {
       // Find the player with the specific player name
       return prevPlayers.map((player) => {

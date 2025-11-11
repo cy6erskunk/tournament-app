@@ -10,12 +10,12 @@ export interface Matches {
   id: Generated<number>;
   match: number;
   player1: string;
+  player1_hits: Generated<number>;
   player2: string;
+  player2_hits: Generated<number>;
   round: number;
   tournament_id: number;
-  winner: string | null;
-  player1_hits: number;
-  player2_hits: number;
+  winner: string;
 }
 
 export interface Players {
@@ -23,10 +23,10 @@ export interface Players {
 }
 
 export interface TournamentPlayers {
-  player_name: string;
-  tournament_id: number;
   bracket_match: number | null;
   bracket_seed: number | null;
+  player_name: string;
+  tournament_id: number;
 }
 
 export interface Tournaments {
