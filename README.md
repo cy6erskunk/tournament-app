@@ -191,9 +191,25 @@ CORS_ALLOWED_ORIGIN="https://your-qr-app.com"
 
 ## Internationalization (i18n) Translations
 
-The project supports internationalization for translations. Translation files are stored in the `languages` directory. You can add translations for different languages and use the next-i18next library to handle localization.
+The project supports internationalization for translations. Translation files are stored in the `src/languages` directory. You can add translations for different languages and use the next-intl library to handle localization.
 
 To switch languages, update the language in the URL (e.g., `/en` or `/fi`). To use this in conjunction with the App Router, we use the [locale] folder name. For detailed configuration and usage of i18n in Next.js, refer to the [Next.js Internationalization documentation](https://nextjs.org/docs/app/building-your-application/routing/internationalization) and [next-intl official documentation](https://next-intl-docs.vercel.app/docs/getting-started).
+
+### TypeScript Types for Translations
+
+**Important:** The Finnish locale (`fi.json`) is used as the source of truth for TypeScript type definitions. This is configured in `global.d.ts`:
+
+```typescript
+type Messages = typeof import("@/languages/fi.json");
+declare interface IntlMessages extends Messages {}
+```
+
+This means:
+- All translation keys must exist in `src/languages/fi.json` for TypeScript to recognize them
+- If you add a new translation key to any language file (en.json, se.json, ee.json), you must also add it to `fi.json` or you'll get TypeScript errors
+- TypeScript will provide autocomplete and type checking for `useTranslations()` based on the Finnish translation file structure
+
+**Example:** If you add a key like `"newkey": "New value"` to `en.json`, you must also add the corresponding Finnish translation to `fi.json`, or TypeScript will not recognize it as a valid translation key.
 
 ## Deployment & CI/CD
 

@@ -72,6 +72,11 @@ Core tables: `users`, `tournaments`, `players`, `tournament_players`, `matches`
 - All routes prefixed with locale: `/[locale]/page`
 - Middleware handles language switching and routing
 - Finnish as default locale, comprehensive translation coverage
+- **IMPORTANT**: Finnish locale (`fi.json`) is the source of truth for TypeScript types
+  - TypeScript types for `useTranslations()` are generated from `/src/languages/fi.json` via `global.d.ts`
+  - When adding new translation keys to any language file, ALWAYS add them to `fi.json` first
+  - Missing keys in `fi.json` will cause TypeScript errors even if they exist in other language files
+  - Example: `t("somekey")` requires `"somekey"` to exist in `fi.json` for TypeScript to accept it
 
 ### Database Operations
 - Kysely ORM provides type-safe SQL queries
