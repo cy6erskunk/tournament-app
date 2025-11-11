@@ -35,7 +35,6 @@
     "AO-VO": "I",
     "hoverAO-VO": "Puudutused skooritud - Puudutused vastu võetud",
     "position": "Koht",
-    "remove": "Eemalda",
     "noPlayers": "Turniiril ei leitud ühtegi mängijat",
     "noTournament": "Ühtegi turniiri ei leitud",
     "add": "lisama",
@@ -70,7 +69,8 @@
     "nodraws": "viiki pole lubatud",
     "matchupdated": "Mäng uuendatud",
     "matchdeleted": "Mäng kustutatud",
-    "delete": "Kustuta"
+    "delete": "Kustuta",
+    "selectwinnerfordraw": "Palun valige viigiliste mängude võitja"
   },
   "AddPlayer": {
     "title": "Lisa Mängija",

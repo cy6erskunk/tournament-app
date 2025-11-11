@@ -35,7 +35,6 @@
     "AO-VO": "I",
     "hoverAO-VO": "Annetut osumat - Vastaanotetut osumat",
     "position": "Sija",
-    "remove": "Poista",
     "noPlayers": "Pelaajia ei löytynyt turnauksesta",
     "noTournament": "Turnausta ei löytynyt",
     "add": "Lisää",
@@ -70,7 +69,8 @@
     "nodraws": "Tasapelit ei sallituja",
     "matchupdated": "Ottelu päivitetty",
     "matchdeleted": "Ottelu poistettu",
-    "delete": "Poista"
+    "delete": "Poista",
+    "selectwinnerfordraw": "Valitse voittaja prioriteetin mukaan"
   },
   "AddPlayer": {
     "title": "Lisää ottelija",

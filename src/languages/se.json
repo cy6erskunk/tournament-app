@@ -35,7 +35,6 @@
     "AO-VO": "I",
     "hoverAO-VO": "Givna träffar - tagna träffar",
     "position": "Rank",
-    "remove": "Ta bort",
     "noPlayers": "Inga spelare hittades i turneringen",
     "noTournament": "Ingen turnering hittades",
     "add": "Lägg till",
@@ -70,7 +69,8 @@
     "nodraws": "inga dragningar tillåtna",
     "matchupdated": "Matchen uppdaterad",
     "matchdeleted": "Matchen raderad",
-    "delete": "Radera"
+    "delete": "Radera",
+    "selectwinnerfordraw": "Vänligen välj en vinnare för oavgjorda matcher"
   },
   "AddPlayer": {
     "title": "Lägg till spelare",

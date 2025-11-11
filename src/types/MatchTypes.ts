@@ -25,3 +25,5 @@ export type MatchForm = {
   round: number;
   match: number;
 };
+
+export type MatchFormSubmit = Omit<MatchForm, "winner"> & { winner: string }; // winner is required on submission
