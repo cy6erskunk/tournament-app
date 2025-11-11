@@ -12,6 +12,7 @@
     "test": "vitest run",
     "test:watch": "vitest run",
     "migrate": "tsx --env-file=.env src/database/migrator.ts",
+    "migrate:down": "tsx --env-file=.env src/database/migrate-down.ts",
     "migrate:create": "tsx scripts/create-migration.ts",
     "db:codegen": "kysely-codegen --url 'env(POSTGRES_URL)' --out-file src/types/Kysely.ts"
   },

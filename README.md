@@ -83,6 +83,81 @@ Next.js uses a file-system-based router, where each .js or .tsx file in the page
 
 For example, the file pages/index.js corresponds to the home route (/). To create a new route, add a new file in the pages directory.
 
+## Database Migrations
+
+The project uses Kysely's built-in migration system with TypeScript migration files.
+
+### Creating Migrations
+
+Create a new migration file with automatic numbering:
+
+```bash
+npm run migrate:create add_new_column
+```
+
+This creates a numbered file like `migrations/001_add_new_column.ts` with a template:
+
+```typescript
+import { Kysely, sql } from 'kysely'
+
+export async function up(db: Kysely<any>): Promise<void> {
+  // TODO: Implement migration
+  // Example: Add a new column
+  await db.schema
+    .alterTable('matches')
+    .addColumn('notes', 'text')
+    .execute()
+}
+
+export async function down(db: Kysely<any>): Promise<void> {
+  // TODO: Implement rollback
+  // Example: Remove the column
+  await db.schema
+    .alterTable('matches')
+    .dropColumn('notes')
+    .execute()
+}
+```
+
+### Running Migrations
+
+Apply all pending migrations:
+
+```bash
+npm run migrate
+```
+
+This runs automatically on Vercel deployments via the `postbuild` hook.
+
+### Rolling Back Migrations
+
+Roll back the last applied migration:
+
+```bash
+npm run migrate:down
+```
+
+This executes the `down()` function of the most recently applied migration, reverting its changes. Use this carefully, especially in production.
+
+### Regenerating TypeScript Types
+
+After running migrations, regenerate Kysely types:
+
+```bash
+npm run db:codegen
+```
+
+This updates `src/types/Kysely.ts` with the new database schema. Custom helper types in `src/types/MatchTypes.ts` will remain safe.
+
+### Migration Best Practices
+
+- **Always implement both `up()` and `down()`** for reversibility
+- **One schema change per migration** - easier to debug and rollback
+- **Test migrations locally first** before deploying to production
+- **Never edit applied migrations** - create new ones instead
+- **Descriptive names** - Use clear names like `add_user_email_column`
+- **Backup production data** before running migrations
+
 ## QR Code Match Integration
 
 The application supports QR code generation for external match result submission. Third-party applications can scan QR codes and submit match results through the API.
