@@ -1,5 +1,5 @@
 import Match from "./Match";
-import { Round } from "./Tournament";
+import type { Round } from "./Tournament";
 
 type RoundProps = {
   round: Round;
