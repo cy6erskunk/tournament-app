@@ -59,10 +59,6 @@ const EditMatch = ({ closeModal, player, opponent }: EditmatchProps) => {
     findSharedMatch(player, opponent, context)?.player2_hits ?? 0
   );
   const isPrioRequired = player1Hits === player2Hits;
-  const [buttonClicked, setButtonClicked] = useState("");
-  const handleButtonClick = (buttonType: string) => {
-    setButtonClicked(buttonType);
-  };
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     setLoading(true);
@@ -368,7 +364,6 @@ const EditMatch = ({ closeModal, player, opponent }: EditmatchProps) => {
               name="buttonClicked"
               value="Update"
               className="disabled:bg-blue-300 bg-blue-500 w-full py-2 px-3 text-white rounded-md shadow-sm"
-              onClick={() => handleButtonClick("Update")}
             >
               {t("submit")}
             </button>
@@ -378,7 +373,6 @@ const EditMatch = ({ closeModal, player, opponent }: EditmatchProps) => {
               name="buttonClicked"
               value="Delete"
               className="disabled:bg-red-300 bg-red-400 py-2 px-3 text-white rounded-md shadow-sm mx-auto w-full"
-              onClick={() => handleButtonClick("Delete")}
             >
               {t("delete")}
             </button>
