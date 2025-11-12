@@ -75,6 +75,11 @@ const EditMatch = ({ closeModal, player, opponent }: EditmatchProps) => {
       return;
     }
 
+    // Get which button was clicked from the submitter element
+    // This works reliably in both production and tests
+    const submitter = (event.nativeEvent as SubmitEvent).submitter as HTMLButtonElement;
+    const buttonValue = submitter?.value || "";
+
     const form: MatchForm = {
       match: 1,
       player1: formData.get("player1") as string,
@@ -98,7 +103,7 @@ const EditMatch = ({ closeModal, player, opponent }: EditmatchProps) => {
       return;
     }
 
-    if (buttonClicked === "Update") {
+    if (buttonValue === "Update") {
       if (form.player1_hits === form.player2_hits && !form.winner) {
         alert(t("selectwinnerfordraw"));
       } else {
@@ -112,7 +117,7 @@ const EditMatch = ({ closeModal, player, opponent }: EditmatchProps) => {
         updateHandler(form as MatchFormSubmit);
         closeModal();
       }
-    } else if (buttonClicked === "Delete") {
+    } else if (buttonValue === "Delete") {
       deleteHandler(form);
       closeModal();
     }
