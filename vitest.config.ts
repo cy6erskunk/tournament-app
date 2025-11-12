@@ -6,11 +6,15 @@ export default defineConfig({
   plugins: [react()],
   test: {
     environment: 'jsdom',
+    globals: true,
   },
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
     },
     conditions: ['development', 'browser'],
+  },
+  define: {
+    'process.env.NODE_ENV': JSON.stringify('development'),
   },
 })
