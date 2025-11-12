@@ -32,7 +32,13 @@ vi.mock('next-intl', () => ({
 }));
 
 // Mock TournamentContext
-const mockSetPlayers = vi.fn();
+const mockSetPlayers = vi.fn((updater) => {
+  if (typeof updater === 'function') {
+    mockTournamentContext.players = updater(mockTournamentContext.players);
+  } else {
+    mockTournamentContext.players = updater;
+  }
+});
 const mockTournamentContext = {
   tournament: { id: 1, name: 'Test Tournament', format: 'Round-robin', date: new Date() },
   setTournament: vi.fn(),
@@ -136,8 +142,8 @@ describe('EditMatch - Priority Wins', () => {
     const radioButtons = screen.getAllByRole('radio');
     radioButtons.forEach((radio) => {
       const parentDiv = radio.parentElement;
-      expect(parentDiv?.className.includes('opacity-0')).toBe(false);
-      expect(radio.disabled).toBe(false);
+      expect(parentDiv?.className).not.toContain('opacity-0');
+      expect(radio).not.toBeDisabled();
     });
   });
 
@@ -161,8 +167,8 @@ describe('EditMatch - Priority Wins', () => {
     const radioButtons = screen.getAllByRole('radio');
     radioButtons.forEach((radio) => {
       const parentDiv = radio.parentElement;
-      expect(parentDiv?.className.includes('opacity-0')).toBe(true);
-      expect(radio.disabled).toBe(true);
+      expect(parentDiv?.className).toContain('opacity-0');
+      expect(radio).toBeDisabled();
     });
   });
 
@@ -417,8 +423,8 @@ describe('EditMatch - Priority Wins', () => {
     let radioButtons = screen.getAllByRole('radio');
     radioButtons.forEach((radio) => {
       const parentDiv = radio.parentElement;
-      expect(parentDiv?.className.includes('opacity-0')).toBe(true);
-      expect(radio.disabled).toBe(true);
+      expect(parentDiv?.className).toContain('opacity-0');
+      expect(radio).toBeDisabled();
     });
 
     // Change to equal scores
@@ -428,8 +434,8 @@ describe('EditMatch - Priority Wins', () => {
     radioButtons = screen.getAllByRole('radio');
     radioButtons.forEach((radio) => {
       const parentDiv = radio.parentElement;
-      expect(parentDiv?.className.includes('opacity-0')).toBe(false);
-      expect(radio.disabled).toBe(false);
+      expect(parentDiv?.className).not.toContain('opacity-0');
+      expect(radio).not.toBeDisabled();
     });
 
     // Change back to different scores
@@ -439,8 +445,8 @@ describe('EditMatch - Priority Wins', () => {
     radioButtons = screen.getAllByRole('radio');
     radioButtons.forEach((radio) => {
       const parentDiv = radio.parentElement;
-      expect(parentDiv?.className.includes('opacity-0')).toBe(true);
-      expect(radio.disabled).toBe(true);
+      expect(parentDiv?.className).toContain('opacity-0');
+      expect(radio).toBeDisabled();
     });
   });
 
@@ -480,6 +486,15 @@ describe('EditMatch - Priority Wins', () => {
 
     // Submit update
     fireEvent.click(updateButton);
+
+    await waitFor(() => {
+      expect(global.fetch).toHaveBeenCalledWith(
+        '/api/matches',
+        expect.objectContaining({
+          method: 'PUT',
+        })
+      );
+    });
 
     await waitFor(() => {
       expect(mockSetPlayers).toHaveBeenCalled();
