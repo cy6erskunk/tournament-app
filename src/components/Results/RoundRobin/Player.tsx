@@ -1,5 +1,5 @@
 import { PlusCircleIcon, TrashIcon } from "@heroicons/react/24/outline";
-import { Player } from "@/types/Player";
+import type { Player } from "@/types/Player";
 import { removeTournamentPlayer } from "@/database/removeTournamentPlayer";
 import { useTournamentContext } from "@/context/TournamentContext";
 import { useEffect, useState } from "react";

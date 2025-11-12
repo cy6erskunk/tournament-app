@@ -4,15 +4,15 @@ import { TournamentTitle } from "@/components/Results/Title";
 import Round from "./Round";
 import Match from "./Match";
 import { useTournamentContext } from "@/context/TournamentContext";
-import { Player } from "@/types/Player";
-import { MatchRow } from "@/types/MatchTypes";
+import type { Player } from "@/types/Player";
+import type { MatchRow } from "@/types/MatchTypes";
 import { useCallback, useEffect, useState } from "react";
 import Rounds from "./Rounds";
 import { jsonParser } from "@/helpers/jsonParser";
 import { getRoundRobinTournaments } from "@/database/getTournament";
 import { useTranslations } from "next-intl";
 import { useUserContext } from "@/context/UserContext";
-import { RoundRobinCount } from "@/types/RoundRobinCount";
+import type { RoundRobinCount } from "@/types/RoundRobinCount";
 import { UserIcon } from "@heroicons/react/24/outline";
 
 // These types describe a match on the frontend, not 1:1 with
