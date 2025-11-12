@@ -63,12 +63,22 @@ describe('EditMatch - Priority Wins', () => {
   };
 
   const mockPlayer: Player = {
-    player: { player_name: 'Alice' },
+    player: {
+      player_name: 'Alice',
+      tournament_id: 1,
+      bracket_match: null,
+      bracket_seed: null,
+    },
     matches: [existingMatch],
   };
 
   const mockOpponent: Player = {
-    player: { player_name: 'Bob' },
+    player: {
+      player_name: 'Bob',
+      tournament_id: 1,
+      bracket_match: null,
+      bracket_seed: null,
+    },
     matches: [existingMatch],
   };
 
@@ -88,12 +98,22 @@ describe('EditMatch - Priority Wins', () => {
     };
 
     const playerWithDraw: Player = {
-      player: { player_name: 'Alice' },
+      player: {
+        player_name: 'Alice',
+        tournament_id: 1,
+        bracket_match: null,
+        bracket_seed: null,
+      },
       matches: [drawMatch],
     };
 
     const opponentWithDraw: Player = {
-      player: { player_name: 'Bob' },
+      player: {
+        player_name: 'Bob',
+        tournament_id: 1,
+        bracket_match: null,
+        bracket_seed: null,
+      },
       matches: [drawMatch],
     };
 

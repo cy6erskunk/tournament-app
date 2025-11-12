@@ -46,11 +46,21 @@ vi.mock('@/context/TournamentContext', () => ({
 describe('AddMatch - Priority Wins', () => {
   const mockCloseModal = vi.fn();
   const mockPlayer: Player = {
-    player: { player_name: 'Alice' },
+    player: {
+      player_name: 'Alice',
+      tournament_id: 1,
+      bracket_match: null,
+      bracket_seed: null,
+    },
     matches: [],
   };
   const mockOpponent: Player = {
-    player: { player_name: 'Bob' },
+    player: {
+      player_name: 'Bob',
+      tournament_id: 1,
+      bracket_match: null,
+      bracket_seed: null,
+    },
     matches: [],
   };
 
