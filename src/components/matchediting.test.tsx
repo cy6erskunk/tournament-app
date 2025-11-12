@@ -143,7 +143,7 @@ describe('EditMatch - Priority Wins', () => {
     radioButtons.forEach((radio) => {
       const parentDiv = radio.parentElement;
       expect(parentDiv?.className).not.toContain('opacity-0');
-      expect(radio).not.toBeDisabled();
+      expect(radio.disabled).toBe(false);
     });
   });
 
@@ -168,7 +168,7 @@ describe('EditMatch - Priority Wins', () => {
     radioButtons.forEach((radio) => {
       const parentDiv = radio.parentElement;
       expect(parentDiv?.className).toContain('opacity-0');
-      expect(radio).toBeDisabled();
+      expect(radio.disabled).toBe(true);
     });
   });
 
@@ -424,7 +424,7 @@ describe('EditMatch - Priority Wins', () => {
     radioButtons.forEach((radio) => {
       const parentDiv = radio.parentElement;
       expect(parentDiv?.className).toContain('opacity-0');
-      expect(radio).toBeDisabled();
+      expect(radio.disabled).toBe(true);
     });
 
     // Change to equal scores
@@ -435,7 +435,7 @@ describe('EditMatch - Priority Wins', () => {
     radioButtons.forEach((radio) => {
       const parentDiv = radio.parentElement;
       expect(parentDiv?.className).not.toContain('opacity-0');
-      expect(radio).not.toBeDisabled();
+      expect(radio.disabled).toBe(false);
     });
 
     // Change back to different scores
@@ -446,7 +446,7 @@ describe('EditMatch - Priority Wins', () => {
     radioButtons.forEach((radio) => {
       const parentDiv = radio.parentElement;
       expect(parentDiv?.className).toContain('opacity-0');
-      expect(radio).toBeDisabled();
+      expect(radio.disabled).toBe(true);
     });
   });
 
