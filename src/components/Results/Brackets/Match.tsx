@@ -1,5 +1,5 @@
-import { Player } from "@/types/Player";
-import { Match as TMatch, Round } from "./Tournament";
+import type { Player } from "@/types/Player";
+import type { Match as TMatch, Round } from "./Tournament";
 import Modal from "@/components/modal";
 import AddMatch from "@/components/newmatch";
 import { useState } from "react";
