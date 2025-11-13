@@ -3,7 +3,7 @@
 import { useTranslations } from "next-intl";
 import { FormEvent, useState } from "react";
 import { useTournamentContext } from "@/context/TournamentContext";
-import { MatchForm, MatchRow } from "@/types/MatchTypes";
+import { MatchForm, MatchFormSubmit, MatchRow } from "@/types/MatchTypes";
 import { Match } from "./Results/Brackets/Tournament";
 import { Player } from "@/types/Player";
 
@@ -23,6 +23,9 @@ const AddMatch = ({
   const [loading, setLoading] = useState(false);
   const t = useTranslations("NewMatch");
   const context = useTournamentContext();
+  const [player1Hits, setPlayer1Hits] = useState(0);
+  const [player2Hits, setPlayer2Hits] = useState(0);
+  const isPrioRequired = player1Hits === player2Hits;
 
   const getOpponent = (opp: Player | null) => {
     if (!opp) return null;
@@ -70,16 +73,10 @@ const AddMatch = ({
       player1_hits: Number(formData.get("points1")) ?? 0,
       player2: formData.get("player2") as string,
       player2_hits: Number(formData.get("points2")) ?? 0,
-      winner: null,
+      winner: formData.get("winner") as string | null,
       tournament_id: Number(context.tournament.id),
       round: bracketMatch?.round ?? context.activeRound,
     };
-
-    if (form.player1_hits === form.player2_hits) {
-      alert(t("nodraws"));
-      setLoading(false);
-      return;
-    }
 
     if (!form.player1.trim() || !form.player2.trim()) {
       alert(t("selectbothplayers"));
@@ -93,7 +90,14 @@ const AddMatch = ({
       return;
     }
 
-    // check winner
+    // Check if priority winner is required but not selected
+    if (form.player1_hits === form.player2_hits && !form.winner) {
+      alert(t("selectwinnerfordraw"));
+      setLoading(false);
+      return;
+    }
+
+    // check winner (if not already set by priority)
     if (form.player1_hits > form.player2_hits) {
       form.winner = form.player1;
     } else if (form.player2_hits > form.player1_hits) {
@@ -239,6 +243,21 @@ const AddMatch = ({
                 name="points1"
                 placeholder="0"
                 autoFocus
+                onChange={(e) => setPlayer1Hits(Number(e.target.value))}
+              />
+            </div>
+            <div
+              className={
+                "flex flex-col gap-3" + (isPrioRequired ? "" : " opacity-0")
+              }
+            >
+              <label htmlFor="winner">{"P"}</label>
+              <input
+                type="radio"
+                name="winner"
+                value={bracketMatch?.player1?.player.player_name}
+                className="my-2"
+                disabled={!isPrioRequired}
               />
             </div>
           </div>
@@ -270,6 +289,21 @@ const AddMatch = ({
                 max="99"
                 name="points2"
                 placeholder="0"
+                onChange={(e) => setPlayer2Hits(Number(e.target.value))}
+              />
+            </div>
+            <div
+              className={
+                "flex flex-col gap-3" + (isPrioRequired ? "" : " opacity-0")
+              }
+            >
+              <label htmlFor="winner">{"P"}</label>
+              <input
+                type="radio"
+                name="winner"
+                value={bracketMatch?.player2?.player.player_name}
+                className="my-2"
+                disabled={!isPrioRequired}
               />
             </div>
           </div>
@@ -352,6 +386,21 @@ const AddMatch = ({
               name="points1"
               placeholder="0"
               autoFocus={player !== undefined}
+              onChange={(e) => setPlayer1Hits(Number(e.target.value))}
+            />
+          </div>
+          <div
+            className={
+              "flex flex-col gap-3" + (isPrioRequired ? "" : " opacity-0")
+            }
+          >
+            <label htmlFor="winner">{"P"}</label>
+            <input
+              type="radio"
+              name="winner"
+              value={player?.player.player_name}
+              className="my-2"
+              disabled={!isPrioRequired}
             />
           </div>
         </div>
@@ -396,6 +445,21 @@ const AddMatch = ({
               max="99"
               name="points2"
               placeholder="0"
+              onChange={(e) => setPlayer2Hits(Number(e.target.value))}
+            />
+          </div>
+          <div
+            className={
+              "flex flex-col gap-3" + (isPrioRequired ? "" : " opacity-0")
+            }
+          >
+            <label htmlFor="winner">{"P"}</label>
+            <input
+              type="radio"
+              name="winner"
+              value={opponent?.player.player_name}
+              className="my-2"
+              disabled={!isPrioRequired}
             />
           </div>
         </div>
