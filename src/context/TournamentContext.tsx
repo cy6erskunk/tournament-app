@@ -10,7 +10,7 @@ import Tournament from "@/types/Tournament";
 
 // Source: https://medium.com/@nitinjha5121/mastering-react-context-with-typescript-a-comprehensive-tutorial-5bab5ef48a3b
 
-interface TournamentContext {
+export interface TournamentContext {
   tournament: Tournament | undefined;
   setTournament: React.Dispatch<
     React.SetStateAction<TournamentContext["tournament"]>
