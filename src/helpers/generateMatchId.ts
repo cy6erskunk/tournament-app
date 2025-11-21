@@ -35,10 +35,12 @@ export function generateQRMatchData(
   baseUrl: string
 ) {
   const matchId = generateMatchId();
+  const secret = generateMatchId(); // Generate separate secret token for authentication
   const submitUrl = `${baseUrl}/api/qr-match/submit`;
-  
+
   return {
     matchId,
+    secret,
     player1,
     player2,
     tournamentId,

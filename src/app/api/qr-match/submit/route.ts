@@ -3,6 +3,7 @@ import { addMatch } from "@/database/addMatch";
 import { getQRMatch, removeQRMatch } from "@/database/addQRMatch";
 import { QRMatchResult } from "@/types/QRMatch";
 import { jsonParser } from "@/helpers/jsonParser";
+import crypto from "crypto";
 
 function getCorsHeaders() {
   const isDev = process.env.NODE_ENV === 'development';
@@ -34,18 +35,45 @@ export async function POST(request: Request) {
     });
   }
 
-  const { matchId, player1_hits, player2_hits, winner } = data.value;
+  const { matchId, secret, player1_hits, player2_hits, winner } = data.value;
 
   // Retrieve match data from storage using matchId
   const matchDataResult = await getQRMatch(matchId);
   if (!matchDataResult.success) {
-    return new Response(`Invalid or expired match ID: ${matchDataResult.error}`, {
+    return new Response(`Invalid or expired match ID`, {
       status: 404,
       headers: getCorsHeaders(),
     });
   }
 
   const matchData = matchDataResult.value;
+
+  // Verify the secret token to authenticate the request
+  // Use timing-safe comparison to prevent timing attacks
+  if (!secret) {
+    return new Response(`Unauthorized: Missing authentication token`, {
+      status: 401,
+      headers: getCorsHeaders(),
+    });
+  }
+
+  try {
+    const secretBuffer = Buffer.from(secret);
+    const storedSecretBuffer = Buffer.from(matchData.secret);
+
+    if (secretBuffer.length !== storedSecretBuffer.length ||
+        !crypto.timingSafeEqual(secretBuffer, storedSecretBuffer)) {
+      return new Response(`Unauthorized: Invalid authentication token`, {
+        status: 401,
+        headers: getCorsHeaders(),
+      });
+    }
+  } catch (error) {
+    return new Response(`Unauthorized: Invalid authentication token`, {
+      status: 401,
+      headers: getCorsHeaders(),
+    });
+  }
 
   // Check if this is a new match or an update to existing match
   // First try to update an existing match

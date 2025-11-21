@@ -4,6 +4,7 @@ import { Result } from "@/types/result";
 
 interface QRMatchPending {
   match_id: string;
+  secret: string; // Cryptographic token for authenticating submissions
   tournament_id: number;
   player1: string;
   player2: string;

@@ -53,6 +53,7 @@ export async function POST(request: Request) {
   // Store the match data for later retrieval
   const storeResult = await addQRMatch({
     match_id: qrMatchData.matchId,
+    secret: qrMatchData.secret,
     tournament_id: tournamentId,
     player1,
     player2,
