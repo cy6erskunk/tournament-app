@@ -122,7 +122,7 @@ describe('AddMatch - Priority Wins', () => {
     radioButtons.forEach((radio) => {
       const parentDiv = radio.parentElement;
       expect(parentDiv?.className).not.toContain('opacity-0');
-      expect(radio.disabled).toBe(false);
+      expect((radio as HTMLInputElement).disabled).toBe(false);
     });
   });
 
@@ -390,7 +390,7 @@ describe('AddMatch - Priority Wins', () => {
     radioButtons.forEach((radio) => {
       const parentDiv = radio.parentElement;
       expect(parentDiv?.className).toContain('opacity-0');
-      expect(radio.disabled).toBe(true);
+      expect((radio as HTMLInputElement).disabled).toBe(true);
     });
 
     // Change back to equal scores
@@ -401,7 +401,7 @@ describe('AddMatch - Priority Wins', () => {
     radioButtons.forEach((radio) => {
       const parentDiv = radio.parentElement;
       expect(parentDiv?.className).not.toContain('opacity-0');
-      expect(radio.disabled).toBe(false);
+      expect((radio as HTMLInputElement).disabled).toBe(false);
     });
   });
 });
