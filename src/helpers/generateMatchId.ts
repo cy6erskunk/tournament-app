@@ -32,17 +32,19 @@ export function generateQRMatchData(
   player2: string,
   tournamentId: number,
   round: number,
-  baseUrl: string
+  baseUrl: string,
+  requireSubmitterIdentity: boolean
 ) {
   const matchId = generateMatchId();
   const submitUrl = `${baseUrl}/api/qr-match/submit`;
-  
+
   return {
     matchId,
     player1,
     player2,
     tournamentId,
     round,
-    submitUrl
+    submitUrl,
+    requireSubmitterIdentity
   };
 }

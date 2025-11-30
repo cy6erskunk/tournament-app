@@ -66,6 +66,8 @@ describe('EditMatch - Priority Wins', () => {
     tournament_id: 1,
     round: 1,
     match: 1,
+    submitted_by_token: null,
+    submitted_at: null,
   };
 
   const mockPlayer: Player = {
@@ -143,7 +145,7 @@ describe('EditMatch - Priority Wins', () => {
     radioButtons.forEach((radio) => {
       const parentDiv = radio.parentElement;
       expect(parentDiv?.className).not.toContain('opacity-0');
-      expect(radio.disabled).toBe(false);
+      expect((radio as HTMLInputElement).disabled).toBe(false);
     });
   });
 
@@ -168,7 +170,7 @@ describe('EditMatch - Priority Wins', () => {
     radioButtons.forEach((radio) => {
       const parentDiv = radio.parentElement;
       expect(parentDiv?.className).toContain('opacity-0');
-      expect(radio.disabled).toBe(true);
+      expect((radio as HTMLInputElement).disabled).toBe(true);
     });
   });
 
@@ -211,6 +213,8 @@ describe('EditMatch - Priority Wins', () => {
       tournament_id: 1,
       round: 1,
       match: 1,
+      submitted_by_token: null,
+      submitted_at: null,
     };
 
     (global.fetch as ReturnType<typeof vi.fn>).mockResolvedValueOnce({
@@ -269,6 +273,8 @@ describe('EditMatch - Priority Wins', () => {
       tournament_id: 1,
       round: 1,
       match: 1,
+      submitted_by_token: null,
+      submitted_at: null,
     };
 
     (global.fetch as ReturnType<typeof vi.fn>).mockResolvedValueOnce({
@@ -323,6 +329,8 @@ describe('EditMatch - Priority Wins', () => {
       tournament_id: 1,
       round: 1,
       match: 1,
+      submitted_by_token: null,
+      submitted_at: null,
     };
 
     (global.fetch as ReturnType<typeof vi.fn>).mockResolvedValueOnce({
@@ -424,7 +432,7 @@ describe('EditMatch - Priority Wins', () => {
     radioButtons.forEach((radio) => {
       const parentDiv = radio.parentElement;
       expect(parentDiv?.className).toContain('opacity-0');
-      expect(radio.disabled).toBe(true);
+      expect((radio as HTMLInputElement).disabled).toBe(true);
     });
 
     // Change to equal scores
@@ -435,7 +443,7 @@ describe('EditMatch - Priority Wins', () => {
     radioButtons.forEach((radio) => {
       const parentDiv = radio.parentElement;
       expect(parentDiv?.className).not.toContain('opacity-0');
-      expect(radio.disabled).toBe(false);
+      expect((radio as HTMLInputElement).disabled).toBe(false);
     });
 
     // Change back to different scores
@@ -446,7 +454,7 @@ describe('EditMatch - Priority Wins', () => {
     radioButtons.forEach((radio) => {
       const parentDiv = radio.parentElement;
       expect(parentDiv?.className).toContain('opacity-0');
-      expect(radio.disabled).toBe(true);
+      expect((radio as HTMLInputElement).disabled).toBe(true);
     });
   });
 
@@ -461,6 +469,8 @@ describe('EditMatch - Priority Wins', () => {
       tournament_id: 1,
       round: 1,
       match: 1,
+      submitted_by_token: null,
+      submitted_at: null,
     };
 
     (global.fetch as ReturnType<typeof vi.fn>).mockResolvedValueOnce({

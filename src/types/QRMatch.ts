@@ -5,10 +5,12 @@ export interface QRMatchData {
   tournamentId: number;
   round: number;
   submitUrl: string;
+  requireSubmitterIdentity: boolean; // Whether this tournament requires submitter identification
 }
 
 export interface QRMatchResult {
   matchId: string;
+  deviceToken?: string; // Optional: submitter's device token for audit trail
   player1_hits: number;
   player2_hits: number;
   winner: string;
