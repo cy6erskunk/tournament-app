@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 
 // Mock next/headers
 const mockSet = vi.fn();
@@ -17,11 +17,34 @@ vi.mock('jsonwebtoken', () => ({
 
 import { addCookie } from './addcookie';
 
+const COOKIE_MAX_AGE = 8 * 60 * 60; // 8 hours in seconds
+
 describe('addCookie', () => {
+  let originalNodeEnv: string | undefined;
+  let originalJwtSecret: string | undefined;
+
   beforeEach(() => {
     vi.clearAllMocks();
+    // Store original environment variables
+    originalNodeEnv = process.env.NODE_ENV;
+    originalJwtSecret = process.env.JWT_SECRET;
+    // Set test values
     process.env.JWT_SECRET = 'test-secret';
     process.env.NODE_ENV = 'production';
+  });
+
+  afterEach(() => {
+    // Restore original environment variables
+    if (originalNodeEnv !== undefined) {
+      process.env.NODE_ENV = originalNodeEnv;
+    } else {
+      delete process.env.NODE_ENV;
+    }
+    if (originalJwtSecret !== undefined) {
+      process.env.JWT_SECRET = originalJwtSecret;
+    } else {
+      delete process.env.JWT_SECRET;
+    }
   });
 
   it('should set cookie with secure flags in production', async () => {
@@ -33,7 +56,7 @@ describe('addCookie', () => {
       httpOnly: true,
       secure: true, // should be true in production
       sameSite: 'strict',
-      maxAge: 8 * 60 * 60,
+      maxAge: COOKIE_MAX_AGE,
       path: '/',
     });
   });
@@ -49,7 +72,7 @@ describe('addCookie', () => {
       httpOnly: true,
       secure: false, // should be false in development
       sameSite: 'strict',
-      maxAge: 8 * 60 * 60,
+      maxAge: COOKIE_MAX_AGE,
       path: '/',
     });
   });
