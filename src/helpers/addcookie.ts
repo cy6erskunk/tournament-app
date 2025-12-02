@@ -24,7 +24,13 @@ export async function addCookie(
 
     const token = jwt.sign(user, secret, { expiresIn: "8h" }); // expires in 8 hours
 
-    cookies().set("token", token);
+    cookies().set("token", token, {
+      httpOnly: true,    // Prevent JavaScript access
+      secure: process.env.NODE_ENV === 'production', // HTTPS only in production
+      sameSite: 'strict', // CSRF protection
+      maxAge: 8 * 60 * 60, // 8 hours (in seconds)
+      path: '/'
+    });
 
     return { success: true, value: token };
   } catch (error) {
