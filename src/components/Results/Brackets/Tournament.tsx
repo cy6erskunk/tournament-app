@@ -111,6 +111,8 @@ export default function Tournament() {
           round: roundNumber,
           tournament_id: tournamentId,
           winner: "",  // Empty string for unplayed matches
+          submitted_by_token: null,
+          submitted_at: null,
         };
 
         matches.set(matchId, match);
