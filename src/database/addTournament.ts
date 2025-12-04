@@ -9,6 +9,7 @@ export async function createTournament(
   date: Date,
   format: string,
   inputName: string,
+  requireSubmitterIdentity: boolean = false,
 ): Promise<Result<Tournament, string>> {
   try {
     const tournament = await db
@@ -17,6 +18,7 @@ export async function createTournament(
         name: inputName.trim(),
         date: date,
         format: format,
+        require_submitter_identity: requireSubmitterIdentity,
       })
       .returningAll()
       .executeTakeFirst();

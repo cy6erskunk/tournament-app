@@ -87,7 +87,10 @@
     "alreadyintournament": "Player is already in the tournament",
     "emptyname": "Add name",
     "renametournament": "Rename tournament",
-    "edittournamentname": "Edit tournament name"
+    "edittournamentname": "Edit tournament name",
+    "edittournament": "Edit tournament",
+    "tournamentname": "Tournament name",
+    "requiresubmitteridentity": "Require submitter identity"
   },
   "Select": {
     "selecttournament": "Select tournament",
@@ -97,7 +100,10 @@
     "submit": "Submit",
     "unexpectederror": "Unexpected error",
     "remove": "Remove",
-    "loadMore": "Load More"
+    "loadMore": "Load More",
+    "requiresubmitteridentity": "Require submitter identity",
+    "edittournament": "Edit tournament",
+    "tournamentname": "Tournament name"
   },
   "Brackets": {
     "selectseed": "Select match order from tournament",
