@@ -194,8 +194,8 @@ CORS_ALLOWED_ORIGIN="https://your-qr-app.com"
 In non-production environments (development and preview), the QR code generation endpoint logs the full QR match payload to the server console. This helps with debugging and understanding the data structure being encoded in QR codes.
 
 **When it logs:**
-- Development environment (`NODE_ENV !== "production"`)
-- Vercel preview deployments (`VERCEL_ENV !== "production"`)
+- Local development (`npm run dev` - `VERCEL_ENV` is undefined)
+- Vercel preview deployments (`VERCEL_ENV === "preview"`)
 
 **Example log output:**
 ```
