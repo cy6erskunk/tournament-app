@@ -50,6 +50,11 @@ export async function POST(request: Request) {
     baseUrl
   );
 
+  // Log QR payload in non-production environments for debugging
+  if (process.env.VERCEL_ENV !== "production" && process.env.NODE_ENV !== "production") {
+    console.log("[QR Debug] Generated QR match payload:", JSON.stringify(qrMatchData, null, 2));
+  }
+
   // Store the match data for later retrieval
   const storeResult = await addQRMatch({
     match_id: qrMatchData.matchId,
