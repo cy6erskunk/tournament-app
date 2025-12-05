@@ -189,6 +189,28 @@ CORS_ALLOWED_ORIGIN="https://your-qr-app.com"
 - `POST /api/qr-match/submit` - Submit match results via QR code (supports CORS)
 - `OPTIONS /api/qr-match/submit` - CORS preflight support
 
+### Debug Logging
+
+In non-production environments (development and preview), the QR code generation endpoint logs the full QR match payload to the server console. This helps with debugging and understanding the data structure being encoded in QR codes.
+
+**When it logs:**
+- Local development (`npm run dev` - `VERCEL_ENV` is undefined)
+- Vercel preview deployments (`VERCEL_ENV === "preview"`)
+
+**Example log output:**
+```
+[QR Debug] Generated QR match payload: {
+  "matchId": "abc123...",
+  "player1": "John Doe",
+  "player2": "Jane Smith",
+  "tournamentId": 42,
+  "round": 1,
+  "submitUrl": "http://localhost:3000/api/qr-match/submit"
+}
+```
+
+**Note:** This debug logging is automatically disabled in production to avoid cluttering logs with sensitive match data.
+
 ## Internationalization (i18n) Translations
 
 The project supports internationalization for translations. Translation files are stored in the `src/languages` directory. You can add translations for different languages and use the next-intl library to handle localization.
