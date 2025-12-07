@@ -76,6 +76,7 @@ function EditButton() {
     setShowModal(false);
   };
   const openModal = () => {
+    setInput(context.tournament?.name || "");
     setShowModal(true);
   };
 
@@ -96,9 +97,9 @@ function EditButton() {
             id="name"
             name="name"
             type="text"
+            value={input}
             onChange={(e) => setInput(e.target.value)}
             required
-            placeholder={context.tournament.name}
             className="flex w-full justify-center rounded-md border-0 py-1.5 px-3 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-500 focus:ring-2 focus:ring-inset focus:ring-blue-500 sm:text-sm sm:leading-6"
           />
           <div className="flex items-center justify-center gap-2 text-sm font-semibold">
