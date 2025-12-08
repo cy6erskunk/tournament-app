@@ -36,13 +36,14 @@ export function generateQRMatchData(
 ) {
   const matchId = generateMatchId();
   const submitUrl = `${baseUrl}/api/qr-match/submit`;
-  
+
   return {
     matchId,
     player1,
     player2,
     tournamentId,
     round,
+    baseUri: baseUrl,
     submitUrl
   };
 }
