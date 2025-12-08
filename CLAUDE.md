@@ -144,7 +144,8 @@ interface QRMatchData {
   player2: string;           // Second player name
   tournamentId: number;      // Tournament reference
   round: number;             // Current round
-  submitUrl: string;         // API endpoint for results
+  baseUri: string;           // Base URL for API endpoints
+  submitUrl: string;         // API endpoint for results (kept for backward compatibility)
 }
 ```
 

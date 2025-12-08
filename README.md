@@ -205,6 +205,7 @@ In non-production environments (development and preview), the QR code generation
   "player2": "Jane Smith",
   "tournamentId": 42,
   "round": 1,
+  "baseUri": "http://localhost:3000",
   "submitUrl": "http://localhost:3000/api/qr-match/submit"
 }
 ```
