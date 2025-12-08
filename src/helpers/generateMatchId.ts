@@ -35,7 +35,7 @@ export function generateQRMatchData(
   baseUri: string
 ) {
   const matchId = generateMatchId();
-  const submitUrl = `${baseUrl}/api/qr-match/submit`;
+  const submitUrl = `${baseUri}/api/qr-match/submit`;
 
   return {
     matchId,
