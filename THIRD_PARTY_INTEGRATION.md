@@ -66,6 +66,7 @@ QR codes encode a JSON object with the following structure:
   "player2": "Jane Doe",               // Second player name
   "tournamentId": 42,                  // Tournament database ID
   "round": 1,                          // Round number
+  "baseUri": "https://example.com",    // Base URL for all API endpoints
   "submitUrl": "https://example.com/api/qr-match/submit",  // Submission endpoint
   "requireSubmitterIdentity": false    // Whether device token is required
 }
@@ -80,8 +81,26 @@ QR codes encode a JSON object with the following structure:
 | `player2` | string | Name of the second player/competitor |
 | `tournamentId` | number | Internal tournament ID in the system |
 | `round` | number | Round number in the tournament |
-| `submitUrl` | string | Full URL endpoint for submitting results (use this!) |
+| `baseUri` | string | Base URL for the tournament system (e.g., `https://example.com`) - use this to construct other API endpoints |
+| `submitUrl` | string | Full URL endpoint for submitting results (convenience field - same as `baseUri + "/api/qr-match/submit"`) |
 | `requireSubmitterIdentity` | boolean | If `true`, deviceToken must be included in submission |
+
+### Why baseUri is Included
+
+The `baseUri` field simplifies third-party integration by providing a clean base URL for constructing API endpoints:
+
+- **Device Registration**: Use `${baseUri}/api/submitter/register` for one-time device setup
+- **Match Submission**: Use `${baseUri}/api/qr-match/submit` or the provided `submitUrl`
+- **Future Extensions**: Any additional API endpoints can be easily constructed
+
+**Example**:
+```javascript
+// Register device using baseUri
+await fetch(`${qrData.baseUri}/api/submitter/register`, { /* ... */ });
+
+// Submit match using provided submitUrl (recommended for forward compatibility)
+await fetch(qrData.submitUrl, { /* ... */ });
+```
 
 ---
 
@@ -287,9 +306,9 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 const DEVICE_TOKEN_KEY = 'tournament_device_token';
 
 // One-time device registration
-async function registerDevice(name, baseUrl) {
+async function registerDevice(name, baseUri) {
   try {
-    const response = await fetch(`${baseUrl}/api/submitter/register`, {
+    const response = await fetch(`${baseUri}/api/submitter/register`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -364,7 +383,7 @@ async function handleQRScan(qrCodeString, player1Hits, player2Hits, winner) {
       if (!existingToken) {
         // Prompt user for their name
         const userName = await promptForUserName();
-        await registerDevice(userName, extractBaseUrl(qrData.submitUrl));
+        await registerDevice(userName, qrData.baseUri);
       }
     }
 
@@ -375,12 +394,6 @@ async function handleQRScan(qrCodeString, player1Hits, player2Hits, winner) {
     console.error('Error:', error);
     alert(`Failed to submit match: ${error.message}`);
   }
-}
-
-// Helper to extract base URL from submit URL
-function extractBaseUrl(submitUrl) {
-  const url = new URL(submitUrl);
-  return url.origin;
 }
 ```
 
@@ -445,9 +458,8 @@ class TournamentAPIClient:
 qr_code_json = '{"matchId":"abc123",...}'  # Scanned from QR code
 qr_data = json.loads(qr_code_json)
 
-client = TournamentAPIClient(
-    base_url=qr_data["submitUrl"].rsplit("/api", 1)[0]
-)
+# Use baseUri from QR code data
+client = TournamentAPIClient(base_url=qr_data["baseUri"])
 
 # Register device if needed (one-time)
 if qr_data.get("requireSubmitterIdentity"):
@@ -630,11 +642,11 @@ curl -X POST http://localhost:3000/api/qr-match/submit \
 
 ### Q: What if I scan a QR code from a different tournament system?
 
-**A**: The `submitUrl` field contains the full endpoint URL including the domain. Your app should dynamically use this URL rather than hardcoding the API endpoint.
+**A**: The `baseUri` and `submitUrl` fields contain the full domain and endpoint URLs. Your app should dynamically use these URLs rather than hardcoding API endpoints, allowing it to work with any deployment of this tournament system.
 
 ### Q: Do I need to store the entire QR data or just the match ID?
 
-**A**: You need to store the entire QR data object until submission, as you'll need the `submitUrl`, player names (for validation), and `requireSubmitterIdentity` flag.
+**A**: You need to store the entire QR data object until submission, as you'll need the `baseUri` (for device registration), `submitUrl` (for submission), player names (for validation), and `requireSubmitterIdentity` flag.
 
 ### Q: What's the maximum length for player names?
 

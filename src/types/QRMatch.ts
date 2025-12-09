@@ -4,7 +4,7 @@ export interface QRMatchData {
   player2: string;
   tournamentId: number;
   round: number;
-  baseUri: string;
+  baseUri: string; // Base URL for API endpoints (e.g., https://example.com)
   submitUrl: string;
   requireSubmitterIdentity: boolean; // Whether this tournament requires submitter identification
 }
