@@ -22,15 +22,19 @@ const COOKIE_MAX_AGE = 8 * 60 * 60; // 8 hours in seconds
 describe('addCookie', () => {
   let originalNodeEnv: string | undefined;
   let originalJwtSecret: string | undefined;
+  let originalVercelEnv: string | undefined;
 
   beforeEach(() => {
     vi.clearAllMocks();
     // Store original environment variables
     originalNodeEnv = process.env.NODE_ENV;
     originalJwtSecret = process.env.JWT_SECRET;
+    originalVercelEnv = process.env.VERCEL_ENV;
     // Set test values
     process.env.JWT_SECRET = 'test-secret';
     process.env.NODE_ENV = 'production';
+    // Clear VERCEL_ENV by default
+    delete process.env.VERCEL_ENV;
   });
 
   afterEach(() => {
@@ -44,6 +48,11 @@ describe('addCookie', () => {
       process.env.JWT_SECRET = originalJwtSecret;
     } else {
       delete process.env.JWT_SECRET;
+    }
+    if (originalVercelEnv !== undefined) {
+      process.env.VERCEL_ENV = originalVercelEnv;
+    } else {
+      delete process.env.VERCEL_ENV;
     }
   });
 
@@ -71,6 +80,57 @@ describe('addCookie', () => {
     expect(mockSet).toHaveBeenCalledWith('token', 'mock-jwt-token', {
       httpOnly: true,
       secure: false, // should be false in development
+      sameSite: 'strict',
+      maxAge: COOKIE_MAX_AGE,
+      path: '/',
+    });
+  });
+
+  it('should set cookie with secure=true when VERCEL_ENV is production', async () => {
+    process.env.VERCEL_ENV = 'production';
+    process.env.NODE_ENV = 'production'; // NODE_ENV is always production on Vercel
+    
+    const result = await addCookie('testuser', 'admin');
+
+    expect(result.success).toBe(true);
+    expect(mockSet).toHaveBeenCalledTimes(1);
+    expect(mockSet).toHaveBeenCalledWith('token', 'mock-jwt-token', {
+      httpOnly: true,
+      secure: true, // should be true for Vercel production
+      sameSite: 'strict',
+      maxAge: COOKIE_MAX_AGE,
+      path: '/',
+    });
+  });
+
+  it('should set cookie with secure=false when VERCEL_ENV is preview', async () => {
+    process.env.VERCEL_ENV = 'preview';
+    process.env.NODE_ENV = 'production'; // NODE_ENV is always production on Vercel
+    
+    const result = await addCookie('testuser', 'user');
+
+    expect(result.success).toBe(true);
+    expect(mockSet).toHaveBeenCalledTimes(1);
+    expect(mockSet).toHaveBeenCalledWith('token', 'mock-jwt-token', {
+      httpOnly: true,
+      secure: false, // should be false for Vercel preview
+      sameSite: 'strict',
+      maxAge: COOKIE_MAX_AGE,
+      path: '/',
+    });
+  });
+
+  it('should set cookie with secure=false when VERCEL_ENV is development', async () => {
+    process.env.VERCEL_ENV = 'development';
+    process.env.NODE_ENV = 'production'; // NODE_ENV is always production on Vercel
+    
+    const result = await addCookie('testuser', 'user');
+
+    expect(result.success).toBe(true);
+    expect(mockSet).toHaveBeenCalledTimes(1);
+    expect(mockSet).toHaveBeenCalledWith('token', 'mock-jwt-token', {
+      httpOnly: true,
+      secure: false, // should be false for Vercel development
       sameSite: 'strict',
       maxAge: COOKIE_MAX_AGE,
       path: '/',
