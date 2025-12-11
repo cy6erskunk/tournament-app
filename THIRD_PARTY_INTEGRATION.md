@@ -234,7 +234,7 @@ Content-Type: application/json
 | `400` | "Error adding/updating match: ..." | Failed to save match (validation error) |
 | `401` | "Device registration required for this tournament" | Tournament requires deviceToken but none provided |
 | `401` | "Invalid device token" | Provided deviceToken doesn't exist in system |
-| `404` | "Invalid or expired match ID" | matchId not found or already used |
+| `404` | "Invalid or expired match ID" | matchId not found (already used or never existed) |
 | `404` | "Tournament not found" | Tournament was deleted |
 
 **Important Notes**:
@@ -546,7 +546,7 @@ async function submitWithRetry(qrData, results, maxRetries = 3) {
 
       // Check if this is a 404 (match already submitted) - don't retry
       if (error.status === 404) {
-        throw new Error('Match already submitted or invalid match ID');
+        throw new Error('Match already submitted - matchId has been consumed');
       }
 
       // Exponential backoff for other errors
@@ -567,7 +567,7 @@ function getErrorMessage(response, defaultMessage) {
   const errorMap = {
     400: 'Invalid match data. Please check your input.',
     401: 'Device registration required. Please register your device first.',
-    404: 'Match already submitted or QR code expired. Cannot resubmit results.',
+    404: 'Cannot submit - match already recorded or QR code invalid.',
     500: 'Server error. Please try again later.',
   };
 
@@ -575,7 +575,36 @@ function getErrorMessage(response, defaultMessage) {
 }
 ```
 
-**Note**: A `404` error after a successful submission is expected behavior - the match ID has been consumed.
+**Note**: A `404` error usually means the match was already successfully submitted and the matchId consumed. The actual API response is `"Invalid or expired match ID"`.
+
+**Example of resubmission attempt:**
+```javascript
+// First submission - succeeds
+const response1 = await fetch(qrData.submitUrl, {
+  method: 'POST',
+  body: JSON.stringify({
+    matchId: 'abc123xyz789',
+    player1_hits: 5,
+    player2_hits: 3,
+    winner: 'John Smith'
+  })
+});
+console.log(response1.status); // 200
+console.log(await response1.text()); // {"success":true,"match":{...}}
+
+// Second submission - fails
+const response2 = await fetch(qrData.submitUrl, {
+  method: 'POST',
+  body: JSON.stringify({
+    matchId: 'abc123xyz789', // Same matchId
+    player1_hits: 5,
+    player2_hits: 3,
+    winner: 'John Smith'
+  })
+});
+console.log(response2.status); // 404
+console.log(await response2.text()); // "Invalid or expired match ID"
+```
 
 ### 3. Validation Before Submission
 
