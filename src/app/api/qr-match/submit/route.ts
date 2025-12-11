@@ -152,13 +152,14 @@ export async function POST(request: Request) {
   }
 
   // Update match with audit trail information
+  const submittedAt = new Date();
   if (submitterToken) {
     try {
       await db
         .updateTable('matches')
         .set({
           submitted_by_token: submitterToken,
-          submitted_at: new Date(),
+          submitted_at: submittedAt,
         })
         .where('player1', '=', matchData.player1)
         .where('player2', '=', matchData.player2)
@@ -175,9 +176,16 @@ export async function POST(request: Request) {
   // Clean up stored match data
   await removeQRMatch(matchId);
 
+  // Prepare response with audit trail data included
+  const responseMatch = {
+    ...matchResult.value,
+    submitted_by_token: submitterToken || null,
+    submitted_at: submitterToken ? submittedAt : null,
+  };
+
   return new Response(JSON.stringify({
     success: true,
-    match: matchResult.value
+    match: responseMatch
   }), {
     headers: {
       'Content-Type': 'application/json',
