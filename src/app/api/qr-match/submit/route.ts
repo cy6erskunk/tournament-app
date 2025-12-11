@@ -151,9 +151,12 @@ export async function POST(request: Request) {
   // Clean up stored match data
   await removeQRMatch(matchId);
 
+  // Remove sensitive device token from response
+  const { submitted_by_token, ...matchResponse } = matchResult.value;
+
   return new Response(JSON.stringify({
     success: true,
-    match: matchResult.value
+    match: matchResponse
   }), {
     headers: {
       'Content-Type': 'application/json',

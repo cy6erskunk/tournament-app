@@ -221,10 +221,13 @@ Content-Type: application/json
     "winner": "John Smith",
     "round": 1,
     "tournament_id": 42,
-    "match": 1
+    "match": 1,
+    "submitted_at": "2025-12-11T15:30:00.000Z"
   }
 }
 ```
+
+**Note**: The response includes `submitted_at` timestamp when audit trail is used, but does NOT include `submitted_by_token` for security reasons (device tokens are sensitive credentials).
 
 **Error Responses**:
 
@@ -244,7 +247,8 @@ Content-Type: application/json
 - **Corrections require new QR code**: If match results need to be corrected after successful submission, the tournament admin must generate a new QR code
 - If a match already exists in the database (from manual entry), the submission will update those results
 - The `winner` field must exactly match either `player1` or `player2` from the QR code data (case-sensitive)
-- Audit trail (submitted_by_token, submitted_at) is automatically recorded if deviceToken is valid
+- Audit trail (submitted_by_token, submitted_at) is automatically recorded in the database if deviceToken is valid
+- The response includes `submitted_at` timestamp but NOT `submitted_by_token` (device tokens are not exposed for security)
 
 ---
 
