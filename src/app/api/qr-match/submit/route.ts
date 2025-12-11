@@ -113,8 +113,9 @@ export async function POST(request: Request) {
   }
 
   // Check if this is a new match or an update to existing match
-  // First try to update an existing match
-  const updateResult = await updateMatch({
+  // Prepare audit trail data upfront to avoid race conditions
+  const submittedAt = new Date();
+  const matchData_with_audit = {
     player1: matchData.player1,
     player2: matchData.player2,
     tournament_id: matchData.tournament_id,
@@ -123,21 +124,17 @@ export async function POST(request: Request) {
     player1_hits,
     player2_hits,
     winner,
-  });
+    submitted_by_token: submitterToken || null,
+    submitted_at: submitterToken ? submittedAt : null,
+  };
+
+  // First try to update an existing match
+  const updateResult = await updateMatch(matchData_with_audit);
 
   let matchResult;
   if (!updateResult.success) {
     // If update fails, try to add as new match
-    const addResult = await addMatch({
-      player1: matchData.player1,
-      player2: matchData.player2,
-      tournament_id: matchData.tournament_id,
-      round: matchData.round,
-      match: matchData.match,
-      player1_hits,
-      player2_hits,
-      winner,
-    });
+    const addResult = await addMatch(matchData_with_audit);
 
     if (!addResult.success) {
       return new Response(`Error adding/updating match: ${addResult.error}`, {
@@ -151,41 +148,12 @@ export async function POST(request: Request) {
     matchResult = updateResult;
   }
 
-  // Update match with audit trail information
-  const submittedAt = new Date();
-  if (submitterToken) {
-    try {
-      await db
-        .updateTable('matches')
-        .set({
-          submitted_by_token: submitterToken,
-          submitted_at: submittedAt,
-        })
-        .where('player1', '=', matchData.player1)
-        .where('player2', '=', matchData.player2)
-        .where('tournament_id', '=', matchData.tournament_id)
-        .where('round', '=', matchData.round)
-        .where('match', '=', matchData.match)
-        .execute();
-    } catch (error) {
-      console.error('Error updating audit trail:', error);
-      // Don't fail the request if audit trail update fails
-    }
-  }
-
   // Clean up stored match data
   await removeQRMatch(matchId);
 
-  // Prepare response with audit trail data included
-  const responseMatch = {
-    ...matchResult.value,
-    submitted_by_token: submitterToken || null,
-    submitted_at: submitterToken ? submittedAt : null,
-  };
-
   return new Response(JSON.stringify({
     success: true,
-    match: responseMatch
+    match: matchResult.value
   }), {
     headers: {
       'Content-Type': 'application/json',
