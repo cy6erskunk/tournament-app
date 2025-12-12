@@ -6,31 +6,9 @@ This document provides comprehensive instructions for integrating third-party ap
 
 The Tournament App supports external match result submission via QR codes. Tournament organizers can generate QR codes that encode match information, which third-party apps can scan to submit match results directly to the tournament system.
 
-### Use Cases
-
-- Mobile scoring apps for athletes
-- Electronic scoreboards
-- Automated scoring systems
-- Custom tournament management tools
-
-### Key Features
-
-- **QR Code-Based Matching**: Match data is encoded in QR codes for easy scanning
-- **Audit Trail Support**: Optional device registration for accountability
-- **CORS-Enabled**: Cross-origin requests supported for web-based apps
-- **RESTful API**: Simple JSON-based HTTP API
-
 ---
 
 ## Integration Flow
-
-**⚠️ Critical: Match IDs are Single-Use**
-
-Before integrating, understand this key limitation: **Each QR code / match ID can only be used once**. After a successful submission (HTTP 200 response), the match ID is permanently consumed and cannot be reused. Plan your app's UX accordingly:
-- Show clear confirmation after successful submission
-- Save results locally before submitting
-- Don't provide "resubmit" functionality for the same QR code
-- Handle `404` errors gracefully (likely means already submitted)
 
 ### 1. Basic Flow (No Audit Trail)
 
@@ -125,9 +103,9 @@ await fetch(qrData.submitUrl, { /* ... */ });
 
 ## API Endpoints
 
-### Base URL
+### Base URI
 
-The base URL is environment-specific and provided in the `submitUrl` field of the QR code data.
+The base URI is environment-specific and provided in the `baseUri` field of the QR code data.
 
 - **Production**: `https://your-domain.com`
 - **Development**: `http://localhost:3000`
