@@ -3,6 +3,7 @@ import { addMatch } from "@/database/addMatch";
 import { getQRMatch, removeQRMatch } from "@/database/addQRMatch";
 import { QRMatchResult } from "@/types/QRMatch";
 import { jsonParser } from "@/helpers/jsonParser";
+import { db } from "@/database/database";
 
 function getCorsHeaders() {
   const isDev = process.env.NODE_ENV === 'development';
@@ -34,12 +35,13 @@ export async function POST(request: Request) {
     });
   }
 
-  const { matchId, player1_hits, player2_hits, winner } = data.value;
+  const { matchId, deviceToken, player1_hits, player2_hits, winner } = data.value;
 
   // Retrieve match data from storage using matchId
   const matchDataResult = await getQRMatch(matchId);
   if (!matchDataResult.success) {
-    return new Response(`Invalid or expired match ID: ${matchDataResult.error}`, {
+    console.error('QR match retrieval failed:', matchDataResult.error);
+    return new Response(`Invalid or expired match ID`, {
       status: 404,
       headers: getCorsHeaders(),
     });
@@ -47,9 +49,74 @@ export async function POST(request: Request) {
 
   const matchData = matchDataResult.value;
 
+  // Check if tournament requires submitter identity
+  const tournament = await db
+    .selectFrom('tournaments')
+    .select(['require_submitter_identity'])
+    .where('id', '=', matchData.tournament_id)
+    .executeTakeFirst();
+
+  if (!tournament) {
+    return new Response(`Tournament not found`, {
+      status: 404,
+      headers: getCorsHeaders(),
+    });
+  }
+
+  // Verify device token if tournament requires submitter identity
+  let submitterToken: string | null = null;
+  if (tournament.require_submitter_identity) {
+    if (!deviceToken) {
+      return new Response(`Device registration required for this tournament`, {
+        status: 401,
+        headers: getCorsHeaders(),
+      });
+    }
+
+    // Verify device token exists in database
+    const device = await db
+      .selectFrom('submitter_devices')
+      .select(['device_token', 'submitter_name'])
+      .where('device_token', '=', deviceToken)
+      .executeTakeFirst();
+
+    if (!device) {
+      return new Response(`Invalid device token`, {
+        status: 401,
+        headers: getCorsHeaders(),
+      });
+    }
+
+    submitterToken = deviceToken;
+
+    // Update last_used timestamp
+    await db
+      .updateTable('submitter_devices')
+      .set({ last_used: new Date() })
+      .where('device_token', '=', deviceToken)
+      .execute();
+  } else if (deviceToken) {
+    // If device token is provided even when not required, validate and use it
+    const device = await db
+      .selectFrom('submitter_devices')
+      .select(['device_token'])
+      .where('device_token', '=', deviceToken)
+      .executeTakeFirst();
+
+    if (device) {
+      submitterToken = deviceToken;
+      await db
+        .updateTable('submitter_devices')
+        .set({ last_used: new Date() })
+        .where('device_token', '=', deviceToken)
+        .execute();
+    }
+  }
+
   // Check if this is a new match or an update to existing match
-  // First try to update an existing match
-  const updateResult = await updateMatch({
+  // Prepare audit trail data upfront to avoid race conditions
+  const submittedAt = new Date();
+  const matchData_with_audit = {
     player1: matchData.player1,
     player2: matchData.player2,
     tournament_id: matchData.tournament_id,
@@ -58,21 +125,17 @@ export async function POST(request: Request) {
     player1_hits,
     player2_hits,
     winner,
-  });
+    submitted_by_token: submitterToken || null,
+    submitted_at: submitterToken ? submittedAt : null,
+  };
+
+  // First try to update an existing match
+  const updateResult = await updateMatch(matchData_with_audit);
 
   let matchResult;
   if (!updateResult.success) {
     // If update fails, try to add as new match
-    const addResult = await addMatch({
-      player1: matchData.player1,
-      player2: matchData.player2,
-      tournament_id: matchData.tournament_id,
-      round: matchData.round,
-      match: matchData.match,
-      player1_hits,
-      player2_hits,
-      winner,
-    });
+    const addResult = await addMatch(matchData_with_audit);
 
     if (!addResult.success) {
       return new Response(`Error adding/updating match: ${addResult.error}`, {
@@ -80,7 +143,7 @@ export async function POST(request: Request) {
         headers: getCorsHeaders(),
       });
     }
-    
+
     matchResult = addResult;
   } else {
     matchResult = updateResult;
@@ -89,10 +152,16 @@ export async function POST(request: Request) {
   // Clean up stored match data
   await removeQRMatch(matchId);
 
-  return new Response(JSON.stringify({ 
-    success: true, 
-    match: matchResult.value 
+  // Remove sensitive device token from response
+  const { submitted_by_token, ...matchResponse } = matchResult.value;
+
+  return new Response(JSON.stringify({
+    success: true,
+    match: matchResponse
   }), {
-    headers: getCorsHeaders(),
+    headers: {
+      'Content-Type': 'application/json',
+      ...getCorsHeaders(),
+    },
   });
 }

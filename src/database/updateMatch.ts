@@ -50,6 +50,8 @@ export async function updateMatch(
         player1_hits: p1hits,
         player2_hits: p2hits,
         winner: form.winner,
+        submitted_by_token: form.submitted_by_token,
+        submitted_at: form.submitted_at,
       })
       .where("player1", "=", p1)
       .where("player2", "=", p2)

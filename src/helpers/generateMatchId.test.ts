@@ -18,7 +18,8 @@ describe('generateMatchId', () => {
       'Player 2',
       1,
       2,
-      'https://example.com'
+      'https://example.com',
+      false
     );
 
     expect(qrData).toHaveProperty('matchId');
@@ -28,6 +29,7 @@ describe('generateMatchId', () => {
     expect(qrData).toHaveProperty('round', 2);
     expect(qrData).toHaveProperty('baseUri', 'https://example.com');
     expect(qrData).toHaveProperty('submitUrl', 'https://example.com/api/qr-match/submit');
+    expect(qrData).toHaveProperty('requireSubmitterIdentity', false);
     expect(qrData.matchId).toMatch(/^[a-f0-9]{32}$/);
   });
 });

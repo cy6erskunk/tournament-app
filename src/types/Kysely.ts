@@ -16,6 +16,8 @@ export interface Matches {
   round: number;
   tournament_id: number;
   winner: string;
+  submitted_by_token: string | null;
+  submitted_at: Timestamp | null;
 }
 
 export interface Players {
@@ -34,6 +36,7 @@ export interface Tournaments {
   format: string;
   id: Generated<number>;
   name: string;
+  require_submitter_identity: Generated<boolean>;
 }
 
 export interface Users {
@@ -42,10 +45,18 @@ export interface Users {
   username: string;
 }
 
+export interface SubmitterDevices {
+  device_token: string;
+  submitter_name: string;
+  created_at: Generated<Timestamp>;
+  last_used: Timestamp | null;
+}
+
 export interface DB {
   matches: Matches;
   players: Players;
   tournament_players: TournamentPlayers;
   tournaments: Tournaments;
   users: Users;
+  submitter_devices: SubmitterDevices;
 }

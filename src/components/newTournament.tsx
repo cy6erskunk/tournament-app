@@ -9,6 +9,7 @@ function NewTournament() {
   const t = useTranslations("Select");
   const router = useRouter();
   const [selectedFormat, setSelectedFormat] = useState("Round Robin");
+  const [requireIdentity, setRequireIdentity] = useState(false);
   const [loading, setLoading] = useState(false);
   const defaultValue = `${selectedFormat} ${new Date().toLocaleDateString(
     "en-GB",
@@ -27,12 +28,14 @@ function NewTournament() {
       format: formData.get("format") as string,
       name: formData.get("tournamentName") as string,
       date: currentDate,
+      require_submitter_identity: requireIdentity,
     };
 
     const newTournament = await createTournament(
       tournament.date,
       tournament.format,
       tournament.name.trim() || defaultValue,
+      tournament.require_submitter_identity,
     );
 
     if (!newTournament.success) {
@@ -76,6 +79,19 @@ function NewTournament() {
           name="tournamentName"
           className="rounded-md shadow-sm border border-black p-3"
         />
+        <div className="flex gap-3 items-center">
+          <input
+            type="checkbox"
+            name="requireIdentity"
+            id="requireIdentity"
+            checked={requireIdentity}
+            onChange={(e) => setRequireIdentity(e.target.checked)}
+            className="rounded"
+          />
+          <label htmlFor="requireIdentity" className="text-sm">
+            {t("requiresubmitteridentity")}
+          </label>
+        </div>
         <div>
           <button
             disabled={loading}
