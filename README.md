@@ -201,6 +201,7 @@ CORS_ALLOWED_ORIGIN="https://your-qr-app.com"
 
 **Device Registration (Audit Trail):**
 - `POST /api/submitter/register` - Register a device for submitter identification
+- `OPTIONS /api/submitter/register` - CORS preflight support
 
 ### Third-Party App Integration
 

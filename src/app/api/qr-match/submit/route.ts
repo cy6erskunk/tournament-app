@@ -40,6 +40,7 @@ export async function POST(request: Request) {
   // Retrieve match data from storage using matchId
   const matchDataResult = await getQRMatch(matchId);
   if (!matchDataResult.success) {
+    console.error('QR match retrieval failed:', matchDataResult.error);
     return new Response(`Invalid or expired match ID`, {
       status: 404,
       headers: getCorsHeaders(),
