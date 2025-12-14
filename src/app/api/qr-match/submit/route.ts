@@ -126,7 +126,7 @@ export async function POST(request: Request) {
     player2_hits,
     winner,
     submitted_by_token: submitterToken || null,
-    submitted_at: submitterToken ? submittedAt : null,
+    submitted_at: submittedAt,
   };
 
   // First try to update an existing match
