@@ -2,6 +2,7 @@ import { addQRMatch } from "@/database/addQRMatch";
 import { generateQRMatchData } from "@/helpers/generateMatchId";
 import { getSession } from "@/helpers/getsession";
 import { jsonParser } from "@/helpers/jsonParser";
+import { db } from "@/database/database";
 
 interface GenerateQRRequest {
   player1: string;
@@ -30,6 +31,19 @@ export async function POST(request: Request) {
 
   const { player1, player2, tournamentId, round, match } = data.value;
 
+  // Fetch tournament settings to check if submitter identity is required
+  const tournament = await db
+    .selectFrom('tournaments')
+    .select(['require_submitter_identity'])
+    .where('id', '=', tournamentId)
+    .executeTakeFirst();
+
+  if (!tournament) {
+    return new Response(`Tournament not found`, {
+      status: 404,
+    });
+  }
+
   // Generate match ID and QR data
   const PRODUCTION_URL = `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`;
   const PREVIEW_URL = process.env.NEXT_PUBLIC_BASE_URL
@@ -41,13 +55,14 @@ export async function POST(request: Request) {
       ? PRODUCTION_URL
       : process.env.VERCEL_ENV === "preview"
       ? PREVIEW_URL
-      : DEVELOPMENT_URL;   
+      : DEVELOPMENT_URL;
   const qrMatchData = generateQRMatchData(
     player1,
     player2,
     tournamentId,
     round,
-    baseUrl
+    baseUrl,
+    tournament.require_submitter_identity ?? false
   );
 
   // Log QR payload in non-production environments for debugging

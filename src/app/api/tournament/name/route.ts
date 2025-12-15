@@ -8,6 +8,7 @@ import { jsonParser } from "@/helpers/jsonParser";
 type TournamentData = {
   name: string,
   id: number,
+  require_submitter_identity?: boolean,
 }
 
 export async function POST(request: Request) {
@@ -28,12 +29,16 @@ export async function POST(request: Request) {
   }
 
   if (!data.success) {
-    return new Response(`Error updating tournament name to given input`, {
+    return new Response(`Error updating tournament to given input`, {
       status: 400
     })
   }
 
-  const status = await updateTournamentName(data.value.name, data.value.id);
+  const status = await updateTournamentName(
+    data.value.name,
+    data.value.id,
+    data.value.require_submitter_identity
+  );
 
   if (!status.success) {
     return new Response(status.error, {

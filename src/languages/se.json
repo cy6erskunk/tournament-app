@@ -87,7 +87,10 @@
     "alreadyintournament": "Spelaren är redan med i turneringen",
     "emptyname": "Lägg till namn",
     "renametournament": "Byt namn på turneringen",
-    "edittournamentname": "Redigera turneringens namn"
+    "edittournamentname": "Redigera turneringens namn",
+    "edittournament": "Redigera turnering",
+    "tournamentname": "Turneringens namn",
+    "requiresubmitteridentity": "Kräv avsändare identitet"
   },
   "Select": {
     "selecttournament": "Välj turnering",
@@ -97,7 +100,10 @@
     "submit": "Lämna in",
     "unexpectederror": "Ett oväntat fel uppstod",
     "remove": "Ta bort",
-    "loadMore": "Ladda mer"
+    "loadMore": "Ladda mer",
+    "requiresubmitteridentity": "Kräv avsändare identitet",
+    "edittournament": "Redigera turnering",
+    "tournamentname": "Turneringens namn"
   },
   "Brackets": {
     "selectseed": "Välj matchordning från turneringen",

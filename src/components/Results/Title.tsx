@@ -42,6 +42,13 @@ function EditButton() {
   const [loading, setLoading] = useState(false);
   const t = useTranslations("AddPlayer");
   const [input, setInput] = useState<string>("");
+  const [requireIdentity, setRequireIdentity] = useState(false);
+
+  useEffect(() => {
+    if (context.tournament) {
+      setRequireIdentity(context.tournament.require_submitter_identity);
+    }
+  }, [context.tournament]);
 
   const handleSave = async () => {
     if (!context.tournament) return
@@ -49,6 +56,7 @@ function EditButton() {
     const request = {
       name: input.trim(),
       id: Number(context.tournament.id),
+      require_submitter_identity: requireIdentity,
     };
 
     if (!request.name) {
@@ -63,7 +71,11 @@ function EditButton() {
     });
 
     if (res.ok) {
-      const update = { ...context.tournament, name: request.name };
+      const update = {
+        ...context.tournament,
+        name: request.name,
+        require_submitter_identity: requireIdentity,
+      } as typeof context.tournament;
       context.setTournament(update);
       setLoading(false);
     }
@@ -86,22 +98,40 @@ function EditButton() {
 
   return (
     <div className="flex gap-4 py-4">
-      <span className="text-base text-slate-500 cursor-pointer" onClick={(_) => openModal()}>{t("edittournamentname")}</span>
+      <span className="text-base text-slate-500 cursor-pointer" onClick={(_) => openModal()}>{t("edittournament")}</span>
 
       <Modal isOpen={showModal} closeModal={closeModal}>
-        <div className="space-y-10">
+        <div className="space-y-6">
           <h2 className="text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
-            {t("renametournament")}
+            {t("edittournament")}
           </h2>
-          <input
-            id="name"
-            name="name"
-            type="text"
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            required
-            className="flex w-full justify-center rounded-md border-0 py-1.5 px-3 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-500 focus:ring-2 focus:ring-inset focus:ring-blue-500 sm:text-sm sm:leading-6"
-          />
+          <div>
+            <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
+              {t("tournamentname")}
+            </label>
+            <input
+              id="name"
+              name="name"
+              type="text"
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              required
+              className="flex w-full justify-center rounded-md border-0 py-1.5 px-3 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-500 focus:ring-2 focus:ring-inset focus:ring-blue-500 sm:text-sm sm:leading-6"
+            />
+          </div>
+          <div className="flex gap-3 items-center">
+            <input
+              type="checkbox"
+              name="requireIdentity"
+              id="edit-requireIdentity"
+              checked={requireIdentity}
+              onChange={(e) => setRequireIdentity(e.target.checked)}
+              className="rounded"
+            />
+            <label htmlFor="edit-requireIdentity" className="text-sm">
+              {t("requiresubmitteridentity")}
+            </label>
+          </div>
           <div className="flex items-center justify-center gap-2 text-sm font-semibold">
             <button
               disabled={loading}

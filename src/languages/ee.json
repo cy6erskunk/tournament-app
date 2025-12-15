@@ -87,7 +87,10 @@
     "alreadyintournament": "Mängija on juba turniiril",
     "emptyname": "Lisa nimi",
     "renametournament": "Nimeta turniir ümber",
-    "edittournamentname": "Muutke turniiri nime"
+    "edittournamentname": "Muutke turniiri nime",
+    "edittournament": "Muuda turniiri",
+    "tournamentname": "Turniiri nimi",
+    "requiresubmitteridentity": "Nõua esitaja identiteeti"
   },
   "Select": {
     "selecttournament": "Valige turniir",
@@ -97,7 +100,10 @@
     "submit": "Esita",
     "unexpectederror": "Ootamatu viga",
     "remove": "Eemalda",
-    "loadMore": "Lae rohkem"
+    "loadMore": "Lae rohkem",
+    "requiresubmitteridentity": "Nõua esitaja identiteeti",
+    "edittournament": "Muuda turniiri",
+    "tournamentname": "Turniiri nimi"
   },
   "Brackets": {
     "selectseed": "Valige turniirilt mängu järjekord",

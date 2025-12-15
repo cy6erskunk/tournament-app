@@ -162,6 +162,15 @@ This updates `src/types/Kysely.ts` with the new database schema. Custom helper t
 
 The application supports QR code generation for external match result submission. Third-party applications can scan QR codes and submit match results through the API.
 
+### Audit Trail System
+
+The QR match system includes an optional audit trail feature for accountability in tournament submissions:
+
+- **Device Registration**: Users can register their device once with their name to receive a persistent token
+- **Tournament Setting**: Admins can enable/disable identity requirement per tournament via `require_submitter_identity` flag
+- **Match Tracking**: When enabled, all match submissions record who submitted the result and when
+- **Flexible**: Can be disabled for casual tournaments where accountability is not needed
+
 ### CORS Configuration
 
 The QR match submission endpoint (`/api/qr-match/submit`) is configured with CORS headers to allow cross-origin requests:
@@ -185,31 +194,103 @@ CORS_ALLOWED_ORIGIN="https://your-qr-app.com"
 
 ### API Endpoints
 
+**Match Management:**
 - `POST /api/qr-match/generate` - Generate QR code data for a match (requires authentication)
-- `POST /api/qr-match/submit` - Submit match results via QR code (supports CORS)
+- `POST /api/qr-match/submit` - Submit match results via QR code (supports CORS, optional device token)
 - `OPTIONS /api/qr-match/submit` - CORS preflight support
 
-### Debug Logging
+**Device Registration (Audit Trail):**
+- `POST /api/submitter/register` - Register a device for submitter identification
+- `OPTIONS /api/submitter/register` - CORS preflight support
 
-In non-production environments (development and preview), the QR code generation endpoint logs the full QR match payload to the server console. This helps with debugging and understanding the data structure being encoded in QR codes.
+### Third-Party App Integration
 
-**When it logs:**
-- Local development (`npm run dev` - `VERCEL_ENV` is undefined)
-- Vercel preview deployments (`VERCEL_ENV === "preview"`)
+#### 1. Device Registration (One-Time, Optional)
 
-**Example log output:**
+Users should register their device once to enable identity tracking:
+
+```javascript
+// POST /api/submitter/register
+const response = await fetch('https://your-app.com/api/submitter/register', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({ name: "John Doe" })
+});
+
+const { deviceToken } = await response.json();
+// Store deviceToken in localStorage for future submissions
+localStorage.setItem('deviceToken', deviceToken);
 ```
-[QR Debug] Generated QR match payload: {
-  "matchId": "abc123...",
-  "player1": "John Doe",
-  "player2": "Jane Smith",
-  "tournamentId": 42,
-  "round": 1,
-  "submitUrl": "http://localhost:3000/api/qr-match/submit"
-}
+
+#### 2. Scanning QR Code
+
+The QR code contains JSON data with match information and requirements:
+
+```javascript
+const qrData = JSON.parse(scanQRCode());
+// {
+//   matchId: "a1b2c3d4...",
+//   requireSubmitterIdentity: true,  // Tournament setting
+//   player1: "Player 1",
+//   player2: "Player 2",
+//   tournamentId: 123,
+//   round: 2,
+//   submitUrl: "https://your-app.com/api/qr-match/submit"
+// }
 ```
 
-**Note:** This debug logging is automatically disabled in production to avoid cluttering logs with sensitive match data.
+#### 3. Submitting Match Results
+
+Include the device token if the tournament requires it or if available:
+
+```javascript
+// POST to submitUrl from QR code
+const deviceToken = localStorage.getItem('deviceToken');
+
+await fetch(qrData.submitUrl, {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({
+    matchId: qrData.matchId,
+    deviceToken: deviceToken,  // Optional, required if tournament requires it
+    player1_hits: 5,
+    player2_hits: 3,
+    winner: "Player 1"
+  })
+});
+```
+
+**Response Codes:**
+- `200` - Match submitted successfully
+- `400` - Invalid match data
+- `401` - Missing device token when required, or invalid device token
+- `404` - Match ID not found or expired (>1 hour old)
+
+### Database Schema (Audit Trail)
+
+The audit trail system adds the following tables and columns:
+
+**New Table: `submitter_devices`**
+- `device_token` (PK) - Unique device identifier
+- `submitter_name` - Person's name
+- `created_at` - Registration timestamp
+- `last_used` - Last submission timestamp
+
+**Updated Tables:**
+- `tournaments.require_submitter_identity` - Boolean flag (default: false)
+- `matches.submitted_by_token` - Reference to submitter device (nullable)
+- `matches.submitted_at` - Submission timestamp (nullable)
+
+### Security Model
+
+The QR match system uses a simple, accountability-based security model appropriate for small club tournaments:
+
+- **Random Match IDs**: 128-bit random identifiers prevent trivial enumeration
+- **Expiration**: QR match data expires after 1 hour
+- **Device Tokens**: Optional identity tracking for audit purposes
+- **Trust-Based**: Designed for environments with known, trusted participants
+
+This model prioritizes simplicity and accountability over cryptographic security, making it ideal for club-level tournaments where participants know each other.
 
 ## Internationalization (i18n) Translations
 

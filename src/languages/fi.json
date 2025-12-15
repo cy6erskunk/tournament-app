@@ -87,7 +87,10 @@
     "alreadyintournament": "Pelaaja on jo turnauksessa",
     "emptyname": "Lisää nimi",
     "renametournament": "Nimeä turnaus uudelleen",
-    "edittournamentname": "Muuta turnauksen nimi"
+    "edittournamentname": "Muuta turnauksen nimi",
+    "edittournament": "Muokkaa turnausta",
+    "tournamentname": "Turnauksen nimi",
+    "requiresubmitteridentity": "Vaadi lähettäjän tunnistus"
   },
   "Select": {
     "selecttournament": "Valitse turnaus",
@@ -97,7 +100,10 @@
     "submit": "Tallenna",
     "unexpectederror": "Odottamaton virhe",
     "remove": "Poista",
-    "loadMore": "Lataa lisää"
+    "loadMore": "Lataa lisää",
+    "requiresubmitteridentity": "Vaadi lähettäjän tunnistus",
+    "edittournament": "Muokkaa turnausta",
+    "tournamentname": "Turnauksen nimi"
   },
   "Brackets": {
     "selectseed": "Valitse ottelujärjestys turnauksesta",
