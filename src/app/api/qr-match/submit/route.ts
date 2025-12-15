@@ -4,11 +4,12 @@ import { getQRMatch, removeQRMatch } from "@/database/addQRMatch";
 import { QRMatchResult } from "@/types/QRMatch";
 import { jsonParser } from "@/helpers/jsonParser";
 import { db } from "@/database/database";
+import { validateSubmitter } from "@/helpers/validateSubmitter";
 
 function getCorsHeaders() {
   const isDev = process.env.NODE_ENV === 'development';
   const allowedOrigin = isDev ? '*' : process.env.CORS_ALLOWED_ORIGIN || '';
-  
+
   return {
     'Access-Control-Allow-Origin': allowedOrigin,
     'Access-Control-Allow-Methods': 'POST, OPTIONS',
@@ -64,54 +65,16 @@ export async function POST(request: Request) {
   }
 
   // Verify device token if tournament requires submitter identity
-  let submitterToken: string | null = null;
-  if (tournament.require_submitter_identity) {
-    if (!deviceToken) {
-      return new Response(`Device registration required for this tournament`, {
-        status: 401,
-        headers: getCorsHeaders(),
-      });
-    }
+  const validationResult = await validateSubmitter(deviceToken, !!tournament.require_submitter_identity);
 
-    // Verify device token exists in database
-    const device = await db
-      .selectFrom('submitter_devices')
-      .select(['device_token', 'submitter_name'])
-      .where('device_token', '=', deviceToken)
-      .executeTakeFirst();
-
-    if (!device) {
-      return new Response(`Invalid device token`, {
-        status: 401,
-        headers: getCorsHeaders(),
-      });
-    }
-
-    submitterToken = deviceToken;
-
-    // Update last_used timestamp
-    await db
-      .updateTable('submitter_devices')
-      .set({ last_used: new Date() })
-      .where('device_token', '=', deviceToken)
-      .execute();
-  } else if (deviceToken) {
-    // If device token is provided even when not required, validate and use it
-    const device = await db
-      .selectFrom('submitter_devices')
-      .select(['device_token'])
-      .where('device_token', '=', deviceToken)
-      .executeTakeFirst();
-
-    if (device) {
-      submitterToken = deviceToken;
-      await db
-        .updateTable('submitter_devices')
-        .set({ last_used: new Date() })
-        .where('device_token', '=', deviceToken)
-        .execute();
-    }
+  if (!validationResult.success) {
+    return new Response(validationResult.error, {
+      status: validationResult.status,
+      headers: getCorsHeaders(),
+    });
   }
+
+  const submitterToken = validationResult.submitterToken;
 
   // Check if this is a new match or an update to existing match
   // Prepare audit trail data upfront to avoid race conditions
