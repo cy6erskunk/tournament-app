@@ -106,9 +106,6 @@ export async function DELETE(request: Request) {
     });
   }
 
-
-
-  // add match to matches table
   const matchResult = await deleteMatch(data.value);
 
   if (!matchResult.success) {
