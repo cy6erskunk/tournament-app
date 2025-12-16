@@ -106,11 +106,7 @@ export async function DELETE(request: Request) {
     });
   }
 
-  if (data.value.winner === null) {
-    return new Response(`Winner cannot be null`, {
-      status: 400,
-    });
-  }
+
 
   // add match to matches table
   const matchResult = await deleteMatch(data.value);
