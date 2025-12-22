@@ -24,7 +24,17 @@ export async function addCookie(
 
     const token = jwt.sign(user, secret, { expiresIn: "8h" }); // expires in 8 hours
 
-    cookies().set("token", token);
+    // Use VERCEL_ENV on Vercel (production/preview/development), fallback to NODE_ENV for local
+    const isProduction = process.env.VERCEL_ENV === 'production' || 
+                        (process.env.NODE_ENV === 'production' && !process.env.VERCEL_ENV);
+
+    cookies().set("token", token, {
+      httpOnly: true,    // Prevent JavaScript access
+      secure: isProduction, // HTTPS only in production
+      sameSite: 'strict', // CSRF protection
+      maxAge: 8 * 60 * 60, // 8 hours (in seconds)
+      path: '/'
+    });
 
     return { success: true, value: token };
   } catch (error) {
