@@ -16,6 +16,12 @@ export async function POST(request: Request) {
     });
   }
 
+  if (token.value.role !== 'admin') {
+    return new Response(`Unauthorized access`, {
+      status: 403,
+    });
+  }
+
   if (!data.success) {
     return new Response(`Error reading match`, {
       status: 400,
@@ -65,6 +71,12 @@ export async function PUT(request: Request) {
     });
   }
 
+  if (token.value.role !== 'admin') {
+    return new Response(`Unauthorized access`, {
+      status: 403,
+    });
+  }
+
   if (!data.success) {
     return new Response(`Error reading match`, {
       status: 400,
@@ -95,6 +107,12 @@ export async function DELETE(request: Request) {
 
   const token = await getSession();
   if (!token.success) {
+    return new Response(`Unauthorized access`, {
+      status: 403,
+    });
+  }
+
+  if (token.value.role !== 'admin') {
     return new Response(`Unauthorized access`, {
       status: 403,
     });
