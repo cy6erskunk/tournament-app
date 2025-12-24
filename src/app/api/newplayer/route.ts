@@ -19,6 +19,12 @@ export async function POST(request: Request) {
     });
   }
 
+  if (token.value.role !== 'admin') {
+    return new Response(`Unauthorized access`, {
+      status: 403
+    });
+  }
+
   if (!data.success) {
     return Response.json(data.error, {
       status: 422,
