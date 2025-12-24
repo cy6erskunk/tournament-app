@@ -65,20 +65,20 @@ const TournamentButtons = () => {
     <div className="container mx-auto p-2 flex flex-col md:flex-row gap-4">
       {context.tournament?.format === "Round Robin" ? (
         <button
-          className="p-1 px-5 border rounded-md shadow-sm border-slate-600"
+          className="p-1 px-5 border rounded-md shadow-xs border-slate-600"
           onClick={() => openModal(<AddMatch closeModal={closeModal} />)}
         >
           {t("addmatch")}
         </button>
       ) : null}
       <button
-        className="p-1 px-5 border rounded-md shadow-sm border-slate-600 bg-green-50 border-green-500 text-green-700"
+        className="p-1 px-5 border rounded-md shadow-xs border-slate-600 bg-green-50 border-green-500 text-green-700"
         onClick={() => openModal(<QRMatchModal closeModal={closeModal} />)}
       >
         Generate QR Match
       </button>
       <button
-        className="p-1 px-5 border rounded-md shadow-sm border-slate-600"
+        className="p-1 px-5 border rounded-md shadow-xs border-slate-600"
         onClick={() =>
           openModal(
             <Addplayer closeModal={closeModal} playerList={playersList} />,
@@ -88,7 +88,7 @@ const TournamentButtons = () => {
         {t("addplayer")}
       </button>
       <button
-        className={`p-1 px-5 border rounded-md shadow-sm border-slate-600 text-center ${!context.hidden ? "bg-blue-700 border-blue-700 text-white border-1 font-bold" : null}`}
+        className={`p-1 px-5 border rounded-md shadow-xs border-slate-600 text-center ${!context.hidden ? "bg-blue-700 border-blue-700 text-white border font-bold" : null}`}
         onClick={toggleLeaderboard}
       >
         <div className="flex justify-center gap-2">

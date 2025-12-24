@@ -199,7 +199,7 @@ const AddMatch = ({
         </h1>
         <button
           onClick={closeModal}
-          className="ring-2 ring-gray-900 ring-inset py-2 w-full rounded-md shadow-sm"
+          className="ring-2 ring-gray-900 ring-inset py-2 w-full rounded-md shadow-xs"
         >
           {t("back")}
         </button>
@@ -223,7 +223,7 @@ const AddMatch = ({
                 {t("player1")}
               </label>
               <input
-                className="w-full rounded-md shadow-sm border border-slate-300 px-3 py-1"
+                className="w-full rounded-md shadow-xs border border-slate-300 px-3 py-1"
                 type="text"
                 name="player1"
                 id="player1"
@@ -270,7 +270,7 @@ const AddMatch = ({
                 {t("player2")}
               </label>
               <input
-                className="w-full rounded-md shadow-sm border border-slate-300 px-3 py-1"
+                className="w-full rounded-md shadow-xs border border-slate-300 px-3 py-1"
                 type="text"
                 name="player2"
                 id="player2"
@@ -311,14 +311,14 @@ const AddMatch = ({
             <button
               disabled={loading}
               type="submit"
-              className="disabled:bg-blue-300 bg-blue-500 w-full py-2 px-3 text-white rounded-md shadow-sm"
+              className="disabled:bg-blue-300 bg-blue-500 w-full py-2 px-3 text-white rounded-md shadow-xs"
             >
               {t("submit")}
             </button>
             <button
               type="button"
               onClick={closeModal}
-              className="ring-2 ring-gray-900 ring-inset py-2 w-full rounded-md shadow-sm"
+              className="ring-2 ring-gray-900 ring-inset py-2 w-full rounded-md shadow-xs"
             >
               {t("back")}
             </button>
@@ -343,7 +343,7 @@ const AddMatch = ({
                   type="text"
                   name="player1"
                   id="player1"
-                  className="w-full rounded-md shadow-sm border border-slate-300 px-3 py-1"
+                  className="w-full rounded-md shadow-xs border border-slate-300 px-3 py-1"
                   defaultValue={player.player.player_name}
                   readOnly
                   required
@@ -413,7 +413,7 @@ const AddMatch = ({
                   type="text"
                   name="player2"
                   id="player2"
-                  className="w-full rounded-md shadow-sm border border-slate-300 px-3 py-1"
+                  className="w-full rounded-md shadow-xs border border-slate-300 px-3 py-1"
                   defaultValue={opponent.player.player_name}
                   readOnly
                   required
@@ -467,14 +467,14 @@ const AddMatch = ({
           <button
             disabled={loading}
             type="submit"
-            className="disabled:bg-blue-300 bg-blue-500 w-full py-2 px-3 text-white rounded-md shadow-sm"
+            className="disabled:bg-blue-300 bg-blue-500 w-full py-2 px-3 text-white rounded-md shadow-xs"
           >
             {t("submit")}
           </button>
           <button
             type="button"
             onClick={closeModal}
-            className="ring-2 ring-gray-900 ring-inset py-2 w-full rounded-md shadow-sm"
+            className="ring-2 ring-gray-900 ring-inset py-2 w-full rounded-md shadow-xs"
           >
             {t("back")}
           </button>

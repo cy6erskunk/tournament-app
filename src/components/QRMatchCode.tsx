@@ -52,7 +52,7 @@ export default function QRMatchCode({ matchData, size = 200 }: QRMatchCodeProps)
 
   if (error) {
     return (
-      <div className="flex items-center justify-center bg-red-50 border border-red-200 rounded" style={{ width: size, height: size }}>
+      <div className="flex items-center justify-center bg-red-50 border border-red-200 rounded-sm" style={{ width: size, height: size }}>
         <p className="text-red-600 text-sm text-center p-2">{error}</p>
       </div>
     );
@@ -60,7 +60,7 @@ export default function QRMatchCode({ matchData, size = 200 }: QRMatchCodeProps)
 
   return (
     <div className="flex flex-col items-center space-y-2">
-      <img src={qrCodeUrl} alt="Match QR Code" className="border border-gray-200 rounded" />
+      <img src={qrCodeUrl} alt="Match QR Code" className="border border-gray-200 rounded-sm" />
       <div className="text-sm text-gray-600 text-center">
         <p className="font-medium">{matchData.player1} vs {matchData.player2}</p>
         <p className="text-xs">Match ID: {matchData.matchId.slice(0, 8)}...</p>

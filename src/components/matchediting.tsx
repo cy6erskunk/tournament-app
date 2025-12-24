@@ -266,7 +266,7 @@ const EditMatch = ({ closeModal, player, opponent }: EditmatchProps) => {
               {t("player1")}
             </label>
             <input
-              className="w-full rounded-md shadow-sm border border-slate-300 px-3 py-1"
+              className="w-full rounded-md shadow-xs border border-slate-300 px-3 py-1"
               type="text"
               name="player1"
               id="player1"
@@ -316,7 +316,7 @@ const EditMatch = ({ closeModal, player, opponent }: EditmatchProps) => {
               {t("player2")}
             </label>
             <input
-              className="w-full rounded-md shadow-sm border border-slate-300 px-3 py-1"
+              className="w-full rounded-md shadow-xs border border-slate-300 px-3 py-1"
               type="text"
               name="player2"
               id="player2"
@@ -363,7 +363,7 @@ const EditMatch = ({ closeModal, player, opponent }: EditmatchProps) => {
               type="submit"
               name="buttonClicked"
               value="Update"
-              className="disabled:bg-blue-300 bg-blue-500 w-full py-2 px-3 text-white rounded-md shadow-sm"
+              className="disabled:bg-blue-300 bg-blue-500 w-full py-2 px-3 text-white rounded-md shadow-xs"
             >
               {t("submit")}
             </button>
@@ -372,7 +372,7 @@ const EditMatch = ({ closeModal, player, opponent }: EditmatchProps) => {
               type="submit"
               name="buttonClicked"
               value="Delete"
-              className="disabled:bg-red-300 bg-red-400 py-2 px-3 text-white rounded-md shadow-sm mx-auto w-full"
+              className="disabled:bg-red-300 bg-red-400 py-2 px-3 text-white rounded-md shadow-xs mx-auto w-full"
             >
               {t("delete")}
             </button>
@@ -380,7 +380,7 @@ const EditMatch = ({ closeModal, player, opponent }: EditmatchProps) => {
           <button
             type="button"
             onClick={closeModal}
-            className="ring-2 ring-gray-900 ring-inset py-2 w-full rounded-md shadow-sm"
+            className="ring-2 ring-gray-900 ring-inset py-2 w-full rounded-md shadow-xs"
           >
             {t("back")}
           </button>

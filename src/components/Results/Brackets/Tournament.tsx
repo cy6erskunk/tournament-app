@@ -379,7 +379,7 @@ export default function Tournament() {
               {rrTournaments.map((rrTour) => (
                 <li className="max-w-sm" key={rrTour.id}>
                   <button
-                    className="flex justify-between gap-4 py-4 px-3 rounded-md shadow-sm border border-black hover:bg-gray-100 w-full"
+                    className="flex justify-between gap-4 py-4 px-3 rounded-md shadow-xs border border-black hover:bg-gray-100 w-full"
                     onClick={() => seedTournament(rrTour.id)}
                   >
                     {rrTour.name}

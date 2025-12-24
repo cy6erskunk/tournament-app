@@ -65,7 +65,7 @@ export default function Login() {
             name="name"
             type="text"
             required
-            className="block w-full rounded-md border-0 py-1.5 px-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-500 sm:text-sm sm:leading-6"
+            className="block w-full rounded-md border-0 py-1.5 px-3 text-gray-900 shadow-xs ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-500 sm:text-sm sm:leading-6"
             autoFocus
           />
         </div>
@@ -85,7 +85,7 @@ export default function Login() {
             name="password"
             type="password"
             required
-            className="block w-full rounded-md border-0 py-1.5 px-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-500 sm:text-sm sm:leading-6"
+            className="block w-full rounded-md border-0 py-1.5 px-3 text-gray-900 shadow-xs ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-500 sm:text-sm sm:leading-6"
           />
         </div>
       </div>
@@ -93,7 +93,7 @@ export default function Login() {
         <button
           disabled={loading}
           type="submit"
-          className="disabled:bg-blue-300 bg-blue-500 w-full py-2 px-3 text-white rounded-md shadow-sm"
+          className="disabled:bg-blue-300 bg-blue-500 w-full py-2 px-3 text-white rounded-md shadow-xs"
         >
           {t("submit")}
         </button>

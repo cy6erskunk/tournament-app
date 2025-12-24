@@ -10,9 +10,9 @@ import { useEffect, useState } from "react";
 const LeaderboardSidebar = () => {
   // linear gradient doesn't work with iphone / safari
   // const getRowBgColor = (index: number) => {
-  //   if (index === 0) return "bg-gradient-to-r from-yellow-50 to-yellow-200";
-  //   if (index === 1) return "bg-gradient-to-r from-gray-50 to-gray-300";
-  //   if (index === 2) return "bg-gradient-to-r from-amber-50 to-amber-300";
+  //   if (index === 0) return "bg-linear-to-r from-yellow-50 to-yellow-200";
+  //   if (index === 1) return "bg-linear-to-r from-gray-50 to-gray-300";
+  //   if (index === 2) return "bg-linear-to-r from-amber-50 to-amber-300";
   //   return "odd:bg-white even:bg-gray-50";
   // };
   const t = useTranslations("Leaderboard");
