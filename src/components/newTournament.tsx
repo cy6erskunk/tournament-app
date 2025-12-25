@@ -77,7 +77,7 @@ function NewTournament() {
         <input
           placeholder={defaultValue}
           name="tournamentName"
-          className="rounded-md shadow-sm border border-black p-3"
+          className="rounded-md shadow-xs border border-black p-3"
         />
         <div className="flex gap-3 items-center">
           <input
@@ -86,7 +86,7 @@ function NewTournament() {
             id="requireIdentity"
             checked={requireIdentity}
             onChange={(e) => setRequireIdentity(e.target.checked)}
-            className="rounded"
+            className="rounded-sm"
           />
           <label htmlFor="requireIdentity" className="text-sm">
             {t("requiresubmitteridentity")}
@@ -96,7 +96,7 @@ function NewTournament() {
           <button
             disabled={loading}
             type="submit"
-            className="disabled:bg-blue-300 bg-blue-500 w-full py-2 px-3 text-white rounded-md shadow-sm font-semibold"
+            className="disabled:bg-blue-300 bg-blue-500 w-full py-2 px-3 text-white rounded-md shadow-xs font-semibold"
           >
             {t("submit")}
           </button>

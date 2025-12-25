@@ -97,7 +97,7 @@ const Addplayer = ({ closeModal, playerList }: AddplayerProps) => {
         placeholder={t("name")}
         autoFocus
         autoComplete="off"
-        className="flex w-full justify-center rounded-md border-0 py-1.5 px-3 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-500 focus:ring-2 focus:ring-inset focus:ring-blue-500 sm:text-sm sm:leading-6"
+        className="flex w-full justify-center rounded-md border-0 py-1.5 px-3 shadow-xs ring-1 ring-inset ring-gray-300 placeholder:text-gray-500 focus:ring-2 focus:ring-inset focus:ring-blue-500 sm:text-sm sm:leading-6"
       />
       <datalist id="playerslist">
         {playerList.map((fetchPlayerNames) => (
@@ -110,13 +110,13 @@ const Addplayer = ({ closeModal, playerList }: AddplayerProps) => {
         <button
           disabled={loading}
           type="submit"
-          className="disabled:bg-blue-300 bg-blue-500 w-full py-2 px-3 text-white rounded-md shadow-sm"
+          className="disabled:bg-blue-300 bg-blue-500 w-full py-2 px-3 text-white rounded-md shadow-xs"
         >
           {t("submit")}
         </button>
         <button
           onClick={closeModal}
-          className="ring-2 ring-gray-900 ring-inset py-2 w-full rounded-md shadow-sm"
+          className="ring-2 ring-gray-900 ring-inset py-2 w-full rounded-md shadow-xs"
           type="button"
         >
           {t("back")}

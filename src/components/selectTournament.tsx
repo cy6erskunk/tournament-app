@@ -98,7 +98,7 @@ export default function SelectTournament() {
     return (
       <div className="flex justify-center">
         <button
-          className="bg-blue-500 w-full py-2 px-3 text-white rounded-md shadow-sm font-semibold"
+          className="bg-blue-500 w-full py-2 px-3 text-white rounded-md shadow-xs font-semibold"
           onClick={loadMoreTournaments}
         >
           {t("loadMore")}

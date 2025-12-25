@@ -18,7 +18,7 @@ export default function QRMatchModal({ closeModal, player1, player2 }: QRMatchMo
   const [loading, setLoading] = useState(false);
   const [selectedPlayer1, setSelectedPlayer1] = useState(player1?.player.player_name || '');
   const [selectedPlayer2, setSelectedPlayer2] = useState(player2?.player.player_name || '');
-  
+
   const t = useTranslations('NewMatch');
   const context = useTournamentContext();
 
@@ -72,13 +72,13 @@ export default function QRMatchModal({ closeModal, player1, player2 }: QRMatchMo
   const getAvailableOpponents = (selectedPlayer: string) => {
     return context.players.filter(player => {
       if (!player || player.player.player_name === selectedPlayer) return false;
-      
+
       // Check if players have already played against each other in current round
       const playerMatches = player.matches.filter(match => match.round === context.activeRound);
-      const hasPlayedAgainst = playerMatches.some(match => 
+      const hasPlayedAgainst = playerMatches.some(match =>
         match.player1 === selectedPlayer || match.player2 === selectedPlayer
       );
-      
+
       return !hasPlayedAgainst;
     });
   };
@@ -107,7 +107,7 @@ export default function QRMatchModal({ closeModal, player1, player2 }: QRMatchMo
                 <select
                   value={selectedPlayer1}
                   onChange={(e) => setSelectedPlayer1(e.target.value)}
-                  className="mt-1 block w-full rounded-md border-gray-300 px-3 py-2"
+                  className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2"
                 >
                   <option value="">Select Player 1</option>
                   {context.players.map((player) =>
@@ -136,7 +136,7 @@ export default function QRMatchModal({ closeModal, player1, player2 }: QRMatchMo
                 <select
                   value={selectedPlayer2}
                   onChange={(e) => setSelectedPlayer2(e.target.value)}
-                  className="mt-1 block w-full rounded-md border-gray-300 px-3 py-2"
+                  className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2"
                 >
                   <option value="">Select Player 2</option>
                   {getAvailableOpponents(selectedPlayer1).map((player) =>
@@ -175,7 +175,7 @@ export default function QRMatchModal({ closeModal, player1, player2 }: QRMatchMo
       ) : (
         <div className="flex flex-col items-center space-y-4">
           <QRMatchCode matchData={qrData} size={300} />
-          
+
           <div className="text-center space-y-2">
             <p className="text-sm text-gray-600">
               QR code generated for match between <strong>{qrData.player1}</strong> and <strong>{qrData.player2}</strong>
