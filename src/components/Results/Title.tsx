@@ -126,7 +126,6 @@ function EditButton() {
               id="edit-requireIdentity"
               checked={requireIdentity}
               onChange={(e) => setRequireIdentity(e.target.checked)}
-              className="rounded-sm"
             />
             <label htmlFor="edit-requireIdentity" className="text-sm">
               {t("requiresubmitteridentity")}
