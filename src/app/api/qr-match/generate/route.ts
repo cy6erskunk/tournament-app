@@ -23,6 +23,12 @@ export async function POST(request: Request) {
     });
   }
 
+  if (token.value.role !== 'admin') {
+    return new Response(`Unauthorized access`, {
+      status: 403
+    });
+  }
+
   if (!data.success) {
     return new Response(`Error reading request`, {
       status: 400,
