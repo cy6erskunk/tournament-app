@@ -1,15 +1,16 @@
 import { Inter } from "next/font/google";
-import { NextIntlClientProvider, useMessages } from "next-intl";
+import { NextIntlClientProvider } from "next-intl";
 import "./globals.css";
-import { getTranslations } from "next-intl/server";
+import { getTranslations, getMessages } from "next-intl/server";
 import { UserContextProvider } from "@/context/UserContext";
 
 const inter = Inter({ subsets: ["latin"] });
 export async function generateMetadata({
-  params: { locale },
+  params,
 }: {
-  params: { locale: string };
+  params: Promise<{ locale: string }>;
 }) {
+  const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "Metadata" });
   return {
     title: t("title"),
@@ -29,16 +30,17 @@ export async function generateMetadata({
 
 type LocaleProps = {
   children: React.ReactNode;
-  params: {
+  params: Promise<{
     locale: string;
-  };
+  }>;
 };
 
-export default function LocaleLayout({
+export default async function LocaleLayout({
   children,
-  params: { locale },
+  params,
 }: LocaleProps) {
-  const messages = useMessages();
+  const { locale } = await params;
+  const messages = await getMessages();
 
   return (
     <html lang={locale}>
