@@ -4,9 +4,9 @@ import { getTournamentPlayers } from "@/database/getTournamentPlayers";
 import { getSession } from "@/helpers/getsession";
 
 type Params = {
-  params: {
+  params: Promise<{
     tournamentId: string;
-  };
+  }>;
 };
 
 export async function GET(request: Request, { params }: Params) {
@@ -23,17 +23,19 @@ export async function GET(request: Request, { params }: Params) {
     });
   }
 
+  const { tournamentId } = await params;
+
   if (
-    !params.tournamentId ||
-    Array.isArray(params.tournamentId) ||
-    params.tournamentId == ""
+    !tournamentId ||
+    Array.isArray(tournamentId) ||
+    tournamentId == ""
   ) {
     return new Response(`Error fetching tournament players`, {
       status: 400,
     });
   }
 
-  const tid = Number(params.tournamentId);
+  const tid = Number(tournamentId);
 
   if (!Number.isSafeInteger(tid)) {
     return new Response(`Error fetching tournament players`, {
