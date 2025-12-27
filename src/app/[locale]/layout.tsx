@@ -6,10 +6,11 @@ import { UserContextProvider } from "@/context/UserContext";
 
 const inter = Inter({ subsets: ["latin"] });
 export async function generateMetadata({
-  params: { locale },
+  params,
 }: {
-  params: { locale: string };
+  params: Promise<{ locale: string }>;
 }) {
+  const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "Metadata" });
   return {
     title: t("title"),
@@ -29,15 +30,16 @@ export async function generateMetadata({
 
 type LocaleProps = {
   children: React.ReactNode;
-  params: {
+  params: Promise<{
     locale: string;
-  };
+  }>;
 };
 
-export default function LocaleLayout({
+export default async function LocaleLayout({
   children,
-  params: { locale },
+  params,
 }: LocaleProps) {
+  const { locale } = await params;
   const messages = useMessages();
 
   return (
