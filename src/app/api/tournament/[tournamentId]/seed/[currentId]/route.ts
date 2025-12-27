@@ -7,10 +7,10 @@ import winPercentage from "@/helpers/winPercentage";
 import { Player } from "@/types/Player";
 
 type Params = {
-  params: {
+  params: Promise<{
     tournamentId: string;
     currentId: string;
-  };
+  }>;
 };
 
 function seeding(players: Player[]) {
@@ -67,21 +67,23 @@ export async function GET(request: Request, { params }: Params) {
     });
   }
 
+  const { tournamentId, currentId } = await params;
+
   if (
-    !params.tournamentId ||
-    Array.isArray(params.tournamentId) ||
-    params.tournamentId == "" ||
-    !params.currentId ||
-    Array.isArray(params.currentId) ||
-    params.currentId == ""
+    !tournamentId ||
+    Array.isArray(tournamentId) ||
+    tournamentId == "" ||
+    !currentId ||
+    Array.isArray(currentId) ||
+    currentId == ""
   ) {
     return new Response(`Error fetching tournament players`, {
       status: 400,
     });
   }
 
-  const tid = Number(params.tournamentId);
-  const target = Number(params.currentId);
+  const tid = Number(tournamentId);
+  const target = Number(currentId);
 
   if (!Number.isSafeInteger(tid) || !Number.isSafeInteger(target)) {
     return new Response(`Error fetching tournament players`, {
