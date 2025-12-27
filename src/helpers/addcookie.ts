@@ -28,7 +28,7 @@ export async function addCookie(
     const isProduction = process.env.VERCEL_ENV === 'production' || 
                         (process.env.NODE_ENV === 'production' && !process.env.VERCEL_ENV);
 
-    cookies().set("token", token, {
+    (await cookies()).set("token", token, {
       httpOnly: true,    // Prevent JavaScript access
       secure: isProduction, // HTTPS only in production
       sameSite: 'strict', // CSRF protection

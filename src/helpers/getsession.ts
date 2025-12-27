@@ -10,7 +10,7 @@ import { UserAccountInfo } from "@/context/UserContext";
 
 export async function getSession(): Promise<Result<UserAccountInfo, string>> {
   try {
-    const cookieStore = cookies();
+    const cookieStore = await cookies();
     const cookie = cookieStore.get("token");
 
     if (!cookie) {
