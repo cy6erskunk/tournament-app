@@ -1,7 +1,7 @@
 import { Inter } from "next/font/google";
-import { NextIntlClientProvider, useMessages } from "next-intl";
+import { NextIntlClientProvider } from "next-intl";
 import "./globals.css";
-import { getTranslations } from "next-intl/server";
+import { getTranslations, getMessages } from "next-intl/server";
 import { UserContextProvider } from "@/context/UserContext";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -40,7 +40,7 @@ export default async function LocaleLayout({
   params,
 }: LocaleProps) {
   const { locale } = await params;
-  const messages = useMessages();
+  const messages = await getMessages();
 
   return (
     <html lang={locale}>
