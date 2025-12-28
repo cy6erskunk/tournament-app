@@ -5,6 +5,7 @@ import { QRMatchResult } from "@/types/QRMatch";
 import { jsonParser } from "@/helpers/jsonParser";
 import { db } from "@/database/database";
 import { validateSubmitter } from "@/helpers/validateSubmitter";
+import { validateMatchResult } from "@/helpers/validateMatchResult";
 
 function getCorsHeaders() {
   const isDev = process.env.NODE_ENV === 'development';
@@ -27,7 +28,7 @@ export async function OPTIONS(request: Request) {
 
 export async function POST(request: Request) {
   const json = await request.text();
-  const data = jsonParser<QRMatchResult>(json);
+  const data = jsonParser<unknown>(json);
 
   if (!data.success) {
     return new Response(`Error reading match result`, {
@@ -36,7 +37,16 @@ export async function POST(request: Request) {
     });
   }
 
-  const { matchId, deviceToken, player1_hits, player2_hits, winner } = data.value;
+  // Parse matchId first to retrieve match data
+  const parsedData = data.value as Record<string, unknown>;
+  const matchId = parsedData.matchId;
+
+  if (typeof matchId !== 'string') {
+    return new Response(`Invalid or missing matchId`, {
+      status: 400,
+      headers: getCorsHeaders(),
+    });
+  }
 
   // Retrieve match data from storage using matchId
   const matchDataResult = await getQRMatch(matchId);
@@ -49,6 +59,21 @@ export async function POST(request: Request) {
   }
 
   const matchData = matchDataResult.value;
+
+  // Validate match result data with player context
+  const validationResult = validateMatchResult(data.value, {
+    player1: matchData.player1,
+    player2: matchData.player2,
+  });
+
+  if (!validationResult.success) {
+    return new Response(`Invalid match result: ${validationResult.error}`, {
+      status: 400,
+      headers: getCorsHeaders(),
+    });
+  }
+
+  const { deviceToken, player1_hits, player2_hits, winner } = validationResult.value;
 
   // Check if tournament requires submitter identity
   const tournament = await db
@@ -65,16 +90,16 @@ export async function POST(request: Request) {
   }
 
   // Verify device token if tournament requires submitter identity
-  const validationResult = await validateSubmitter(deviceToken, !!tournament.require_submitter_identity);
+  const submitterValidationResult = await validateSubmitter(deviceToken, !!tournament.require_submitter_identity);
 
-  if (!validationResult.success) {
-    return new Response(validationResult.error, {
-      status: validationResult.status,
+  if (!submitterValidationResult.success) {
+    return new Response(submitterValidationResult.error, {
+      status: submitterValidationResult.status,
       headers: getCorsHeaders(),
     });
   }
 
-  const submitterToken = validationResult.submitterToken;
+  const submitterToken = submitterValidationResult.submitterToken;
 
   // Check if this is a new match or an update to existing match
   // Prepare audit trail data upfront to avoid race conditions

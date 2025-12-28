@@ -134,7 +134,8 @@ The application supports QR code generation for match management, allowing third
 - **QRMatchCode**: React component for generating and displaying QR codes
 - **QRMatchModal**: Modal interface for creating QR matches
 - **API Endpoints**: `/api/qr-match/generate` (create), `/api/qr-match/submit` (results)
-- **Data Flow**: Generate match ID → Store match metadata → Third-party submission → Update match results
+- **Data Flow**: Generate match ID → Store match metadata → Third-party submission → Validate input → Update match results
+- **Input Validation**: `src/helpers/validateMatchResult.ts` validates match submissions (non-negative integers, winner validation, type checking)
 
 ### QR Code Data Structure
 ```typescript

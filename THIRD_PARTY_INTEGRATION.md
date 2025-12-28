@@ -182,9 +182,16 @@ Content-Type: application/json
 |-------|------|----------|-------------|
 | `matchId` | string | Yes | Match ID from QR code |
 | `deviceToken` | string | Conditional | Required if `requireSubmitterIdentity` is `true` in QR data |
-| `player1_hits` | number | Yes | Number of hits/points scored by player 1 |
-| `player2_hits` | number | Yes | Number of hits/points scored by player 2 |
-| `winner` | string | Yes | Name of the winning player (must match player1 or player2 exactly) |
+| `player1_hits` | number (integer) | Yes | Number of hits/points scored by player 1 (must be non-negative integer) |
+| `player2_hits` | number (integer) | Yes | Number of hits/points scored by player 2 (must be non-negative integer) |
+| `winner` | string | Yes | Name of the winning player (must match player1 or player2 exactly, case-sensitive) |
+
+**Input Validation Rules**:
+- `player1_hits` and `player2_hits` must be non-negative integers (0 or greater)
+- `winner` must exactly match either `player1` or `player2` from the QR code data (case-sensitive)
+- All required fields must be present and of the correct type
+- Float values for hit counts will be rejected (e.g., 5.5 is invalid)
+- Negative hit counts will be rejected (e.g., -1 is invalid)
 
 **Success Response** (HTTP 200):
 ```json
@@ -212,7 +219,8 @@ Content-Type: application/json
 | Status Code | Message | Cause |
 |-------------|---------|-------|
 | `400` | "Error reading match result" | Invalid JSON in request body |
-| `400` | "Error adding/updating match: ..." | Failed to save match (validation error) |
+| `400` | "Invalid match result: ..." | Input validation failed (negative hits, invalid winner, wrong data types, etc.) |
+| `400` | "Error adding/updating match: ..." | Failed to save match (database error) |
 | `401` | "Device registration required for this tournament" | Tournament requires deviceToken but none provided |
 | `401` | "Invalid device token" | Provided deviceToken doesn't exist in system |
 | `404` | "Invalid or expired match ID" | matchId not found (already used or never existed) |
@@ -502,9 +510,41 @@ print(f"Match submitted: {result}")
 
 ### 4. Input Validation
 
-- Validate that `winner` matches one of the player names
-- Ensure hit counts are non-negative integers
-- Check that all required fields are present
+The API performs strict server-side validation on all match submissions. While client-side validation is recommended for better user experience, the server will reject invalid data with a `400` error.
+
+**Required Validations (enforced by server)**:
+- Hit counts (`player1_hits`, `player2_hits`) must be non-negative integers (0 or greater)
+- No float/decimal values allowed for hit counts (e.g., 5.5 is rejected)
+- Winner must exactly match either `player1` or `player2` from the QR code (case-sensitive)
+- All required fields must be present and of correct type (string, number, etc.)
+
+**Client-Side Validation Example**:
+```javascript
+function validateMatchData(qrData, player1Hits, player2Hits, winner) {
+  const errors = [];
+
+  // Validate hit counts are non-negative integers
+  if (!Number.isInteger(player1Hits) || player1Hits < 0) {
+    errors.push('Player 1 hits must be a non-negative integer');
+  }
+  
+  if (!Number.isInteger(player2Hits) || player2Hits < 0) {
+    errors.push('Player 2 hits must be a non-negative integer');
+  }
+
+  // Validate winner matches one of the players (case-sensitive)
+  if (winner !== qrData.player1 && winner !== qrData.player2) {
+    errors.push(`Winner must be "${qrData.player1}" or "${qrData.player2}"`);
+  }
+
+  return errors;
+}
+```
+
+**Common Validation Errors**:
+- `"Invalid player1_hits: cannot be negative"` - Negative hit count provided
+- `"Invalid player1_hits: must be an integer"` - Float value provided (e.g., 5.5)
+- `"Invalid winner: must be either..."` - Winner doesn't match player names or has wrong case
 
 ### 5. CORS Restrictions
 

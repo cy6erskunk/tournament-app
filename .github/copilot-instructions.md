@@ -137,6 +137,11 @@ The application supports QR code generation for match management, allowing third
 - **QRMatchCode**: React component for generating and displaying QR codes
 - **QRMatchModal**: Modal interface for creating QR matches
 - **API Endpoints**: `/api/qr-match/generate` (create), `/api/qr-match/submit` (results)
+- **Input Validation**: All match submissions are validated server-side via `validateMatchResult` helper
+  - Hit counts must be non-negative integers
+  - Winner must match one of the player names (case-sensitive)
+  - All required fields validated for presence and correct types
+  - Validation errors return HTTP 400 with descriptive error messages
 
 ### QR Code Data Structure
 ```typescript
