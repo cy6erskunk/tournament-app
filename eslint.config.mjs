@@ -1,7 +1,7 @@
 import nextConfig from 'eslint-config-next/core-web-vitals';
 import i18next from 'eslint-plugin-i18next';
 
-export default [
+const config = [
   ...nextConfig,
   {
     plugins: {
@@ -12,3 +12,5 @@ export default [
     },
   },
 ];
+
+export default config;

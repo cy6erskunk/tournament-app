@@ -6,7 +6,7 @@ import Match from "./Match";
 import { useTournamentContext } from "@/context/TournamentContext";
 import type { Player } from "@/types/Player";
 import type { MatchRow } from "@/types/MatchTypes";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import Rounds from "./Rounds";
 import { jsonParser } from "@/helpers/jsonParser";
 import { getRoundRobinTournaments } from "@/database/getTournament";
@@ -43,7 +43,6 @@ type Pair = [PlayerInfo, PlayerInfo];
 export default function Tournament() {
   const t = useTranslations("Brackets");
   const context = useTournamentContext();
-  const [tournament, setTournament] = useState<Round[]>([]);
   const [capacity, setCapacity] = useState<number | undefined>(undefined);
   const [rrTournaments, setRrTournaments] = useState<RoundRobinCount[]>([]);
   const account = useUserContext();
@@ -283,9 +282,9 @@ export default function Tournament() {
     context.setLoading(false);
   }
 
-  useEffect(() => {
-    if (context.loading) return;
-    if (!context.tournament) return;
+  const tournament = useMemo(() => {
+    if (context.loading) return [];
+    if (!context.tournament) return [];
 
     let players: (Player | null)[] = context.players;
 
@@ -331,15 +330,11 @@ export default function Tournament() {
 
     // Populate a tournament with rounds and matches from context.players using a pair of players for each match
     // If the players already have a match between them in context.players.matches then pair them up, if not
-    const tournament =
-      buildRounds({
-        capacity,
-        tournamentId: context.tournament.id,
-        players,
-      }) ?? [];
-
-    if (!tournament) return;
-    setTournament(tournament);
+    return buildRounds({
+      capacity,
+      tournamentId: context.tournament.id,
+      players,
+    }) ?? [];
   }, [
     buildRounds,
     context.players,
