@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-Tournament App is a full-stack Next.js application for managing tournaments, events, and users for the Helsingin Miekkailijat (Helsinki Fencers) organization. It uses PostgreSQL with Kysely ORM, React 18, TypeScript, and supports 4 languages (Finnish, English, Swedish, Estonian).
+Tournament App is a full-stack Next.js application for managing tournaments, events, and users for the Helsingin Miekkailijat (Helsinki Fencers) organization. It uses PostgreSQL with Kysely ORM, React 19, TypeScript, and supports 4 languages (Finnish, English, Swedish, Estonian).
 
 ## Common Commands
 
@@ -36,7 +36,7 @@ npm run db:codegen             # Regenerate TypeScript types from schema
 ## Architecture Overview
 
 ### Tech Stack
-- **Frontend**: Next.js 14 with App Router, React 18, TypeScript, Tailwind CSS
+- **Frontend**: Next.js 16 with App Router, React 19, TypeScript, Tailwind CSS
 - **Backend**: Next.js API routes with PostgreSQL + Kysely ORM
 - **Database**: PostgreSQL with Kysely ORM and TypeScript-based migrations
 - **Runtime**: Node.js 24+ (migrations use tsx for TypeScript execution)
