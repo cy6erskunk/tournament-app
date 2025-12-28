@@ -13,7 +13,8 @@ Tournament App is a full-stack Next.js application for managing tournaments, eve
 npm run dev          # Start development server
 npm run test         # Run tests once
 npm run test:watch   # Run tests in watch mode
-npm run lint         # Run ESLint
+npm run lint         # Run ESLint (Next.js 16+: uses 'eslint' directly, not 'next lint')
+npm run lint:fix     # Run ESLint with auto-fix
 npm run build        # Run tests + build for production
 npm run prod         # Run tests + build + start production server
 npm run start        # Start production server
