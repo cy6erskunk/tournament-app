@@ -49,17 +49,8 @@ const Leaderboard = () => {
   function sortIndicator(col: LeaderboardColumns) {
     if (sortCol !== col) return;
 
-    // HTML Character codes for up and down chevron icons
-    // https://www.w3schools.com/charsets/ref_utf_arrows.asp
-    // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/fromCharCode
-    // U+2191 (↑) = 8593, U+2193 (↓) = 8595
-    let dir = undefined;
-    if (direction === "ASC") dir = 8593;
-    if (direction === "DESC") dir = 8595;
-
-    if (!dir) return;
-
-    return <span>{String.fromCharCode(dir)}</span>;
+    if (direction === "ASC") return <span>↑</span>;
+    if (direction === "DESC") return <span>↓</span>;
   }
 
   return (
