@@ -5,6 +5,7 @@ import { QRMatchResult } from "@/types/QRMatch";
 import { jsonParser } from "@/helpers/jsonParser";
 import { db } from "@/database/database";
 import { validateSubmitter } from "@/helpers/validateSubmitter";
+import { QRMatchResultSchema, validateWinner } from "@/validation/qrMatchValidation";
 
 function getCorsHeaders() {
   const isDev = process.env.NODE_ENV === 'development';
@@ -36,7 +37,18 @@ export async function POST(request: Request) {
     });
   }
 
-  const { matchId, deviceToken, player1_hits, player2_hits, winner } = data.value;
+  // Validate input data with Zod schema
+  const validationResult = QRMatchResultSchema.safeParse(data.value);
+
+  if (!validationResult.success) {
+    const errors = validationResult.error.issues.map(err => `${err.path.join('.')}: ${err.message}`).join(', ');
+    return new Response(`Invalid input data: ${errors}`, {
+      status: 400,
+      headers: getCorsHeaders(),
+    });
+  }
+
+  const { matchId, deviceToken, player1_hits, player2_hits, winner } = validationResult.data;
 
   // Retrieve match data from storage using matchId
   const matchDataResult = await getQRMatch(matchId);
@@ -49,6 +61,15 @@ export async function POST(request: Request) {
   }
 
   const matchData = matchDataResult.value;
+
+  // Validate that winner is one of the players
+  const winnerValidation = validateWinner(winner, matchData.player1, matchData.player2);
+  if (!winnerValidation.success) {
+    return new Response(winnerValidation.error, {
+      status: 400,
+      headers: getCorsHeaders(),
+    });
+  }
 
   // Check if tournament requires submitter identity
   const tournament = await db
@@ -65,16 +86,16 @@ export async function POST(request: Request) {
   }
 
   // Verify device token if tournament requires submitter identity
-  const validationResult = await validateSubmitter(deviceToken, !!tournament.require_submitter_identity);
+  const submitterValidation = await validateSubmitter(deviceToken, !!tournament.require_submitter_identity);
 
-  if (!validationResult.success) {
-    return new Response(validationResult.error, {
-      status: validationResult.status,
+  if (!submitterValidation.success) {
+    return new Response(submitterValidation.error, {
+      status: submitterValidation.status,
       headers: getCorsHeaders(),
     });
   }
 
-  const submitterToken = validationResult.submitterToken;
+  const submitterToken = submitterValidation.submitterToken;
 
   // Check if this is a new match or an update to existing match
   // Prepare audit trail data upfront to avoid race conditions
