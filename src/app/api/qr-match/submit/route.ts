@@ -50,6 +50,30 @@ export async function POST(request: Request) {
 
   const matchData = matchDataResult.value;
 
+  // Validate input data
+  // Check that hit counts are non-negative numbers
+  if (typeof player1_hits !== 'number' || player1_hits < 0) {
+    return new Response(`Invalid player1_hits: must be a non-negative number`, {
+      status: 400,
+      headers: getCorsHeaders(),
+    });
+  }
+
+  if (typeof player2_hits !== 'number' || player2_hits < 0) {
+    return new Response(`Invalid player2_hits: must be a non-negative number`, {
+      status: 400,
+      headers: getCorsHeaders(),
+    });
+  }
+
+  // Check that winner matches one of the players
+  if (winner !== matchData.player1 && winner !== matchData.player2) {
+    return new Response(`Invalid winner: must be either "${matchData.player1}" or "${matchData.player2}"`, {
+      status: 400,
+      headers: getCorsHeaders(),
+    });
+  }
+
   // Check if tournament requires submitter identity
   const tournament = await db
     .selectFrom('tournaments')
