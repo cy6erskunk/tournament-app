@@ -87,6 +87,66 @@ describe('POST /api/qr-match/submit - Input Validation', () => {
       expect(responseText).toContain('Player 1 hits must be an integer');
     });
 
+    it('should reject NaN values for hit counts (converted to null in JSON)', async () => {
+      // Note: JSON.stringify converts NaN to null, so we test that null is rejected
+      const request = new Request('http://localhost/api/qr-match/submit', {
+        method: 'POST',
+        body: JSON.stringify({
+          matchId: 'test-match-123',
+          player1_hits: NaN,
+          player2_hits: 8,
+          winner: 'Player1',
+        }),
+      });
+
+      const response = await POST(request);
+      const responseText = await response.text();
+
+      expect(response.status).toBe(400);
+      expect(responseText).toContain('player1_hits');
+      expect(responseText).toContain('expected number');
+    });
+
+    it('should reject Infinity values for hit counts (converted to null in JSON)', async () => {
+      // Note: JSON.stringify converts Infinity to null, so we test that null is rejected
+      const request = new Request('http://localhost/api/qr-match/submit', {
+        method: 'POST',
+        body: JSON.stringify({
+          matchId: 'test-match-123',
+          player1_hits: 10,
+          player2_hits: Infinity,
+          winner: 'Player1',
+        }),
+      });
+
+      const response = await POST(request);
+      const responseText = await response.text();
+
+      expect(response.status).toBe(400);
+      expect(responseText).toContain('player2_hits');
+      expect(responseText).toContain('expected number');
+    });
+
+    it('should reject negative Infinity values for hit counts (converted to null in JSON)', async () => {
+      // Note: JSON.stringify converts -Infinity to null, so we test that null is rejected
+      const request = new Request('http://localhost/api/qr-match/submit', {
+        method: 'POST',
+        body: JSON.stringify({
+          matchId: 'test-match-123',
+          player1_hits: -Infinity,
+          player2_hits: 8,
+          winner: 'Player1',
+        }),
+      });
+
+      const response = await POST(request);
+      const responseText = await response.text();
+
+      expect(response.status).toBe(400);
+      expect(responseText).toContain('player1_hits');
+      expect(responseText).toContain('expected number');
+    });
+
     it('should reject missing matchId', async () => {
       const request = new Request('http://localhost/api/qr-match/submit', {
         method: 'POST',

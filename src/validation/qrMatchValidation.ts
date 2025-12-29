@@ -6,15 +6,23 @@ import { z } from 'zod';
  * Validates:
  * - matchId is a non-empty string
  * - deviceToken is an optional string
- * - player1_hits is a non-negative integer
- * - player2_hits is a non-negative integer
+ * - player1_hits is a finite, non-negative integer (rejects NaN, Infinity, decimals)
+ * - player2_hits is a finite, non-negative integer (rejects NaN, Infinity, decimals)
  * - winner is a non-empty string
  */
 export const QRMatchResultSchema = z.object({
   matchId: z.string().min(1, 'Match ID is required'),
   deviceToken: z.string().optional(),
-  player1_hits: z.number().int('Player 1 hits must be an integer').nonnegative('Player 1 hits cannot be negative'),
-  player2_hits: z.number().int('Player 2 hits must be an integer').nonnegative('Player 2 hits cannot be negative'),
+  player1_hits: z
+    .number()
+    .finite('Player 1 hits must be a finite number')
+    .int('Player 1 hits must be an integer')
+    .nonnegative('Player 1 hits cannot be negative'),
+  player2_hits: z
+    .number()
+    .finite('Player 2 hits must be a finite number')
+    .int('Player 2 hits must be an integer')
+    .nonnegative('Player 2 hits cannot be negative'),
   winner: z.string().min(1, 'Winner is required'),
 });
 
