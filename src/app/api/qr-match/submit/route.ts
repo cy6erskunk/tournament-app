@@ -5,7 +5,7 @@ import { QRMatchResult } from "@/types/QRMatch";
 import { jsonParser } from "@/helpers/jsonParser";
 import { db } from "@/database/database";
 import { validateSubmitter } from "@/helpers/validateSubmitter";
-import { QRMatchResultSchema, QRMatchSubmissionSchema } from "@/validation/qrMatchValidation";
+import { QRMatchSubmissionSchema } from "@/validation/qrMatchValidation";
 
 function getCorsHeaders() {
   const isDev = process.env.NODE_ENV === 'development';
@@ -37,18 +37,7 @@ export async function POST(request: Request) {
     });
   }
 
-  // Validate input data with Zod schema
-  const validationResult = QRMatchResultSchema.safeParse(data.value);
-
-  if (!validationResult.success) {
-    const errors = validationResult.error.issues.map(err => `${err.path.join('.')}: ${err.message}`).join(', ');
-    return new Response(`Invalid input data: ${errors}`, {
-      status: 400,
-      headers: getCorsHeaders(),
-    });
-  }
-
-  const { matchId, deviceToken, player1_hits, player2_hits, winner } = validationResult.data;
+  const { matchId, deviceToken, player1_hits, player2_hits, winner } = data.value;
 
   // Retrieve match data from storage using matchId
   const matchDataResult = await getQRMatch(matchId);
@@ -62,7 +51,7 @@ export async function POST(request: Request) {
 
   const matchData = matchDataResult.value;
 
-  // Validate complete submission (including winner against actual players) using Zod refine
+  // Validate complete submission (including winner against actual players) using Zod
   const submissionData: Record<string, unknown> = {
     matchId,
     player1_hits,
@@ -77,10 +66,10 @@ export async function POST(request: Request) {
     submissionData.deviceToken = deviceToken;
   }
 
-  const fullValidation = QRMatchSubmissionSchema.safeParse(submissionData);
+  const validation = QRMatchSubmissionSchema.safeParse(submissionData);
 
-  if (!fullValidation.success) {
-    const errors = fullValidation.error.issues.map(err => err.message).join(', ');
+  if (!validation.success) {
+    const errors = validation.error.issues.map(err => err.message).join(', ');
     return new Response(errors, {
       status: 400,
       headers: getCorsHeaders(),

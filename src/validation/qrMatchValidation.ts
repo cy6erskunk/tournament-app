@@ -28,15 +28,23 @@ export const QRMatchResultSchema = z.object({
 
 /**
  * Extended schema that includes match data for comprehensive validation
- * Uses Zod's refine to validate that winner matches one of the players
+ * Uses Zod's superRefine to validate that winner matches one of the players
  */
 export const QRMatchSubmissionSchema = z
   .object({
-    matchId: z.string(),
+    matchId: z.string().min(1, 'Match ID is required'),
     deviceToken: z.string().optional(),
-    player1_hits: z.number().finite().int().nonnegative(),
-    player2_hits: z.number().finite().int().nonnegative(),
-    winner: z.string(),
+    player1_hits: z
+      .number()
+      .finite('Player 1 hits must be a finite number')
+      .int('Player 1 hits must be an integer')
+      .nonnegative('Player 1 hits cannot be negative'),
+    player2_hits: z
+      .number()
+      .finite('Player 2 hits must be a finite number')
+      .int('Player 2 hits must be an integer')
+      .nonnegative('Player 2 hits cannot be negative'),
+    winner: z.string().min(1, 'Winner is required'),
     // Match data from database
     player1: z.string(),
     player2: z.string(),
