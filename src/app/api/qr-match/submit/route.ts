@@ -5,7 +5,7 @@ import { QRMatchResult } from "@/types/QRMatch";
 import { jsonParser } from "@/helpers/jsonParser";
 import { db } from "@/database/database";
 import { validateSubmitter } from "@/helpers/validateSubmitter";
-import { QRMatchResultSchema, validateWinner } from "@/validation/qrMatchValidation";
+import { QRMatchResultSchema, QRMatchSubmissionSchema } from "@/validation/qrMatchValidation";
 
 function getCorsHeaders() {
   const isDev = process.env.NODE_ENV === 'development';
@@ -62,10 +62,26 @@ export async function POST(request: Request) {
 
   const matchData = matchDataResult.value;
 
-  // Validate that winner is one of the players
-  const winnerValidation = validateWinner(winner, matchData.player1, matchData.player2);
-  if (!winnerValidation.success) {
-    return new Response(winnerValidation.error, {
+  // Validate complete submission (including winner against actual players) using Zod refine
+  const submissionData: Record<string, unknown> = {
+    matchId,
+    player1_hits,
+    player2_hits,
+    winner,
+    player1: matchData.player1,
+    player2: matchData.player2,
+  };
+
+  // Only add deviceToken if it's defined
+  if (deviceToken !== undefined) {
+    submissionData.deviceToken = deviceToken;
+  }
+
+  const fullValidation = QRMatchSubmissionSchema.safeParse(submissionData);
+
+  if (!fullValidation.success) {
+    const errors = fullValidation.error.issues.map(err => err.message).join(', ');
+    return new Response(errors, {
       status: 400,
       headers: getCorsHeaders(),
     });

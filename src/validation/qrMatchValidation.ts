@@ -27,6 +27,31 @@ export const QRMatchResultSchema = z.object({
 });
 
 /**
+ * Extended schema that includes match data for comprehensive validation
+ * Uses Zod's refine to validate that winner matches one of the players
+ */
+export const QRMatchSubmissionSchema = z
+  .object({
+    matchId: z.string(),
+    deviceToken: z.string().optional(),
+    player1_hits: z.number().finite().int().nonnegative(),
+    player2_hits: z.number().finite().int().nonnegative(),
+    winner: z.string(),
+    // Match data from database
+    player1: z.string(),
+    player2: z.string(),
+  })
+  .superRefine((data, ctx) => {
+    if (data.winner !== data.player1 && data.winner !== data.player2) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: `Invalid winner: "${data.winner}". Winner must be either "${data.player1}" or "${data.player2}"`,
+        path: ['winner'],
+      });
+    }
+  });
+
+/**
  * Additional validation function to verify winner matches one of the players
  * This needs to be called after retrieving match data from storage
  *

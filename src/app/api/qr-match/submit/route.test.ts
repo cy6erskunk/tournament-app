@@ -274,6 +274,7 @@ describe('POST /api/qr-match/submit - Input Validation', () => {
       const responseText = await response.text();
 
       expect(response.status).toBe(400);
+      // Zod superRefine returns custom error message with player names
       expect(responseText).toContain('Invalid winner');
       expect(responseText).toContain('Charlie');
       expect(responseText).toContain('Alice');
