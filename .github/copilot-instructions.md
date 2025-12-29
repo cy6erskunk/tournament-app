@@ -4,11 +4,11 @@ This file provides guidance to GitHub Copilot when working with code in this rep
 
 ## Project Overview
 
-Tournament App is a full-stack Next.js application for managing tournaments, events, and users for the Helsingin Miekkailijat (Helsinki Fencers) organization. It uses PostgreSQL with Kysely ORM, React 18, TypeScript, and supports 4 languages (Finnish, English, Swedish, Estonian).
+Tournament App is a full-stack Next.js application for managing tournaments, events, and users for the Helsingin Miekkailijat (Helsinki Fencers) organization. It uses PostgreSQL with Kysely ORM, React 19, TypeScript, and supports 4 languages (Finnish, English, Swedish, Estonian).
 
 ## Tech Stack
 
-- **Frontend**: Next.js 14 with App Router, React 18, TypeScript, Tailwind CSS
+- **Frontend**: Next.js 16 with App Router, React 19, TypeScript, Tailwind CSS
 - **Backend**: Next.js API routes with PostgreSQL + Kysely ORM
 - **Database**: PostgreSQL with Kysely ORM and TypeScript-based migrations
 - **Runtime**: Node.js 24+ (migrations use tsx for TypeScript execution)
@@ -24,7 +24,8 @@ Tournament App is a full-stack Next.js application for managing tournaments, eve
 npm run dev          # Start development server
 npm run test         # Run tests once
 npm run test:watch   # Run tests in watch mode
-npm run lint         # Run ESLint
+npm run lint         # Run ESLint (Next.js 16+: uses 'eslint' directly, not 'next lint')
+npm run lint:fix     # Run ESLint with auto-fix
 npm run build        # Build for production
 npm run prod         # Run tests + build + start production server
 npm run start        # Start production server
@@ -215,6 +216,7 @@ The QR match submission endpoint supports cross-origin requests:
 - Examine existing code patterns for consistency
 - Run tests to validate changes: `npm run test`
 - Use linter to catch common issues: `npm run lint`
+- Auto-fix linting issues when possible: `npm run lint:fix`
 
 ## Credits
 

@@ -18,7 +18,6 @@ const TournamentButtons = () => {
   const [showModal, setShowModal] = useState(false);
   const [modalContent, setModalContent] = useState<ReactNode | null>(null);
   const [leaderboardText, setLeaderboardText] = useState(t("leaderboard"));
-  const [isSeeded, setIsSeeded] = useState(false);
 
   useEffect(() => {
     async function fetchPlayerNames() {
@@ -32,12 +31,9 @@ const TournamentButtons = () => {
     fetchPlayerNames();
   }, []);
 
-  useEffect(() => {
-    const hasSeededPlayers = context.players.some(
-      (player) => player && player.player.bracket_seed,
-    );
-    setIsSeeded(hasSeededPlayers);
-  }, [context.players]);
+  const isSeeded = context.players.some(
+    (player) => player && player.player.bracket_seed,
+  );
 
   const closeModal = () => {
     setShowModal(false);

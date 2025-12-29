@@ -4,7 +4,7 @@ import { useTournamentContext } from "@/context/TournamentContext";
 import { Loading } from "@/components/Results/RoundRobin/Loading";
 import { useTranslations } from "next-intl";
 import { LeaderboardPlayer } from "@/components/Leaderboards/LeaderboardPlayer";
-import { useEffect, useState } from "react";
+import { useMemo, useState } from "react";
 import { Player } from "@/types/Player";
 import {
   LeaderboardBuilder,
@@ -15,21 +15,18 @@ import {
 const Leaderboard = () => {
   const t = useTranslations("Leaderboard");
   const context = useTournamentContext();
-  const [players, setPlayers] = useState<Player[]>([]);
   const [sortCol, setSortCol] = useState<LeaderboardColumns>("percentage");
   const [direction, setDirection] = useState<SortDirection>("DEFAULT");
 
-  useEffect(() => {
+  const players = useMemo(() => {
     const filteredPlayers: Player[] = context.players.filter(
       (player) => player !== null,
     ) as NonNullable<Player>[];
-    const p = new LeaderboardBuilder()
+    return new LeaderboardBuilder()
       .players(filteredPlayers)
       .direction(direction)
       .column(sortCol)
       .sort();
-
-    setPlayers(p);
   }, [context.players, direction, sortCol]);
 
   function sortHandler(col: LeaderboardColumns) {

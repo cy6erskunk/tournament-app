@@ -2,7 +2,7 @@
 
 import { Player } from "@/types/Player";
 import { useTournamentContext } from "@/context/TournamentContext";
-import { useEffect, useState } from "react";
+import { useMemo } from "react";
 import { TrophyIcon } from "@heroicons/react/24/solid";
 import winPercentage, { wins } from "@/helpers/winPercentage";
 import { useTranslations } from "next-intl";
@@ -19,10 +19,9 @@ type Hits = {
 
 export function LeaderboardPlayer({ player, nthRow }: PlayerProps) {
   const context = useTournamentContext();
-  const [hits, setHits] = useState<Hits>({ given: 0, taken: 0 });
   const t = useTranslations("Leaderboard");
 
-  useEffect(() => {
+  const hits = useMemo(() => {
     const newHits: Hits = { given: 0, taken: 0 };
 
     // TODO: Make this look less hideous, currently it's very undreadable
@@ -41,8 +40,8 @@ export function LeaderboardPlayer({ player, nthRow }: PlayerProps) {
       }
     });
 
-    setHits(newHits);
-  }, [context.players, player.matches, player.player]);
+    return newHits;
+  }, [player.matches, player.player]);
 
   function getMatchData(player: Player): [number, number] {
     const wins = player.matches.filter(

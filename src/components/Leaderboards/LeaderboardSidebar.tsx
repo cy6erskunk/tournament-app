@@ -5,22 +5,20 @@ import { LeaderboardBuilder } from "@/helpers/leaderboardSort";
 import { Player } from "@/types/Player";
 import { TrophyIcon } from "@heroicons/react/24/solid";
 import { useTranslations } from "next-intl";
-import { useEffect, useState } from "react";
+import { useMemo } from "react";
 
 const LeaderboardSidebar = () => {
   const t = useTranslations("Leaderboard");
   const context = useTournamentContext();
-  const [players, setPlayers] = useState<Player[]>([]);
 
-  useEffect(() => {
+  const players = useMemo(() => {
     const filteredPlayers: Player[] = context.players.filter((player) => player !== null) as NonNullable<Player>[]
-    const p = new LeaderboardBuilder()
+    return new LeaderboardBuilder()
       .players(filteredPlayers)
       .round(context.activeRound)
       .ascending()
       .column("percentage")
       .sort();
-    setPlayers(p);
   }, [context.activeRound, context.players]);
 
   return (
