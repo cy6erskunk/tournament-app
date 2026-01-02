@@ -5,6 +5,7 @@ import { QRMatchResult } from "@/types/QRMatch";
 import { jsonParser } from "@/helpers/jsonParser";
 import { db } from "@/database/database";
 import { validateSubmitter } from "@/helpers/validateSubmitter";
+import { QRMatchSubmissionSchema } from "@/validation/qrMatchValidation";
 
 function getCorsHeaders() {
   const isDev = process.env.NODE_ENV === 'development';
@@ -50,6 +51,31 @@ export async function POST(request: Request) {
 
   const matchData = matchDataResult.value;
 
+  // Validate complete submission (including winner against actual players) using Zod
+  const submissionData: Record<string, unknown> = {
+    matchId,
+    player1_hits,
+    player2_hits,
+    winner,
+    player1: matchData.player1,
+    player2: matchData.player2,
+  };
+
+  // Only add deviceToken if it's defined
+  if (deviceToken !== undefined) {
+    submissionData.deviceToken = deviceToken;
+  }
+
+  const validation = QRMatchSubmissionSchema.safeParse(submissionData);
+
+  if (!validation.success) {
+    const errors = validation.error.issues.map(err => err.message).join(', ');
+    return new Response(errors, {
+      status: 400,
+      headers: getCorsHeaders(),
+    });
+  }
+
   // Check if tournament requires submitter identity
   const tournament = await db
     .selectFrom('tournaments')
@@ -65,16 +91,16 @@ export async function POST(request: Request) {
   }
 
   // Verify device token if tournament requires submitter identity
-  const validationResult = await validateSubmitter(deviceToken, !!tournament.require_submitter_identity);
+  const submitterValidation = await validateSubmitter(deviceToken, !!tournament.require_submitter_identity);
 
-  if (!validationResult.success) {
-    return new Response(validationResult.error, {
-      status: validationResult.status,
+  if (!submitterValidation.success) {
+    return new Response(submitterValidation.error, {
+      status: submitterValidation.status,
       headers: getCorsHeaders(),
     });
   }
 
-  const submitterToken = validationResult.submitterToken;
+  const submitterToken = submitterValidation.submitterToken;
 
   // Check if this is a new match or an update to existing match
   // Prepare audit trail data upfront to avoid race conditions
@@ -101,7 +127,7 @@ export async function POST(request: Request) {
     const addResult = await addMatch(matchData_with_audit);
 
     if (!addResult.success) {
-      return new Response(`Error adding/updating match: ${addResult.error}`, {
+      return new Response(`Error adding/updating match: ${JSON.stringify(addResult.error)}`, {
         status: 400,
         headers: getCorsHeaders(),
       });
