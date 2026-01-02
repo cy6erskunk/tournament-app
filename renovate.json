@@ -1,0 +1,9 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "github>cy6erskunk/renovate-config",
+    "github>cy6erskunk/renovate-config:automerge-minor-patch-devdeps",
+    "github>cy6erskunk/renovate-config:automerge-patch-deps",
+    "github>cy6erskunk/renovate-config:supply-chain-security"
+  ]
+}

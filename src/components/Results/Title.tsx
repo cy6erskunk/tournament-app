@@ -2,19 +2,15 @@
 
 import { useTournamentContext } from "@/context/TournamentContext";
 import { useUserContext } from "@/context/UserContext";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Modal from "../modal";
 import { useTranslations } from "next-intl";
 
 export function TournamentTitle() {
   const context = useTournamentContext();
   const account = useUserContext()
-  const [name, setName] = useState("")
 
-  useEffect(() => {
-    if (!context.tournament) return
-    setName(context.tournament.name)
-  }, [context.tournament, context.tournament?.name])
+  const name = context.tournament?.name || ""
 
   const getEditing = () => {
     if (!account.user) return
@@ -43,12 +39,6 @@ function EditButton() {
   const t = useTranslations("AddPlayer");
   const [input, setInput] = useState<string>("");
   const [requireIdentity, setRequireIdentity] = useState(false);
-
-  useEffect(() => {
-    if (context.tournament) {
-      setRequireIdentity(context.tournament.require_submitter_identity);
-    }
-  }, [context.tournament]);
 
   const handleSave = async () => {
     if (!context.tournament) return
@@ -89,6 +79,7 @@ function EditButton() {
   };
   const openModal = () => {
     setInput(context.tournament?.name || "");
+    setRequireIdentity(context.tournament?.require_submitter_identity || false);
     setShowModal(true);
   };
 

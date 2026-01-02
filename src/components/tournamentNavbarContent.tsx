@@ -12,14 +12,10 @@ export default function TournamentNavbarContent() {
   const context = useTournamentContext();
   const [showModal, setShowModal] = useState(false);
   const [modalContent, setModalContent] = useState<ReactNode | null>(null);
-  const [isSeeded, setIsSeeded] = useState(false);
 
-  useEffect(() => {
-    const hasSeededPlayers = context.players.some(
-      (player) => player && player.player.bracket_seed,
-    );
-    setIsSeeded(hasSeededPlayers);
-  }, [context.players]);
+  const isSeeded = context.players.some(
+    (player) => player && player.player.bracket_seed,
+  );
 
   const closeModal = () => {
     setShowModal(false);

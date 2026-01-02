@@ -79,9 +79,9 @@ VALUES
 > [!IMPORTANT]
 > [Read more about the Next.js App Router from here](https://nextjs.org/docs/app/building-your-application/routing#the-app-router). ([Frequently Asked Questions](https://nextjs.org/docs/app))
 
-Next.js uses a file-system-based router, where each .js or .tsx file in the pages directory automatically becomes a route. You can navigate the project using the app router.
+Next.js 16 uses a file-system-based router with the App Router, where each page.tsx file in the app directory automatically becomes a route. The project uses internationalized routing with `/[locale]/` prefixes.
 
-For example, the file pages/index.js corresponds to the home route (/). To create a new route, add a new file in the pages directory.
+Routes are defined using the app directory structure, not the legacy pages directory.
 
 ## Database Migrations
 
