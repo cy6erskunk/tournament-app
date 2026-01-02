@@ -60,7 +60,7 @@ describe('validateJwtSecret', () => {
       const result = validateJwtSecret('mysecret123');
       
       expect(result.isValid).toBe(false);
-      expect(result.errors.some(err => err.toLowerCase().includes('weak'))).toBe(true);
+      expect(result.errors.some(err => err.toLowerCase().includes('weak') || err.includes('substring'))).toBe(true);
     });
   });
 

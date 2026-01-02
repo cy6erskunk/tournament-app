@@ -44,9 +44,14 @@ export function validateJwtSecret(secret: string | undefined): JwtSecretValidati
   if (secret.length > 0) {
     const lowerSecret = secret.toLowerCase();
     for (const weakSecret of WEAK_SECRETS) {
-      if (lowerSecret === weakSecret || lowerSecret.includes(weakSecret)) {
+      if (lowerSecret === weakSecret) {
         errors.push(
-          `JWT_SECRET contains a weak or common value ("${weakSecret}"). Use a cryptographically secure random string.`
+          `JWT_SECRET is a weak or common value ("${weakSecret}"). Use a cryptographically secure random string.`
+        );
+        break; // Only report the first match
+      } else if (lowerSecret.includes(weakSecret)) {
+        errors.push(
+          `JWT_SECRET contains a weak or common substring ("${weakSecret}"). Use a cryptographically secure random string.`
         );
         break; // Only report the first match
       }
