@@ -22,8 +22,7 @@ vi.mock('@/helpers/validateSubmitter', () => ({
 
 import { POST } from './route';
 import { updateMatch } from '@/database/updateMatch';
-import { addMatch } from '@/database/addMatch';
-import { getQRMatch, removeQRMatch } from '@/database/addQRMatch';
+import { getQRMatch } from '@/database/addQRMatch';
 import { db } from '@/database/database';
 import { validateSubmitter } from '@/helpers/validateSubmitter';
 
