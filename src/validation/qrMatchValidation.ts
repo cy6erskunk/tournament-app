@@ -20,11 +20,11 @@ export const QRMatchSubmissionSchema = z
     matchId: z.string().min(1, 'Match ID is required'),
     deviceToken: z.string().optional(),
     player1_hits: z
-      .number()
+      .number('Player 1 hits must be a number')
       .int('Player 1 hits must be an integer')
       .nonnegative('Player 1 hits cannot be negative'),
     player2_hits: z
-      .number()
+      .number('Player 2 hits must be a number')
       .int('Player 2 hits must be an integer')
       .nonnegative('Player 2 hits cannot be negative'),
     winner: z.string().min(1, 'Winner is required'),

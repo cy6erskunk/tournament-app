@@ -37,7 +37,8 @@ describe('POST /api/qr-match/submit - Input Validation', () => {
       vi.mocked(getQRMatch).mockResolvedValue({
         success: true,
         value: {
-          matchId: 'test-match-123',
+          match_id: 'test-match-123',
+          created_at: new Date(),
           player1: 'Player One',
           player2: 'Player Two',
           tournament_id: 1,
@@ -102,7 +103,6 @@ describe('POST /api/qr-match/submit - Input Validation', () => {
     });
 
     it('should reject NaN values for hit counts (converted to null in JSON)', async () => {
-      // Note: JSON.stringify converts NaN to null, so we test that null is rejected
       const request = new Request('http://localhost/api/qr-match/submit', {
         method: 'POST',
         body: JSON.stringify({
@@ -117,12 +117,10 @@ describe('POST /api/qr-match/submit - Input Validation', () => {
       const responseText = await response.text();
 
       expect(response.status).toBe(400);
-      // Zod rejects null values (from NaN serialization)
-      expect(responseText).toContain('expected number');
+      expect(responseText).toBe('Player 1 hits must be a number');
     });
 
     it('should reject Infinity values for hit counts (converted to null in JSON)', async () => {
-      // Note: JSON.stringify converts Infinity to null, so we test that null is rejected
       const request = new Request('http://localhost/api/qr-match/submit', {
         method: 'POST',
         body: JSON.stringify({
@@ -137,12 +135,10 @@ describe('POST /api/qr-match/submit - Input Validation', () => {
       const responseText = await response.text();
 
       expect(response.status).toBe(400);
-      // Zod rejects null values (from Infinity serialization)
-      expect(responseText).toContain('expected number');
+      expect(responseText).toBe('Player 2 hits must be a number');
     });
 
     it('should reject negative Infinity values for hit counts (converted to null in JSON)', async () => {
-      // Note: JSON.stringify converts -Infinity to null, so we test that null is rejected
       const request = new Request('http://localhost/api/qr-match/submit', {
         method: 'POST',
         body: JSON.stringify({
@@ -157,8 +153,7 @@ describe('POST /api/qr-match/submit - Input Validation', () => {
       const responseText = await response.text();
 
       expect(response.status).toBe(400);
-      // Zod rejects null values (from -Infinity serialization)
-      expect(responseText).toContain('expected number');
+      expect(responseText).toBe('Player 1 hits must be a number');
     });
 
     it('should reject missing matchId', async () => {
@@ -202,7 +197,8 @@ describe('POST /api/qr-match/submit - Input Validation', () => {
       vi.mocked(getQRMatch).mockResolvedValue({
         success: true,
         value: {
-          matchId: 'test-match-123',
+          match_id: 'test-match-123',
+          created_at: new Date(),
           player1: 'Player One',
           player2: 'Player Two',
           tournament_id: 1,
@@ -264,7 +260,8 @@ describe('POST /api/qr-match/submit - Input Validation', () => {
       vi.mocked(getQRMatch).mockResolvedValue({
         success: true,
         value: {
-          matchId: 'test-match-123',
+          match_id: 'test-match-123',
+          created_at: new Date(),
           player1: 'Alice',
           player2: 'Bob',
           tournament_id: 1,
