@@ -40,7 +40,7 @@ export function validateJwtSecret(secret: string | undefined): JwtSecretValidati
   }
 
   // Check for weak/common secrets (case-insensitive)
-  // Only check if secret has some length to avoid false positives on empty strings
+  // Note: Empty strings are already handled above by the !secret check
   if (secret.length > 0) {
     const lowerSecret = secret.toLowerCase();
     for (const weakSecret of WEAK_SECRETS) {
