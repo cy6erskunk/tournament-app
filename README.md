@@ -40,18 +40,33 @@ bun install
 ```
 
 For local development you will want to create a file named `.env`.
-The `POSTGRES_URL` is important for connecting to the database. You can have the `JWT_SECRET` as anything, this will "sign" all user cookies with this secret, possibly causing issues if you change it later while logged in.
 
+**IMPORTANT:** The `JWT_SECRET` must be a strong, cryptographically secure random string (minimum 32 characters). The application will **refuse to start** with weak secrets like "secret", "password", etc.
+
+To generate a strong JWT secret, run:
+```bash
+node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
+```
+
+Example `.env` file for local development:
 ```env
 POSTGRES_URL="postgres://postgres:postgres@localhost:5434/postgres"
-JWT_SECRET="secret"
+JWT_SECRET="<paste-your-generated-secret-here>"
 ```
+
+**Note:** Changing the `JWT_SECRET` will invalidate all existing user sessions/cookies.
 
 For running `npm run prod` you will have to use the production `POSTGRES_URL` and `JWT_SECRET` from Vercel and put them in a `.env.production.local` file.
 
+Generate a strong production secret using:
+```bash
+node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
+```
+
+Example `.env.production.local`:
 ```env
 POSTGRES_URL="PRODUCTION_POSTGRES_URL_HERE"
-JWT_SECRET="PRODUCTION_JWT_SECRET_HERE"
+JWT_SECRET="<paste-your-generated-production-secret-here>"
 CORS_ALLOWED_ORIGIN="https://your-external-app.com"
 ```
 
@@ -323,7 +338,7 @@ The project is currently set up for deployment on Vercel. Connect your Vercel ac
 Set the following environment variables in your Vercel project dashboard:
 
 - `POSTGRES_URL` - Production database connection string
-- `JWT_SECRET` - Production JWT signing secret (use a strong random value)
+- `JWT_SECRET` - Production JWT signing secret (**MUST be a strong random value, minimum 32 characters**). Generate using: `node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"`
 - `CORS_ALLOWED_ORIGIN` - Allowed origin for QR match submissions (e.g., `https://your-app.com`)
 
 ### Database Migrations
