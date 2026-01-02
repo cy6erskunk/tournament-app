@@ -127,7 +127,7 @@ export async function POST(request: Request) {
     const addResult = await addMatch(matchData_with_audit);
 
     if (!addResult.success) {
-      return new Response(`Error adding/updating match: ${addResult.error}`, {
+      return new Response(`Error adding/updating match: ${JSON.stringify(addResult.error)}`, {
         status: 400,
         headers: getCorsHeaders(),
       });
