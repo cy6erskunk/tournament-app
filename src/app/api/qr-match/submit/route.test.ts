@@ -389,4 +389,74 @@ describe('POST /api/qr-match/submit - Input Validation', () => {
       expect(response.status).toBe(200);
     });
   });
+
+  describe('Submitter Validation', () => {
+    it('should return 401 when validateSubmitter fails', async () => {
+      // Import the actual validateSubmitter implementation
+      const { validateSubmitter: realValidateSubmitter } = await vi.importActual<typeof import('@/helpers/validateSubmitter')>('@/helpers/validateSubmitter');
+
+      // Use the real implementation for this test
+      vi.mocked(validateSubmitter).mockImplementation(realValidateSubmitter);
+
+      // Mock getQRMatch to return valid match data
+      vi.mocked(getQRMatch).mockResolvedValue({
+        success: true,
+        value: {
+          match_id: 'test-match-123',
+          created_at: new Date(),
+          player1: 'Alice',
+          player2: 'Bob',
+          tournament_id: 1,
+          round: 1,
+          match: 1,
+        },
+      });
+
+      // Mock db to handle both tournament and device lookups
+      vi.mocked(db.selectFrom).mockImplementation((table: any) => {
+        if (table === 'tournaments') {
+          return {
+            select: vi.fn().mockReturnValue({
+              where: vi.fn().mockReturnValue({
+                executeTakeFirst: vi.fn().mockResolvedValue({
+                  require_submitter_identity: true,
+                }),
+              }),
+            }),
+          } as any;
+        }
+        if (table === 'submitter_devices') {
+          return {
+            select: vi.fn().mockReturnValue({
+              where: vi.fn().mockReturnValue({
+                executeTakeFirst: vi.fn().mockResolvedValue(undefined), // Simulating device not found
+              }),
+            }),
+          } as any;
+        }
+        return {
+          select: vi.fn().mockReturnThis(),
+          where: vi.fn().mockReturnThis(),
+          executeTakeFirst: vi.fn().mockResolvedValue(undefined),
+        } as any;
+      });
+
+      const request = new Request('http://localhost/api/qr-match/submit', {
+        method: 'POST',
+        body: JSON.stringify({
+          matchId: 'test-match-123',
+          player1_hits: 10,
+          player2_hits: 8,
+          winner: 'Alice',
+          deviceToken: 'invalid-token',
+        }),
+      });
+
+      const response = await POST(request);
+      const responseText = await response.text();
+
+      expect(response.status).toBe(401);
+      expect(responseText).toBe('Invalid device token');
+    });
+  });
 });
