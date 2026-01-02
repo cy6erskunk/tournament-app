@@ -22,7 +22,8 @@ vi.mock('@/helpers/validateSubmitter', () => ({
 
 import { POST } from './route';
 import { updateMatch } from '@/database/updateMatch';
-import { getQRMatch } from '@/database/addQRMatch';
+import { addMatch } from '@/database/addMatch';
+import { getQRMatch, removeQRMatch } from '@/database/addQRMatch';
 import { db } from '@/database/database';
 import { validateSubmitter } from '@/helpers/validateSubmitter';
 
@@ -389,6 +390,12 @@ describe('POST /api/qr-match/submit - Input Validation', () => {
       expect(response.status).toBe(200);
     });
   });
+});
+
+describe('Match Logic & Database Interactions', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
 
   describe('Submitter Validation', () => {
     it('should return 401 when validateSubmitter fails', async () => {
@@ -457,6 +464,173 @@ describe('POST /api/qr-match/submit - Input Validation', () => {
 
       expect(response.status).toBe(401);
       expect(responseText).toBe('Invalid device token');
+    });
+  });
+
+  describe('Database Operations', () => {
+    it('should return 404 when getQRMatch fails (match not found/expired)', async () => {
+      vi.mocked(getQRMatch).mockResolvedValue({
+        success: false,
+        error: 'Match not found',
+      });
+
+      const request = new Request('http://localhost/api/qr-match/submit', {
+        method: 'POST',
+        body: JSON.stringify({
+          matchId: 'invalid-match-id',
+          player1_hits: 10,
+          player2_hits: 8,
+          winner: 'Player One',
+        }),
+      });
+
+      const response = await POST(request);
+      const responseText = await response.text();
+
+      expect(response.status).toBe(404);
+      expect(responseText).toContain('Invalid or expired match ID');
+    });
+
+    it('should fall back to addMatch when updateMatch fails, and clean up on success', async () => {
+      // Mock valid match data
+      vi.mocked(getQRMatch).mockResolvedValue({
+        success: true,
+        value: {
+          match_id: 'test-match-123',
+          created_at: new Date(),
+          player1: 'Alice',
+          player2: 'Bob',
+          tournament_id: 1,
+          round: 1,
+          match: 1,
+        },
+      });
+
+      // Mock tournament not requiring identity
+      vi.mocked(db.selectFrom).mockReturnValue({
+        select: vi.fn().mockReturnValue({
+          where: vi.fn().mockReturnValue({
+            executeTakeFirst: vi.fn().mockResolvedValue({
+              require_submitter_identity: false,
+            }),
+          }),
+        }),
+      } as any);
+
+      vi.mocked(validateSubmitter).mockResolvedValue({
+        success: true,
+        submitterToken: null,
+      });
+
+      // Mock updateMatch to FAIL
+      vi.mocked(updateMatch).mockResolvedValue({
+        success: false,
+        error: { value: 'Match not found to update' },
+      });
+
+      // Mock addMatch to SUCCEED
+      vi.mocked(addMatch).mockResolvedValue({
+        success: true,
+        value: {
+          id: 1,
+          player1: 'Alice',
+          player2: 'Bob',
+          tournament_id: 1,
+          round: 1,
+          match: 1,
+          player1_hits: 10,
+          player2_hits: 8,
+          winner: 'Alice',
+          submitted_by_token: null,
+          submitted_at: new Date(),
+        },
+      });
+
+      const request = new Request('http://localhost/api/qr-match/submit', {
+        method: 'POST',
+        body: JSON.stringify({
+          matchId: 'test-match-123',
+          player1_hits: 10,
+          player2_hits: 8,
+          winner: 'Alice',
+        }),
+      });
+
+      const response = await POST(request);
+      const matchResponse = await response.json();
+
+      expect(response.status).toBe(200);
+      expect(matchResponse.success).toBe(true);
+      expect(matchResponse.match.winner).toBe('Alice');
+
+      // Verification
+      expect(updateMatch).toHaveBeenCalled();
+      expect(addMatch).toHaveBeenCalled();
+
+      // Ensure cleanup was called
+      expect(removeQRMatch).toHaveBeenCalledWith('test-match-123');
+    });
+
+    it('should return 400 when both updateMatch and addMatch fail', async () => {
+      // Mock valid match data
+      vi.mocked(getQRMatch).mockResolvedValue({
+        success: true,
+        value: {
+          match_id: 'test-match-123',
+          created_at: new Date(),
+          player1: 'Alice',
+          player2: 'Bob',
+          tournament_id: 1,
+          round: 1,
+          match: 1,
+        },
+      });
+
+      // Mock tournament not requiring identity
+      vi.mocked(db.selectFrom).mockReturnValue({
+        select: vi.fn().mockReturnValue({
+          where: vi.fn().mockReturnValue({
+            executeTakeFirst: vi.fn().mockResolvedValue({
+              require_submitter_identity: false,
+            }),
+          }),
+        }),
+      } as any);
+
+      vi.mocked(validateSubmitter).mockResolvedValue({
+        success: true,
+        submitterToken: null,
+      });
+
+      // Mock BOTH to FAIL
+      vi.mocked(updateMatch).mockResolvedValue({
+        success: false,
+        error: { value: 'Update failed' },
+      });
+      vi.mocked(addMatch).mockResolvedValue({
+        success: false,
+        error: { value: 'Add failed' },
+      });
+
+      // Ensure removeQRMatch is NOT called (or at least check behavior on failure)
+      vi.mocked(removeQRMatch).mockClear();
+
+      const request = new Request('http://localhost/api/qr-match/submit', {
+        method: 'POST',
+        body: JSON.stringify({
+          matchId: 'test-match-123',
+          player1_hits: 10,
+          player2_hits: 8,
+          winner: 'Alice',
+        }),
+      });
+
+      const response = await POST(request);
+      const responseText = await response.text();
+
+      expect(response.status).toBe(400);
+      expect(responseText).toContain('Error adding/updating match');
+      expect(responseText).toContain('Add failed');
     });
   });
 });
