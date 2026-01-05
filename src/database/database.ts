@@ -1,25 +1,32 @@
 import { DB } from "@/types/Kysely";
 import { Pool } from "pg";
+import { Pool as NeonPool, neonConfig } from "@neondatabase/serverless";
 import { Kysely, PostgresDialect } from "kysely";
-import { createKysely } from "@vercel/postgres-kysely";
+import ws from "ws";
+
+neonConfig.webSocketConstructor = ws;
 
 // Gets a Kysely connection based on application environment
 function getConnection() {
   const env = process.env.NODE_ENV;
 
-  if (env === "production") {
-    return createKysely<DB>();
+  if (!process.env.POSTGRES_URL) {
+    throw new Error("POSTGRES_URL environment variable not defined");
   }
 
-  if (!process.env.POSTGRES_URL) {
-    throw new Error("POSTGRES_URL environment variable not defined")
+  if (env === "production") {
+    return new Kysely<DB>({
+      dialect: new PostgresDialect({
+        pool: new NeonPool({ connectionString: process.env.POSTGRES_URL }),
+      }),
+    });
   }
 
   const dialect = new PostgresDialect({
     pool: new Pool({
       connectionString: process.env.POSTGRES_URL,
-      max: 10
-    })
+      max: 10,
+    }),
   });
 
   return new Kysely<DB>({ dialect });
