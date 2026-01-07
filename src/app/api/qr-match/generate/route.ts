@@ -55,7 +55,7 @@ export async function POST(request: Request) {
   const PREVIEW_URL = process.env.NEXT_PUBLIC_BASE_URL
     ? `https://${process.env.NEXT_PUBLIC_BASE_URL}`
     : `https://${process.env.VERCEL_URL}`;
-  const DEVELOPMENT_URL = `http://localhost:3000`;
+  const DEVELOPMENT_URL = `https://localhost:3000`;
   const baseUrl =
     process.env.VERCEL_ENV === "production"
       ? PRODUCTION_URL
