@@ -5,7 +5,7 @@ Next.js project that serves as an internal full-stack web application (CRUD). Ma
 ### Tech stack
 - React for the frontend
 - Vercel for hosting
-- PostgreSQL as the database.
+- PostgreSQL (Neon) as the database.
 - Docker to help with local development.
 
 ## Prerequisites

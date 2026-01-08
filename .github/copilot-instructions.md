@@ -4,13 +4,13 @@ This file provides guidance to GitHub Copilot when working with code in this rep
 
 ## Project Overview
 
-Tournament App is a full-stack Next.js application for managing tournaments, events, and users for the Helsingin Miekkailijat (Helsinki Fencers) organization. It uses PostgreSQL with Kysely ORM, React 19, TypeScript, and supports 4 languages (Finnish, English, Swedish, Estonian).
+Tournament App is a full-stack Next.js application for managing tournaments, events, and users for the Helsingin Miekkailijat (Helsinki Fencers) organization. It uses PostgreSQL (Neon) with Kysely ORM, React 19, TypeScript, and supports 4 languages (Finnish, English, Swedish, Estonian).
 
 ## Tech Stack
 
 - **Frontend**: Next.js 16 with App Router, React 19, TypeScript, Tailwind CSS
-- **Backend**: Next.js API routes with PostgreSQL + Kysely ORM
-- **Database**: PostgreSQL with Kysely ORM and TypeScript-based migrations
+- **Backend**: Next.js API routes with PostgreSQL (Neon) + Kysely ORM
+- **Database**: PostgreSQL (Neon) with Kysely ORM and TypeScript-based migrations
 - **Runtime**: Node.js 24+ (migrations use tsx for TypeScript execution)
 - **QR Code Generation**: qrcode library for match management integration
 - **Internationalization**: next-intl with URL-based routing (`/[locale]/...`)
