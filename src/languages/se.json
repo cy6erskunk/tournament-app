@@ -108,5 +108,76 @@
   "Brackets": {
     "selectseed": "Välj matchordning från turneringen",
     "noRRtournamentsfound": "Inga round robin-turneringar hittades"
+  },
+  "Admin": {
+    "title": "Administration",
+    "dashboard": {
+      "title": "Adminpanel",
+      "description": "Hantera användare, enhetstokens och granska QR-kodinlämningar."
+    },
+    "nav": {
+      "dashboard": "Instrumentpanel",
+      "users": "Användare",
+      "devices": "Enheter",
+      "qrAudit": "QR-granskning",
+      "backToApp": "Tillbaka till appen"
+    },
+    "users": {
+      "title": "Användarhantering",
+      "description": "Hantera användarkonton och roller",
+      "username": "Användarnamn",
+      "password": "Lösenord",
+      "role": "Roll",
+      "actions": "Åtgärder",
+      "createUser": "Skapa användare",
+      "editUser": "Redigera användare",
+      "deleteUser": "Ta bort användare",
+      "edit": "Redigera",
+      "delete": "Ta bort",
+      "cancel": "Avbryt",
+      "create": "Skapa",
+      "creating": "Skapar...",
+      "save": "Spara",
+      "saving": "Sparar...",
+      "deleting": "Tar bort...",
+      "loading": "Laddar...",
+      "error": "Fel",
+      "noUsers": "Inga användare hittades",
+      "editingUser": "Redigerar användare",
+      "changeRole": "Ändra roll",
+      "changePassword": "Ändra lösenord",
+      "newPassword": "Nytt lösenord",
+      "deleteConfirmation": "Är du säker på att du vill ta bort användare",
+      "deleteWarning": "Denna åtgärd kan inte ångras."
+    },
+    "devices": {
+      "title": "Enhetshantering",
+      "description": "Hantera auktoriserade enheter",
+      "pageTitle": "Enhetstokenhantering",
+      "pageDescription": "Visa och hantera auktoriserade enhetstokens för QR-kod matchinlämningar.",
+      "comingSoon": "Kommer snart",
+      "comingSoonDescription": "Enhetstokenhanteringsfunktioner kommer att finnas tillgängliga här.",
+      "plannedFeatures": "Planerade funktioner:",
+      "feature1": "Visa alla registrerade enhetstokens",
+      "feature2": "Se användningsstatistik för enhetstokens",
+      "feature3": "Återkalla eller inaktivera enhetstokens",
+      "feature4": "Registrera nya auktoriserade enheter",
+      "feature5": "Visa senast använda tidsstämpel för varje enhet"
+    },
+    "qrAudit": {
+      "title": "QR-kodgranskning",
+      "description": "Visa QR-kodinlämningshistorik",
+      "pageTitle": "QR-kodinlämningsgranskning",
+      "pageDescription": "Granska och revidera matchresultat som skickats via QR-kodskanning.",
+      "comingSoon": "Kommer snart",
+      "comingSoonDescription": "QR-kodinlämningsgranskningsfunktioner kommer att finnas tillgängliga här.",
+      "plannedFeatures": "Planerade funktioner:",
+      "feature1": "Visa alla QR-kod matchinlämningar",
+      "feature2": "Filtrera efter turnering, datum eller inlämnare",
+      "feature3": "Se inlämningstidsstämplar och enhetstokens",
+      "feature4": "Identifiera misstänkta eller dubbla inlämningar",
+      "feature5": "Exportera granskningsloggar för efterlevnad",
+      "feature6": "Visa matchdetaljer och verifieringsstatus"
+    }
   }
 }

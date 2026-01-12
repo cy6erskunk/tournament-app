@@ -108,5 +108,76 @@
   "Brackets": {
     "selectseed": "Select match order from tournament",
     "noRRtournamentsfound": "No round robin tournaments found"
+  },
+  "Admin": {
+    "title": "Administration",
+    "dashboard": {
+      "title": "Admin Dashboard",
+      "description": "Manage users, device tokens, and audit QR code submissions."
+    },
+    "nav": {
+      "dashboard": "Dashboard",
+      "users": "Users",
+      "devices": "Devices",
+      "qrAudit": "QR Audit",
+      "backToApp": "Back to App"
+    },
+    "users": {
+      "title": "User Management",
+      "description": "Manage user accounts and roles",
+      "username": "Username",
+      "password": "Password",
+      "role": "Role",
+      "actions": "Actions",
+      "createUser": "Create User",
+      "editUser": "Edit User",
+      "deleteUser": "Delete User",
+      "edit": "Edit",
+      "delete": "Delete",
+      "cancel": "Cancel",
+      "create": "Create",
+      "creating": "Creating...",
+      "save": "Save",
+      "saving": "Saving...",
+      "deleting": "Deleting...",
+      "loading": "Loading...",
+      "error": "Error",
+      "noUsers": "No users found",
+      "editingUser": "Editing user",
+      "changeRole": "Change Role",
+      "changePassword": "Change Password",
+      "newPassword": "New Password",
+      "deleteConfirmation": "Are you sure you want to delete user",
+      "deleteWarning": "This action cannot be undone."
+    },
+    "devices": {
+      "title": "Device Management",
+      "description": "Manage authorized devices",
+      "pageTitle": "Device Token Management",
+      "pageDescription": "View and manage authorized device tokens for QR code match submissions.",
+      "comingSoon": "Coming Soon",
+      "comingSoonDescription": "Device token management features will be available here.",
+      "plannedFeatures": "Planned features:",
+      "feature1": "View all registered device tokens",
+      "feature2": "See device token usage statistics",
+      "feature3": "Revoke or deactivate device tokens",
+      "feature4": "Register new authorized devices",
+      "feature5": "View last used timestamp for each device"
+    },
+    "qrAudit": {
+      "title": "QR Code Audit",
+      "description": "View QR code submission history",
+      "pageTitle": "QR Code Submission Audit",
+      "pageDescription": "Review and audit match results submitted via QR code scanning.",
+      "comingSoon": "Coming Soon",
+      "comingSoonDescription": "QR code submission audit features will be available here.",
+      "plannedFeatures": "Planned features:",
+      "feature1": "View all QR code match submissions",
+      "feature2": "Filter by tournament, date, or submitter",
+      "feature3": "See submission timestamps and device tokens",
+      "feature4": "Identify suspicious or duplicate submissions",
+      "feature5": "Export audit logs for compliance",
+      "feature6": "View match details and verification status"
+    }
   }
 }

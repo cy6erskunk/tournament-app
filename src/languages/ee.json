@@ -108,5 +108,76 @@
   "Brackets": {
     "selectseed": "Valige turniirilt mängu järjekord",
     "noRRtournamentsfound": "Ringmänguturniire ei leitud"
+  },
+  "Admin": {
+    "title": "Haldus",
+    "dashboard": {
+      "title": "Halduspaneel",
+      "description": "Halda kasutajaid, seadmetokeid ja auditeerige QR-koodi esitusi."
+    },
+    "nav": {
+      "dashboard": "Juhtpaneel",
+      "users": "Kasutajad",
+      "devices": "Seadmed",
+      "qrAudit": "QR-audit",
+      "backToApp": "Tagasi rakendusse"
+    },
+    "users": {
+      "title": "Kasutajate haldus",
+      "description": "Halda kasutajakontosid ja rolle",
+      "username": "Kasutajanimi",
+      "password": "Parool",
+      "role": "Roll",
+      "actions": "Tegevused",
+      "createUser": "Loo kasutaja",
+      "editUser": "Muuda kasutajat",
+      "deleteUser": "Kustuta kasutaja",
+      "edit": "Muuda",
+      "delete": "Kustuta",
+      "cancel": "Tühista",
+      "create": "Loo",
+      "creating": "Loomine...",
+      "save": "Salvesta",
+      "saving": "Salvestamine...",
+      "deleting": "Kustutamine...",
+      "loading": "Laadimine...",
+      "error": "Viga",
+      "noUsers": "Kasutajaid ei leitud",
+      "editingUser": "Kasutaja muutmine",
+      "changeRole": "Muuda rolli",
+      "changePassword": "Muuda parooli",
+      "newPassword": "Uus parool",
+      "deleteConfirmation": "Kas oled kindel, et soovid kustutada kasutaja",
+      "deleteWarning": "Seda toimingut ei saa tagasi võtta."
+    },
+    "devices": {
+      "title": "Seadmete haldus",
+      "description": "Halda volitatud seadmeid",
+      "pageTitle": "Seadmetokenite haldus",
+      "pageDescription": "Vaata ja halda volitatud seadmetokeneid QR-koodi matšide esitamiseks.",
+      "comingSoon": "Tulekul varsti",
+      "comingSoonDescription": "Seadmetokenite halduse funktsioonid on siin varsti saadaval.",
+      "plannedFeatures": "Planeeritud funktsioonid:",
+      "feature1": "Vaata kõiki registreeritud seadmetokeneid",
+      "feature2": "Vaata seadmetokenite kasutusstatistikat",
+      "feature3": "Tühista või deaktiveeri seadmetokenid",
+      "feature4": "Registreeri uued volitatud seadmed",
+      "feature5": "Vaata iga seadme viimast kasutamise ajatempli"
+    },
+    "qrAudit": {
+      "title": "QR-koodi audit",
+      "description": "Vaata QR-koodi esitamise ajalugu",
+      "pageTitle": "QR-koodi esitamise audit",
+      "pageDescription": "Vaata üle ja auditeeri QR-koodi skaneerimise kaudu esitatud matšitulemused.",
+      "comingSoon": "Tulekul varsti",
+      "comingSoonDescription": "QR-koodi esitamise auditi funktsioonid on siin varsti saadaval.",
+      "plannedFeatures": "Planeeritud funktsioonid:",
+      "feature1": "Vaata kõiki QR-koodi matši esitamisi",
+      "feature2": "Filtreeri turniiri, kuupäeva või esitaja järgi",
+      "feature3": "Vaata esitamise ajatempleid ja seadmetokeneid",
+      "feature4": "Tuvasta kahtlased või topeltesitamised",
+      "feature5": "Ekspordi auditilogid vastavuse tagamiseks",
+      "feature6": "Vaata matši üksikasju ja kinnituse staatust"
+    }
   }
 }
