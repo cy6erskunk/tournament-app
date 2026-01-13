@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
 import { getSession } from "@/helpers/getsession";
-import { getDevice } from "@/database/getDevices";
 import { deleteDevice } from "@/database/deleteDevice";
 
 type RouteParams = {
@@ -8,21 +7,6 @@ type RouteParams = {
     deviceToken: string;
   }>;
 };
-
-export async function GET(_request: Request, { params }: RouteParams) {
-  const session = await getSession();
-  if (!session.success || session.value.role !== "admin") {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
-
-  const { deviceToken } = await params;
-  const device = await getDevice(deviceToken);
-  if (!device.success) {
-    return NextResponse.json({ error: device.error }, { status: 404 });
-  }
-
-  return NextResponse.json(device.value);
-}
 
 export async function DELETE(_request: Request, { params }: RouteParams) {
   const session = await getSession();
