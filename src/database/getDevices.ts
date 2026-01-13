@@ -1,9 +1,10 @@
 "use server";
 import { Result } from "@/types/result";
 import { db } from "./database";
+import { Selectable } from "kysely";
 import { SubmitterDevices } from "@/types/Kysely";
 
-export type DeviceInfo = SubmitterDevices;
+export type DeviceInfo = Selectable<SubmitterDevices>;
 
 export async function getAllDevices(): Promise<Result<DeviceInfo[], string>> {
   try {

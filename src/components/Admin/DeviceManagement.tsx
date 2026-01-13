@@ -47,7 +47,7 @@ export default function DeviceManagement() {
     fetchDevices();
   };
 
-  const formatDate = (timestamp: Date) => {
+  const formatDate = (timestamp: Date | string) => {
     return new Date(timestamp).toLocaleString();
   };
 
