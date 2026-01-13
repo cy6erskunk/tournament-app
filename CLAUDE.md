@@ -185,14 +185,16 @@ The admin panel provides centralized management for users, devices, and audit lo
 - **Database Functions**: `getAllUsers()`, `getUser()`, `createUser()`, `updateUserRole()`, `updateUserPassword()`, `deleteUser()`
 
 #### Device Management (`/admin/devices`)
-- **Device Registration**: Register authorized devices for QR code match submissions
+- **View Only**: Admin panel is for monitoring registered devices, not creating them
+- **Self-Registration**: Devices register automatically via `/api/submitter/register` when first used
 - **Device Listing**: View all registered devices with creation and last usage timestamps
-- **Device Deletion**: Remove unauthorized or outdated device tokens
+- **Device Deletion**: Remove unauthorized or compromised device tokens
 - **Usage Tracking**: Monitor when devices were last used
-- **Components**: DeviceManagement, CreateDeviceModal, DeleteDeviceModal
-- **API Endpoints**: `/api/admin/devices` (GET, POST), `/api/admin/devices/[deviceToken]` (GET, DELETE)
-- **Database Functions**: `getAllDevices()`, `getDevice()`, `createDevice()`, `deleteDevice()`
+- **Components**: DeviceManagement, DeleteDeviceModal
+- **API Endpoints**: `/api/admin/devices` (GET only), `/api/admin/devices/[deviceToken]` (GET, DELETE)
+- **Database Functions**: `getAllDevices()`, `getDevice()`, `deleteDevice()`, `registerDevice()` (used by external API)
 - **Database Table**: `submitter_devices` with columns: `device_token` (PK), `submitter_name`, `created_at`, `last_used`
+- **Registration Flow**: Third-party apps call `/api/submitter/register` with device name → receive auto-generated token → use token for QR match submissions
 
 #### QR Audit (`/admin/qr-audit`)
 - **Status**: Placeholder for future implementation
