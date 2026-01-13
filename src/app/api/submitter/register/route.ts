@@ -1,6 +1,5 @@
 import { jsonParser } from "@/helpers/jsonParser";
-import { generateMatchId } from "@/helpers/generateMatchId";
-import { db } from "@/database/database";
+import { registerDevice } from "@/database/registerDevice";
 
 interface RegisterRequest {
   name: string;
@@ -38,50 +37,27 @@ export async function POST(request: Request) {
 
   const { name } = data.value;
 
-  if (!name || name.trim().length === 0) {
-    return new Response(`Name is required`, {
+  const result = await registerDevice(name);
+
+  if (!result.success) {
+    return new Response(result.error, {
       status: 400,
       headers: getCorsHeaders(),
     });
   }
 
-  if (name.length > 255) {
-    return new Response(`Name must be 255 characters or less`, {
-      status: 400,
-      headers: getCorsHeaders(),
-    });
-  }
-
-  try {
-    // Generate a unique device token
-    const deviceToken = generateMatchId(); // Reuse secure random generation
-
-    // Insert into database
-    await db
-      .insertInto('submitter_devices')
-      .values({
-        device_token: deviceToken,
-        submitter_name: name.trim(),
-        created_at: new Date(),
-      })
-      .execute();
-
-    return new Response(JSON.stringify({
-      deviceToken,
-      name: name.trim(),
-      message: "Device registered successfully"
-    }), {
+  return new Response(
+    JSON.stringify({
+      deviceToken: result.value.device_token,
+      name: result.value.submitter_name,
+      message: "Device registered successfully",
+    }),
+    {
       status: 201,
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
         ...getCorsHeaders(),
       },
-    });
-  } catch (error) {
-    console.error('Error registering device:', error);
-    return new Response(`Error registering device`, {
-      status: 500,
-      headers: getCorsHeaders(),
-    });
-  }
+    },
+  );
 }

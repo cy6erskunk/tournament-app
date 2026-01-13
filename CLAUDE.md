@@ -47,8 +47,11 @@ npm run db:codegen             # Regenerate TypeScript types from schema
 
 ### Key Directory Structure
 - `/src/app/[locale]/`: Internationalized pages (en, fi, se, ee)
+- `/src/app/[locale]/admin/`: Admin panel pages (users, devices, qr-audit)
 - `/src/app/api/`: REST API endpoints for players, tournaments, matches, QR match integration
+- `/src/app/api/admin/`: Admin API endpoints for user and device management
 - `/src/components/`: React components organized by feature (Leaderboards, Results, Tournaments)
+- `/src/components/Admin/`: Admin-specific components (UserManagement, DeviceManagement, Modals)
 - `/src/database/`: Database operation layer with individual service files
 - `/src/context/`: React Context for global state (TournamentContext, UserContext)
 - `/src/types/`: TypeScript definitions including auto-generated Kysely types and custom helper types
@@ -57,10 +60,11 @@ npm run db:codegen             # Regenerate TypeScript types from schema
 - `/scripts/`: Utility scripts including migration file generator
 
 ### Database Schema
-Core tables: `users`, `tournaments`, `players`, `tournament_players`, `matches`
+Core tables: `users`, `tournaments`, `players`, `tournament_players`, `matches`, `submitter_devices`
 - Supports both bracket and round-robin tournament formats
 - Detailed match tracking with hit counts
 - Role-based access control (admin/user)
+- Device token management for authorized QR code submissions
 
 ## Development Patterns
 
@@ -163,6 +167,49 @@ The QR match submission endpoint supports cross-origin requests with environment
 3. QR code generated with match metadata
 4. Third-party app scans code and submits results to API
 5. Match results automatically update in tournament system
+
+## Admin Panel
+
+### Overview
+The admin panel provides centralized management for users, devices, and audit logs. Access is restricted to users with the `admin` role.
+
+### Admin Sections
+
+#### User Management (`/admin/users`)
+- **Full CRUD Operations**: Create, read, update, and delete user accounts
+- **Role Management**: Toggle between user and admin roles
+- **Password Management**: Change passwords for existing users
+- **Protection**: Prevents deletion of the last admin user
+- **Components**: UserManagement, CreateUserModal, EditUserModal, DeleteUserModal
+- **API Endpoints**: `/api/admin/users` (GET, POST), `/api/admin/users/[username]` (GET, PATCH, DELETE)
+- **Database Functions**: `getAllUsers()`, `getUser()`, `createUser()`, `updateUserRole()`, `updateUserPassword()`, `deleteUser()`
+
+#### Device Management (`/admin/devices`)
+- **View Only**: Admin panel is for monitoring registered devices, not creating them
+- **Self-Registration**: Devices register automatically via `/api/submitter/register` when first used
+- **Device Listing**: View all registered devices with creation and last usage timestamps
+- **Device Deletion**: Remove unauthorized or compromised device tokens
+- **Usage Tracking**: Monitor when devices were last used
+- **Components**: DeviceManagement, DeleteDeviceModal
+- **API Endpoints**: `/api/admin/devices` (GET only), `/api/admin/devices/[deviceToken]` (GET, DELETE)
+- **Database Functions**: `getAllDevices()`, `getDevice()`, `deleteDevice()`, `registerDevice()` (used by external API)
+- **Database Table**: `submitter_devices` with columns: `device_token` (PK), `submitter_name`, `created_at`, `last_used`
+- **Registration Flow**: Third-party apps call `/api/submitter/register` with device name → receive auto-generated token → use token for QR match submissions
+
+#### QR Audit (`/admin/qr-audit`)
+- **Status**: Placeholder for future implementation
+- **Planned Features**: View QR code submission history, filter by tournament/date/submitter, identify suspicious submissions
+
+### Admin Architecture
+- **Authentication**: Layout-level role check redirects non-admin users
+- **API Security**: All admin endpoints verify admin role before processing
+- **UI Patterns**: Reusable Modal component, tab-based editing, loading states, error handling
+- **Translations**: Full multi-language support via `Admin.*` namespace
+
+### Testing
+- Database service functions have comprehensive unit tests (getUsers, createUser, deleteUser, getDevices, createDevice, deleteDevice)
+- Tests use Vitest with mocked database connections
+- Located in `/src/database/*.test.ts` files
 
 ## Build Process
 - Tests run automatically before builds (`npm run build`)
