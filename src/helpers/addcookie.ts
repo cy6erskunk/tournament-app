@@ -31,7 +31,7 @@ export async function addCookie(
     (await cookies()).set("token", token, {
       httpOnly: true,    // Prevent JavaScript access
       secure: isProduction, // HTTPS only in production
-      sameSite: 'lax', // CSRF protection while allowing top-level navigation
+      sameSite: 'lax', // CSRF protection while allowing top-level navigation (Firefox needs 'lax' for page reloads)
       maxAge: 8 * 60 * 60, // 8 hours (in seconds)
       path: '/'
     });
