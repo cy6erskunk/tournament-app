@@ -182,7 +182,25 @@
       "feature3": "See submission timestamps and device tokens",
       "feature4": "Identify suspicious or duplicate submissions",
       "feature5": "Export audit logs for compliance",
-      "feature6": "View match details and verification status"
+      "feature6": "View match details and verification status",
+      "loading": "Loading...",
+      "error": "Error",
+      "noLogs": "No QR code submissions",
+      "tournament": "Tournament",
+      "match": "Match",
+      "round": "Round",
+      "players": "Players",
+      "score": "Score",
+      "winner": "Winner",
+      "submitter": "Submitter",
+      "submittedAt": "Submitted At",
+      "deviceToken": "Device Token",
+      "unknown": "Unknown",
+      "filterByTournament": "Filter by tournament",
+      "filterBySubmitter": "Filter by submitter",
+      "allTournaments": "All tournaments",
+      "allSubmitters": "All submitters",
+      "vs": "vs"
     }
   }
 }

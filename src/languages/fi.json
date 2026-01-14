@@ -182,7 +182,25 @@
       "feature3": "Katso lähetysajat ja laitetunnisteet",
       "feature4": "Tunnista epäilyttävät tai kaksoislähetykset",
       "feature5": "Vie tarkastuslokit vaatimustenmukaisuutta varten",
-      "feature6": "Näytä ottelutiedot ja vahvistustila"
+      "feature6": "Näytä ottelutiedot ja vahvistustila",
+      "loading": "Ladataan...",
+      "error": "Virhe",
+      "noLogs": "Ei QR-koodi lähetyksiä",
+      "tournament": "Turnaus",
+      "match": "Ottelu",
+      "round": "Kierros",
+      "players": "Pelaajat",
+      "score": "Tulos",
+      "winner": "Voittaja",
+      "submitter": "Lähettäjä",
+      "submittedAt": "Lähetetty",
+      "deviceToken": "Laitetunniste",
+      "unknown": "Tuntematon",
+      "filterByTournament": "Suodata turnauksen mukaan",
+      "filterBySubmitter": "Suodata lähettäjän mukaan",
+      "allTournaments": "Kaikki turnaukset",
+      "allSubmitters": "Kaikki lähettäjät",
+      "vs": "vs"
     }
   }
 }

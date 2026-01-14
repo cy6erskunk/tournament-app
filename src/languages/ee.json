@@ -182,7 +182,25 @@
       "feature3": "Vaata esitamise ajatempleid ja seadmetokeneid",
       "feature4": "Tuvasta kahtlased või topeltesitamised",
       "feature5": "Ekspordi auditilogid vastavuse tagamiseks",
-      "feature6": "Vaata matši üksikasju ja kinnituse staatust"
+      "feature6": "Vaata matši üksikasju ja kinnituse staatust",
+      "loading": "Laadimine...",
+      "error": "Viga",
+      "noLogs": "QR-koodi esitamisi pole",
+      "tournament": "Turniir",
+      "match": "Matš",
+      "round": "Voor",
+      "players": "Mängijad",
+      "score": "Tulemus",
+      "winner": "Võitja",
+      "submitter": "Esitaja",
+      "submittedAt": "Esitatud",
+      "deviceToken": "Seadmetoken",
+      "unknown": "Teadmata",
+      "filterByTournament": "Filtreeri turniiri järgi",
+      "filterBySubmitter": "Filtreeri esitaja järgi",
+      "allTournaments": "Kõik turniirid",
+      "allSubmitters": "Kõik esitajad",
+      "vs": "vs"
     }
   }
 }

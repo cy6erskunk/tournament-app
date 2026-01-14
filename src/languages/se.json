@@ -182,7 +182,25 @@
       "feature3": "Se inlämningstidsstämplar och enhetstokens",
       "feature4": "Identifiera misstänkta eller dubbla inlämningar",
       "feature5": "Exportera granskningsloggar för efterlevnad",
-      "feature6": "Visa matchdetaljer och verifieringsstatus"
+      "feature6": "Visa matchdetaljer och verifieringsstatus",
+      "loading": "Laddar...",
+      "error": "Fel",
+      "noLogs": "Inga QR-kodinlämningar",
+      "tournament": "Turnering",
+      "match": "Match",
+      "round": "Rond",
+      "players": "Spelare",
+      "score": "Poäng",
+      "winner": "Vinnare",
+      "submitter": "Inlämnare",
+      "submittedAt": "Inskickad",
+      "deviceToken": "Enhetstoken",
+      "unknown": "Okänd",
+      "filterByTournament": "Filtrera efter turnering",
+      "filterBySubmitter": "Filtrera efter inlämnare",
+      "allTournaments": "Alla turneringar",
+      "allSubmitters": "Alla inlämnare",
+      "vs": "mot"
     }
   }
 }
