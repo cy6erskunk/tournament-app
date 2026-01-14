@@ -18,10 +18,19 @@ interface UserContext {
 
 export const UserContext = createContext<UserContext | null>(null);
 
-export function UserContextProvider({ children }: React.PropsWithChildren<{}>) {
-  const [user, setUser] = useState<UserContext["user"]>(null);
+interface UserContextProviderProps extends React.PropsWithChildren {
+  initialUser?: UserAccountInfo | null;
+}
+
+export function UserContextProvider({ children, initialUser }: UserContextProviderProps) {
+  const [user, setUser] = useState<UserContext["user"]>(initialUser ?? null);
 
   useEffect(() => {
+    // Only fetch if we don't have initial user data
+    if (initialUser !== undefined) {
+      return;
+    }
+
     async function getUserData() {
       const session = await getSession();
       if (!session.success) {
@@ -32,7 +41,7 @@ export function UserContextProvider({ children }: React.PropsWithChildren<{}>) {
       setUser(session.value);
     }
     getUserData();
-  }, []);
+  }, [initialUser]);
 
   const value = useMemo(
     () => ({

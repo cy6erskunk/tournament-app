@@ -3,6 +3,7 @@ import { NextIntlClientProvider } from "next-intl";
 import "./globals.css";
 import { getTranslations, getMessages } from "next-intl/server";
 import { UserContextProvider } from "@/context/UserContext";
+import { getSession } from "@/helpers/getsession";
 
 const inter = Inter({ subsets: ["latin"] });
 export async function generateMetadata({
@@ -42,10 +43,14 @@ export default async function LocaleLayout({
   const { locale } = await params;
   const messages = await getMessages();
 
+  // Fetch user session on the server to avoid client-side delay
+  const session = await getSession();
+  const initialUser = session.success ? session.value : null;
+
   return (
     <html lang={locale}>
       <body className={inter.className}>
-        <UserContextProvider>
+        <UserContextProvider initialUser={initialUser}>
           <NextIntlClientProvider locale={locale} messages={messages}>
             {children}
           </NextIntlClientProvider>
