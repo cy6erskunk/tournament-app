@@ -6,6 +6,22 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Tournament App is a full-stack Next.js application for managing tournaments, events, and users for the Helsingin Miekkailijat (Helsinki Fencers) organization. It uses PostgreSQL (Neon) with Kysely ORM, React 19, TypeScript, and supports 4 languages (Finnish, English, Swedish, Estonian).
 
+## ⚠️ CRITICAL: Testing Policy
+
+**ALWAYS run `npm run test` before committing any code changes.**
+
+- Tests MUST pass before any commit
+- Run `npm install` first if dependencies are not installed
+- If tests fail, fix them before committing
+- Update test expectations when changing functionality (e.g., cookie settings, API responses)
+- All 138 tests should pass
+
+**Workflow:**
+1. Make code changes
+2. Run `npm run test`
+3. If tests fail, fix code or update tests
+4. Only commit when all tests pass
+
 ## Common Commands
 
 ### Development & Testing

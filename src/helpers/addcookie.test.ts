@@ -64,7 +64,7 @@ describe('addCookie', () => {
     expect(mockSet).toHaveBeenCalledWith('token', 'mock-jwt-token', {
       httpOnly: true,
       secure: true, // should be true in production
-      sameSite: 'strict',
+      sameSite: 'lax',
       maxAge: COOKIE_MAX_AGE,
       path: '/',
     });
@@ -72,7 +72,7 @@ describe('addCookie', () => {
 
   it('should set cookie with secure=false in development', async () => {
     process.env.NODE_ENV = 'development';
-    
+
     const result = await addCookie('testuser', 'user');
 
     expect(result.success).toBe(true);
@@ -80,7 +80,7 @@ describe('addCookie', () => {
     expect(mockSet).toHaveBeenCalledWith('token', 'mock-jwt-token', {
       httpOnly: true,
       secure: false, // should be false in development
-      sameSite: 'strict',
+      sameSite: 'lax',
       maxAge: COOKIE_MAX_AGE,
       path: '/',
     });
@@ -89,7 +89,7 @@ describe('addCookie', () => {
   it('should set cookie with secure=true when VERCEL_ENV is production', async () => {
     process.env.VERCEL_ENV = 'production';
     process.env.NODE_ENV = 'production'; // NODE_ENV is always production on Vercel
-    
+
     const result = await addCookie('testuser', 'admin');
 
     expect(result.success).toBe(true);
@@ -97,7 +97,7 @@ describe('addCookie', () => {
     expect(mockSet).toHaveBeenCalledWith('token', 'mock-jwt-token', {
       httpOnly: true,
       secure: true, // should be true for Vercel production
-      sameSite: 'strict',
+      sameSite: 'lax',
       maxAge: COOKIE_MAX_AGE,
       path: '/',
     });
@@ -106,7 +106,7 @@ describe('addCookie', () => {
   it('should set cookie with secure=false when VERCEL_ENV is preview', async () => {
     process.env.VERCEL_ENV = 'preview';
     process.env.NODE_ENV = 'production'; // NODE_ENV is always production on Vercel
-    
+
     const result = await addCookie('testuser', 'user');
 
     expect(result.success).toBe(true);
@@ -114,7 +114,7 @@ describe('addCookie', () => {
     expect(mockSet).toHaveBeenCalledWith('token', 'mock-jwt-token', {
       httpOnly: true,
       secure: false, // should be false for Vercel preview
-      sameSite: 'strict',
+      sameSite: 'lax',
       maxAge: COOKIE_MAX_AGE,
       path: '/',
     });
@@ -123,7 +123,7 @@ describe('addCookie', () => {
   it('should set cookie with secure=false when VERCEL_ENV is development', async () => {
     process.env.VERCEL_ENV = 'development';
     process.env.NODE_ENV = 'production'; // NODE_ENV is always production on Vercel
-    
+
     const result = await addCookie('testuser', 'user');
 
     expect(result.success).toBe(true);
@@ -131,7 +131,7 @@ describe('addCookie', () => {
     expect(mockSet).toHaveBeenCalledWith('token', 'mock-jwt-token', {
       httpOnly: true,
       secure: false, // should be false for Vercel development
-      sameSite: 'strict',
+      sameSite: 'lax',
       maxAge: COOKIE_MAX_AGE,
       path: '/',
     });
