@@ -58,7 +58,10 @@ export default function QRAuditLog() {
     return new Date(timestamp).toLocaleString();
   };
 
-  const uniqueTournaments = Array.from(
+  // Array of [tournament_id, tournament_name] tuples for use in filters.
+  const uniqueTournaments: Array<
+    [QRAuditLogType["tournament_id"], QRAuditLogType["tournament_name"]]
+  > = Array.from(
     new Map(logs.map((log) => [log.tournament_id, log.tournament_name]))
   );
 
