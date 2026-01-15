@@ -21,10 +21,6 @@ describe("GET /api/admin/qr-audit - Admin Authorization", () => {
     // Mock session to be invalid
     (getSession as any).mockResolvedValue({ success: false });
 
-    const request = new Request("http://localhost/api/admin/qr-audit", {
-      method: "GET",
-    });
-
     const response = await GET();
     const data = await response.json();
 
@@ -38,10 +34,6 @@ describe("GET /api/admin/qr-audit - Admin Authorization", () => {
     (getSession as any).mockResolvedValue({
       success: true,
       value: { role: "user", userId: 1 },
-    });
-
-    const request = new Request("http://localhost/api/admin/qr-audit", {
-      method: "GET",
     });
 
     const response = await GET();
@@ -98,10 +90,6 @@ describe("GET /api/admin/qr-audit - Admin Authorization", () => {
       value: mockLogs,
     });
 
-    const request = new Request("http://localhost/api/admin/qr-audit", {
-      method: "GET",
-    });
-
     const response = await GET();
     const data = await response.json();
 
@@ -133,10 +121,6 @@ describe("GET /api/admin/qr-audit - Admin Authorization", () => {
       value: [],
     });
 
-    const request = new Request("http://localhost/api/admin/qr-audit", {
-      method: "GET",
-    });
-
     const response = await GET();
     const data = await response.json();
 
@@ -156,10 +140,6 @@ describe("GET /api/admin/qr-audit - Admin Authorization", () => {
     (getQRAuditLogs as any).mockResolvedValue({
       success: false,
       error: "Error fetching QR audit logs",
-    });
-
-    const request = new Request("http://localhost/api/admin/qr-audit", {
-      method: "GET",
     });
 
     const response = await GET();
@@ -199,10 +179,6 @@ describe("GET /api/admin/qr-audit - Admin Authorization", () => {
     (getQRAuditLogs as any).mockResolvedValue({
       success: true,
       value: mockLogs,
-    });
-
-    const request = new Request("http://localhost/api/admin/qr-audit", {
-      method: "GET",
     });
 
     const response = await GET();
