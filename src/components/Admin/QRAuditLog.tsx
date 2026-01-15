@@ -18,14 +18,14 @@ export default function QRAuditLog() {
       setLoading(true);
       const response = await fetch("/api/admin/qr-audit");
       if (!response.ok) {
-        throw new Error("Failed to fetch QR audit logs");
+        throw new Error(t("errorFetchingLogs"));
       }
       const data = await response.json();
       setLogs(data);
       setFilteredLogs(data);
       setError(null);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Unknown error");
+      setError(err instanceof Error ? err.message : t("unknownError"));
     } finally {
       setLoading(false);
     }
