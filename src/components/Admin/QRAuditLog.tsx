@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useTranslations } from "next-intl";
 import { QRAuditLog as QRAuditLogType } from "@/database/getQRAuditLogs";
 
@@ -13,7 +13,7 @@ export default function QRAuditLog() {
   const [selectedTournament, setSelectedTournament] = useState<string>("all");
   const [selectedSubmitter, setSelectedSubmitter] = useState<string>("all");
 
-  const fetchLogs = async () => {
+  const fetchLogs = useCallback(async () => {
     try {
       setLoading(true);
       const response = await fetch("/api/admin/qr-audit");
@@ -29,11 +29,11 @@ export default function QRAuditLog() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [t]);
 
   useEffect(() => {
     fetchLogs();
-  }, []);
+  }, [fetchLogs]);
 
   useEffect(() => {
     let filtered = logs;
