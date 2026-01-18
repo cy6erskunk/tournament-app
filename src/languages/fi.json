@@ -172,17 +172,25 @@
     "qrAudit": {
       "title": "QR-koodi tarkastus",
       "description": "Tarkastele QR-koodi lähetyshistoriaa",
-      "pageTitle": "QR-koodi lähetystarkastus",
-      "pageDescription": "Tarkista ja auditoi QR-koodin skannauksella lähetetyt ottelutulokset.",
-      "comingSoon": "Tulossa pian",
-      "comingSoonDescription": "QR-koodi lähetystarkastuksen ominaisuudet tulevat saataville täällä.",
-      "plannedFeatures": "Suunnitellut ominaisuudet:",
-      "feature1": "Näytä kaikki QR-koodi ottelulähetykset",
-      "feature2": "Suodata turnauksen, päivämäärän tai lähettäjän mukaan",
-      "feature3": "Katso lähetysajat ja laitetunnisteet",
-      "feature4": "Tunnista epäilyttävät tai kaksoislähetykset",
-      "feature5": "Vie tarkastuslokit vaatimustenmukaisuutta varten",
-      "feature6": "Näytä ottelutiedot ja vahvistustila"
+      "loading": "Ladataan...",
+      "error": "Virhe",
+      "errorFetchingLogs": "Virhe ladattaessa QR-tarkastuslogeja",
+      "unknownError": "Tuntematon virhe",
+      "noLogs": "Ei QR-koodi lähetyksiä",
+      "tournament": "Turnaus",
+      "match": "Ottelu",
+      "round": "Kierros",
+      "players": "Pelaajat",
+      "score": "Tulos",
+      "winner": "Voittaja",
+      "submitter": "Lähettäjä",
+      "submittedAt": "Lähetetty",
+      "unknown": "Tuntematon",
+      "filterByTournament": "Suodata turnauksen mukaan",
+      "filterBySubmitter": "Suodata lähettäjän mukaan",
+      "allTournaments": "Kaikki turnaukset",
+      "allSubmitters": "Kaikki lähettäjät",
+      "vs": "vs"
     }
   }
 }

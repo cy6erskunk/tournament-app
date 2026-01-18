@@ -172,17 +172,25 @@
     "qrAudit": {
       "title": "QR-koodi audit",
       "description": "Vaata QR-koodi esitamise ajalugu",
-      "pageTitle": "QR-koodi esitamise audit",
-      "pageDescription": "Vaata üle ja auditeeri QR-koodi skaneerimise kaudu esitatud matšitulemused.",
-      "comingSoon": "Tulekul varsti",
-      "comingSoonDescription": "QR-koodi esitamise auditi funktsioonid on siin varsti saadaval.",
-      "plannedFeatures": "Planeeritud funktsioonid:",
-      "feature1": "Vaata kõiki QR-koodi matši esitamisi",
-      "feature2": "Filtreeri turniiri, kuupäeva või esitaja järgi",
-      "feature3": "Vaata esitamise ajatempleid ja seadmetokeneid",
-      "feature4": "Tuvasta kahtlased või topeltesitamised",
-      "feature5": "Ekspordi auditilogid vastavuse tagamiseks",
-      "feature6": "Vaata matši üksikasju ja kinnituse staatust"
+      "loading": "Laadimine...",
+      "error": "Viga",
+      "errorFetchingLogs": "QR-auditiloogide laadimine ebaõnnestus",
+      "unknownError": "Tundmatu viga",
+      "noLogs": "QR-koodi esitamisi pole",
+      "tournament": "Turniir",
+      "match": "Matš",
+      "round": "Voor",
+      "players": "Mängijad",
+      "score": "Tulemus",
+      "winner": "Võitja",
+      "submitter": "Esitaja",
+      "submittedAt": "Esitatud",
+      "unknown": "Teadmata",
+      "filterByTournament": "Filtreeri turniiri järgi",
+      "filterBySubmitter": "Filtreeri esitaja järgi",
+      "allTournaments": "Kõik turniirid",
+      "allSubmitters": "Kõik esitajad",
+      "vs": "vs"
     }
   }
 }
