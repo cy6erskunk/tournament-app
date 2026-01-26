@@ -36,7 +36,7 @@
   "devDependencies": {
     "@eslint/eslintrc": "3.3.3",
     "@tailwindcss/postcss": "4.1.18",
-    "@testing-library/react": "16.3.1",
+    "@testing-library/react": "16.3.2",
     "@types/bcrypt": "6.0.0",
     "@types/jsonwebtoken": "9.0.10",
     "@types/node": "24.10.9",
