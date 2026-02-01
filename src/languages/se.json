@@ -18,7 +18,8 @@
       "empty": "Tom tabell",
       "emptyConfirm": "Ta bort alla matcher och spelare?",
       "tournaments": "Turneringar",
-      "back": "Tillbaka"
+      "back": "Tillbaka",
+      "dtEntry": "DT Inmatning"
     }
   },
   "Leaderboard": {
@@ -108,6 +109,22 @@
   "Brackets": {
     "selectseed": "Välj matchordning från turneringen",
     "noRRtournamentsfound": "Inga round robin-turneringar hittades"
+  },
+  "BulkEntry": {
+    "title": "DT Resultatinmatning",
+    "round": "Rond",
+    "instructions": "Ange resultat rad för rad. Tryck Enter för att gå till nästa cell.",
+    "player": "Spelare",
+    "submit": "Skicka resultat",
+    "submitting": "Skickar...",
+    "back": "Tillbaka",
+    "unauthorized": "Obehörig",
+    "noMatchesToSubmit": "Inga matcher att skicka",
+    "matchExists": "Matchen finns redan",
+    "submitFailed": "Misslyckades att skicka",
+    "networkError": "Nätverksfel",
+    "submitted": "{count} matcher skickade",
+    "pendingMatches": "{count} matcher väntar"
   },
   "Admin": {
     "title": "Administration",

@@ -5,14 +5,17 @@ import Modal from "@/components/modal";
 import AddMatch from "@/components/newmatch";
 import Addplayer from "@/components/addplayer";
 import QRMatchModal from "@/components/QRMatchModal";
+import BulkMatchEntry from "@/components/BulkMatchEntry";
 import { useTranslations } from "next-intl";
 import { useTournamentContext } from "@/context/TournamentContext";
+import { useUserContext } from "@/context/UserContext";
 import { ChevronLeftIcon } from "@heroicons/react/24/outline";
 import { getPlayer } from "@/database/getPlayers";
 
 const TournamentButtons = () => {
   const t = useTranslations("Tournament.Buttons");
   const context = useTournamentContext();
+  const account = useUserContext();
 
   const [playersList, setPlayersList] = useState<string[]>([]);
   const [showModal, setShowModal] = useState(false);
@@ -73,6 +76,14 @@ const TournamentButtons = () => {
       >
         Generate QR Match
       </button>
+      {context.tournament?.format === "Round Robin" && account.user?.role === "admin" ? (
+        <button
+          className="p-1 px-5 border rounded-md shadow-xs border-slate-600 bg-amber-50 border-amber-500 text-amber-700"
+          onClick={() => openModal(<BulkMatchEntry closeModal={closeModal} />)}
+        >
+          {t("dtEntry")}
+        </button>
+      ) : null}
       <button
         className="p-1 px-5 border rounded-md shadow-xs border-slate-600"
         onClick={() =>
