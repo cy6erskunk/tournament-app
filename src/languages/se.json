@@ -124,7 +124,10 @@
     "submitFailed": "Misslyckades att skicka",
     "networkError": "Nätverksfel",
     "submitted": "{count} matcher skickade",
-    "pendingMatches": "{count} matcher väntar"
+    "pendingMatches": "{count} matcher väntar",
+    "selectPriorityWinner": "Välj prioritetsvinnare",
+    "priorityWinner": "Prioritetsvinnare",
+    "unresolvedDraws": "{count} oavgjort kräver val"
   },
   "Admin": {
     "title": "Administration",

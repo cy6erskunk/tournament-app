@@ -3,7 +3,7 @@
 import { useTranslations } from "next-intl";
 import { useTournamentContext } from "@/context/TournamentContext";
 import { useUserContext } from "@/context/UserContext";
-import { useState, useRef, useCallback, KeyboardEvent } from "react";
+import { useState, useRef, useCallback, KeyboardEvent, useEffect } from "react";
 import { MatchRow, NewMatch } from "@/types/MatchTypes";
 import { Player } from "@/types/Player";
 
@@ -25,6 +25,14 @@ interface PendingMatch {
   winner: string;
 }
 
+interface DrawMatch {
+  playerIndex: number;
+  opponentIndex: number;
+  player1Name: string;
+  player2Name: string;
+  hits: number;
+}
+
 export default function BulkMatchEntry({ closeModal }: BulkMatchEntryProps) {
   const t = useTranslations("BulkEntry");
   const context = useTournamentContext();
@@ -38,6 +46,9 @@ export default function BulkMatchEntry({ closeModal }: BulkMatchEntryProps) {
 
   // Track cell data: key is "playerIndex-opponentIndex"
   const [cellData, setCellData] = useState<Map<string, CellData>>(new Map());
+
+  // Track draw that needs priority selection
+  const [pendingDraw, setPendingDraw] = useState<DrawMatch | null>(null);
 
   // Build list of valid players
   const players = context.players.filter((p): p is Player => p !== null);
@@ -109,6 +120,43 @@ export default function BulkMatchEntry({ closeModal }: BulkMatchEntryProps) {
     }
   }, [navigateToNextCell]);
 
+  // Check for draw and show priority dialog if needed
+  const checkForDraw = useCallback((
+    playerIndex: number,
+    opponentIndex: number,
+    newCellData: Map<string, CellData>
+  ) => {
+    const key = getCellKey(playerIndex, opponentIndex);
+    const mirrorKey = getCellKey(opponentIndex, playerIndex);
+
+    const data = newCellData.get(key);
+    const mirrorData = newCellData.get(mirrorKey);
+
+    // Get hits for both players
+    const player1Hits = data?.playerHits ?? mirrorData?.opponentHits;
+    const player2Hits = data?.opponentHits ?? mirrorData?.playerHits;
+
+    // Check if we have both values and they're equal
+    if (
+      player1Hits !== "" && player1Hits !== undefined &&
+      player2Hits !== "" && player2Hits !== undefined &&
+      player1Hits === player2Hits
+    ) {
+      // Check if winner is already set
+      const existingWinner = data?.winner || mirrorData?.winner;
+      if (!existingWinner) {
+        // Show priority dialog
+        setPendingDraw({
+          playerIndex,
+          opponentIndex,
+          player1Name: players[playerIndex].player.player_name,
+          player2Name: players[opponentIndex].player.player_name,
+          hits: player1Hits as number,
+        });
+      }
+    }
+  }, [getCellKey, players]);
+
   // Handle cell value change
   const handleCellChange = useCallback((
     playerIndex: number,
@@ -122,22 +170,54 @@ export default function BulkMatchEntry({ closeModal }: BulkMatchEntryProps) {
       return;
     }
 
+    let newCellData: Map<string, CellData>;
+
+    setCellData((prev) => {
+      newCellData = new Map(prev);
+      const existing = newCellData.get(key) || { playerHits: "", opponentHits: "", winner: null };
+      // Clear winner if score changes
+      newCellData.set(key, { ...existing, playerHits: numValue, winner: null });
+
+      // Also update the mirror cell (opponent's view)
+      const mirrorKey = getCellKey(opponentIndex, playerIndex);
+      const mirrorExisting = newCellData.get(mirrorKey) || { playerHits: "", opponentHits: "", winner: null };
+      // Clear winner on mirror too
+      newCellData.set(mirrorKey, { ...mirrorExisting, opponentHits: numValue, winner: null });
+
+      return newCellData;
+    });
+
+    // Check for draw after state update
+    setTimeout(() => {
+      setCellData((current) => {
+        checkForDraw(playerIndex, opponentIndex, current);
+        return current;
+      });
+    }, 0);
+  }, [getCellKey, checkForDraw]);
+
+  // Handle priority winner selection
+  const handlePrioritySelection = useCallback((winnerName: string) => {
+    if (!pendingDraw) return;
+
+    const { playerIndex, opponentIndex } = pendingDraw;
+    const key = getCellKey(playerIndex, opponentIndex);
+    const mirrorKey = getCellKey(opponentIndex, playerIndex);
+
     setCellData((prev) => {
       const newData = new Map(prev);
+
       const existing = newData.get(key) || { playerHits: "", opponentHits: "", winner: null };
-      newData.set(key, { ...existing, playerHits: numValue });
+      newData.set(key, { ...existing, winner: winnerName });
+
+      const mirrorExisting = newData.get(mirrorKey) || { playerHits: "", opponentHits: "", winner: null };
+      newData.set(mirrorKey, { ...mirrorExisting, winner: winnerName });
+
       return newData;
     });
 
-    // Also update the mirror cell (opponent's view)
-    const mirrorKey = getCellKey(opponentIndex, playerIndex);
-    setCellData((prev) => {
-      const newData = new Map(prev);
-      const existing = newData.get(mirrorKey) || { playerHits: "", opponentHits: "", winner: null };
-      newData.set(mirrorKey, { ...existing, opponentHits: numValue });
-      return newData;
-    });
-  }, [getCellKey]);
+    setPendingDraw(null);
+  }, [pendingDraw, getCellKey]);
 
   // Get cell value for display
   const getCellValue = useCallback((playerIndex: number, opponentIndex: number): string => {
@@ -147,6 +227,39 @@ export default function BulkMatchEntry({ closeModal }: BulkMatchEntryProps) {
       return data.playerHits.toString();
     }
     return "";
+  }, [getCellKey, cellData]);
+
+  // Check if a cell pair has a draw without winner selected
+  const hasUnresolvedDraw = useCallback((playerIndex: number, opponentIndex: number): boolean => {
+    const key = getCellKey(playerIndex, opponentIndex);
+    const mirrorKey = getCellKey(opponentIndex, playerIndex);
+
+    const data = cellData.get(key);
+    const mirrorData = cellData.get(mirrorKey);
+
+    const player1Hits = data?.playerHits ?? mirrorData?.opponentHits;
+    const player2Hits = data?.opponentHits ?? mirrorData?.playerHits;
+
+    if (
+      player1Hits !== "" && player1Hits !== undefined &&
+      player2Hits !== "" && player2Hits !== undefined &&
+      player1Hits === player2Hits
+    ) {
+      const existingWinner = data?.winner || mirrorData?.winner;
+      return !existingWinner;
+    }
+    return false;
+  }, [getCellKey, cellData]);
+
+  // Get the winner for a draw cell (for display)
+  const getDrawWinner = useCallback((playerIndex: number, opponentIndex: number): string | null => {
+    const key = getCellKey(playerIndex, opponentIndex);
+    const mirrorKey = getCellKey(opponentIndex, playerIndex);
+
+    const data = cellData.get(key);
+    const mirrorData = cellData.get(mirrorKey);
+
+    return data?.winner || mirrorData?.winner || null;
   }, [getCellKey, cellData]);
 
   // Collect all pending matches from cell data
@@ -194,10 +307,13 @@ export default function BulkMatchEntry({ closeModal }: BulkMatchEntryProps) {
         } else if (p2Hits > p1Hits) {
           winner = players[opIdx].player.player_name;
         } else {
-          // For draws, we need priority selection - skip for now
-          // In bulk entry, we'll default to player1 wins on draw
-          // This matches fencing convention where piste priority is given
-          winner = players[pIdx].player.player_name;
+          // Draw - need priority selection
+          const selectedWinner = data?.winner || mirrorData?.winner;
+          if (!selectedWinner) {
+            // Skip matches without winner selected for draws
+            continue;
+          }
+          winner = selectedWinner;
         }
 
         matches.push({
@@ -212,6 +328,27 @@ export default function BulkMatchEntry({ closeModal }: BulkMatchEntryProps) {
 
     return matches;
   }, [players, cellData, getCellKey, matchExists]);
+
+  // Count draws that need resolution
+  const countUnresolvedDraws = useCallback((): number => {
+    let count = 0;
+    const processed = new Set<string>();
+
+    for (let pIdx = 0; pIdx < players.length; pIdx++) {
+      for (let opIdx = 0; opIdx < players.length; opIdx++) {
+        if (pIdx === opIdx) continue;
+
+        const pairKey = pIdx < opIdx ? `${pIdx}-${opIdx}` : `${opIdx}-${pIdx}`;
+        if (processed.has(pairKey)) continue;
+        processed.add(pairKey);
+
+        if (hasUnresolvedDraw(pIdx, opIdx)) {
+          count++;
+        }
+      }
+    }
+    return count;
+  }, [players, hasUnresolvedDraw]);
 
   // Submit all matches
   const handleSubmit = useCallback(async () => {
@@ -295,6 +432,7 @@ export default function BulkMatchEntry({ closeModal }: BulkMatchEntryProps) {
 
   // Count pending matches
   const pendingCount = collectPendingMatches().length;
+  const unresolvedDraws = countUnresolvedDraws();
 
   // Check if user is admin - must be after all hooks
   if (account.user?.role !== "admin") {
@@ -332,6 +470,38 @@ export default function BulkMatchEntry({ closeModal }: BulkMatchEntryProps) {
         </div>
       )}
 
+      {/* Priority Selection Dialog */}
+      {pendingDraw && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4 shadow-xl">
+            <h2 className="text-xl font-bold mb-4 text-center">{t("selectPriorityWinner")}</h2>
+            <p className="text-center mb-4 text-gray-600">
+              {pendingDraw.player1Name} {pendingDraw.hits} - {pendingDraw.hits} {pendingDraw.player2Name}
+            </p>
+            <div className="flex flex-col gap-3">
+              <button
+                onClick={() => handlePrioritySelection(pendingDraw.player1Name)}
+                className="w-full py-3 px-4 bg-blue-500 hover:bg-blue-600 text-white font-medium rounded-md"
+              >
+                {pendingDraw.player1Name}
+              </button>
+              <button
+                onClick={() => handlePrioritySelection(pendingDraw.player2Name)}
+                className="w-full py-3 px-4 bg-blue-500 hover:bg-blue-600 text-white font-medium rounded-md"
+              >
+                {pendingDraw.player2Name}
+              </button>
+              <button
+                onClick={() => setPendingDraw(null)}
+                className="w-full py-2 px-4 border border-gray-300 hover:bg-gray-50 text-gray-700 font-medium rounded-md"
+              >
+                {t("back")}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       <div className="overflow-x-auto mb-4">
         <table className="w-full border-collapse text-sm">
           <thead>
@@ -357,6 +527,8 @@ export default function BulkMatchEntry({ closeModal }: BulkMatchEntryProps) {
                   const isSelf = playerIndex === opponentIndex;
                   const existingMatch = getExistingMatch(player, opponent);
                   const cellKey = getCellKey(playerIndex, opponentIndex);
+                  const unresolvedDraw = hasUnresolvedDraw(playerIndex, opponentIndex);
+                  const drawWinner = getDrawWinner(playerIndex, opponentIndex);
 
                   if (isSelf) {
                     return (
@@ -386,8 +558,17 @@ export default function BulkMatchEntry({ closeModal }: BulkMatchEntryProps) {
                     );
                   }
 
+                  // Check if this is a draw with winner selected (show indicator)
+                  const cellValue = getCellValue(playerIndex, opponentIndex);
+                  const isDrawWithWinner = drawWinner && cellValue !== "";
+
                   return (
-                    <td key={cellKey} className="border border-gray-300 p-0">
+                    <td
+                      key={cellKey}
+                      className={`border border-gray-300 p-0 relative ${
+                        unresolvedDraw ? "bg-yellow-100" : ""
+                      }`}
+                    >
                       <input
                         ref={(el) => {
                           if (el) {
@@ -397,14 +578,26 @@ export default function BulkMatchEntry({ closeModal }: BulkMatchEntryProps) {
                         type="number"
                         min="0"
                         max="99"
-                        className="w-full h-full p-1 text-center focus:outline-none focus:ring-2 focus:ring-blue-500 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                        value={getCellValue(playerIndex, opponentIndex)}
+                        className={`w-full h-full p-1 text-center focus:outline-none focus:ring-2 focus:ring-blue-500 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none ${
+                          unresolvedDraw ? "bg-yellow-100" : ""
+                        } ${isDrawWithWinner ? (drawWinner === player.player.player_name ? "bg-green-50" : "bg-red-50") : ""}`}
+                        value={cellValue}
                         onChange={(e) =>
                           handleCellChange(playerIndex, opponentIndex, e.target.value)
                         }
                         onKeyDown={(e) => handleKeyDown(e, playerIndex, opponentIndex)}
                         placeholder=""
                       />
+                      {isDrawWithWinner && (
+                        <span
+                          className={`absolute top-0 right-0 text-xs px-0.5 ${
+                            drawWinner === player.player.player_name ? "text-green-600" : "text-red-600"
+                          }`}
+                          title={`${t("priorityWinner")}: ${drawWinner}`}
+                        >
+                          P
+                        </span>
+                      )}
                     </td>
                   );
                 })}
@@ -416,6 +609,11 @@ export default function BulkMatchEntry({ closeModal }: BulkMatchEntryProps) {
 
       <div className="text-center text-sm text-gray-600 mb-4">
         {t("pendingMatches", { count: pendingCount })}
+        {unresolvedDraws > 0 && (
+          <span className="text-yellow-600 ml-2">
+            ({t("unresolvedDraws", { count: unresolvedDraws })})
+          </span>
+        )}
       </div>
 
       <div className="flex items-center justify-center gap-2 text-sm font-semibold">

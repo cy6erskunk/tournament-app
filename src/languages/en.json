@@ -124,7 +124,10 @@
     "submitFailed": "Submit failed",
     "networkError": "Network error",
     "submitted": "{count} matches submitted",
-    "pendingMatches": "{count} matches pending"
+    "pendingMatches": "{count} matches pending",
+    "selectPriorityWinner": "Select priority winner",
+    "priorityWinner": "Priority winner",
+    "unresolvedDraws": "{count} draw(s) need resolution"
   },
   "Admin": {
     "title": "Administration",

@@ -124,7 +124,10 @@
     "submitFailed": "Tallennus epäonnistui",
     "networkError": "Verkkovirhe",
     "submitted": "{count} ottelua tallennettu",
-    "pendingMatches": "{count} ottelua odottaa tallennusta"
+    "pendingMatches": "{count} ottelua odottaa tallennusta",
+    "selectPriorityWinner": "Valitse prioriteettivoittaja",
+    "priorityWinner": "Prioriteettivoittaja",
+    "unresolvedDraws": "{count} tasapeli vaatii ratkaisun"
   },
   "Admin": {
     "title": "Ylläpito",

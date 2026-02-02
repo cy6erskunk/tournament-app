@@ -124,7 +124,10 @@
     "submitFailed": "Esitamine ebaõnnestus",
     "networkError": "Võrguviga",
     "submitted": "{count} matši esitatud",
-    "pendingMatches": "{count} matši ootel"
+    "pendingMatches": "{count} matši ootel",
+    "selectPriorityWinner": "Vali prioriteedivõitja",
+    "priorityWinner": "Prioriteedivõitja",
+    "unresolvedDraws": "{count} viik vajab lahendust"
   },
   "Admin": {
     "title": "Haldus",
