@@ -59,27 +59,21 @@ const TournamentButtons = () => {
     return null;
   }
 
-  if (context.loading) {
-    return (
-      <div className="container mx-auto p-2 flex flex-col md:flex-row gap-4">
-        <div className="p-1 px-5 border rounded-md shadow-xs border-slate-300 bg-slate-100 text-slate-400 animate-pulse w-24 h-8" />
-        <div className="p-1 px-5 border rounded-md shadow-xs border-slate-300 bg-slate-100 text-slate-400 animate-pulse w-36 h-8" />
-        <div className="p-1 px-5 border rounded-md shadow-xs border-slate-300 bg-slate-100 text-slate-400 animate-pulse w-24 h-8" />
-        <div className="p-1 px-5 border rounded-md shadow-xs border-slate-300 bg-slate-100 text-slate-400 animate-pulse w-28 h-8" />
-      </div>
-    );
-  }
+  // Show skeleton for Add match button while loading, actual button once loaded
+  const addMatchButton = context.loading ? (
+    <div className="p-1 px-5 border rounded-md shadow-xs border-slate-300 bg-slate-100 animate-pulse w-24 h-8" />
+  ) : isRoundRobin ? (
+    <button
+      className="p-1 px-5 border rounded-md shadow-xs border-slate-600"
+      onClick={() => openModal(<AddMatch closeModal={closeModal} />)}
+    >
+      {t("addmatch")}
+    </button>
+  ) : null;
 
   return (
     <div className="container mx-auto p-2 flex flex-col md:flex-row gap-4">
-      {isRoundRobin && (
-        <button
-          className="p-1 px-5 border rounded-md shadow-xs border-slate-600"
-          onClick={() => openModal(<AddMatch closeModal={closeModal} />)}
-        >
-          {t("addmatch")}
-        </button>
-      )}
+      {addMatchButton}
       <button
         className="p-1 px-5 border rounded-md shadow-xs border-slate-600 bg-green-50 border-green-500 text-green-700"
         onClick={() => openModal(<QRMatchModal closeModal={closeModal} />)}
