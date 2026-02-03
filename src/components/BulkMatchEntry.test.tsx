@@ -288,14 +288,17 @@ describe('BulkMatchEntry', () => {
 
       render(<BulkMatchEntry closeModal={mockCloseModal} />);
 
-      // Alice won with 5 hits - should show "V" (not V5 since 5 is the max)
-      const cells = screen.getAllByRole('cell');
-      const aliceVsBobCell = cells.find(cell => cell.textContent === 'V');
-      expect(aliceVsBobCell).toBeTruthy();
+      // Existing matches are now editable inputs that show the score values
+      const inputs = screen.getAllByRole('spinbutton');
 
-      // Bob lost with 3 hits - should show "3"
-      const bobVsAliceCell = cells.find(cell => cell.textContent === '3');
-      expect(bobVsAliceCell).toBeTruthy();
+      // Find Alice's score vs Bob (5) and Bob's score vs Alice (3)
+      // The inputs should be pre-populated with the existing match data
+      const inputValues = inputs.map(input => (input as HTMLInputElement).value);
+
+      // Alice's score against Bob is 5 (she won)
+      expect(inputValues).toContain('5');
+      // Bob's score against Alice is 3 (he lost)
+      expect(inputValues).toContain('3');
     });
 
     it('should display V with score for non-5 wins', () => {
@@ -331,14 +334,16 @@ describe('BulkMatchEntry', () => {
 
       render(<BulkMatchEntry closeModal={mockCloseModal} />);
 
-      // Alice won with 4 hits - should show "V4"
-      const cells = screen.getAllByRole('cell');
-      const aliceVsBobCell = cells.find(cell => cell.textContent === 'V4');
-      expect(aliceVsBobCell).toBeTruthy();
+      // Existing matches are now editable inputs that show the score values
+      const inputs = screen.getAllByRole('spinbutton');
 
-      // Bob lost with 2 hits - should show "2"
-      const bobVsAliceCell = cells.find(cell => cell.textContent === '2');
-      expect(bobVsAliceCell).toBeTruthy();
+      // Find Alice's score vs Bob (4) and Bob's score vs Alice (2)
+      const inputValues = inputs.map(input => (input as HTMLInputElement).value);
+
+      // Alice's score against Bob is 4 (she won)
+      expect(inputValues).toContain('4');
+      // Bob's score against Alice is 2 (he lost)
+      expect(inputValues).toContain('2');
     });
   });
 

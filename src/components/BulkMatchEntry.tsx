@@ -3,7 +3,7 @@
 import { useTranslations } from "next-intl";
 import { useTournamentContext } from "@/context/TournamentContext";
 import { useUserContext } from "@/context/UserContext";
-import { useState, useRef, useCallback, KeyboardEvent, useEffect } from "react";
+import { useState, useRef, useCallback, KeyboardEvent, useEffect, useMemo } from "react";
 import { MatchRow, NewMatch } from "@/types/MatchTypes";
 import { Player } from "@/types/Player";
 
@@ -23,6 +23,7 @@ interface PendingMatch {
   player1_hits: number;
   player2_hits: number;
   winner: string;
+  matchId?: number; // For existing matches that need updating
 }
 
 interface DrawMatch {
@@ -31,6 +32,15 @@ interface DrawMatch {
   player1Name: string;
   player2Name: string;
   hits: number;
+}
+
+interface ExistingMatchData {
+  matchId: number;
+  originalPlayer1Hits: number;
+  originalPlayer2Hits: number;
+  originalWinner: string;
+  player1Name: string;
+  player2Name: string;
 }
 
 export default function BulkMatchEntry({ closeModal }: BulkMatchEntryProps) {
@@ -50,8 +60,78 @@ export default function BulkMatchEntry({ closeModal }: BulkMatchEntryProps) {
   // Track draw that needs priority selection
   const [pendingDraw, setPendingDraw] = useState<DrawMatch | null>(null);
 
-  // Build list of valid players
-  const players = context.players.filter((p): p is Player => p !== null);
+  // Track existing matches for updates
+  const [existingMatches, setExistingMatches] = useState<Map<string, ExistingMatchData>>(new Map());
+
+  // Build list of valid players - memoize to avoid infinite loops
+  const players = useMemo(
+    () => context.players.filter((p): p is Player => p !== null),
+    [context.players]
+  );
+
+  // Initialize cellData with existing matches
+  useEffect(() => {
+    const newCellData = new Map<string, CellData>();
+    const newExistingMatches = new Map<string, ExistingMatchData>();
+    const processed = new Set<string>();
+
+    players.forEach((player, playerIndex) => {
+      player.matches.forEach((match) => {
+        if (match.round !== context.activeRound) return;
+
+        // Find opponent index
+        const opponentName = match.player1 === player.player.player_name
+          ? match.player2
+          : match.player1;
+        const opponentIndex = players.findIndex(
+          (p) => p.player.player_name === opponentName
+        );
+
+        if (opponentIndex === -1) return;
+
+        // Skip if already processed this pair
+        const pairKey = playerIndex < opponentIndex
+          ? `${playerIndex}-${opponentIndex}`
+          : `${opponentIndex}-${playerIndex}`;
+        if (processed.has(pairKey)) return;
+        processed.add(pairKey);
+
+        const isPlayer1 = match.player1 === player.player.player_name;
+        const p1Index = isPlayer1 ? playerIndex : opponentIndex;
+        const p2Index = isPlayer1 ? opponentIndex : playerIndex;
+
+        const key1 = `${p1Index}-${p2Index}`;
+        const key2 = `${p2Index}-${p1Index}`;
+
+        // Set cell data for both directions
+        newCellData.set(key1, {
+          playerHits: match.player1_hits,
+          opponentHits: match.player2_hits,
+          winner: match.winner,
+        });
+        newCellData.set(key2, {
+          playerHits: match.player2_hits,
+          opponentHits: match.player1_hits,
+          winner: match.winner,
+        });
+
+        // Track existing match for PUT requests
+        const existingData: ExistingMatchData = {
+          matchId: match.id,
+          originalPlayer1Hits: match.player1_hits,
+          originalPlayer2Hits: match.player2_hits,
+          originalWinner: match.winner,
+          player1Name: match.player1,
+          player2Name: match.player2,
+        };
+        newExistingMatches.set(key1, existingData);
+        newExistingMatches.set(key2, existingData);
+      });
+    });
+
+    setCellData(newCellData);
+    setExistingMatches(newExistingMatches);
+  }, [players, context.activeRound]);
 
   // Get cell key
   const getCellKey = useCallback((playerIndex: number, opponentIndex: number) =>
@@ -292,13 +372,11 @@ export default function BulkMatchEntry({ closeModal }: BulkMatchEntryProps) {
           continue;
         }
 
-        // Skip if match already exists
-        if (matchExists(players[pIdx], players[opIdx])) {
-          continue;
-        }
-
         const p1Hits = typeof player1Hits === "number" ? player1Hits : 0;
         const p2Hits = typeof player2Hits === "number" ? player2Hits : 0;
+
+        // Check if this is an existing match
+        const existingData = existingMatches.get(key) || existingMatches.get(mirrorKey);
 
         // Determine winner
         let winner: string;
@@ -316,18 +394,46 @@ export default function BulkMatchEntry({ closeModal }: BulkMatchEntryProps) {
           winner = selectedWinner;
         }
 
-        matches.push({
-          player1: players[pIdx].player.player_name,
-          player2: players[opIdx].player.player_name,
-          player1_hits: p1Hits,
-          player2_hits: p2Hits,
-          winner,
-        });
+        if (existingData) {
+          // This is an existing match - check if values have changed
+          // Get the correct p1/p2 hits based on the original player order
+          const isP1First = existingData.player1Name === players[pIdx].player.player_name;
+          const originalP1Hits = existingData.originalPlayer1Hits;
+          const originalP2Hits = existingData.originalPlayer2Hits;
+
+          const newP1Hits = isP1First ? p1Hits : p2Hits;
+          const newP2Hits = isP1First ? p2Hits : p1Hits;
+
+          if (
+            originalP1Hits !== newP1Hits ||
+            originalP2Hits !== newP2Hits ||
+            existingData.originalWinner !== winner
+          ) {
+            // Values changed - include for update
+            matches.push({
+              player1: existingData.player1Name,
+              player2: existingData.player2Name,
+              player1_hits: newP1Hits,
+              player2_hits: newP2Hits,
+              winner,
+              matchId: existingData.matchId,
+            });
+          }
+        } else {
+          // New match
+          matches.push({
+            player1: players[pIdx].player.player_name,
+            player2: players[opIdx].player.player_name,
+            player1_hits: p1Hits,
+            player2_hits: p2Hits,
+            winner,
+          });
+        }
       }
     }
 
     return matches;
-  }, [players, cellData, getCellKey, matchExists]);
+  }, [players, cellData, getCellKey, existingMatches]);
 
   // Count draws that need resolution
   const countUnresolvedDraws = useCallback((): number => {
@@ -368,7 +474,9 @@ export default function BulkMatchEntry({ closeModal }: BulkMatchEntryProps) {
     const errors: string[] = [];
 
     for (const match of pendingMatches) {
-      const newMatch: NewMatch = {
+      const isUpdate = match.matchId !== undefined;
+
+      const matchData: NewMatch = {
         match: 1,
         player1: match.player1,
         player2: match.player2,
@@ -380,9 +488,10 @@ export default function BulkMatchEntry({ closeModal }: BulkMatchEntryProps) {
       };
 
       try {
-        const res = await fetch("/api/matches", {
-          method: "POST",
-          body: JSON.stringify(newMatch),
+        const url = isUpdate ? `/api/matches/${match.matchId}` : "/api/matches";
+        const res = await fetch(url, {
+          method: isUpdate ? "PUT" : "POST",
+          body: JSON.stringify(matchData),
         });
 
         if (res.ok) {
@@ -399,10 +508,22 @@ export default function BulkMatchEntry({ closeModal }: BulkMatchEntryProps) {
               ) {
                 return player;
               }
-              return {
-                player: player.player,
-                matches: [...player.matches, matchRow],
-              };
+
+              if (isUpdate) {
+                // Replace existing match
+                return {
+                  player: player.player,
+                  matches: player.matches.map((m) =>
+                    m.id === match.matchId ? matchRow : m
+                  ),
+                };
+              } else {
+                // Add new match
+                return {
+                  player: player.player,
+                  matches: [...player.matches, matchRow],
+                };
+              }
             });
           });
         } else if (res.status === 409) {
@@ -539,59 +660,50 @@ export default function BulkMatchEntry({ closeModal }: BulkMatchEntryProps) {
                     );
                   }
 
-                  if (existingMatch) {
-                    // Show existing match result using standard fencing notation
-                    const isPlayer1 = existingMatch.player1 === player.player.player_name;
-                    const hits = isPlayer1 ? existingMatch.player1_hits : existingMatch.player2_hits;
-                    const won = existingMatch.winner === player.player.player_name;
+                  // Check if this is an existing match
+                  const isExistingMatch = existingMatches.has(cellKey);
 
-                    // Format: V for win with 5 hits, V+score otherwise, score only for loss
-                    const displayValue = won
-                      ? (hits === 5 ? "V" : `V${hits}`)
-                      : hits.toString();
-
-                    return (
-                      <td
-                        key={cellKey}
-                        className={`border border-gray-300 p-1 text-center ${
-                          won ? "bg-green-100" : "bg-red-100"
-                        }`}
-                        title={`${existingMatch.player1} ${existingMatch.player1_hits} - ${existingMatch.player2_hits} ${existingMatch.player2}`}
-                      >
-                        {displayValue}
-                      </td>
-                    );
-                  }
-
-                  // Check if this is a draw with winner selected
+                  // Get cell value
                   const cellValue = getCellValue(playerIndex, opponentIndex);
-                  const isDrawWithWinner = drawWinner && cellValue !== "";
+                  const hasValue = cellValue !== "";
 
-                  // For draws with winner, show V notation
-                  if (isDrawWithWinner) {
-                    const won = drawWinner === player.player.player_name;
-                    const hits = parseInt(cellValue, 10);
-                    const displayValue = won ? `V${hits}` : hits.toString();
+                  // Determine background color based on win/loss state
+                  let bgColor = "";
+                  let isWinner = false;
 
-                    return (
-                      <td
-                        key={cellKey}
-                        className={`border border-gray-300 p-1 text-center ${
-                          won ? "bg-green-100" : "bg-red-100"
-                        }`}
-                        title={`${t("winner")}: ${drawWinner}`}
-                      >
-                        {displayValue}
-                      </td>
-                    );
+                  if (hasValue && drawWinner) {
+                    // Draw with winner selected
+                    isWinner = drawWinner === player.player.player_name;
+                    bgColor = isWinner ? "bg-green-100" : "bg-red-100";
+                  } else if (hasValue && !unresolvedDraw) {
+                    // Check if there's opponent data to determine winner
+                    const mirrorKey = getCellKey(opponentIndex, playerIndex);
+                    const data = cellData.get(cellKey);
+                    const mirrorData = cellData.get(mirrorKey);
+
+                    const playerHits = data?.playerHits ?? mirrorData?.opponentHits;
+                    const opponentHits = data?.opponentHits ?? mirrorData?.playerHits;
+
+                    if (
+                      playerHits !== "" && playerHits !== undefined &&
+                      opponentHits !== "" && opponentHits !== undefined
+                    ) {
+                      if (playerHits > opponentHits) {
+                        isWinner = true;
+                        bgColor = "bg-green-100";
+                      } else if (playerHits < opponentHits) {
+                        isWinner = false;
+                        bgColor = "bg-red-100";
+                      }
+                    }
+                  } else if (unresolvedDraw) {
+                    bgColor = "bg-yellow-100";
                   }
 
                   return (
                     <td
                       key={cellKey}
-                      className={`border border-gray-300 p-0 ${
-                        unresolvedDraw ? "bg-yellow-100" : ""
-                      }`}
+                      className={`border border-gray-300 p-0 ${bgColor}`}
                     >
                       <input
                         ref={(el) => {
@@ -602,9 +714,7 @@ export default function BulkMatchEntry({ closeModal }: BulkMatchEntryProps) {
                         type="number"
                         min="0"
                         max="99"
-                        className={`w-full h-full p-1 text-center focus:outline-none focus:ring-2 focus:ring-blue-500 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none ${
-                          unresolvedDraw ? "bg-yellow-100" : ""
-                        }`}
+                        className={`w-full h-full p-1 text-center focus:outline-none focus:ring-2 focus:ring-blue-500 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none ${bgColor}`}
                         value={cellValue}
                         onChange={(e) =>
                           handleCellChange(playerIndex, opponentIndex, e.target.value)
