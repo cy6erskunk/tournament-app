@@ -125,8 +125,8 @@
     "networkError": "Network error",
     "submitted": "{count} matches submitted",
     "pendingMatches": "{count} matches pending",
-    "selectPriorityWinner": "Select priority winner",
-    "priorityWinner": "Priority winner",
+    "selectWinner": "Select winner",
+    "winner": "Winner",
     "unresolvedDraws": "{count} draw(s) need resolution"
   },
   "Admin": {

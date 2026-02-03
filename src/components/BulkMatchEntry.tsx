@@ -470,11 +470,11 @@ export default function BulkMatchEntry({ closeModal }: BulkMatchEntryProps) {
         </div>
       )}
 
-      {/* Priority Selection Dialog */}
+      {/* Winner Selection Dialog for Draws */}
       {pendingDraw && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4 shadow-xl">
-            <h2 className="text-xl font-bold mb-4 text-center">{t("selectPriorityWinner")}</h2>
+            <h2 className="text-xl font-bold mb-4 text-center">{t("selectWinner")}</h2>
             <p className="text-center mb-4 text-gray-600">
               {pendingDraw.player1Name} {pendingDraw.hits} - {pendingDraw.hits} {pendingDraw.player2Name}
             </p>
@@ -540,10 +540,15 @@ export default function BulkMatchEntry({ closeModal }: BulkMatchEntryProps) {
                   }
 
                   if (existingMatch) {
-                    // Show existing match result
+                    // Show existing match result using standard fencing notation
                     const isPlayer1 = existingMatch.player1 === player.player.player_name;
                     const hits = isPlayer1 ? existingMatch.player1_hits : existingMatch.player2_hits;
                     const won = existingMatch.winner === player.player.player_name;
+
+                    // Format: V for win with 5 hits, V+score otherwise, score only for loss
+                    const displayValue = won
+                      ? (hits === 5 ? "V" : `V${hits}`)
+                      : hits.toString();
 
                     return (
                       <td
@@ -553,19 +558,38 @@ export default function BulkMatchEntry({ closeModal }: BulkMatchEntryProps) {
                         }`}
                         title={`${existingMatch.player1} ${existingMatch.player1_hits} - ${existingMatch.player2_hits} ${existingMatch.player2}`}
                       >
-                        {won ? "V" : "H"}{hits}
+                        {displayValue}
                       </td>
                     );
                   }
 
-                  // Check if this is a draw with winner selected (show indicator)
+                  // Check if this is a draw with winner selected
                   const cellValue = getCellValue(playerIndex, opponentIndex);
                   const isDrawWithWinner = drawWinner && cellValue !== "";
+
+                  // For draws with winner, show V notation
+                  if (isDrawWithWinner) {
+                    const won = drawWinner === player.player.player_name;
+                    const hits = parseInt(cellValue, 10);
+                    const displayValue = won ? `V${hits}` : hits.toString();
+
+                    return (
+                      <td
+                        key={cellKey}
+                        className={`border border-gray-300 p-1 text-center ${
+                          won ? "bg-green-100" : "bg-red-100"
+                        }`}
+                        title={`${t("winner")}: ${drawWinner}`}
+                      >
+                        {displayValue}
+                      </td>
+                    );
+                  }
 
                   return (
                     <td
                       key={cellKey}
-                      className={`border border-gray-300 p-0 relative ${
+                      className={`border border-gray-300 p-0 ${
                         unresolvedDraw ? "bg-yellow-100" : ""
                       }`}
                     >
@@ -580,7 +604,7 @@ export default function BulkMatchEntry({ closeModal }: BulkMatchEntryProps) {
                         max="99"
                         className={`w-full h-full p-1 text-center focus:outline-none focus:ring-2 focus:ring-blue-500 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none ${
                           unresolvedDraw ? "bg-yellow-100" : ""
-                        } ${isDrawWithWinner ? (drawWinner === player.player.player_name ? "bg-green-50" : "bg-red-50") : ""}`}
+                        }`}
                         value={cellValue}
                         onChange={(e) =>
                           handleCellChange(playerIndex, opponentIndex, e.target.value)
@@ -588,16 +612,6 @@ export default function BulkMatchEntry({ closeModal }: BulkMatchEntryProps) {
                         onKeyDown={(e) => handleKeyDown(e, playerIndex, opponentIndex)}
                         placeholder=""
                       />
-                      {isDrawWithWinner && (
-                        <span
-                          className={`absolute top-0 right-0 text-xs px-0.5 ${
-                            drawWinner === player.player.player_name ? "text-green-600" : "text-red-600"
-                          }`}
-                          title={`${t("priorityWinner")}: ${drawWinner}`}
-                        >
-                          P
-                        </span>
-                      )}
                     </td>
                   );
                 })}

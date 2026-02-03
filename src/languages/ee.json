@@ -125,8 +125,8 @@
     "networkError": "Võrguviga",
     "submitted": "{count} matši esitatud",
     "pendingMatches": "{count} matši ootel",
-    "selectPriorityWinner": "Vali prioriteedivõitja",
-    "priorityWinner": "Prioriteedivõitja",
+    "selectWinner": "Vali võitja",
+    "winner": "Võitja",
     "unresolvedDraws": "{count} viik vajab lahendust"
   },
   "Admin": {
