@@ -48,32 +48,9 @@ describe("TournamentButtons", () => {
     vi.clearAllMocks();
   });
 
-  it("should show skeleton for Add match button while loading", () => {
+  it("should show Add match button for Round Robin tournaments", () => {
     mockUseTournamentContext.mockReturnValue({
       ...defaultContextValue,
-      loading: true,
-    });
-
-    render(
-      <NextIntlClientProvider locale="en" messages={messages}>
-        <TournamentButtons />
-      </NextIntlClientProvider>
-    );
-
-    // Should show skeleton placeholder (animate-pulse div)
-    const skeleton = document.querySelector(".animate-pulse");
-    expect(skeleton).toBeTruthy();
-
-    // Other buttons should still be visible
-    expect(screen.getByText("Generate QR Match")).toBeTruthy();
-    expect(screen.getByText("Add player")).toBeTruthy();
-    expect(screen.getByText("Leaderboard")).toBeTruthy();
-  });
-
-  it("should show Add match button for Round Robin tournaments when not loading", () => {
-    mockUseTournamentContext.mockReturnValue({
-      ...defaultContextValue,
-      loading: false,
       tournament: { id: 1, format: "Round Robin" },
     });
 
@@ -92,7 +69,6 @@ describe("TournamentButtons", () => {
   it("should not show Add match button for non-Round Robin tournaments", () => {
     mockUseTournamentContext.mockReturnValue({
       ...defaultContextValue,
-      loading: false,
       tournament: { id: 1, format: "Bracket" },
     });
 
@@ -108,11 +84,10 @@ describe("TournamentButtons", () => {
     expect(screen.getByText("Add player")).toBeTruthy();
   });
 
-  it("should not show skeleton for Add match after loading completes for non-Round Robin", () => {
+  it("should not show Add match button when tournament is undefined", () => {
     mockUseTournamentContext.mockReturnValue({
       ...defaultContextValue,
-      loading: false,
-      tournament: { id: 1, format: "Bracket" },
+      tournament: undefined,
     });
 
     render(
@@ -121,16 +96,26 @@ describe("TournamentButtons", () => {
       </NextIntlClientProvider>
     );
 
-    // Should not have skeleton placeholder
-    const skeleton = document.querySelector(".animate-pulse");
-    expect(skeleton).toBeNull();
+    expect(screen.queryByText("Add match")).toBeNull();
+    // Other buttons should still be visible
+    expect(screen.getByText("Generate QR Match")).toBeTruthy();
+    expect(screen.getByText("Add player")).toBeTruthy();
   });
 
   it("should return null when players are seeded", () => {
     mockUseTournamentContext.mockReturnValue({
       ...defaultContextValue,
-      loading: false,
-      players: [{ player: { bracket_seed: 1 } }],
+      players: [
+        {
+          player: {
+            bracket_seed: 1,
+            bracket_match: null,
+            player_name: "Test Player",
+            tournament_id: 1,
+          },
+          matches: [],
+        },
+      ],
       tournament: { id: 1, format: "Round Robin" },
     });
 
@@ -141,29 +126,5 @@ describe("TournamentButtons", () => {
     );
 
     expect(container.firstChild).toBeNull();
-  });
-
-  it("should show all buttons immediately when not loading", () => {
-    mockUseTournamentContext.mockReturnValue({
-      ...defaultContextValue,
-      loading: false,
-      tournament: { id: 1, format: "Round Robin" },
-    });
-
-    render(
-      <NextIntlClientProvider locale="en" messages={messages}>
-        <TournamentButtons />
-      </NextIntlClientProvider>
-    );
-
-    // All buttons should be visible
-    expect(screen.getByText("Add match")).toBeTruthy();
-    expect(screen.getByText("Generate QR Match")).toBeTruthy();
-    expect(screen.getByText("Add player")).toBeTruthy();
-    expect(screen.getByText("Leaderboard")).toBeTruthy();
-
-    // No skeleton should be present
-    const skeleton = document.querySelector(".animate-pulse");
-    expect(skeleton).toBeNull();
   });
 });

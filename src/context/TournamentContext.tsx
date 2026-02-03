@@ -33,31 +33,46 @@ export interface TournamentContext {
 
 export const TournamentContext = createContext<TournamentContext | null>(null);
 
+interface TournamentContextProviderProps {
+  initialTournament?: Tournament;
+  children: React.ReactNode;
+}
+
 export function TournamentContextProvider({
   children,
-}: React.PropsWithChildren<{}>) {
+  initialTournament,
+}: TournamentContextProviderProps) {
   const [tournament, setTournament] =
-    useState<TournamentContext["tournament"]>();
+    useState<TournamentContext["tournament"]>(initialTournament);
   const [players, setPlayers] = useState<TournamentContext["players"]>([]);
   const [loading, setLoading] = useState<TournamentContext["loading"]>(true);
   const [activeRound, setActiveRound] =
     useState<TournamentContext["activeRound"]>(1);
   const [hidden, setHidden] = useState(true);
   const params = useParams();
-  // Fetch players to context
+  // Fetch players to context (and tournament if not provided initially or if navigating to different tournament)
   useEffect(() => {
     async function fetchTournamentData() {
-      const tournamentResult = await getTournamentWithId(Number(params.id));
+      let tournamentId: number;
 
-      if (!tournamentResult.success) {
-        console.log("Error: " + tournamentResult.error);
-        setLoading(false);
-        return;
+      // Only use initialTournament if it matches the current params.id
+      if (initialTournament && Number(initialTournament.id) === Number(params.id)) {
+        tournamentId = Number(initialTournament.id);
+        // Keep state synchronized with the prop
+        setTournament(initialTournament);
+      } else {
+        const tournamentResult = await getTournamentWithId(Number(params.id));
+
+        if (!tournamentResult.success) {
+          console.log("Error: " + tournamentResult.error);
+          setLoading(false);
+          return;
+        }
+
+        setTournament(tournamentResult.value);
+        tournamentId = Number(tournamentResult.value.id);
       }
 
-      setTournament(tournamentResult.value);
-
-      const tournamentId = Number(tournamentResult.value.id);
       const playerResult = await getTournamentPlayers(tournamentId);
 
       if (!playerResult.success) {
@@ -71,7 +86,7 @@ export function TournamentContextProvider({
     }
 
     fetchTournamentData();
-  }, [params.id]);
+  }, [params.id, initialTournament?.id]);
 
   const value = useMemo(
     () => ({
