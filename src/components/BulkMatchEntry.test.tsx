@@ -453,6 +453,82 @@ describe('BulkMatchEntry', () => {
       });
     });
 
+    it('should use PUT when updating existing matches', async () => {
+      // Set up players with an existing match
+      mockTournamentContext.players = [
+        createMockPlayer('Alice', [{
+          id: 42,
+          match: 1,
+          player1: 'Alice',
+          player2: 'Bob',
+          player1_hits: 5,
+          player2_hits: 3,
+          winner: 'Alice',
+          tournament_id: 1,
+          round: 1,
+          submitted_by_token: null,
+          submitted_at: null,
+        }]),
+        createMockPlayer('Bob', [{
+          id: 42,
+          match: 1,
+          player1: 'Alice',
+          player2: 'Bob',
+          player1_hits: 5,
+          player2_hits: 3,
+          winner: 'Alice',
+          tournament_id: 1,
+          round: 1,
+          submitted_by_token: null,
+          submitted_at: null,
+        }]),
+        createMockPlayer('Charlie'),
+      ];
+
+      const updatedMatch = {
+        id: 42,
+        match: 1,
+        player1: 'Alice',
+        player2: 'Bob',
+        player1_hits: 4,
+        player2_hits: 5,
+        winner: 'Bob',
+        tournament_id: 1,
+        round: 1,
+        submitted_by_token: null,
+        submitted_at: null,
+      };
+
+      (global.fetch as ReturnType<typeof vi.fn>).mockResolvedValueOnce({
+        ok: true,
+        json: async () => updatedMatch,
+      });
+
+      render(<BulkMatchEntry closeModal={mockCloseModal} />);
+
+      const inputs = screen.getAllByRole('spinbutton');
+
+      // Modify the existing match - change Alice's score from 5 to 4
+      fireEvent.change(inputs[0], { target: { value: '4' } });
+
+      await waitFor(() => {
+        expect(screen.getByText('1 matches pending')).toBeTruthy();
+      });
+
+      const submitButton = screen.getByRole('button', { name: 'Submit Results' });
+      fireEvent.click(submitButton);
+
+      // Should use PUT for existing match updates
+      await waitFor(() => {
+        expect(global.fetch).toHaveBeenCalledWith(
+          '/api/matches',
+          expect.objectContaining({
+            method: 'PUT',
+          })
+        );
+      });
+    });
+
     it('should handle 409 conflict error', async () => {
       (global.fetch as ReturnType<typeof vi.fn>).mockResolvedValueOnce({
         ok: false,

@@ -3,7 +3,7 @@
 import { useTranslations } from "next-intl";
 import { useTournamentContext } from "@/context/TournamentContext";
 import { useUserContext } from "@/context/UserContext";
-import { useState, useRef, useCallback, KeyboardEvent, useEffect, useMemo } from "react";
+import { useState, useRef, useCallback, KeyboardEvent, useMemo } from "react";
 import { MatchRow, NewMatch } from "@/types/MatchTypes";
 import { Player } from "@/types/Player";
 
@@ -60,17 +60,14 @@ export default function BulkMatchEntry({ closeModal }: BulkMatchEntryProps) {
   // Track draw that needs priority selection
   const [pendingDraw, setPendingDraw] = useState<DrawMatch | null>(null);
 
-  // Track existing matches for updates
-  const [existingMatches, setExistingMatches] = useState<Map<string, ExistingMatchData>>(new Map());
-
   // Build list of valid players - memoize to avoid infinite loops
   const players = useMemo(
     () => context.players.filter((p): p is Player => p !== null),
     [context.players]
   );
 
-  // Initialize cellData with existing matches
-  useEffect(() => {
+  // Compute existing matches data from context (derived, not state)
+  const { initialCellData, existingMatches } = useMemo(() => {
     const newCellData = new Map<string, CellData>();
     const newExistingMatches = new Map<string, ExistingMatchData>();
     const processed = new Set<string>();
@@ -129,8 +126,7 @@ export default function BulkMatchEntry({ closeModal }: BulkMatchEntryProps) {
       });
     });
 
-    setCellData(newCellData);
-    setExistingMatches(newExistingMatches);
+    return { initialCellData: newCellData, existingMatches: newExistingMatches };
   }, [players, context.activeRound]);
 
   // Get cell key
@@ -209,8 +205,14 @@ export default function BulkMatchEntry({ closeModal }: BulkMatchEntryProps) {
     const key = getCellKey(playerIndex, opponentIndex);
     const mirrorKey = getCellKey(opponentIndex, playerIndex);
 
-    const data = newCellData.get(key);
-    const mirrorData = newCellData.get(mirrorKey);
+    // Merge with initial data - user input takes precedence
+    const userData = newCellData.get(key);
+    const mirrorUserData = newCellData.get(mirrorKey);
+    const initialData = initialCellData.get(key);
+    const mirrorInitialData = initialCellData.get(mirrorKey);
+
+    const data = userData || initialData;
+    const mirrorData = mirrorUserData || mirrorInitialData;
 
     // Get hits for both players
     const player1Hits = data?.playerHits ?? mirrorData?.opponentHits;
@@ -235,7 +237,7 @@ export default function BulkMatchEntry({ closeModal }: BulkMatchEntryProps) {
         });
       }
     }
-  }, [getCellKey, players]);
+  }, [getCellKey, players, initialCellData]);
 
   // Handle cell value change
   const handleCellChange = useCallback((
@@ -254,13 +256,14 @@ export default function BulkMatchEntry({ closeModal }: BulkMatchEntryProps) {
 
     setCellData((prev) => {
       newCellData = new Map(prev);
-      const existing = newCellData.get(key) || { playerHits: "", opponentHits: "", winner: null };
+      // Fall back to initialCellData for existing matches
+      const existing = newCellData.get(key) || initialCellData.get(key) || { playerHits: "", opponentHits: "", winner: null };
       // Clear winner if score changes
       newCellData.set(key, { ...existing, playerHits: numValue, winner: null });
 
       // Also update the mirror cell (opponent's view)
       const mirrorKey = getCellKey(opponentIndex, playerIndex);
-      const mirrorExisting = newCellData.get(mirrorKey) || { playerHits: "", opponentHits: "", winner: null };
+      const mirrorExisting = newCellData.get(mirrorKey) || initialCellData.get(mirrorKey) || { playerHits: "", opponentHits: "", winner: null };
       // Clear winner on mirror too
       newCellData.set(mirrorKey, { ...mirrorExisting, opponentHits: numValue, winner: null });
 
@@ -274,7 +277,7 @@ export default function BulkMatchEntry({ closeModal }: BulkMatchEntryProps) {
         return current;
       });
     }, 0);
-  }, [getCellKey, checkForDraw]);
+  }, [getCellKey, checkForDraw, initialCellData]);
 
   // Handle priority winner selection
   const handlePrioritySelection = useCallback((winnerName: string) => {
@@ -299,23 +302,37 @@ export default function BulkMatchEntry({ closeModal }: BulkMatchEntryProps) {
     setPendingDraw(null);
   }, [pendingDraw, getCellKey]);
 
-  // Get cell value for display
+  // Get cell value for display - check user input first, then initial data
   const getCellValue = useCallback((playerIndex: number, opponentIndex: number): string => {
     const key = getCellKey(playerIndex, opponentIndex);
+    // Check user-entered data first
     const data = cellData.get(key);
     if (data && data.playerHits !== "") {
       return data.playerHits.toString();
     }
+    // Fall back to initial data from existing matches
+    const initial = initialCellData.get(key);
+    if (initial && initial.playerHits !== "") {
+      return initial.playerHits.toString();
+    }
     return "";
-  }, [getCellKey, cellData]);
+  }, [getCellKey, cellData, initialCellData]);
 
   // Check if a cell pair has a draw without winner selected
+  // Helper to get merged cell data (user input takes precedence over initial)
+  const getMergedCellData = useCallback((key: string): CellData | undefined => {
+    const userData = cellData.get(key);
+    const initialData = initialCellData.get(key);
+    if (userData) return userData;
+    return initialData;
+  }, [cellData, initialCellData]);
+
   const hasUnresolvedDraw = useCallback((playerIndex: number, opponentIndex: number): boolean => {
     const key = getCellKey(playerIndex, opponentIndex);
     const mirrorKey = getCellKey(opponentIndex, playerIndex);
 
-    const data = cellData.get(key);
-    const mirrorData = cellData.get(mirrorKey);
+    const data = getMergedCellData(key);
+    const mirrorData = getMergedCellData(mirrorKey);
 
     const player1Hits = data?.playerHits ?? mirrorData?.opponentHits;
     const player2Hits = data?.opponentHits ?? mirrorData?.playerHits;
@@ -329,18 +346,18 @@ export default function BulkMatchEntry({ closeModal }: BulkMatchEntryProps) {
       return !existingWinner;
     }
     return false;
-  }, [getCellKey, cellData]);
+  }, [getCellKey, getMergedCellData]);
 
   // Get the winner for a draw cell (for display)
   const getDrawWinner = useCallback((playerIndex: number, opponentIndex: number): string | null => {
     const key = getCellKey(playerIndex, opponentIndex);
     const mirrorKey = getCellKey(opponentIndex, playerIndex);
 
-    const data = cellData.get(key);
-    const mirrorData = cellData.get(mirrorKey);
+    const data = getMergedCellData(key);
+    const mirrorData = getMergedCellData(mirrorKey);
 
     return data?.winner || mirrorData?.winner || null;
-  }, [getCellKey, cellData]);
+  }, [getCellKey, getMergedCellData]);
 
   // Collect all pending matches from cell data
   const collectPendingMatches = useCallback((): PendingMatch[] => {
@@ -359,8 +376,8 @@ export default function BulkMatchEntry({ closeModal }: BulkMatchEntryProps) {
         if (processed.has(pairKey)) continue;
         processed.add(pairKey);
 
-        const data = cellData.get(key);
-        const mirrorData = cellData.get(mirrorKey);
+        const data = getMergedCellData(key);
+        const mirrorData = getMergedCellData(mirrorKey);
 
         // Get hits for both players
         const player1Hits = data?.playerHits ?? mirrorData?.opponentHits;
@@ -433,7 +450,7 @@ export default function BulkMatchEntry({ closeModal }: BulkMatchEntryProps) {
     }
 
     return matches;
-  }, [players, cellData, getCellKey, existingMatches]);
+  }, [players, getMergedCellData, getCellKey, existingMatches]);
 
   // Count draws that need resolution
   const countUnresolvedDraws = useCallback((): number => {
@@ -488,7 +505,7 @@ export default function BulkMatchEntry({ closeModal }: BulkMatchEntryProps) {
       };
 
       try {
-        const url = isUpdate ? `/api/matches/${match.matchId}` : "/api/matches";
+        const url = "/api/matches";
         const res = await fetch(url, {
           method: isUpdate ? "PUT" : "POST",
           body: JSON.stringify(matchData),
@@ -678,8 +695,8 @@ export default function BulkMatchEntry({ closeModal }: BulkMatchEntryProps) {
                   } else if (hasValue && !unresolvedDraw) {
                     // Check if there's opponent data to determine winner
                     const mirrorKey = getCellKey(opponentIndex, playerIndex);
-                    const data = cellData.get(cellKey);
-                    const mirrorData = cellData.get(mirrorKey);
+                    const data = getMergedCellData(cellKey);
+                    const mirrorData = getMergedCellData(mirrorKey);
 
                     const playerHits = data?.playerHits ?? mirrorData?.opponentHits;
                     const opponentHits = data?.opponentHits ?? mirrorData?.playerHits;
