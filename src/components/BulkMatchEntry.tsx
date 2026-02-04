@@ -3,7 +3,7 @@
 import { useTranslations } from "next-intl";
 import { useTournamentContext } from "@/context/TournamentContext";
 import { useUserContext } from "@/context/UserContext";
-import { useState, useRef, useCallback, KeyboardEvent, useMemo } from "react";
+import { useState, useRef, useCallback, KeyboardEvent, useMemo, useEffect } from "react";
 import { MatchRow, NewMatch } from "@/types/MatchTypes";
 import { Player } from "@/types/Player";
 
@@ -53,6 +53,18 @@ export default function BulkMatchEntry({ closeModal }: BulkMatchEntryProps) {
 
   // Store refs for all input cells
   const inputRefs = useRef<Map<string, HTMLInputElement>>(new Map());
+
+  // Track timeout for cleanup
+  const drawCheckTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Cleanup timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (drawCheckTimeoutRef.current) {
+        clearTimeout(drawCheckTimeoutRef.current);
+      }
+    };
+  }, []);
 
   // Track cell data: key is "playerIndex-opponentIndex"
   const [cellData, setCellData] = useState<Map<string, CellData>>(new Map());
@@ -163,27 +175,6 @@ export default function BulkMatchEntry({ closeModal }: BulkMatchEntryProps) {
       }
     }
   }, [players.length, getCellKey]);
-
-  // Check if match already exists between two players
-  const matchExists = useCallback((player: Player, opponent: Player): boolean => {
-    return player.matches.some(
-      (match) =>
-        match.round === context.activeRound &&
-        ((match.player1 === player.player.player_name && match.player2 === opponent.player.player_name) ||
-          (match.player1 === opponent.player.player_name && match.player2 === player.player.player_name))
-    );
-  }, [context.activeRound]);
-
-  // Get existing match data between two players
-  const getExistingMatch = useCallback((player: Player, opponent: Player): MatchRow | undefined => {
-    return player.matches.find(
-      (match) =>
-        match.round === context.activeRound &&
-        ((match.player1 === player.player.player_name && match.player2 === opponent.player.player_name) ||
-          (match.player1 === opponent.player.player_name && match.player2 === player.player.player_name))
-    );
-  }, [context.activeRound]);
-
   // Handle key press in cell
   const handleKeyDown = useCallback((
     e: KeyboardEvent<HTMLInputElement>,
@@ -271,7 +262,10 @@ export default function BulkMatchEntry({ closeModal }: BulkMatchEntryProps) {
     });
 
     // Check for draw after state update
-    setTimeout(() => {
+    if (drawCheckTimeoutRef.current) {
+      clearTimeout(drawCheckTimeoutRef.current);
+    }
+    drawCheckTimeoutRef.current = setTimeout(() => {
       setCellData((current) => {
         checkForDraw(playerIndex, opponentIndex, current);
         return current;
@@ -663,7 +657,6 @@ export default function BulkMatchEntry({ closeModal }: BulkMatchEntryProps) {
                 </td>
                 {players.map((opponent, opponentIndex) => {
                   const isSelf = playerIndex === opponentIndex;
-                  const existingMatch = getExistingMatch(player, opponent);
                   const cellKey = getCellKey(playerIndex, opponentIndex);
                   const unresolvedDraw = hasUnresolvedDraw(playerIndex, opponentIndex);
                   const drawWinner = getDrawWinner(playerIndex, opponentIndex);
@@ -677,20 +670,16 @@ export default function BulkMatchEntry({ closeModal }: BulkMatchEntryProps) {
                     );
                   }
 
-                  // Check if this is an existing match
-                  const isExistingMatch = existingMatches.has(cellKey);
-
                   // Get cell value
                   const cellValue = getCellValue(playerIndex, opponentIndex);
                   const hasValue = cellValue !== "";
 
                   // Determine background color based on win/loss state
                   let bgColor = "";
-                  let isWinner = false;
 
                   if (hasValue && drawWinner) {
                     // Draw with winner selected
-                    isWinner = drawWinner === player.player.player_name;
+                    const isWinner = drawWinner === player.player.player_name;
                     bgColor = isWinner ? "bg-green-100" : "bg-red-100";
                   } else if (hasValue && !unresolvedDraw) {
                     // Check if there's opponent data to determine winner
@@ -706,10 +695,8 @@ export default function BulkMatchEntry({ closeModal }: BulkMatchEntryProps) {
                       opponentHits !== "" && opponentHits !== undefined
                     ) {
                       if (playerHits > opponentHits) {
-                        isWinner = true;
                         bgColor = "bg-green-100";
                       } else if (playerHits < opponentHits) {
-                        isWinner = false;
                         bgColor = "bg-red-100";
                       }
                     }

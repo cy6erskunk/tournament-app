@@ -254,8 +254,8 @@ describe('BulkMatchEntry', () => {
     });
   });
 
-  describe('V Notation Display', () => {
-    it('should display existing matches with V notation for winner with 5 hits', () => {
+  describe('Existing Match Display', () => {
+    it('should display existing matches with scores in editable inputs', () => {
       mockTournamentContext.players = [
         createMockPlayer('Alice', [{
           id: 1,
@@ -301,7 +301,7 @@ describe('BulkMatchEntry', () => {
       expect(inputValues).toContain('3');
     });
 
-    it('should display V with score for non-5 wins', () => {
+    it('should display existing matches with different scores in editable inputs', () => {
       mockTournamentContext.players = [
         createMockPlayer('Alice', [{
           id: 1,
