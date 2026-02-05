@@ -35,6 +35,8 @@ const TournamentButtons = () => {
     (player) => player && player.player.bracket_seed,
   );
 
+  const isRoundRobin = context.tournament?.format === "Round Robin";
+
   const closeModal = () => {
     setShowModal(false);
   };
@@ -59,14 +61,14 @@ const TournamentButtons = () => {
 
   return (
     <div className="container mx-auto p-2 flex flex-col md:flex-row gap-4">
-      {context.tournament?.format === "Round Robin" ? (
+      {isRoundRobin && (
         <button
           className="p-1 px-5 border rounded-md shadow-xs border-slate-600"
           onClick={() => openModal(<AddMatch closeModal={closeModal} />)}
         >
           {t("addmatch")}
         </button>
-      ) : null}
+      )}
       <button
         className="p-1 px-5 border rounded-md shadow-xs border-slate-600 bg-green-50 border-green-500 text-green-700"
         onClick={() => openModal(<QRMatchModal closeModal={closeModal} />)}
