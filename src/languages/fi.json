@@ -18,7 +18,8 @@
       "empty": "Tyhjennä",
       "emptyConfirm": "Haluatko varmasti tyhjentää tulostaulun?",
       "tournaments": "Turnaukset",
-      "back": "Takaisin"
+      "back": "Takaisin",
+      "dtEntry": "DT Syöttö"
     }
   },
   "Leaderboard": {
@@ -108,6 +109,25 @@
   "Brackets": {
     "selectseed": "Valitse ottelujärjestys turnauksesta",
     "noRRtournamentsfound": "Ei vanhoja round robin turnauksia"
+  },
+  "BulkEntry": {
+    "title": "DT Tulosten Syöttö",
+    "round": "Kierros",
+    "instructions": "Syötä tulokset rivi kerrallaan. Paina Enter siirtyäksesi seuraavaan soluun.",
+    "player": "Ottelija",
+    "submit": "Tallenna tulokset",
+    "submitting": "Tallennetaan...",
+    "back": "Takaisin",
+    "unauthorized": "Ei oikeuksia",
+    "noMatchesToSubmit": "Ei otteluita tallennettavaksi",
+    "matchExists": "Ottelu on jo olemassa",
+    "submitFailed": "Tallennus epäonnistui",
+    "networkError": "Verkkovirhe",
+    "submitted": "{count} ottelua tallennettu",
+    "pendingMatches": "{count} ottelua odottaa tallennusta",
+    "selectWinner": "Valitse voittaja",
+    "winner": "Voittaja",
+    "unresolvedDraws": "{count} tasapeli vaatii ratkaisun"
   },
   "Admin": {
     "title": "Ylläpito",

@@ -18,7 +18,8 @@
       "empty": "Tühi laud",
       "emptyConfirm": "Eemaldage kõik mängud ja mängijad?",
       "tournaments": "Turniirid",
-      "back": "Tagasi"
+      "back": "Tagasi",
+      "dtEntry": "DT Sisestus"
     }
   },
   "Leaderboard": {
@@ -108,6 +109,25 @@
   "Brackets": {
     "selectseed": "Valige turniirilt mängu järjekord",
     "noRRtournamentsfound": "Ringmänguturniire ei leitud"
+  },
+  "BulkEntry": {
+    "title": "DT Tulemuste Sisestus",
+    "round": "Voor",
+    "instructions": "Sisestage tulemused rida-realt. Vajutage Enter, et liikuda järgmisesse lahtrisse.",
+    "player": "Mängija",
+    "submit": "Esita tulemused",
+    "submitting": "Esitamine...",
+    "back": "Tagasi",
+    "unauthorized": "Volitamata",
+    "noMatchesToSubmit": "Pole matše esitamiseks",
+    "matchExists": "Matš on juba olemas",
+    "submitFailed": "Esitamine ebaõnnestus",
+    "networkError": "Võrguviga",
+    "submitted": "{count} matši esitatud",
+    "pendingMatches": "{count} matši ootel",
+    "selectWinner": "Vali võitja",
+    "winner": "Võitja",
+    "unresolvedDraws": "{count} viik vajab lahendust"
   },
   "Admin": {
     "title": "Haldus",

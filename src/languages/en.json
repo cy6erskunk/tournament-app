@@ -18,7 +18,8 @@
       "empty": "Empty table",
       "emptyConfirm": "Remove all matches and players?",
       "tournaments": "Tournaments",
-      "back": "Back"
+      "back": "Back",
+      "dtEntry": "DT Entry"
     }
   },
   "Leaderboard": {
@@ -108,6 +109,25 @@
   "Brackets": {
     "selectseed": "Select match order from tournament",
     "noRRtournamentsfound": "No round robin tournaments found"
+  },
+  "BulkEntry": {
+    "title": "DT Results Entry",
+    "round": "Round",
+    "instructions": "Enter results row by row. Press Enter to move to the next cell.",
+    "player": "Player",
+    "submit": "Submit Results",
+    "submitting": "Submitting...",
+    "back": "Back",
+    "unauthorized": "Unauthorized",
+    "noMatchesToSubmit": "No matches to submit",
+    "matchExists": "Match already exists",
+    "submitFailed": "Submit failed",
+    "networkError": "Network error",
+    "submitted": "{count} matches submitted",
+    "pendingMatches": "{count} matches pending",
+    "selectWinner": "Select winner",
+    "winner": "Winner",
+    "unresolvedDraws": "{count} draw(s) need resolution"
   },
   "Admin": {
     "title": "Administration",
