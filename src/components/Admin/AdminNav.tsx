@@ -13,6 +13,7 @@ export default function AdminNav() {
     { name: t("nav.users"), href: "/admin/users" },
     { name: t("nav.devices"), href: "/admin/devices" },
     { name: t("nav.qrAudit"), href: "/admin/qr-audit" },
+    { name: t("nav.tournamentUsers"), href: "/admin/tournament-users" },
   ];
 
   const isActive = (href: string) => {
