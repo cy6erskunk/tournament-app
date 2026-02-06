@@ -19,6 +19,12 @@ vi.mock("@/database/getPlayers", () => ({
   getPlayer: vi.fn().mockResolvedValue({ success: true, value: [] }),
 }));
 
+// Mock the UserContext
+const mockUseUserContext = vi.fn();
+vi.mock("@/context/UserContext", () => ({
+  useUserContext: () => mockUseUserContext(),
+}));
+
 const messages = {
   Tournament: {
     Buttons: {
@@ -26,6 +32,8 @@ const messages = {
       addplayer: "Add player",
       leaderboard: "Leaderboard",
       back: "Back",
+      qrMatch: "QR Match",
+      dtEntry: "DT Entry",
     },
   },
 };
@@ -46,6 +54,7 @@ const defaultContextValue = {
 describe("TournamentButtons", () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    mockUseUserContext.mockReturnValue({ user: { role: "admin" } });
   });
 
   it("should show Add match button for Round Robin tournaments", () => {
@@ -61,7 +70,7 @@ describe("TournamentButtons", () => {
     );
 
     expect(screen.getByText("Add match")).toBeTruthy();
-    expect(screen.getByText("Generate QR Match")).toBeTruthy();
+    expect(screen.getByText("QR Match")).toBeTruthy();
     expect(screen.getByText("Add player")).toBeTruthy();
     expect(screen.getByText("Leaderboard")).toBeTruthy();
   });
@@ -80,7 +89,7 @@ describe("TournamentButtons", () => {
 
     expect(screen.queryByText("Add match")).toBeNull();
     // Other buttons should still be visible
-    expect(screen.getByText("Generate QR Match")).toBeTruthy();
+    expect(screen.getByText("QR Match")).toBeTruthy();
     expect(screen.getByText("Add player")).toBeTruthy();
   });
 
@@ -98,7 +107,7 @@ describe("TournamentButtons", () => {
 
     expect(screen.queryByText("Add match")).toBeNull();
     // Other buttons should still be visible
-    expect(screen.getByText("Generate QR Match")).toBeTruthy();
+    expect(screen.getByText("QR Match")).toBeTruthy();
     expect(screen.getByText("Add player")).toBeTruthy();
   });
 

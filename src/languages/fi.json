@@ -19,7 +19,8 @@
       "emptyConfirm": "Haluatko varmasti tyhjentää tulostaulun?",
       "tournaments": "Turnaukset",
       "back": "Takaisin",
-      "dtEntry": "DT Syöttö"
+      "dtEntry": "DT Syöttö",
+      "qrMatch": "QR-ottelu"
     }
   },
   "Leaderboard": {
@@ -71,7 +72,11 @@
     "matchupdated": "Ottelu päivitetty",
     "matchdeleted": "Ottelu poistettu",
     "delete": "Poista",
-    "selectwinnerfordraw": "Valitse voittaja prioriteetin mukaan"
+    "selectwinnerfordraw": "Valitse voittaja prioriteetin mukaan",
+    "generateQR": "Luo QR-koodi",
+    "generating": "Luodaan...",
+    "generateNew": "Luo uusi",
+    "done": "Valmis"
   },
   "AddPlayer": {
     "title": "Lisää ottelija",

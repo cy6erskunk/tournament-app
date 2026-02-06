@@ -19,7 +19,8 @@
       "emptyConfirm": "Remove all matches and players?",
       "tournaments": "Tournaments",
       "back": "Back",
-      "dtEntry": "DT Entry"
+      "dtEntry": "DT Entry",
+      "qrMatch": "QR Match"
     }
   },
   "Leaderboard": {
@@ -71,7 +72,11 @@
     "matchupdated": "Match updated",
     "matchdeleted": "Match deleted",
     "delete": "Delete",
-    "selectwinnerfordraw": "Select a winner by priority"
+    "selectwinnerfordraw": "Select a winner by priority",
+    "generateQR": "Generate QR Code",
+    "generating": "Generating...",
+    "generateNew": "Generate New",
+    "done": "Done"
   },
   "AddPlayer": {
     "title": "Add player",

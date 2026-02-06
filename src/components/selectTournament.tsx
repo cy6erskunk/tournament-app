@@ -25,7 +25,9 @@ export default function SelectTournament() {
 
     return (
       <button
+        type="button"
         onClick={() => removeTournament(tour)}
+        aria-label={`${t("remove")} ${tour.name}`}
         className="bg-red-400 p-1 rounded-full hover:bg-red-500"
         disabled={removeTournamentLoading}
       >
@@ -98,6 +100,7 @@ export default function SelectTournament() {
     return (
       <div className="flex justify-center">
         <button
+          type="button"
           className="bg-blue-500 w-full py-2 px-3 text-white rounded-md shadow-xs font-semibold"
           onClick={loadMoreTournaments}
         >

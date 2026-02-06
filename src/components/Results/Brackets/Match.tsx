@@ -97,7 +97,7 @@ export default function Match({ competitors, match, round }: MatchProps) {
 
       {notPlayed ? (
         <>
-          <button onClick={() => openModal()}>
+          <button type="button" aria-label={t("match")} onClick={() => openModal()}>
             <PlusCircleIcon className="h-8 w-8 hover:text-blue-600" />
           </button>
           <Modal isOpen={showModal} closeModal={closeModal}>

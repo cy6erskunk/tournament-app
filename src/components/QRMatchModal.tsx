@@ -158,17 +158,19 @@ export default function QRMatchModal({ closeModal, player1, player2 }: QRMatchMo
 
           <div className="flex gap-2">
             <button
+              type="button"
               onClick={generateQRCode}
               disabled={loading || !selectedPlayer1 || !selectedPlayer2}
               className="flex-1 bg-blue-500 hover:bg-blue-600 disabled:bg-blue-300 text-white font-medium py-2 px-4 rounded-md"
             >
-              {loading ? 'Generating...' : 'Generate QR Code'}
+              {loading ? t('generating') : t('generateQR')}
             </button>
             <button
+              type="button"
               onClick={closeModal}
               className="flex-1 border border-gray-300 hover:bg-gray-50 text-gray-700 font-medium py-2 px-4 rounded-md"
             >
-              Cancel
+              {t('back')}
             </button>
           </div>
         </div>
@@ -190,16 +192,18 @@ export default function QRMatchModal({ closeModal, player1, player2 }: QRMatchMo
 
           <div className="flex gap-2 w-full">
             <button
+              type="button"
               onClick={() => setQrData(null)}
               className="flex-1 border border-gray-300 hover:bg-gray-50 text-gray-700 font-medium py-2 px-4 rounded-md"
             >
-              Generate New
+              {t('generateNew')}
             </button>
             <button
+              type="button"
               onClick={closeModal}
               className="flex-1 bg-green-500 hover:bg-green-600 text-white font-medium py-2 px-4 rounded-md"
             >
-              Done
+              {t('done')}
             </button>
           </div>
         </div>

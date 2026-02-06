@@ -21,7 +21,9 @@ function Round() {
     <section className="flex items-center gap-3 text-base">
       <p>{context.activeRound}. {t("title")}</p>
       <button
+        type="button"
         onClick={toggleRound}
+        aria-label={context.activeRound === 1 ? "Next round" : "Previous round"}
         className="disabled:bg-red-300 border-2 border-gray-300 px-3 py-2 rounded-md *:h-5 *:w-5"
       >
         {context.activeRound === 1 ? <ChevronRightIcon /> : <ChevronLeftIcon />}

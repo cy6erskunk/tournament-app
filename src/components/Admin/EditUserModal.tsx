@@ -77,10 +77,12 @@ export default function EditUserModal({
           </p>
         </div>
 
-        <div className="border-b border-gray-200 mb-4">
+        <div className="border-b border-gray-200 mb-4" role="tablist">
           <nav className="-mb-px flex space-x-8">
             <button
               type="button"
+              role="tab"
+              aria-selected={activeTab === "role"}
               onClick={() => setActiveTab("role")}
               className={`whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm ${
                 activeTab === "role"
@@ -92,6 +94,8 @@ export default function EditUserModal({
             </button>
             <button
               type="button"
+              role="tab"
+              aria-selected={activeTab === "password"}
               onClick={() => setActiveTab("password")}
               className={`whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm ${
                 activeTab === "password"
