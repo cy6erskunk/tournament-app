@@ -44,7 +44,9 @@
     "loss": "Förlust",
     "winShort": "V",
     "lossShort": "F",
-    "remove": "Ta bort"
+    "remove": "Ta bort",
+    "sortAscending": "stigande ordning",
+    "sortDescending": "fallande ordning"
   },
   "Logout": {
     "logout": "Logga ut",
@@ -76,7 +78,10 @@
     "generateQR": "Generera QR-kod",
     "generating": "Genererar...",
     "generateNew": "Generera ny",
-    "done": "Klar"
+    "done": "Klar",
+    "nextRound": "Nästa runda",
+    "previousRound": "Föregående runda",
+    "tournament": "Turnering"
   },
   "AddPlayer": {
     "title": "Lägg till spelare",

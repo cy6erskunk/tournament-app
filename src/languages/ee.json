@@ -44,7 +44,9 @@
     "loss": "Kaotus",
     "winShort": "V",
     "lossShort": "K",
-    "remove": "Eemalda"
+    "remove": "Eemalda",
+    "sortAscending": "kasvav järjestus",
+    "sortDescending": "kahanev järjestus"
   },
   "Logout": {
     "logout": "Logi välja",
@@ -76,7 +78,10 @@
     "generateQR": "Loo QR-kood",
     "generating": "Loomine...",
     "generateNew": "Loo uus",
-    "done": "Valmis"
+    "done": "Valmis",
+    "nextRound": "Järgmine voor",
+    "previousRound": "Eelmine voor",
+    "tournament": "Turniir"
   },
   "AddPlayer": {
     "title": "Lisa Mängija",

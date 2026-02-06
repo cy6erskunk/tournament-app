@@ -44,7 +44,9 @@
     "loss": "Loss",
     "winShort": "W",
     "lossShort": "L",
-    "remove": "Remove"
+    "remove": "Remove",
+    "sortAscending": "sorted ascending",
+    "sortDescending": "sorted descending"
   },
   "Logout": {
     "logout": "Logout",
@@ -76,7 +78,10 @@
     "generateQR": "Generate QR Code",
     "generating": "Generating...",
     "generateNew": "Generate New",
-    "done": "Done"
+    "done": "Done",
+    "nextRound": "Next round",
+    "previousRound": "Previous round",
+    "tournament": "Tournament"
   },
   "AddPlayer": {
     "title": "Add player",

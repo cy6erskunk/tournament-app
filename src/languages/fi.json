@@ -44,7 +44,9 @@
     "loss": "Häviö",
     "winShort": "V",
     "lossShort": "H",
-    "remove": "Poista"
+    "remove": "Poista",
+    "sortAscending": "nouseva järjestys",
+    "sortDescending": "laskeva järjestys"
   },
   "Logout": {
     "logout": "Kirjaudu ulos",
@@ -76,7 +78,10 @@
     "generateQR": "Luo QR-koodi",
     "generating": "Luodaan...",
     "generateNew": "Luo uusi",
-    "done": "Valmis"
+    "done": "Valmis",
+    "nextRound": "Seuraava kierros",
+    "previousRound": "Edellinen kierros",
+    "tournament": "Turnaus"
   },
   "AddPlayer": {
     "title": "Lisää ottelija",

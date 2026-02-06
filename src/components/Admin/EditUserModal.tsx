@@ -82,7 +82,9 @@ export default function EditUserModal({
             <button
               type="button"
               role="tab"
+              id="role-tab"
               aria-selected={activeTab === "role"}
+              aria-controls="role-panel"
               onClick={() => setActiveTab("role")}
               className={`whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm ${
                 activeTab === "role"
@@ -95,7 +97,9 @@ export default function EditUserModal({
             <button
               type="button"
               role="tab"
+              id="password-tab"
               aria-selected={activeTab === "password"}
+              aria-controls="password-panel"
               onClick={() => setActiveTab("password")}
               className={`whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm ${
                 activeTab === "password"
@@ -110,7 +114,7 @@ export default function EditUserModal({
 
         <div className="space-y-4">
           {activeTab === "role" ? (
-            <div>
+            <div role="tabpanel" id="role-panel" aria-labelledby="role-tab">
               <label
                 htmlFor="role"
                 className="block text-sm font-medium text-gray-700"
@@ -128,7 +132,7 @@ export default function EditUserModal({
               </select>
             </div>
           ) : (
-            <div>
+            <div role="tabpanel" id="password-panel" aria-labelledby="password-tab">
               <label
                 htmlFor="password"
                 className="block text-sm font-medium text-gray-700"

@@ -152,8 +152,8 @@ export default function QRMatchModal({ closeModal, player1, player2 }: QRMatchMo
           </div>
 
           <div className="text-sm text-gray-600">
-            <p><strong>Round:</strong> {context.activeRound}</p>
-            <p><strong>Tournament:</strong> {context.tournament?.name}</p>
+            <p><strong>{t('title')}:</strong> {context.activeRound}</p>
+            <p><strong>{t('tournament')}:</strong> {context.tournament?.name}</p>
           </div>
 
           <div className="flex items-center justify-center gap-2 text-sm font-semibold">

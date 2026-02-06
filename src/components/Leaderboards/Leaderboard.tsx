@@ -64,7 +64,7 @@ const Leaderboard = () => {
             <tr className="text-white *:py-4 *:bg-blue-500">
               <th className="w-28 min-w-28">{t("position")}</th>
               <th className="w-20 min-w-20">
-                <button type="button" className="text-white" onClick={() => sortHandler("name")}>
+                <button type="button" className="text-white" onClick={() => sortHandler("name")} aria-label={sortCol === "name" && direction !== "DEFAULT" ? `${t("name")}, ${direction === "ASC" ? t("sortAscending") : t("sortDescending")}` : t("name")}>
                   {t("name")}
                   {sortIndicator("name")}
                 </button>
@@ -73,7 +73,7 @@ const Leaderboard = () => {
                 title={t("hoverWin%")}
                 className="w-20 min-w-20"
               >
-                <button type="button" className="underline decoration-dotted cursor-help underline-offset-2 text-white" onClick={() => sortHandler("percentage")}>
+                <button type="button" className="underline decoration-dotted cursor-help underline-offset-2 text-white" onClick={() => sortHandler("percentage")} aria-label={sortCol === "percentage" && direction !== "DEFAULT" ? `${t("win%")}, ${direction === "ASC" ? t("sortAscending") : t("sortDescending")}` : t("win%")}>
                   {t("win%")}
                   {sortIndicator("percentage")}
                 </button>
@@ -82,7 +82,7 @@ const Leaderboard = () => {
                 title={`${t("win")}/${t("loss")}`}
                 className="w-20 min-w-20"
               >
-                <button type="button" className="underline decoration-dotted cursor-help underline-offset-2 text-white" onClick={() => sortHandler("wins")}>
+                <button type="button" className="underline decoration-dotted cursor-help underline-offset-2 text-white" onClick={() => sortHandler("wins")} aria-label={sortCol === "wins" && direction !== "DEFAULT" ? `${t("winShort")}/${t("lossShort")}, ${direction === "ASC" ? t("sortAscending") : t("sortDescending")}` : `${t("winShort")}/${t("lossShort")}`}>
                   {`${t("winShort")}/${t("lossShort")}`}
                   {sortIndicator("wins")}
                 </button>
@@ -91,7 +91,7 @@ const Leaderboard = () => {
                 title={t("hoverHitsGiven")}
                 className="w-20 min-w-20"
               >
-                <button type="button" className="underline decoration-dotted cursor-help underline-offset-2 text-white" onClick={() => sortHandler("given")}>
+                <button type="button" className="underline decoration-dotted cursor-help underline-offset-2 text-white" onClick={() => sortHandler("given")} aria-label={sortCol === "given" && direction !== "DEFAULT" ? `${t("hitsGiven")}, ${direction === "ASC" ? t("sortAscending") : t("sortDescending")}` : t("hitsGiven")}>
                   {t("hitsGiven")}
                   {sortIndicator("given")}
                 </button>
@@ -100,7 +100,7 @@ const Leaderboard = () => {
                 title={t("hoverHitsReceived")}
                 className="w-20 min-w-20"
               >
-                <button type="button" className="underline decoration-dotted cursor-help underline-offset-2 text-white" onClick={() => sortHandler("taken")}>
+                <button type="button" className="underline decoration-dotted cursor-help underline-offset-2 text-white" onClick={() => sortHandler("taken")} aria-label={sortCol === "taken" && direction !== "DEFAULT" ? `${t("hitsReceived")}, ${direction === "ASC" ? t("sortAscending") : t("sortDescending")}` : t("hitsReceived")}>
                   {t("hitsReceived")}
                   {sortIndicator("taken")}
                 </button>
@@ -109,7 +109,7 @@ const Leaderboard = () => {
                 title={t("hoverAO-VO")}
                 className="w-20 min-w-20"
               >
-                <button type="button" className="underline decoration-dotted cursor-help underline-offset-2 text-white" onClick={() => sortHandler("index")}>
+                <button type="button" className="underline decoration-dotted cursor-help underline-offset-2 text-white" onClick={() => sortHandler("index")} aria-label={sortCol === "index" && direction !== "DEFAULT" ? `${t("AO-VO")}, ${direction === "ASC" ? t("sortAscending") : t("sortDescending")}` : t("AO-VO")}>
                   {t("AO-VO")}
                   {sortIndicator("index")}
                 </button>

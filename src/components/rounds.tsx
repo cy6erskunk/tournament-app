@@ -23,7 +23,7 @@ function Round() {
       <button
         type="button"
         onClick={toggleRound}
-        aria-label={context.activeRound === 1 ? "Next round" : "Previous round"}
+        aria-label={context.activeRound === 1 ? t("nextRound") : t("previousRound")}
         className="disabled:bg-red-300 border-2 border-gray-300 px-3 py-2 rounded-md *:h-5 *:w-5"
       >
         {context.activeRound === 1 ? <ChevronRightIcon /> : <ChevronLeftIcon />}
