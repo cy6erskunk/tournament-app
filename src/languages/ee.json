@@ -150,6 +150,7 @@
       "users": "Kasutajad",
       "devices": "Seadmed",
       "qrAudit": "QR-audit",
+      "tournamentUsers": "Turniiri mängijad",
       "backToApp": "Tagasi rakendusse"
     },
     "users": {
@@ -198,6 +199,30 @@
       "noDevices": "Registreeritud seadmeid pole. Seadmed ilmuvad siia pärast esimest QR-koodi matši esitamist.",
       "deleteConfirmation": "Kas oled kindel, et soovid kustutada seadme",
       "deleteWarning": "Seda toimingut ei saa tagasi võtta."
+    },
+    "tournamentUsers": {
+      "title": "Turniiri mängijad",
+      "description": "Halda mängijaid turniirides",
+      "selectTournament": "Vali turniir",
+      "noTournaments": "Turniire pole",
+      "playerName": "Mängija nimi",
+      "actions": "Tegevused",
+      "addPlayer": "Lisa mängija",
+      "removePlayer": "Eemalda mängija",
+      "remove": "Eemalda",
+      "cancel": "Tühista",
+      "add": "Lisa",
+      "adding": "Lisamine...",
+      "removing": "Eemaldamine...",
+      "loading": "Laadimine...",
+      "error": "Viga",
+      "noPlayers": "Selles turniiris pole mängijaid",
+      "noAvailablePlayers": "Pole saadaolevaid mängijaid lisamiseks",
+      "removeConfirmation": "Kas oled kindel, et soovid eemaldada mängija",
+      "removeWarning": "Mängija eemaldatakse turniirist.",
+      "fromTournament": "turniirist",
+      "selectPlayer": "Vali mängija",
+      "playerCount": "{count} mängijat"
     },
     "qrAudit": {
       "title": "QR-koodi audit",

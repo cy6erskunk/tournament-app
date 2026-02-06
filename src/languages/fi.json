@@ -150,6 +150,7 @@
       "users": "Käyttäjät",
       "devices": "Laitteet",
       "qrAudit": "QR-tarkastus",
+      "tournamentUsers": "Turnauspelaajat",
       "backToApp": "Takaisin sovellukseen"
     },
     "users": {
@@ -198,6 +199,30 @@
       "noDevices": "Ei rekisteröityjä laitteita. Laitteet rekisteröityvät automaattisesti, kun ne lähettävät ensimmäisen QR-koodi ottelun.",
       "deleteConfirmation": "Haluatko varmasti poistaa laitteen",
       "deleteWarning": "Tätä toimintoa ei voi peruuttaa."
+    },
+    "tournamentUsers": {
+      "title": "Turnauksen pelaajat",
+      "description": "Hallinnoi pelaajia turnauksissa",
+      "selectTournament": "Valitse turnaus",
+      "noTournaments": "Ei turnauksia",
+      "playerName": "Pelaajan nimi",
+      "actions": "Toiminnot",
+      "addPlayer": "Lisää pelaaja",
+      "removePlayer": "Poista pelaaja",
+      "remove": "Poista",
+      "cancel": "Peruuta",
+      "add": "Lisää",
+      "adding": "Lisätään...",
+      "removing": "Poistetaan...",
+      "loading": "Ladataan...",
+      "error": "Virhe",
+      "noPlayers": "Ei pelaajia tässä turnauksessa",
+      "noAvailablePlayers": "Ei lisättäviä pelaajia",
+      "removeConfirmation": "Haluatko varmasti poistaa pelaajan",
+      "removeWarning": "Pelaaja poistetaan turnauksesta.",
+      "fromTournament": "turnauksesta",
+      "selectPlayer": "Valitse pelaaja",
+      "playerCount": "{count} pelaajaa"
     },
     "qrAudit": {
       "title": "QR-koodi tarkastus",

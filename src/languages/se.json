@@ -150,6 +150,7 @@
       "users": "Användare",
       "devices": "Enheter",
       "qrAudit": "QR-granskning",
+      "tournamentUsers": "Turneringsspelare",
       "backToApp": "Tillbaka till appen"
     },
     "users": {
@@ -198,6 +199,30 @@
       "noDevices": "Inga registrerade enheter. Enheter visas här efter deras första QR-kod matchinlämning.",
       "deleteConfirmation": "Är du säker på att du vill ta bort enhet",
       "deleteWarning": "Denna åtgärd kan inte ångras."
+    },
+    "tournamentUsers": {
+      "title": "Turneringsspelare",
+      "description": "Hantera spelare i turneringar",
+      "selectTournament": "Välj turnering",
+      "noTournaments": "Inga turneringar",
+      "playerName": "Spelarnamn",
+      "actions": "Åtgärder",
+      "addPlayer": "Lägg till spelare",
+      "removePlayer": "Ta bort spelare",
+      "remove": "Ta bort",
+      "cancel": "Avbryt",
+      "add": "Lägg till",
+      "adding": "Lägger till...",
+      "removing": "Tar bort...",
+      "loading": "Laddar...",
+      "error": "Fel",
+      "noPlayers": "Inga spelare i denna turnering",
+      "noAvailablePlayers": "Inga tillgängliga spelare att lägga till",
+      "removeConfirmation": "Är du säker på att du vill ta bort spelare",
+      "removeWarning": "Spelaren tas bort från turneringen.",
+      "fromTournament": "från turnering",
+      "selectPlayer": "Välj spelare",
+      "playerCount": "{count} spelare"
     },
     "qrAudit": {
       "title": "QR-kodgranskning",
