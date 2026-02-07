@@ -12,7 +12,7 @@ vi.mock("@/context/TournamentContext", () => ({
 const mockUseUserContext = vi.fn();
 vi.mock("@/context/UserContext", () => ({
   useUserContext: () => mockUseUserContext(),
-}))
+}));
 mockUseUserContext.mockReturnValue({
   user: null,
   setUser: vi.fn(),
@@ -66,7 +66,7 @@ describe("TournamentButtons", () => {
     render(
       <NextIntlClientProvider locale="en" messages={messages}>
         <TournamentButtons />
-      </NextIntlClientProvider>
+      </NextIntlClientProvider>,
     );
 
     expect(screen.getByText("Add match")).toBeTruthy();
@@ -84,7 +84,7 @@ describe("TournamentButtons", () => {
     render(
       <NextIntlClientProvider locale="en" messages={messages}>
         <TournamentButtons />
-      </NextIntlClientProvider>
+      </NextIntlClientProvider>,
     );
 
     expect(screen.queryByText("Add match")).toBeNull();
@@ -102,7 +102,7 @@ describe("TournamentButtons", () => {
     render(
       <NextIntlClientProvider locale="en" messages={messages}>
         <TournamentButtons />
-      </NextIntlClientProvider>
+      </NextIntlClientProvider>,
     );
 
     expect(screen.queryByText("Add match")).toBeNull();
@@ -131,7 +131,7 @@ describe("TournamentButtons", () => {
     const { container } = render(
       <NextIntlClientProvider locale="en" messages={messages}>
         <TournamentButtons />
-      </NextIntlClientProvider>
+      </NextIntlClientProvider>,
     );
 
     expect(container.firstChild).toBeNull();
