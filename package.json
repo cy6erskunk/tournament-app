@@ -23,7 +23,7 @@
     "bcrypt": "6.0.0",
     "flag-icons": "7.5.0",
     "jsonwebtoken": "9.0.3",
-    "kysely": "0.28.10",
+    "kysely": "0.28.11",
     "next": "16.1.6",
     "next-intl": "4.7.0",
     "pg": "8.17.2",
