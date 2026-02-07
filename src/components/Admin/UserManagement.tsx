@@ -145,12 +145,14 @@ export default function UserManagement() {
                       </td>
                       <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
                         <button
+                          type="button"
                           onClick={() => setEditingUser(user)}
                           className="text-indigo-600 hover:text-indigo-900 mr-4"
                         >
                           {t("edit")}
                         </button>
                         <button
+                          type="button"
                           onClick={() => setDeletingUser(user)}
                           className="text-red-600 hover:text-red-900"
                         >

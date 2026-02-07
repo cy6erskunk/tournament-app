@@ -15,16 +15,16 @@ const Languages = () => {
 
   return (
     <div className="flex flex-row gap-5 absolute top-0 right-0 p-3 pr-4">
-      <button onClick={() => changeLanguage("fi")}>
+      <button type="button" aria-label="Suomi" onClick={() => changeLanguage("fi")}>
         <span className="fi fi-fi"></span>
       </button>
-      <button onClick={() => changeLanguage("se")}>
+      <button type="button" aria-label="Svenska" onClick={() => changeLanguage("se")}>
         <span className="fi fi-se"></span>
       </button>
-      <button onClick={() => changeLanguage("en")}>
+      <button type="button" aria-label="English" onClick={() => changeLanguage("en")}>
         <span className="fi fi-gb"></span>
       </button>
-      <button onClick={() => changeLanguage("ee")}>
+      <button type="button" aria-label="Eesti" onClick={() => changeLanguage("ee")}>
         <span className="fi fi-ee"></span>
       </button>
     </div>

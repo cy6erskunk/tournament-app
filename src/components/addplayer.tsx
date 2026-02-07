@@ -110,13 +110,13 @@ const Addplayer = ({ closeModal, playerList }: AddplayerProps) => {
         <button
           disabled={loading}
           type="submit"
-          className="disabled:bg-blue-300 bg-blue-500 w-full py-2 px-3 text-white rounded-md shadow-xs"
+          className="disabled:bg-blue-300 bg-blue-500 w-full py-2 px-3 text-white rounded-md shadow-xs focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
         >
           {t("submit")}
         </button>
         <button
           onClick={closeModal}
-          className="ring-2 ring-gray-900 ring-inset py-2 w-full rounded-md shadow-xs"
+          className="ring-2 ring-gray-900 ring-inset py-2 w-full rounded-md shadow-xs focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-600"
           type="button"
         >
           {t("back")}

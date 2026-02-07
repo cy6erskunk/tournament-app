@@ -19,7 +19,8 @@
       "emptyConfirm": "Remove all matches and players?",
       "tournaments": "Tournaments",
       "back": "Back",
-      "dtEntry": "DT Entry"
+      "dtEntry": "DT Entry",
+      "qrMatch": "QR Match"
     }
   },
   "Leaderboard": {
@@ -43,7 +44,9 @@
     "loss": "Loss",
     "winShort": "W",
     "lossShort": "L",
-    "remove": "Remove"
+    "remove": "Remove",
+    "sortAscending": "sorted ascending",
+    "sortDescending": "sorted descending"
   },
   "Logout": {
     "logout": "Logout",
@@ -71,7 +74,14 @@
     "matchupdated": "Match updated",
     "matchdeleted": "Match deleted",
     "delete": "Delete",
-    "selectwinnerfordraw": "Select a winner by priority"
+    "selectwinnerfordraw": "Select a winner by priority",
+    "generateQR": "Generate QR Code",
+    "generating": "Generating...",
+    "generateNew": "Generate New",
+    "done": "Done",
+    "nextRound": "Next round",
+    "previousRound": "Previous round",
+    "tournament": "Tournament"
   },
   "AddPlayer": {
     "title": "Add player",

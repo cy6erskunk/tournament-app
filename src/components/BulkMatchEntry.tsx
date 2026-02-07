@@ -572,8 +572,9 @@ export default function BulkMatchEntry({ closeModal }: BulkMatchEntryProps) {
       <div className="text-center">
         <h1 className="text-xl font-semibold text-red-600 mb-4">{t("unauthorized")}</h1>
         <button
+          type="button"
           onClick={closeModal}
-          className="ring-2 ring-gray-900 ring-inset py-2 px-4 rounded-md shadow-xs"
+          className="ring-2 ring-gray-900 ring-inset py-2 px-4 rounded-md shadow-xs focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-600"
         >
           {t("back")}
         </button>
@@ -582,7 +583,7 @@ export default function BulkMatchEntry({ closeModal }: BulkMatchEntryProps) {
   }
 
   return (
-    <div className="max-h-[80vh] overflow-auto">
+    <div className="max-h-[80vh] overflow-auto p-1">
       <h1 className="mb-4 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
         {t("title")} - {t("round")} {context.activeRound}
       </h1>
@@ -610,22 +611,25 @@ export default function BulkMatchEntry({ closeModal }: BulkMatchEntryProps) {
             <p className="text-center mb-4 text-gray-600">
               {pendingDraw.player1Name} {pendingDraw.hits} - {pendingDraw.hits} {pendingDraw.player2Name}
             </p>
-            <div className="flex flex-col gap-3">
+            <div className="flex flex-col gap-3 text-sm font-semibold">
               <button
+                type="button"
                 onClick={() => handlePrioritySelection(pendingDraw.player1Name)}
-                className="w-full py-3 px-4 bg-blue-500 hover:bg-blue-600 text-white font-medium rounded-md"
+                className="disabled:bg-blue-300 bg-blue-500 w-full py-2 px-3 text-white rounded-md shadow-xs focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
               >
                 {pendingDraw.player1Name}
               </button>
               <button
+                type="button"
                 onClick={() => handlePrioritySelection(pendingDraw.player2Name)}
-                className="w-full py-3 px-4 bg-blue-500 hover:bg-blue-600 text-white font-medium rounded-md"
+                className="disabled:bg-blue-300 bg-blue-500 w-full py-2 px-3 text-white rounded-md shadow-xs focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
               >
                 {pendingDraw.player2Name}
               </button>
               <button
+                type="button"
                 onClick={() => setPendingDraw(null)}
-                className="w-full py-2 px-4 border border-gray-300 hover:bg-gray-50 text-gray-700 font-medium rounded-md"
+                className="ring-2 ring-gray-900 ring-inset py-2 w-full rounded-md shadow-xs focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-600"
               >
                 {t("back")}
               </button>
@@ -746,16 +750,17 @@ export default function BulkMatchEntry({ closeModal }: BulkMatchEntryProps) {
 
       <div className="flex items-center justify-center gap-2 text-sm font-semibold">
         <button
+          type="button"
           disabled={loading || pendingCount === 0}
           onClick={handleSubmit}
-          className="disabled:bg-blue-300 bg-blue-500 w-full py-2 px-3 text-white rounded-md shadow-xs"
+          className="disabled:bg-blue-300 bg-blue-500 w-full py-2 px-3 text-white rounded-md shadow-xs focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
         >
           {loading ? t("submitting") : t("submit")}
         </button>
         <button
           type="button"
           onClick={closeModal}
-          className="ring-2 ring-gray-900 ring-inset py-2 w-full rounded-md shadow-xs"
+          className="ring-2 ring-gray-900 ring-inset py-2 w-full rounded-md shadow-xs focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-600"
         >
           {t("back")}
         </button>

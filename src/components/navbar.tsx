@@ -43,6 +43,7 @@ const Navbar = ({ children }: NavbarProps) => {
         <div className="flex flex-col sm:flex-row pt-5 sm:pt-0">
           {children}
           <button
+            type="button"
             onClick={async () => {
               account.setUser(null);
               await logout();

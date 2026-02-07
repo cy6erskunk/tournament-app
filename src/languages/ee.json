@@ -19,7 +19,8 @@
       "emptyConfirm": "Eemaldage kõik mängud ja mängijad?",
       "tournaments": "Turniirid",
       "back": "Tagasi",
-      "dtEntry": "DT Sisestus"
+      "dtEntry": "DT Sisestus",
+      "qrMatch": "QR-matš"
     }
   },
   "Leaderboard": {
@@ -43,7 +44,9 @@
     "loss": "Kaotus",
     "winShort": "V",
     "lossShort": "K",
-    "remove": "Eemalda"
+    "remove": "Eemalda",
+    "sortAscending": "kasvav järjestus",
+    "sortDescending": "kahanev järjestus"
   },
   "Logout": {
     "logout": "Logi välja",
@@ -71,7 +74,14 @@
     "matchupdated": "Mäng uuendatud",
     "matchdeleted": "Mäng kustutatud",
     "delete": "Kustuta",
-    "selectwinnerfordraw": "Palun valige viigiliste mängude võitja"
+    "selectwinnerfordraw": "Palun valige viigiliste mängude võitja",
+    "generateQR": "Loo QR-kood",
+    "generating": "Loomine...",
+    "generateNew": "Loo uus",
+    "done": "Valmis",
+    "nextRound": "Järgmine voor",
+    "previousRound": "Eelmine voor",
+    "tournament": "Turniir"
   },
   "AddPlayer": {
     "title": "Lisa Mängija",
