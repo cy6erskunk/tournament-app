@@ -3,11 +3,20 @@ import { render, screen } from "@testing-library/react";
 import { NextIntlClientProvider } from "next-intl";
 import TournamentButtons from "./TournamentButtons";
 
-// Mock the TournamentContext
+// Mock Contexts
 const mockUseTournamentContext = vi.fn();
 vi.mock("@/context/TournamentContext", () => ({
   useTournamentContext: () => mockUseTournamentContext(),
 }));
+
+const mockUseUserContext = vi.fn();
+vi.mock("@/context/UserContext", () => ({
+  useUserContext: () => mockUseUserContext(),
+}))
+mockUseUserContext.mockReturnValue({
+  user: null,
+  setUser: vi.fn(),
+});
 
 // Mock next/navigation
 vi.mock("next/navigation", () => ({
@@ -30,7 +39,7 @@ const messages = {
   },
 };
 
-const defaultContextValue = {
+const defaultTournamentContextValue = {
   tournament: null,
   setTournament: vi.fn(),
   players: [],
@@ -50,7 +59,7 @@ describe("TournamentButtons", () => {
 
   it("should show Add match button for Round Robin tournaments", () => {
     mockUseTournamentContext.mockReturnValue({
-      ...defaultContextValue,
+      ...defaultTournamentContextValue,
       tournament: { id: 1, format: "Round Robin" },
     });
 
@@ -68,7 +77,7 @@ describe("TournamentButtons", () => {
 
   it("should not show Add match button for non-Round Robin tournaments", () => {
     mockUseTournamentContext.mockReturnValue({
-      ...defaultContextValue,
+      ...defaultTournamentContextValue,
       tournament: { id: 1, format: "Bracket" },
     });
 
@@ -86,7 +95,7 @@ describe("TournamentButtons", () => {
 
   it("should not show Add match button when tournament is undefined", () => {
     mockUseTournamentContext.mockReturnValue({
-      ...defaultContextValue,
+      ...defaultTournamentContextValue,
       tournament: undefined,
     });
 
@@ -104,7 +113,7 @@ describe("TournamentButtons", () => {
 
   it("should return null when players are seeded", () => {
     mockUseTournamentContext.mockReturnValue({
-      ...defaultContextValue,
+      ...defaultTournamentContextValue,
       players: [
         {
           player: {
