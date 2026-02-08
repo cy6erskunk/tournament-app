@@ -82,7 +82,9 @@ export function Player({
     return (
       <td>
         <button
+          type="button"
           onClick={() => removePlayer()}
+          aria-label={`${t("remove")} ${player.player.player_name}`}
           className="bg-red-400 p-1 rounded-full hover:bg-red-500"
         >
           <TrashIcon className="h-5 w-5 text-white" />
@@ -147,7 +149,7 @@ export function Player({
         {player.player.player_name}
       </td>
       <td>
-        <button onClick={() => openModal(player)}>
+        <button type="button" aria-label={`${t("add")} ${player.player.player_name}`} onClick={() => openModal(player)}>
           <PlusCircleIcon className="h-8 w-8 text-blue-700" />
         </button>
       </td>
@@ -178,7 +180,9 @@ export function Player({
               key={key}
             >
               <button
+                type="button"
                 className="invisible group-hover:visible"
+                aria-label={`${player.player.player_name} vs. ${opponent.player.player_name}`}
                 title={`${player.player.player_name} vs. ${opponent.player.player_name}`}
               >
                 <PlusCircleIcon className="h-8 w-8 text-blue-700" />

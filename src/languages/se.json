@@ -19,7 +19,8 @@
       "emptyConfirm": "Ta bort alla matcher och spelare?",
       "tournaments": "Turneringar",
       "back": "Tillbaka",
-      "dtEntry": "DT Inmatning"
+      "dtEntry": "DT Inmatning",
+      "qrMatch": "QR-match"
     }
   },
   "Leaderboard": {
@@ -43,7 +44,9 @@
     "loss": "Förlust",
     "winShort": "V",
     "lossShort": "F",
-    "remove": "Ta bort"
+    "remove": "Ta bort",
+    "sortAscending": "stigande ordning",
+    "sortDescending": "fallande ordning"
   },
   "Logout": {
     "logout": "Logga ut",
@@ -71,7 +74,14 @@
     "matchupdated": "Matchen uppdaterad",
     "matchdeleted": "Matchen raderad",
     "delete": "Radera",
-    "selectwinnerfordraw": "Vänligen välj en vinnare för oavgjorda matcher"
+    "selectwinnerfordraw": "Vänligen välj en vinnare för oavgjorda matcher",
+    "generateQR": "Generera QR-kod",
+    "generating": "Genererar...",
+    "generateNew": "Generera ny",
+    "done": "Klar",
+    "nextRound": "Nästa runda",
+    "previousRound": "Föregående runda",
+    "tournament": "Turnering"
   },
   "AddPlayer": {
     "title": "Lägg till spelare",

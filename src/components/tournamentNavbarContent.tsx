@@ -36,6 +36,7 @@ export default function TournamentNavbarContent() {
       </Link>
       {!isSeeded ? (
         <button
+          type="button"
           className="bg-white hover:bg-violet-500 hover:text-white text-blue-500 text-sm font-bold py-2 px-4 border-2 w-full md:w-36 border-white rounded-full m-1 relative justify-center"
           onClick={() => openModal(<NewPlayer closeModal={closeModal} />)}
         >

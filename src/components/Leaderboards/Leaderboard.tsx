@@ -50,6 +50,13 @@ const Leaderboard = () => {
     if (direction === "DESC") return <span>↓</span>;
   }
 
+  function getAriaLabel(sortCol: LeaderboardColumns, col: LeaderboardColumns, label: string) {
+    if (sortCol === col && direction !== "DEFAULT") {
+      return `${label}, ${direction === "ASC" ? t("sortAscending") : t("sortDescending")}`;
+    }
+    return label;
+  }
+
   return (
     <div className="w-full md:w-2/3">
       <div className="my-2 text-4xl font-bold flex justify-between">
@@ -63,49 +70,56 @@ const Leaderboard = () => {
           <thead>
             <tr className="text-white *:py-4 *:bg-blue-500">
               <th className="w-28 min-w-28">{t("position")}</th>
-              <th className="w-20 min-w-20" onClick={() => sortHandler("name")}>
-                {t("name")}
-                {sortIndicator("name")}
+              <th className="w-20 min-w-20">
+                <button type="button" className="text-white w-full" onClick={() => sortHandler("name")} aria-label={getAriaLabel(sortCol, "name", t("name"))}>
+                  {t("name")}
+                  {sortIndicator("name")}
+                </button>
               </th>
               <th
                 title={t("hoverWin%")}
-                className="underline decoration-dotted cursor-help underline-offset-2 w-20 min-w-20"
-                onClick={() => sortHandler("percentage")}
+                className="w-20 min-w-20"
               >
-                {t("win%")}
-                {sortIndicator("percentage")}
+                <button type="button" className="underline decoration-dotted cursor-help underline-offset-2 text-white w-full" onClick={() => sortHandler("percentage")} aria-label={getAriaLabel(sortCol, "percentage", t("win%"))}>
+                  {t("win%")}
+                  {sortIndicator("percentage")}
+                </button>
               </th>
               <th
                 title={`${t("win")}/${t("loss")}`}
-                className="underline decoration-dotted cursor-help underline-offset-2 w-20 min-w-20"
-                onClick={() => sortHandler("wins")}
+                className="w-20 min-w-20"
               >
-                {`${t("winShort")}/${t("lossShort")}`}
-                {sortIndicator("wins")}
+                <button type="button" className="underline decoration-dotted cursor-help underline-offset-2 text-white w-full" onClick={() => sortHandler("wins")} aria-label={getAriaLabel(sortCol, "wins", `${t("winShort")}/${t("lossShort")}`)}>
+                  {`${t("winShort")}/${t("lossShort")}`}
+                  {sortIndicator("wins")}
+                </button>
               </th>
               <th
                 title={t("hoverHitsGiven")}
-                className="underline decoration-dotted cursor-help underline-offset-2 w-20 min-w-20"
-                onClick={() => sortHandler("given")}
+                className="w-20 min-w-20"
               >
-                {t("hitsGiven")}
-                {sortIndicator("given")}
+                <button type="button" className="underline decoration-dotted cursor-help underline-offset-2 text-white w-full" onClick={() => sortHandler("given")} aria-label={getAriaLabel(sortCol, "given", t("hitsGiven"))}>
+                  {t("hitsGiven")}
+                  {sortIndicator("given")}
+                </button>
               </th>
               <th
                 title={t("hoverHitsReceived")}
-                className="underline decoration-dotted cursor-help underline-offset-2 w-20 min-w-20"
-                onClick={() => sortHandler("taken")}
+                className="w-20 min-w-20"
               >
-                {t("hitsReceived")}
-                {sortIndicator("taken")}
+                <button type="button" className="underline decoration-dotted cursor-help underline-offset-2 text-white w-full" onClick={() => sortHandler("taken")} aria-label={getAriaLabel(sortCol, "taken", t("hitsReceived"))}>
+                  {t("hitsReceived")}
+                  {sortIndicator("taken")}
+                </button>
               </th>
               <th
                 title={t("hoverAO-VO")}
-                className="underline decoration-dotted cursor-help underline-offset-2 w-20 min-w-20"
-                onClick={() => sortHandler("index")}
+                className="w-20 min-w-20"
               >
-                {t("AO-VO")}
-                {sortIndicator("index")}
+                <button type="button" className="underline decoration-dotted cursor-help underline-offset-2 text-white w-full" onClick={() => sortHandler("index")} aria-label={getAriaLabel(sortCol, "index", t("AO-VO"))}>
+                  {t("AO-VO")}
+                  {sortIndicator("index")}
+                </button>
               </th>
             </tr>
           </thead>
