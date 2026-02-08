@@ -102,7 +102,7 @@ const TournamentButtons = () => {
       </button>
       <button
         type="button"
-        className={`p-1 px-5 border rounded-md shadow-xs border-slate-600 text-center ${!context.hidden ? "bg-blue-700 border-blue-700 text-white border font-bold" : null}`}
+        className={`p-1 px-5 border rounded-md shadow-xs border-slate-600 text-center ${!context.hidden ? "bg-blue-700 border-blue-700 text-white border font-bold" : ""}`}
         onClick={toggleLeaderboard}
       >
         <div className="flex justify-center gap-2">
