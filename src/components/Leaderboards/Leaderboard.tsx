@@ -71,7 +71,7 @@ const Leaderboard = () => {
             <tr className="text-white *:py-4 *:bg-blue-500">
               <th className="w-28 min-w-28">{t("position")}</th>
               <th className="w-20 min-w-20">
-                <button type="button" className="text-white" onClick={() => sortHandler("name")} aria-label={getAriaLabel(sortCol, "name", t("name"))}>
+                <button type="button" className="text-white w-full" onClick={() => sortHandler("name")} aria-label={getAriaLabel(sortCol, "name", t("name"))}>
                   {t("name")}
                   {sortIndicator("name")}
                 </button>
@@ -80,7 +80,7 @@ const Leaderboard = () => {
                 title={t("hoverWin%")}
                 className="w-20 min-w-20"
               >
-                <button type="button" className="underline decoration-dotted cursor-help underline-offset-2 text-white" onClick={() => sortHandler("percentage")} aria-label={getAriaLabel(sortCol, "percentage", t("win%"))}>
+                <button type="button" className="underline decoration-dotted cursor-help underline-offset-2 text-white w-full" onClick={() => sortHandler("percentage")} aria-label={getAriaLabel(sortCol, "percentage", t("win%"))}>
                   {t("win%")}
                   {sortIndicator("percentage")}
                 </button>
@@ -89,7 +89,7 @@ const Leaderboard = () => {
                 title={`${t("win")}/${t("loss")}`}
                 className="w-20 min-w-20"
               >
-                <button type="button" className="underline decoration-dotted cursor-help underline-offset-2 text-white" onClick={() => sortHandler("wins")} aria-label={getAriaLabel(sortCol, "wins", `${t("winShort")}/${t("lossShort")}`)}>
+                <button type="button" className="underline decoration-dotted cursor-help underline-offset-2 text-white w-full" onClick={() => sortHandler("wins")} aria-label={getAriaLabel(sortCol, "wins", `${t("winShort")}/${t("lossShort")}`)}>
                   {`${t("winShort")}/${t("lossShort")}`}
                   {sortIndicator("wins")}
                 </button>
@@ -98,7 +98,7 @@ const Leaderboard = () => {
                 title={t("hoverHitsGiven")}
                 className="w-20 min-w-20"
               >
-                <button type="button" className="underline decoration-dotted cursor-help underline-offset-2 text-white" onClick={() => sortHandler("given")} aria-label={getAriaLabel(sortCol, "given", t("hitsGiven"))}>
+                <button type="button" className="underline decoration-dotted cursor-help underline-offset-2 text-white w-full" onClick={() => sortHandler("given")} aria-label={getAriaLabel(sortCol, "given", t("hitsGiven"))}>
                   {t("hitsGiven")}
                   {sortIndicator("given")}
                 </button>
@@ -107,7 +107,7 @@ const Leaderboard = () => {
                 title={t("hoverHitsReceived")}
                 className="w-20 min-w-20"
               >
-                <button type="button" className="underline decoration-dotted cursor-help underline-offset-2 text-white" onClick={() => sortHandler("taken")} aria-label={getAriaLabel(sortCol, "taken", t("hitsReceived"))}>
+                <button type="button" className="underline decoration-dotted cursor-help underline-offset-2 text-white w-full" onClick={() => sortHandler("taken")} aria-label={getAriaLabel(sortCol, "taken", t("hitsReceived"))}>
                   {t("hitsReceived")}
                   {sortIndicator("taken")}
                 </button>
@@ -116,7 +116,7 @@ const Leaderboard = () => {
                 title={t("hoverAO-VO")}
                 className="w-20 min-w-20"
               >
-                <button type="button" className="underline decoration-dotted cursor-help underline-offset-2 text-white" onClick={() => sortHandler("index")} aria-label={getAriaLabel(sortCol, "index", t("AO-VO"))}>
+                <button type="button" className="underline decoration-dotted cursor-help underline-offset-2 text-white w-full" onClick={() => sortHandler("index")} aria-label={getAriaLabel(sortCol, "index", t("AO-VO"))}>
                   {t("AO-VO")}
                   {sortIndicator("index")}
                 </button>
