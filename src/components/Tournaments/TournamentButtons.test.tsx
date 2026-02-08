@@ -28,12 +28,6 @@ vi.mock("@/database/getPlayers", () => ({
   getPlayer: vi.fn().mockResolvedValue({ success: true, value: [] }),
 }));
 
-// Mock the UserContext
-const mockUseUserContext = vi.fn();
-vi.mock("@/context/UserContext", () => ({
-  useUserContext: () => mockUseUserContext(),
-}));
-
 const messages = {
   Tournament: {
     Buttons: {
