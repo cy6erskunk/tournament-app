@@ -199,6 +199,7 @@ const AddMatch = ({
         </h1>
         <button
           onClick={closeModal}
+          type="button"
           className="ring-2 ring-gray-900 ring-inset py-2 w-full rounded-md shadow-xs focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-600"
         >
           {t("back")}
