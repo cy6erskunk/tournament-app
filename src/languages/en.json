@@ -226,7 +226,17 @@
       "selectPlayer": "Select player",
       "playerCount": "{count} players",
       "inTournament": "In tournament",
-      "notInTournament": "Not in tournament"
+      "notInTournament": "Not in tournament",
+      "createPlayer": "Create Player",
+      "newPlayerName": "Player name",
+      "creating": "Creating...",
+      "create": "Create",
+      "editPlayer": "Edit Player",
+      "newName": "New name",
+      "save": "Save",
+      "saving": "Saving...",
+      "edit": "Edit",
+      "nameTooLong": "Name is too long (max 16 characters)"
     },
     "qrAudit": {
       "title": "QR Code Audit",

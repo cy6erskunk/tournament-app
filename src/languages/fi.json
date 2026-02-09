@@ -226,7 +226,17 @@
       "selectPlayer": "Valitse pelaaja",
       "playerCount": "{count} pelaajaa",
       "inTournament": "Turnauksessa",
-      "notInTournament": "Ei turnauksessa"
+      "notInTournament": "Ei turnauksessa",
+      "createPlayer": "Luo pelaaja",
+      "newPlayerName": "Pelaajan nimi",
+      "creating": "Luodaan...",
+      "create": "Luo",
+      "editPlayer": "Muokkaa pelaajaa",
+      "newName": "Uusi nimi",
+      "save": "Tallenna",
+      "saving": "Tallennetaan...",
+      "edit": "Muokkaa",
+      "nameTooLong": "Nimi on liian pitkä (maks. 16 merkkiä)"
     },
     "qrAudit": {
       "title": "QR-koodi tarkastus",

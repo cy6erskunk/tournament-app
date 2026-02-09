@@ -226,7 +226,17 @@
       "selectPlayer": "Välj spelare",
       "playerCount": "{count} spelare",
       "inTournament": "I turnering",
-      "notInTournament": "Inte i turnering"
+      "notInTournament": "Inte i turnering",
+      "createPlayer": "Skapa spelare",
+      "newPlayerName": "Spelarnamn",
+      "creating": "Skapar...",
+      "create": "Skapa",
+      "editPlayer": "Redigera spelare",
+      "newName": "Nytt namn",
+      "save": "Spara",
+      "saving": "Sparar...",
+      "edit": "Redigera",
+      "nameTooLong": "Namnet är för långt (max 16 tecken)"
     },
     "qrAudit": {
       "title": "QR-kodgranskning",

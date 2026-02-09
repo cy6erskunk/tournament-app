@@ -226,7 +226,17 @@
       "selectPlayer": "Vali mängija",
       "playerCount": "{count} mängijat",
       "inTournament": "Turniiris",
-      "notInTournament": "Pole turniiris"
+      "notInTournament": "Pole turniiris",
+      "createPlayer": "Loo mängija",
+      "newPlayerName": "Mängija nimi",
+      "creating": "Loomine...",
+      "create": "Loo",
+      "editPlayer": "Muuda mängijat",
+      "newName": "Uus nimi",
+      "save": "Salvesta",
+      "saving": "Salvestamine...",
+      "edit": "Muuda",
+      "nameTooLong": "Nimi on liiga pikk (maks. 16 tähemärki)"
     },
     "qrAudit": {
       "title": "QR-koodi audit",

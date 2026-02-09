@@ -4,6 +4,8 @@ import { useEffect, useState, useCallback } from "react";
 import { useTranslations } from "next-intl";
 import AddPlayerToTournamentModal from "./AddPlayerToTournamentModal";
 import RemovePlayerFromTournamentModal from "./RemovePlayerFromTournamentModal";
+import CreatePlayerModal from "./CreatePlayerModal";
+import EditPlayerModal from "./EditPlayerModal";
 
 interface TournamentOption {
   id: number;
@@ -24,6 +26,8 @@ export default function TournamentUsersManagement() {
   const [error, setError] = useState<string | null>(null);
   const [addModalOpen, setAddModalOpen] = useState(false);
   const [removingPlayer, setRemovingPlayer] = useState<string | null>(null);
+  const [createModalOpen, setCreateModalOpen] = useState(false);
+  const [editingPlayer, setEditingPlayer] = useState<string | null>(null);
 
   const fetchInitialData = async () => {
     try {
@@ -106,6 +110,16 @@ export default function TournamentUsersManagement() {
     refreshData();
   };
 
+  const handlePlayerCreated = () => {
+    setCreateModalOpen(false);
+    refreshData();
+  };
+
+  const handlePlayerEdited = () => {
+    setEditingPlayer(null);
+    refreshData();
+  };
+
   const isFiltered = selectedTournamentId !== null;
   const displayedPlayers = isFiltered
     ? allPlayers.filter((name) => tournamentPlayerNames.includes(name))
@@ -143,6 +157,15 @@ export default function TournamentUsersManagement() {
         <div className="sm:flex-auto">
           <h1 className="text-2xl font-semibold text-gray-900">{t("title")}</h1>
           <p className="mt-2 text-sm text-gray-700">{t("description")}</p>
+        </div>
+        <div className="mt-4 sm:mt-0 sm:ml-16 sm:flex-none">
+          <button
+            type="button"
+            onClick={() => setCreateModalOpen(true)}
+            className="rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+          >
+            {t("createPlayer")}
+          </button>
         </div>
       </div>
 
@@ -204,14 +227,12 @@ export default function TournamentUsersManagement() {
                     >
                       {t("playerName")}
                     </th>
-                    {isFiltered && (
-                      <th
-                        scope="col"
-                        className="relative py-3.5 pl-3 pr-4 sm:pr-6"
-                      >
-                        <span className="sr-only">{t("actions")}</span>
-                      </th>
-                    )}
+                    <th
+                      scope="col"
+                      className="relative py-3.5 pl-3 pr-4 sm:pr-6"
+                    >
+                      <span className="sr-only">{t("actions")}</span>
+                    </th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-200 bg-white">
@@ -220,8 +241,15 @@ export default function TournamentUsersManagement() {
                       <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">
                         {playerName}
                       </td>
-                      {isFiltered && (
-                        <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
+                      <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
+                        <button
+                          type="button"
+                          onClick={() => setEditingPlayer(playerName)}
+                          className="text-indigo-600 hover:text-indigo-900 mr-4"
+                        >
+                          {t("edit")}
+                        </button>
+                        {isFiltered && (
                           <button
                             type="button"
                             onClick={() => setRemovingPlayer(playerName)}
@@ -229,8 +257,8 @@ export default function TournamentUsersManagement() {
                           >
                             {t("remove")}
                           </button>
-                        </td>
-                      )}
+                        )}
+                      </td>
                     </tr>
                   ))}
                 </tbody>
@@ -246,6 +274,21 @@ export default function TournamentUsersManagement() {
           </div>
         </div>
       </div>
+
+      <CreatePlayerModal
+        isOpen={createModalOpen}
+        onClose={() => setCreateModalOpen(false)}
+        onSuccess={handlePlayerCreated}
+      />
+
+      {editingPlayer && (
+        <EditPlayerModal
+          playerName={editingPlayer}
+          isOpen={true}
+          onClose={() => setEditingPlayer(null)}
+          onSuccess={handlePlayerEdited}
+        />
+      )}
 
       {isFiltered && (
         <>
