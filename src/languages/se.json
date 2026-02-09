@@ -203,9 +203,10 @@
     "tournamentUsers": {
       "title": "Turneringsspelare",
       "description": "Hantera spelare i turneringar",
-      "selectTournament": "Välj turnering",
-      "noTournaments": "Inga turneringar",
+      "filterByTournament": "Filtrera efter turnering",
+      "allTournaments": "Alla turneringar",
       "playerName": "Spelarnamn",
+      "tournament": "Turnering",
       "actions": "Åtgärder",
       "addPlayer": "Lägg till spelare",
       "removePlayer": "Ta bort spelare",
@@ -216,13 +217,16 @@
       "removing": "Tar bort...",
       "loading": "Laddar...",
       "error": "Fel",
-      "noPlayers": "Inga spelare i denna turnering",
+      "noPlayers": "Inga spelare",
+      "noPlayersInTournament": "Inga spelare i denna turnering",
       "noAvailablePlayers": "Inga tillgängliga spelare att lägga till",
       "removeConfirmation": "Är du säker på att du vill ta bort spelare",
       "removeWarning": "Spelaren tas bort från turneringen.",
       "fromTournament": "från turnering",
       "selectPlayer": "Välj spelare",
-      "playerCount": "{count} spelare"
+      "playerCount": "{count} spelare",
+      "inTournament": "I turnering",
+      "notInTournament": "Inte i turnering"
     },
     "qrAudit": {
       "title": "QR-kodgranskning",

@@ -203,9 +203,10 @@
     "tournamentUsers": {
       "title": "Turnauksen pelaajat",
       "description": "Hallinnoi pelaajia turnauksissa",
-      "selectTournament": "Valitse turnaus",
-      "noTournaments": "Ei turnauksia",
+      "filterByTournament": "Suodata turnauksen mukaan",
+      "allTournaments": "Kaikki turnaukset",
       "playerName": "Pelaajan nimi",
+      "tournament": "Turnaus",
       "actions": "Toiminnot",
       "addPlayer": "Lisää pelaaja",
       "removePlayer": "Poista pelaaja",
@@ -216,13 +217,16 @@
       "removing": "Poistetaan...",
       "loading": "Ladataan...",
       "error": "Virhe",
-      "noPlayers": "Ei pelaajia tässä turnauksessa",
+      "noPlayers": "Ei pelaajia",
+      "noPlayersInTournament": "Ei pelaajia tässä turnauksessa",
       "noAvailablePlayers": "Ei lisättäviä pelaajia",
       "removeConfirmation": "Haluatko varmasti poistaa pelaajan",
       "removeWarning": "Pelaaja poistetaan turnauksesta.",
       "fromTournament": "turnauksesta",
       "selectPlayer": "Valitse pelaaja",
-      "playerCount": "{count} pelaajaa"
+      "playerCount": "{count} pelaajaa",
+      "inTournament": "Turnauksessa",
+      "notInTournament": "Ei turnauksessa"
     },
     "qrAudit": {
       "title": "QR-koodi tarkastus",

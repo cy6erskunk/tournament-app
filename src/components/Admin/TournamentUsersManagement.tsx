@@ -1,8 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useTranslations } from "next-intl";
-import { Player } from "@/types/Player";
 import AddPlayerToTournamentModal from "./AddPlayerToTournamentModal";
 import RemovePlayerFromTournamentModal from "./RemovePlayerFromTournamentModal";
 
@@ -13,27 +12,35 @@ interface TournamentOption {
 
 export default function TournamentUsersManagement() {
   const t = useTranslations("Admin.tournamentUsers");
+  const [allPlayers, setAllPlayers] = useState<string[]>([]);
   const [tournaments, setTournaments] = useState<TournamentOption[]>([]);
   const [selectedTournamentId, setSelectedTournamentId] = useState<
     number | null
   >(null);
-  const [players, setPlayers] = useState<Player[]>([]);
-  const [availablePlayers, setAvailablePlayers] = useState<string[]>([]);
+  const [tournamentPlayerNames, setTournamentPlayerNames] = useState<string[]>(
+    [],
+  );
   const [loading, setLoading] = useState(true);
-  const [playersLoading, setPlayersLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [addModalOpen, setAddModalOpen] = useState(false);
   const [removingPlayer, setRemovingPlayer] = useState<string | null>(null);
 
-  const fetchTournaments = async () => {
+  const fetchInitialData = async () => {
     try {
       setLoading(true);
-      const response = await fetch("/api/admin/tournaments");
-      if (!response.ok) {
-        throw new Error("Failed to fetch tournaments");
-      }
-      const data = await response.json();
-      setTournaments(data);
+      const [playersRes, tournamentsRes] = await Promise.all([
+        fetch("/api/admin/players"),
+        fetch("/api/admin/tournaments"),
+      ]);
+
+      if (!playersRes.ok) throw new Error("Failed to fetch players");
+      if (!tournamentsRes.ok) throw new Error("Failed to fetch tournaments");
+
+      const playersData = await playersRes.json();
+      const tournamentsData = await tournamentsRes.json();
+
+      setAllPlayers(playersData);
+      setTournaments(tournamentsData);
       setError(null);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Unknown error");
@@ -42,57 +49,70 @@ export default function TournamentUsersManagement() {
     }
   };
 
-  const fetchPlayers = async (tournamentId: number) => {
-    try {
-      setPlayersLoading(true);
-      const response = await fetch(
-        `/api/admin/tournaments/${tournamentId}/players`,
-      );
-      if (!response.ok) {
-        throw new Error("Failed to fetch players");
+  const fetchTournamentPlayers = useCallback(
+    async (tournamentId: number) => {
+      try {
+        const res = await fetch(
+          `/api/admin/tournaments/${tournamentId}/players`,
+        );
+        if (!res.ok) throw new Error("Failed to fetch tournament players");
+        const data = await res.json();
+        const names = data.players.map(
+          (p: { player: { player_name: string } }) => p.player.player_name,
+        );
+        setTournamentPlayerNames(names);
+        setError(null);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : "Unknown error");
       }
-      const data = await response.json();
-      setPlayers(data.players);
-      setAvailablePlayers(data.availablePlayers);
-      setError(null);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Unknown error");
-    } finally {
-      setPlayersLoading(false);
-    }
-  };
+    },
+    [],
+  );
 
   useEffect(() => {
-    fetchTournaments();
+    fetchInitialData();
   }, []);
 
   useEffect(() => {
     if (selectedTournamentId !== null) {
-      fetchPlayers(selectedTournamentId);
+      fetchTournamentPlayers(selectedTournamentId);
     } else {
-      setPlayers([]);
-      setAvailablePlayers([]);
+      setTournamentPlayerNames([]);
     }
-  }, [selectedTournamentId]);
+  }, [selectedTournamentId, fetchTournamentPlayers]);
 
   const handleTournamentChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const value = e.target.value;
     setSelectedTournamentId(value ? parseInt(value, 10) : null);
   };
 
+  const refreshData = async () => {
+    const playersRes = await fetch("/api/admin/players");
+    if (playersRes.ok) {
+      setAllPlayers(await playersRes.json());
+    }
+    if (selectedTournamentId !== null) {
+      await fetchTournamentPlayers(selectedTournamentId);
+    }
+  };
+
   const handlePlayerAdded = () => {
     setAddModalOpen(false);
-    if (selectedTournamentId !== null) {
-      fetchPlayers(selectedTournamentId);
-    }
+    refreshData();
   };
 
   const handlePlayerRemoved = () => {
     setRemovingPlayer(null);
-    if (selectedTournamentId !== null) {
-      fetchPlayers(selectedTournamentId);
-    }
+    refreshData();
   };
+
+  const isFiltered = selectedTournamentId !== null;
+  const displayedPlayers = isFiltered
+    ? allPlayers.filter((name) => tournamentPlayerNames.includes(name))
+    : allPlayers;
+  const availablePlayers = isFiltered
+    ? allPlayers.filter((name) => !tournamentPlayerNames.includes(name))
+    : [];
 
   if (loading) {
     return (
@@ -102,7 +122,7 @@ export default function TournamentUsersManagement() {
     );
   }
 
-  if (error && tournaments.length === 0) {
+  if (error && allPlayers.length === 0) {
     return (
       <div className="rounded-md bg-red-50 p-4">
         <div className="flex">
@@ -126,110 +146,109 @@ export default function TournamentUsersManagement() {
         </div>
       </div>
 
-      <div className="mt-6">
-        <label
-          htmlFor="tournament-select"
-          className="block text-sm font-medium text-gray-700 mb-1"
-        >
-          {t("selectTournament")}
-        </label>
-        <select
-          id="tournament-select"
-          value={selectedTournamentId ?? ""}
-          onChange={handleTournamentChange}
-          className="block w-full max-w-md rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm border px-3 py-2"
-        >
-          <option value="">{t("selectTournament")}</option>
-          {tournaments.map((tournament) => (
-            <option key={tournament.id} value={tournament.id}>
-              {tournament.name}
-            </option>
-          ))}
-        </select>
+      <div className="mt-6 sm:flex sm:items-end sm:justify-between">
+        <div>
+          <label
+            htmlFor="tournament-filter"
+            className="block text-sm font-medium text-gray-700 mb-1"
+          >
+            {t("filterByTournament")}
+          </label>
+          <select
+            id="tournament-filter"
+            value={selectedTournamentId ?? ""}
+            onChange={handleTournamentChange}
+            className="block w-full max-w-md rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm border px-3 py-2"
+          >
+            <option value="">{t("allTournaments")}</option>
+            {tournaments.map((tournament) => (
+              <option key={tournament.id} value={tournament.id}>
+                {tournament.name}
+              </option>
+            ))}
+          </select>
+        </div>
+        {isFiltered && (
+          <div className="mt-4 sm:mt-0">
+            <button
+              type="button"
+              onClick={() => setAddModalOpen(true)}
+              className="rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+            >
+              {t("addPlayer")}
+            </button>
+          </div>
+        )}
       </div>
 
-      {selectedTournamentId !== null && (
-        <>
-          {error && (
-            <div className="mt-4 rounded-md bg-red-50 p-4">
-              <p className="text-sm text-red-800">{error}</p>
-            </div>
-          )}
+      {error && (
+        <div className="mt-4 rounded-md bg-red-50 p-4">
+          <p className="text-sm text-red-800">{error}</p>
+        </div>
+      )}
 
-          <div className="mt-6 sm:flex sm:items-center sm:justify-between">
-            <p className="text-sm text-gray-500">
-              {t("playerCount", { count: players.length })}
-            </p>
-            <div className="mt-2 sm:mt-0">
-              <button
-                type="button"
-                onClick={() => setAddModalOpen(true)}
-                className="rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-              >
-                {t("addPlayer")}
-              </button>
+      <div className="mt-4 text-sm text-gray-500">
+        {t("playerCount", { count: displayedPlayers.length })}
+      </div>
+
+      <div className="mt-2 flow-root">
+        <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+          <div className="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
+            <div className="overflow-hidden shadow ring-1 ring-black ring-opacity-5 sm:rounded-lg">
+              <table className="min-w-full divide-y divide-gray-300">
+                <thead className="bg-gray-50">
+                  <tr>
+                    <th
+                      scope="col"
+                      className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6"
+                    >
+                      {t("playerName")}
+                    </th>
+                    {isFiltered && (
+                      <th
+                        scope="col"
+                        className="relative py-3.5 pl-3 pr-4 sm:pr-6"
+                      >
+                        <span className="sr-only">{t("actions")}</span>
+                      </th>
+                    )}
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-200 bg-white">
+                  {displayedPlayers.map((playerName) => (
+                    <tr key={playerName}>
+                      <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">
+                        {playerName}
+                      </td>
+                      {isFiltered && (
+                        <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
+                          <button
+                            type="button"
+                            onClick={() => setRemovingPlayer(playerName)}
+                            className="text-red-600 hover:text-red-900"
+                          >
+                            {t("remove")}
+                          </button>
+                        </td>
+                      )}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+              {displayedPlayers.length === 0 && (
+                <div className="text-center py-12">
+                  <p className="text-sm text-gray-500">
+                    {isFiltered ? t("noPlayersInTournament") : t("noPlayers")}
+                  </p>
+                </div>
+              )}
             </div>
           </div>
+        </div>
+      </div>
 
-          {playersLoading ? (
-            <div className="mt-4 flex justify-center items-center py-12">
-              <div className="text-gray-500">{t("loading")}</div>
-            </div>
-          ) : (
-            <div className="mt-4 flow-root">
-              <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
-                <div className="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
-                  <div className="overflow-hidden shadow ring-1 ring-black ring-opacity-5 sm:rounded-lg">
-                    <table className="min-w-full divide-y divide-gray-300">
-                      <thead className="bg-gray-50">
-                        <tr>
-                          <th
-                            scope="col"
-                            className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6"
-                          >
-                            {t("playerName")}
-                          </th>
-                          <th
-                            scope="col"
-                            className="relative py-3.5 pl-3 pr-4 sm:pr-6"
-                          >
-                            <span className="sr-only">{t("actions")}</span>
-                          </th>
-                        </tr>
-                      </thead>
-                      <tbody className="divide-y divide-gray-200 bg-white">
-                        {players.map((player) => (
-                          <tr key={player.player.player_name}>
-                            <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">
-                              {player.player.player_name}
-                            </td>
-                            <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
-                              <button
-                                onClick={() =>
-                                  setRemovingPlayer(player.player.player_name)
-                                }
-                                className="text-red-600 hover:text-red-900"
-                              >
-                                {t("remove")}
-                              </button>
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                    {players.length === 0 && (
-                      <div className="text-center py-12">
-                        <p className="text-sm text-gray-500">
-                          {t("noPlayers")}
-                        </p>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
-
+      {isFiltered && (
+        <>
           <AddPlayerToTournamentModal
             tournamentId={selectedTournamentId}
             availablePlayers={availablePlayers}

@@ -203,9 +203,10 @@
     "tournamentUsers": {
       "title": "Turniiri mängijad",
       "description": "Halda mängijaid turniirides",
-      "selectTournament": "Vali turniir",
-      "noTournaments": "Turniire pole",
+      "filterByTournament": "Filtreeri turniiri järgi",
+      "allTournaments": "Kõik turniirid",
       "playerName": "Mängija nimi",
+      "tournament": "Turniir",
       "actions": "Tegevused",
       "addPlayer": "Lisa mängija",
       "removePlayer": "Eemalda mängija",
@@ -216,13 +217,16 @@
       "removing": "Eemaldamine...",
       "loading": "Laadimine...",
       "error": "Viga",
-      "noPlayers": "Selles turniiris pole mängijaid",
+      "noPlayers": "Mängijaid pole",
+      "noPlayersInTournament": "Selles turniiris pole mängijaid",
       "noAvailablePlayers": "Pole saadaolevaid mängijaid lisamiseks",
       "removeConfirmation": "Kas oled kindel, et soovid eemaldada mängija",
       "removeWarning": "Mängija eemaldatakse turniirist.",
       "fromTournament": "turniirist",
       "selectPlayer": "Vali mängija",
-      "playerCount": "{count} mängijat"
+      "playerCount": "{count} mängijat",
+      "inTournament": "Turniiris",
+      "notInTournament": "Pole turniiris"
     },
     "qrAudit": {
       "title": "QR-koodi audit",
