@@ -1,50 +1,24 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
-import AddPlayerToTournamentModal from "./AddPlayerToTournamentModal";
-import RemovePlayerFromTournamentModal from "./RemovePlayerFromTournamentModal";
 import CreatePlayerModal from "./CreatePlayerModal";
 import EditPlayerModal from "./EditPlayerModal";
-
-interface TournamentOption {
-  id: number;
-  name: string;
-}
 
 export default function TournamentUsersManagement() {
   const t = useTranslations("Admin.tournamentUsers");
   const [allPlayers, setAllPlayers] = useState<string[]>([]);
-  const [tournaments, setTournaments] = useState<TournamentOption[]>([]);
-  const [selectedTournamentId, setSelectedTournamentId] = useState<
-    number | null
-  >(null);
-  const [tournamentPlayerNames, setTournamentPlayerNames] = useState<string[]>(
-    [],
-  );
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [addModalOpen, setAddModalOpen] = useState(false);
-  const [removingPlayer, setRemovingPlayer] = useState<string | null>(null);
   const [createModalOpen, setCreateModalOpen] = useState(false);
   const [editingPlayer, setEditingPlayer] = useState<string | null>(null);
 
-  const fetchInitialData = async () => {
+  const fetchPlayers = async () => {
     try {
       setLoading(true);
-      const [playersRes, tournamentsRes] = await Promise.all([
-        fetch("/api/admin/players"),
-        fetch("/api/admin/tournaments"),
-      ]);
-
-      if (!playersRes.ok) throw new Error("Failed to fetch players");
-      if (!tournamentsRes.ok) throw new Error("Failed to fetch tournaments");
-
-      const playersData = await playersRes.json();
-      const tournamentsData = await tournamentsRes.json();
-
-      setAllPlayers(playersData);
-      setTournaments(tournamentsData);
+      const res = await fetch("/api/admin/players");
+      if (!res.ok) throw new Error("Failed to fetch players");
+      setAllPlayers(await res.json());
       setError(null);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Unknown error");
@@ -53,80 +27,19 @@ export default function TournamentUsersManagement() {
     }
   };
 
-  const fetchTournamentPlayers = useCallback(
-    async (tournamentId: number) => {
-      try {
-        const res = await fetch(
-          `/api/admin/tournaments/${tournamentId}/players`,
-        );
-        if (!res.ok) throw new Error("Failed to fetch tournament players");
-        const data = await res.json();
-        const names = data.players.map(
-          (p: { player: { player_name: string } }) => p.player.player_name,
-        );
-        setTournamentPlayerNames(names);
-        setError(null);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : "Unknown error");
-      }
-    },
-    [],
-  );
-
   useEffect(() => {
-    fetchInitialData();
+    fetchPlayers();
   }, []);
-
-  useEffect(() => {
-    if (selectedTournamentId !== null) {
-      fetchTournamentPlayers(selectedTournamentId);
-    } else {
-      setTournamentPlayerNames([]);
-    }
-  }, [selectedTournamentId, fetchTournamentPlayers]);
-
-  const handleTournamentChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const value = e.target.value;
-    setSelectedTournamentId(value ? parseInt(value, 10) : null);
-  };
-
-  const refreshData = async () => {
-    const playersRes = await fetch("/api/admin/players");
-    if (playersRes.ok) {
-      setAllPlayers(await playersRes.json());
-    }
-    if (selectedTournamentId !== null) {
-      await fetchTournamentPlayers(selectedTournamentId);
-    }
-  };
-
-  const handlePlayerAdded = () => {
-    setAddModalOpen(false);
-    refreshData();
-  };
-
-  const handlePlayerRemoved = () => {
-    setRemovingPlayer(null);
-    refreshData();
-  };
 
   const handlePlayerCreated = () => {
     setCreateModalOpen(false);
-    refreshData();
+    fetchPlayers();
   };
 
   const handlePlayerEdited = () => {
     setEditingPlayer(null);
-    refreshData();
+    fetchPlayers();
   };
-
-  const isFiltered = selectedTournamentId !== null;
-  const displayedPlayers = isFiltered
-    ? allPlayers.filter((name) => tournamentPlayerNames.includes(name))
-    : allPlayers;
-  const availablePlayers = isFiltered
-    ? allPlayers.filter((name) => !tournamentPlayerNames.includes(name))
-    : [];
 
   if (loading) {
     return (
@@ -169,41 +82,6 @@ export default function TournamentUsersManagement() {
         </div>
       </div>
 
-      <div className="mt-6 sm:flex sm:items-end sm:justify-between">
-        <div>
-          <label
-            htmlFor="tournament-filter"
-            className="block text-sm font-medium text-gray-700 mb-1"
-          >
-            {t("filterByTournament")}
-          </label>
-          <select
-            id="tournament-filter"
-            value={selectedTournamentId ?? ""}
-            onChange={handleTournamentChange}
-            className="block w-full max-w-md rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm border px-3 py-2"
-          >
-            <option value="">{t("allTournaments")}</option>
-            {tournaments.map((tournament) => (
-              <option key={tournament.id} value={tournament.id}>
-                {tournament.name}
-              </option>
-            ))}
-          </select>
-        </div>
-        {isFiltered && (
-          <div className="mt-4 sm:mt-0">
-            <button
-              type="button"
-              onClick={() => setAddModalOpen(true)}
-              className="rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-            >
-              {t("addPlayer")}
-            </button>
-          </div>
-        )}
-      </div>
-
       {error && (
         <div className="mt-4 rounded-md bg-red-50 p-4">
           <p className="text-sm text-red-800">{error}</p>
@@ -211,7 +89,7 @@ export default function TournamentUsersManagement() {
       )}
 
       <div className="mt-4 text-sm text-gray-500">
-        {t("playerCount", { count: displayedPlayers.length })}
+        {t("playerCount", { count: allPlayers.length })}
       </div>
 
       <div className="mt-2 flow-root">
@@ -236,7 +114,7 @@ export default function TournamentUsersManagement() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-200 bg-white">
-                  {displayedPlayers.map((playerName) => (
+                  {allPlayers.map((playerName) => (
                     <tr key={playerName}>
                       <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">
                         {playerName}
@@ -245,29 +123,18 @@ export default function TournamentUsersManagement() {
                         <button
                           type="button"
                           onClick={() => setEditingPlayer(playerName)}
-                          className="text-indigo-600 hover:text-indigo-900 mr-4"
+                          className="text-indigo-600 hover:text-indigo-900"
                         >
                           {t("edit")}
                         </button>
-                        {isFiltered && (
-                          <button
-                            type="button"
-                            onClick={() => setRemovingPlayer(playerName)}
-                            className="text-red-600 hover:text-red-900"
-                          >
-                            {t("remove")}
-                          </button>
-                        )}
                       </td>
                     </tr>
                   ))}
                 </tbody>
               </table>
-              {displayedPlayers.length === 0 && (
+              {allPlayers.length === 0 && (
                 <div className="text-center py-12">
-                  <p className="text-sm text-gray-500">
-                    {isFiltered ? t("noPlayersInTournament") : t("noPlayers")}
-                  </p>
+                  <p className="text-sm text-gray-500">{t("noPlayers")}</p>
                 </div>
               )}
             </div>
@@ -288,28 +155,6 @@ export default function TournamentUsersManagement() {
           onClose={() => setEditingPlayer(null)}
           onSuccess={handlePlayerEdited}
         />
-      )}
-
-      {isFiltered && (
-        <>
-          <AddPlayerToTournamentModal
-            tournamentId={selectedTournamentId}
-            availablePlayers={availablePlayers}
-            isOpen={addModalOpen}
-            onClose={() => setAddModalOpen(false)}
-            onSuccess={handlePlayerAdded}
-          />
-
-          {removingPlayer && (
-            <RemovePlayerFromTournamentModal
-              tournamentId={selectedTournamentId}
-              playerName={removingPlayer}
-              isOpen={true}
-              onClose={() => setRemovingPlayer(null)}
-              onSuccess={handlePlayerRemoved}
-            />
-          )}
-        </>
       )}
     </>
   );
