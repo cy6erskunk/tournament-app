@@ -4,6 +4,7 @@ import { FormEvent, useState } from "react";
 import { createTournament } from "@/database/addTournament";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
+import Button from "./Button";
 
 function NewTournament() {
   const t = useTranslations("Select");
@@ -93,13 +94,9 @@ function NewTournament() {
           </label>
         </div>
         <div>
-          <button
-            disabled={loading}
-            type="submit"
-            className="disabled:bg-blue-300 bg-blue-500 w-full py-2 px-3 text-white rounded-md shadow-xs font-semibold focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
-          >
+          <Button disabled={loading} type="submit" variant="primary" fullWidth className="font-semibold">
             {t("submit")}
-          </button>
+          </Button>
         </div>
       </form>
     </section>

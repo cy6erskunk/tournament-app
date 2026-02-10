@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { useUserContext } from "@/context/UserContext";
 import { getSession } from "@/helpers/getsession";
 import { removeCookie } from "@/helpers/removeCookie";
+import Button from "./Button";
 
 export default function Login() {
   const account = useUserContext();
@@ -90,13 +91,9 @@ export default function Login() {
         </div>
       </div>
       <div>
-        <button
-          disabled={loading}
-          type="submit"
-          className="disabled:bg-blue-300 bg-blue-500 w-full py-2 px-3 text-white rounded-md shadow-xs focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
-        >
+        <Button disabled={loading} type="submit" variant="primary" fullWidth>
           {t("submit")}
-        </button>
+        </Button>
       </div>
     </form>
   );

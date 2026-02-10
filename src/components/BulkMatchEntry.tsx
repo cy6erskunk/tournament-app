@@ -6,6 +6,7 @@ import { useUserContext } from "@/context/UserContext";
 import { useState, useRef, useCallback, KeyboardEvent, useMemo, useEffect } from "react";
 import { MatchRow, NewMatch } from "@/types/MatchTypes";
 import { Player } from "@/types/Player";
+import Button from "./Button";
 
 interface BulkMatchEntryProps {
   closeModal: () => void;
@@ -571,13 +572,9 @@ export default function BulkMatchEntry({ closeModal }: BulkMatchEntryProps) {
     return (
       <div className="text-center">
         <h1 className="text-xl font-semibold text-red-600 mb-4">{t("unauthorized")}</h1>
-        <button
-          type="button"
-          onClick={closeModal}
-          className="ring-2 ring-gray-900 ring-inset py-2 px-4 rounded-md shadow-xs focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-600"
-        >
+        <Button type="button" onClick={closeModal} variant="secondary">
           {t("back")}
-        </button>
+        </Button>
       </div>
     );
   }
@@ -612,27 +609,30 @@ export default function BulkMatchEntry({ closeModal }: BulkMatchEntryProps) {
               {pendingDraw.player1Name} {pendingDraw.hits} - {pendingDraw.hits} {pendingDraw.player2Name}
             </p>
             <div className="flex flex-col gap-3 text-sm font-semibold">
-              <button
+              <Button
                 type="button"
                 onClick={() => handlePrioritySelection(pendingDraw.player1Name)}
-                className="disabled:bg-blue-300 bg-blue-500 w-full py-2 px-3 text-white rounded-md shadow-xs focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
+                variant="primary"
+                fullWidth
               >
                 {pendingDraw.player1Name}
-              </button>
-              <button
+              </Button>
+              <Button
                 type="button"
                 onClick={() => handlePrioritySelection(pendingDraw.player2Name)}
-                className="disabled:bg-blue-300 bg-blue-500 w-full py-2 px-3 text-white rounded-md shadow-xs focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
+                variant="primary"
+                fullWidth
               >
                 {pendingDraw.player2Name}
-              </button>
-              <button
+              </Button>
+              <Button
                 type="button"
                 onClick={() => setPendingDraw(null)}
-                className="ring-2 ring-gray-900 ring-inset py-2 w-full rounded-md shadow-xs focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-600"
+                variant="secondary"
+                fullWidth
               >
                 {t("back")}
-              </button>
+              </Button>
             </div>
           </div>
         </div>
@@ -749,21 +749,18 @@ export default function BulkMatchEntry({ closeModal }: BulkMatchEntryProps) {
       </div>
 
       <div className="flex items-center justify-center gap-2 text-sm font-semibold">
-        <button
+        <Button
           type="button"
           disabled={loading || pendingCount === 0}
           onClick={handleSubmit}
-          className="disabled:bg-blue-300 bg-blue-500 w-full py-2 px-3 text-white rounded-md shadow-xs focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
+          variant="primary"
+          fullWidth
         >
           {loading ? t("submitting") : t("submit")}
-        </button>
-        <button
-          type="button"
-          onClick={closeModal}
-          className="ring-2 ring-gray-900 ring-inset py-2 w-full rounded-md shadow-xs focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-600"
-        >
+        </Button>
+        <Button type="button" onClick={closeModal} variant="secondary" fullWidth>
           {t("back")}
-        </button>
+        </Button>
       </div>
     </div>
   );
