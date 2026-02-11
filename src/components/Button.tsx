@@ -24,6 +24,7 @@ export default function Button({
   variant = "primary",
   fullWidth = false,
   className = "",
+  type = "button",
   children,
   ...props
 }: ButtonProps) {
@@ -34,7 +35,7 @@ export default function Button({
     .join(" ");
 
   return (
-    <button className={combinedClasses} {...props}>
+    <button type={type} className={combinedClasses} {...props}>
       {children}
     </button>
   );
