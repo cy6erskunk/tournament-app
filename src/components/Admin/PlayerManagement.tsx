@@ -5,8 +5,8 @@ import { useTranslations } from "next-intl";
 import CreatePlayerModal from "./CreatePlayerModal";
 import EditPlayerModal from "./EditPlayerModal";
 
-export default function TournamentUsersManagement() {
-  const t = useTranslations("Admin.tournamentUsers");
+export default function PlayerManagement() {
+  const t = useTranslations("Admin.players");
   const [allPlayers, setAllPlayers] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);

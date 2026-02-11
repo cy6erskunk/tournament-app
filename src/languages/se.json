@@ -150,7 +150,7 @@
       "users": "Användare",
       "devices": "Enheter",
       "qrAudit": "QR-granskning",
-      "tournamentUsers": "Spelare",
+      "players": "Spelare",
       "backToApp": "Tillbaka till appen"
     },
     "users": {
@@ -200,7 +200,7 @@
       "deleteConfirmation": "Är du säker på att du vill ta bort enhet",
       "deleteWarning": "Denna åtgärd kan inte ångras."
     },
-    "tournamentUsers": {
+    "players": {
       "title": "Spelare",
       "description": "Hantera spelare",
       "playerName": "Spelarnamn",

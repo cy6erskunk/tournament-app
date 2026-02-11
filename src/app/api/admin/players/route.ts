@@ -36,21 +36,23 @@ export async function POST(request: Request) {
     const body = await request.json();
     const { playerName } = body;
 
-    if (!playerName || !playerName.trim()) {
+    if (typeof playerName !== "string" || !playerName.trim()) {
       return NextResponse.json(
         { error: "Player name is required" },
         { status: 400 },
       );
     }
 
-    if (playerName.length > 16) {
+    const trimmed = playerName.trim();
+
+    if (trimmed.length > 16) {
       return NextResponse.json(
         { error: "Player name too long (max 16 characters)" },
         { status: 400 },
       );
     }
 
-    const result = await newPlayer(playerName.trim());
+    const result = await newPlayer(trimmed);
     if (!result.success) {
       return NextResponse.json(
         { error: result.error },
@@ -58,7 +60,7 @@ export async function POST(request: Request) {
       );
     }
 
-    return NextResponse.json({ playerName: playerName.trim() }, { status: 201 });
+    return NextResponse.json({ playerName: trimmed }, { status: 201 });
   } catch (error) {
     console.error("Error in POST /api/admin/players:", error);
     return NextResponse.json(

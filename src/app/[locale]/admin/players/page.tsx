@@ -1,5 +1,5 @@
 import { getTranslations } from "next-intl/server";
-import TournamentUsersManagement from "@/components/Admin/TournamentUsersManagement";
+import PlayerManagement from "@/components/Admin/PlayerManagement";
 
 export async function generateMetadata({
   params,
@@ -10,14 +10,14 @@ export async function generateMetadata({
   const t = await getTranslations({ locale, namespace: "Admin" });
 
   return {
-    title: `${t("title")} - ${t("tournamentUsers.title")}`,
+    title: `${t("title")} - ${t("players.title")}`,
   };
 }
 
-export default function TournamentUsersPage() {
+export default function PlayersPage() {
   return (
     <div className="px-4 sm:px-6 lg:px-8">
-      <TournamentUsersManagement />
+      <PlayerManagement />
     </div>
   );
 }

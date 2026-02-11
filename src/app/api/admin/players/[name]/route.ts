@@ -14,14 +14,14 @@ export async function PATCH(
     );
   }
 
-  const { name } = await params;
-  const oldName = decodeURIComponent(name);
-
   try {
+    const { name } = await params;
+    const oldName = decodeURIComponent(name);
+
     const body = await request.json();
     const { newName } = body;
 
-    if (!newName || !newName.trim()) {
+    if (typeof newName !== "string" || !newName.trim()) {
       return NextResponse.json(
         { error: "New name is required" },
         { status: 400 },

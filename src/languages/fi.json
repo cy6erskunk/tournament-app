@@ -150,7 +150,7 @@
       "users": "Käyttäjät",
       "devices": "Laitteet",
       "qrAudit": "QR-tarkastus",
-      "tournamentUsers": "Pelaajat",
+      "players": "Pelaajat",
       "backToApp": "Takaisin sovellukseen"
     },
     "users": {
@@ -200,7 +200,7 @@
       "deleteConfirmation": "Haluatko varmasti poistaa laitteen",
       "deleteWarning": "Tätä toimintoa ei voi peruuttaa."
     },
-    "tournamentUsers": {
+    "players": {
       "title": "Pelaajat",
       "description": "Hallinnoi pelaajia",
       "playerName": "Pelaajan nimi",

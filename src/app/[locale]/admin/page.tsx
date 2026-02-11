@@ -130,7 +130,7 @@ export default async function AdminDashboard({
         </Link>
 
         <Link
-          href={`/admin/tournament-users`}
+          href={`/admin/players`}
           className="relative rounded-lg border border-gray-300 bg-white px-6 py-5 shadow-sm hover:border-gray-400 hover:shadow-md transition-all"
         >
           <div className="flex items-center space-x-3">
@@ -151,10 +151,10 @@ export default async function AdminDashboard({
             </div>
             <div className="flex-1 min-w-0">
               <p className="text-lg font-medium text-gray-900">
-                {t("tournamentUsers.title")}
+                {t("players.title")}
               </p>
               <p className="text-sm text-gray-500">
-                {t("tournamentUsers.description")}
+                {t("players.description")}
               </p>
             </div>
           </div>

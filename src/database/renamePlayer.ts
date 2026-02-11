@@ -8,11 +8,13 @@ export async function renamePlayer(
   newName: string,
 ): Promise<Result<string, string>> {
   try {
-    if (!newName.trim()) {
+    const trimmed = newName.trim();
+
+    if (!trimmed) {
       return { success: false, error: "Player name cannot be empty" };
     }
 
-    if (newName.length > 16) {
+    if (trimmed.length > 16) {
       return { success: false, error: "Player name too long (max 16 characters)" };
     }
 
@@ -20,7 +22,7 @@ export async function renamePlayer(
       .selectFrom("players")
       .select("player_name")
       .where((eb) =>
-        eb(eb.fn("lower", ["player_name"]), "=", newName.toLowerCase()),
+        eb(eb.fn("lower", ["player_name"]), "=", trimmed.toLowerCase()),
       )
       .executeTakeFirst();
 
@@ -28,9 +30,10 @@ export async function renamePlayer(
       return { success: false, error: "A player with that name already exists" };
     }
 
+    // ON UPDATE CASCADE propagates the rename to tournament_players and matches
     const res = await db
       .updateTable("players")
-      .set({ player_name: newName.trim() })
+      .set({ player_name: trimmed })
       .where("player_name", "=", oldName)
       .executeTakeFirst();
 
@@ -39,7 +42,7 @@ export async function renamePlayer(
       return { success: false, error: "Player not found" };
     }
 
-    return { success: true, value: newName.trim() };
+    return { success: true, value: trimmed };
   } catch (error) {
     console.error("Error renaming player:", error);
     return { success: false, error: "Error renaming player" };

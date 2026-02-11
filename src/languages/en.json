@@ -150,7 +150,7 @@
       "users": "Users",
       "devices": "Devices",
       "qrAudit": "QR Audit",
-      "tournamentUsers": "Players",
+      "players": "Players",
       "backToApp": "Back to App"
     },
     "users": {
@@ -200,7 +200,7 @@
       "deleteConfirmation": "Are you sure you want to delete device",
       "deleteWarning": "This action cannot be undone."
     },
-    "tournamentUsers": {
+    "players": {
       "title": "Players",
       "description": "Manage players",
       "playerName": "Player name",

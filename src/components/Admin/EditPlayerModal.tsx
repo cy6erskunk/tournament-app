@@ -17,7 +17,7 @@ export default function EditPlayerModal({
   onClose,
   onSuccess,
 }: EditPlayerModalProps) {
-  const t = useTranslations("Admin.tournamentUsers");
+  const t = useTranslations("Admin.players");
   const [newName, setNewName] = useState(playerName);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);

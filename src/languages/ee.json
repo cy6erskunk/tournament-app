@@ -150,7 +150,7 @@
       "users": "Kasutajad",
       "devices": "Seadmed",
       "qrAudit": "QR-audit",
-      "tournamentUsers": "Mängijad",
+      "players": "Mängijad",
       "backToApp": "Tagasi rakendusse"
     },
     "users": {
@@ -200,7 +200,7 @@
       "deleteConfirmation": "Kas oled kindel, et soovid kustutada seadme",
       "deleteWarning": "Seda toimingut ei saa tagasi võtta."
     },
-    "tournamentUsers": {
+    "players": {
       "title": "Mängijad",
       "description": "Halda mängijaid",
       "playerName": "Mängija nimi",

@@ -15,7 +15,7 @@ export default function CreatePlayerModal({
   onClose,
   onSuccess,
 }: CreatePlayerModalProps) {
-  const t = useTranslations("Admin.tournamentUsers");
+  const t = useTranslations("Admin.players");
   const [playerName, setPlayerName] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
