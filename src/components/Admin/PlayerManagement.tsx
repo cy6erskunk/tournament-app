@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
+import Button from "../Button";
 import CreatePlayerModal from "./CreatePlayerModal";
 import EditPlayerModal from "./EditPlayerModal";
 
@@ -72,13 +73,12 @@ export default function PlayerManagement() {
           <p className="mt-2 text-sm text-gray-700">{t("description")}</p>
         </div>
         <div className="mt-4 sm:mt-0 sm:ml-16 sm:flex-none">
-          <button
-            type="button"
+          <Button
             onClick={() => setCreateModalOpen(true)}
-            className="rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+            variant="admin-primary"
           >
             {t("createPlayer")}
-          </button>
+          </Button>
         </div>
       </div>
 
