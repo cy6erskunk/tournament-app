@@ -32,7 +32,7 @@ describe("renamePlayer", () => {
 
   it("should validate trimmed length, not raw length", async () => {
     // 16 chars + spaces = raw length > 16, but trimmed = 16 which is OK
-    const name = "  abcdefghijklmn  ";
+    const name = "  abcdefghijklmnop  ";
 
     const selectFromMock = vi.fn().mockReturnValue({
       select: vi.fn().mockReturnValue({

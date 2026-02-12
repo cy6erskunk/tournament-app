@@ -26,7 +26,7 @@ export async function renamePlayer(
       )
       .executeTakeFirst();
 
-    if (existing && existing.player_name !== oldName) {
+    if (existing && existing.player_name.toLowerCase() !== oldName.toLowerCase()) {
       return { success: false, error: "A player with that name already exists" };
     }
 
