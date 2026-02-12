@@ -15,8 +15,7 @@ export async function PATCH(
   }
 
   try {
-    const { name } = await params;
-    const oldName = decodeURIComponent(name);
+    const { name: oldName } = await params;
 
     const body = await request.json();
     const { newName } = body;
