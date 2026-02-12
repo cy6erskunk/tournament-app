@@ -69,10 +69,10 @@ export default function DeleteUserModal({
       </div>
 
       <div className="flex justify-end gap-3">
-        <Button type="button" onClick={handleClose} disabled={loading} variant="admin-cancel">
+        <Button onClick={handleClose} disabled={loading} variant="admin-cancel">
           {t("cancel")}
         </Button>
-        <Button type="button" onClick={handleDelete} disabled={loading} variant="danger">
+        <Button onClick={handleDelete} disabled={loading} variant="danger">
           {loading ? t("deleting") : t("delete")}
         </Button>
       </div>

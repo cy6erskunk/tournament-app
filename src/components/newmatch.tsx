@@ -198,7 +198,7 @@ const AddMatch = ({
         <h1 className="mb-10 text-center text-2xl font-semibold leading-9 tracking-tight text-gray-900">
           {t("noplayers")}
         </h1>
-        <Button onClick={closeModal} type="button" variant="secondary" fullWidth>
+        <Button onClick={closeModal} variant="secondary" fullWidth>
           {t("back")}
         </Button>
       </>
@@ -309,7 +309,7 @@ const AddMatch = ({
             <Button disabled={loading} type="submit" variant="primary" fullWidth>
               {t("submit")}
             </Button>
-            <Button type="button" onClick={closeModal} variant="secondary" fullWidth>
+            <Button onClick={closeModal} variant="secondary" fullWidth>
               {t("back")}
             </Button>
           </div>
@@ -457,7 +457,7 @@ const AddMatch = ({
           <Button disabled={loading} type="submit" variant="primary" fullWidth>
             {t("submit")}
           </Button>
-          <Button type="button" onClick={closeModal} variant="secondary" fullWidth>
+          <Button onClick={closeModal} variant="secondary" fullWidth>
             {t("back")}
           </Button>
         </div>

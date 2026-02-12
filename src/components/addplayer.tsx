@@ -111,7 +111,7 @@ const Addplayer = ({ closeModal, playerList }: AddplayerProps) => {
         <Button disabled={loading} type="submit" variant="primary" fullWidth>
           {t("submit")}
         </Button>
-        <Button onClick={closeModal} type="button" variant="secondary" fullWidth>
+        <Button onClick={closeModal} variant="secondary" fullWidth>
           {t("back")}
         </Button>
       </div>

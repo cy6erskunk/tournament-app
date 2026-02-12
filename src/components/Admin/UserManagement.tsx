@@ -91,7 +91,6 @@ export default function UserManagement() {
         </div>
         <div className="mt-4 sm:mt-0 sm:ml-16 sm:flex-none">
           <Button
-            type="button"
             onClick={() => setCreateModalOpen(true)}
             variant="admin-primary"
           >

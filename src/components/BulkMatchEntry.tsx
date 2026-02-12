@@ -572,7 +572,7 @@ export default function BulkMatchEntry({ closeModal }: BulkMatchEntryProps) {
     return (
       <div className="text-center">
         <h1 className="text-xl font-semibold text-red-600 mb-4">{t("unauthorized")}</h1>
-        <Button type="button" onClick={closeModal} variant="secondary">
+        <Button onClick={closeModal} variant="secondary">
           {t("back")}
         </Button>
       </div>
@@ -610,7 +610,6 @@ export default function BulkMatchEntry({ closeModal }: BulkMatchEntryProps) {
             </p>
             <div className="flex flex-col gap-3 text-sm font-semibold">
               <Button
-                type="button"
                 onClick={() => handlePrioritySelection(pendingDraw.player1Name)}
                 variant="primary"
                 fullWidth
@@ -618,7 +617,6 @@ export default function BulkMatchEntry({ closeModal }: BulkMatchEntryProps) {
                 {pendingDraw.player1Name}
               </Button>
               <Button
-                type="button"
                 onClick={() => handlePrioritySelection(pendingDraw.player2Name)}
                 variant="primary"
                 fullWidth
@@ -626,7 +624,6 @@ export default function BulkMatchEntry({ closeModal }: BulkMatchEntryProps) {
                 {pendingDraw.player2Name}
               </Button>
               <Button
-                type="button"
                 onClick={() => setPendingDraw(null)}
                 variant="secondary"
                 fullWidth
@@ -750,7 +747,6 @@ export default function BulkMatchEntry({ closeModal }: BulkMatchEntryProps) {
 
       <div className="flex items-center justify-center gap-2 text-sm font-semibold">
         <Button
-          type="button"
           disabled={loading || pendingCount === 0}
           onClick={handleSubmit}
           variant="primary"
@@ -758,7 +754,7 @@ export default function BulkMatchEntry({ closeModal }: BulkMatchEntryProps) {
         >
           {loading ? t("submitting") : t("submit")}
         </Button>
-        <Button type="button" onClick={closeModal} variant="secondary" fullWidth>
+        <Button onClick={closeModal} variant="secondary" fullWidth>
           {t("back")}
         </Button>
       </div>

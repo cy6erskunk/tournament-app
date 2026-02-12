@@ -153,7 +153,7 @@ export default function EditUserModal({
         </div>
 
         <div className="mt-6 flex justify-end gap-3">
-          <Button type="button" onClick={handleClose} disabled={loading} variant="admin-cancel">
+          <Button onClick={handleClose} disabled={loading} variant="admin-cancel">
             {t("cancel")}
           </Button>
           <Button

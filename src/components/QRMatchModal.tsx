@@ -159,8 +159,7 @@ export default function QRMatchModal({ closeModal, player1, player2 }: QRMatchMo
 
           <div className="flex items-center justify-center gap-2 text-sm font-semibold">
             <Button
-              type="button"
-              onClick={generateQRCode}
+                           onClick={generateQRCode}
               disabled={loading || !selectedPlayer1 || !selectedPlayer2}
               variant="primary"
               fullWidth
