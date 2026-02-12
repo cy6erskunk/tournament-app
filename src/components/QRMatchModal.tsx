@@ -6,6 +6,7 @@ import { useTournamentContext } from '@/context/TournamentContext';
 import { Player } from '@/types/Player';
 import QRMatchCode from './QRMatchCode';
 import { QRMatchData } from '@/types/QRMatch';
+import Button from './Button';
 
 interface QRMatchModalProps {
   closeModal: () => void;
@@ -157,21 +158,17 @@ export default function QRMatchModal({ closeModal, player1, player2 }: QRMatchMo
           </div>
 
           <div className="flex items-center justify-center gap-2 text-sm font-semibold">
-            <button
-              type="button"
-              onClick={generateQRCode}
+            <Button
+                           onClick={generateQRCode}
               disabled={loading || !selectedPlayer1 || !selectedPlayer2}
-              className="disabled:bg-blue-300 bg-blue-500 w-full py-2 px-3 text-white rounded-md shadow-xs focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
+              variant="primary"
+              fullWidth
             >
               {loading ? t('generating') : t('generateQR')}
-            </button>
-            <button
-              type="button"
-              onClick={closeModal}
-              className="ring-2 ring-gray-900 ring-inset py-2 w-full rounded-md shadow-xs focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-600"
-            >
+            </Button>
+            <Button onClick={closeModal} variant="secondary" fullWidth>
               {t('back')}
-            </button>
+            </Button>
           </div>
         </div>
       ) : (
@@ -191,20 +188,12 @@ export default function QRMatchModal({ closeModal, player1, player2 }: QRMatchMo
           </div>
 
           <div className="flex items-center justify-center gap-2 w-full text-sm font-semibold">
-            <button
-              type="button"
-              onClick={() => setQrData(null)}
-              className="ring-2 ring-gray-900 ring-inset py-2 w-full rounded-md shadow-xs focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-600"
-            >
+            <Button onClick={() => setQrData(null)} variant="secondary" fullWidth>
               {t('generateNew')}
-            </button>
-            <button
-              type="button"
-              onClick={closeModal}
-              className="disabled:bg-blue-300 bg-blue-500 w-full py-2 px-3 text-white rounded-md shadow-xs focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
-            >
+            </Button>
+            <Button onClick={closeModal} variant="primary" fullWidth>
               {t('done')}
-            </button>
+            </Button>
           </div>
         </div>
       )}

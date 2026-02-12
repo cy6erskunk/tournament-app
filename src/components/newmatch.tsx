@@ -6,6 +6,7 @@ import { useTournamentContext } from "@/context/TournamentContext";
 import { MatchForm, MatchFormSubmit, MatchRow } from "@/types/MatchTypes";
 import { Match } from "./Results/Brackets/Tournament";
 import { Player } from "@/types/Player";
+import Button from "./Button";
 
 type AddmatchProps = {
   closeModal: () => void;
@@ -197,13 +198,9 @@ const AddMatch = ({
         <h1 className="mb-10 text-center text-2xl font-semibold leading-9 tracking-tight text-gray-900">
           {t("noplayers")}
         </h1>
-        <button
-          onClick={closeModal}
-          type="button"
-          className="ring-2 ring-gray-900 ring-inset py-2 w-full rounded-md shadow-xs focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-600"
-        >
+        <Button onClick={closeModal} variant="secondary" fullWidth>
           {t("back")}
-        </button>
+        </Button>
       </>
     );
   }
@@ -309,20 +306,12 @@ const AddMatch = ({
             </div>
           </div>
           <div className="flex items-center justify-center gap-2 text-sm font-semibold">
-            <button
-              disabled={loading}
-              type="submit"
-              className="disabled:bg-blue-300 bg-blue-500 w-full py-2 px-3 text-white rounded-md shadow-xs focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
-            >
+            <Button disabled={loading} type="submit" variant="primary" fullWidth>
               {t("submit")}
-            </button>
-            <button
-              type="button"
-              onClick={closeModal}
-              className="ring-2 ring-gray-900 ring-inset py-2 w-full rounded-md shadow-xs focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-600"
-            >
+            </Button>
+            <Button onClick={closeModal} variant="secondary" fullWidth>
               {t("back")}
-            </button>
+            </Button>
           </div>
         </form>
       </>
@@ -465,20 +454,12 @@ const AddMatch = ({
           </div>
         </div>
         <div className="flex items-center justify-center gap-2 text-sm font-semibold">
-          <button
-            disabled={loading}
-            type="submit"
-            className="disabled:bg-blue-300 bg-blue-500 w-full py-2 px-3 text-white rounded-md shadow-xs focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
-          >
+          <Button disabled={loading} type="submit" variant="primary" fullWidth>
             {t("submit")}
-          </button>
-          <button
-            type="button"
-            onClick={closeModal}
-            className="ring-2 ring-gray-900 ring-inset py-2 w-full rounded-md shadow-xs focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-600"
-          >
+          </Button>
+          <Button onClick={closeModal} variant="secondary" fullWidth>
             {t("back")}
-          </button>
+          </Button>
         </div>
       </form>
     </>
