@@ -166,7 +166,7 @@ export default function QRMatchModal({ closeModal, player1, player2 }: QRMatchMo
             >
               {loading ? t('generating') : t('generateQR')}
             </Button>
-            <Button type="button" onClick={closeModal} variant="secondary" fullWidth>
+            <Button onClick={closeModal} variant="secondary" fullWidth>
               {t('back')}
             </Button>
           </div>
@@ -188,10 +188,10 @@ export default function QRMatchModal({ closeModal, player1, player2 }: QRMatchMo
           </div>
 
           <div className="flex items-center justify-center gap-2 w-full text-sm font-semibold">
-            <Button type="button" onClick={() => setQrData(null)} variant="secondary" fullWidth>
+            <Button onClick={() => setQrData(null)} variant="secondary" fullWidth>
               {t('generateNew')}
             </Button>
-            <Button type="button" onClick={closeModal} variant="primary" fullWidth>
+            <Button onClick={closeModal} variant="primary" fullWidth>
               {t('done')}
             </Button>
           </div>
