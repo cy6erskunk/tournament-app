@@ -150,6 +150,7 @@
       "users": "Users",
       "devices": "Devices",
       "qrAudit": "QR Audit",
+      "players": "Players",
       "backToApp": "Back to App"
     },
     "users": {
@@ -198,6 +199,27 @@
       "noDevices": "No registered devices. Devices will appear here after their first QR code match submission.",
       "deleteConfirmation": "Are you sure you want to delete device",
       "deleteWarning": "This action cannot be undone."
+    },
+    "players": {
+      "title": "Players",
+      "description": "Manage players",
+      "playerName": "Player name",
+      "actions": "Actions",
+      "cancel": "Cancel",
+      "loading": "Loading...",
+      "error": "Error",
+      "noPlayers": "No players",
+      "playerCount": "{count} players",
+      "createPlayer": "Create Player",
+      "newPlayerName": "Player name",
+      "creating": "Creating...",
+      "create": "Create",
+      "editPlayer": "Edit Player",
+      "newName": "New name",
+      "save": "Save",
+      "saving": "Saving...",
+      "edit": "Edit",
+      "nameTooLong": "Name is too long (max 16 characters)"
     },
     "qrAudit": {
       "title": "QR Code Audit",

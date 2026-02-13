@@ -150,6 +150,7 @@
       "users": "Käyttäjät",
       "devices": "Laitteet",
       "qrAudit": "QR-tarkastus",
+      "players": "Pelaajat",
       "backToApp": "Takaisin sovellukseen"
     },
     "users": {
@@ -198,6 +199,27 @@
       "noDevices": "Ei rekisteröityjä laitteita. Laitteet rekisteröityvät automaattisesti, kun ne lähettävät ensimmäisen QR-koodi ottelun.",
       "deleteConfirmation": "Haluatko varmasti poistaa laitteen",
       "deleteWarning": "Tätä toimintoa ei voi peruuttaa."
+    },
+    "players": {
+      "title": "Pelaajat",
+      "description": "Hallinnoi pelaajia",
+      "playerName": "Pelaajan nimi",
+      "actions": "Toiminnot",
+      "cancel": "Peruuta",
+      "loading": "Ladataan...",
+      "error": "Virhe",
+      "noPlayers": "Ei pelaajia",
+      "playerCount": "{count} pelaajaa",
+      "createPlayer": "Luo pelaaja",
+      "newPlayerName": "Pelaajan nimi",
+      "creating": "Luodaan...",
+      "create": "Luo",
+      "editPlayer": "Muokkaa pelaajaa",
+      "newName": "Uusi nimi",
+      "save": "Tallenna",
+      "saving": "Tallennetaan...",
+      "edit": "Muokkaa",
+      "nameTooLong": "Nimi on liian pitkä (maks. 16 merkkiä)"
     },
     "qrAudit": {
       "title": "QR-koodi tarkastus",

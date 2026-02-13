@@ -7,6 +7,7 @@ export async function getPlayer(): Promise<Result<string[], string>> {
     const user = await db
       .selectFrom("players")
       .select("player_name")
+      .orderBy("player_name")
       .limit(500)
       .execute();
     const users = user.map((player) => player.player_name);

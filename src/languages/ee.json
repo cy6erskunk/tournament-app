@@ -150,6 +150,7 @@
       "users": "Kasutajad",
       "devices": "Seadmed",
       "qrAudit": "QR-audit",
+      "players": "Mängijad",
       "backToApp": "Tagasi rakendusse"
     },
     "users": {
@@ -198,6 +199,27 @@
       "noDevices": "Registreeritud seadmeid pole. Seadmed ilmuvad siia pärast esimest QR-koodi matši esitamist.",
       "deleteConfirmation": "Kas oled kindel, et soovid kustutada seadme",
       "deleteWarning": "Seda toimingut ei saa tagasi võtta."
+    },
+    "players": {
+      "title": "Mängijad",
+      "description": "Halda mängijaid",
+      "playerName": "Mängija nimi",
+      "actions": "Tegevused",
+      "cancel": "Tühista",
+      "loading": "Laadimine...",
+      "error": "Viga",
+      "noPlayers": "Mängijaid pole",
+      "playerCount": "{count} mängijat",
+      "createPlayer": "Loo mängija",
+      "newPlayerName": "Mängija nimi",
+      "creating": "Loomine...",
+      "create": "Loo",
+      "editPlayer": "Muuda mängijat",
+      "newName": "Uus nimi",
+      "save": "Salvesta",
+      "saving": "Salvestamine...",
+      "edit": "Muuda",
+      "nameTooLong": "Nimi on liiga pikk (maks. 16 tähemärki)"
     },
     "qrAudit": {
       "title": "QR-koodi audit",

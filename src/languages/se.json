@@ -150,6 +150,7 @@
       "users": "Användare",
       "devices": "Enheter",
       "qrAudit": "QR-granskning",
+      "players": "Spelare",
       "backToApp": "Tillbaka till appen"
     },
     "users": {
@@ -198,6 +199,27 @@
       "noDevices": "Inga registrerade enheter. Enheter visas här efter deras första QR-kod matchinlämning.",
       "deleteConfirmation": "Är du säker på att du vill ta bort enhet",
       "deleteWarning": "Denna åtgärd kan inte ångras."
+    },
+    "players": {
+      "title": "Spelare",
+      "description": "Hantera spelare",
+      "playerName": "Spelarnamn",
+      "actions": "Åtgärder",
+      "cancel": "Avbryt",
+      "loading": "Laddar...",
+      "error": "Fel",
+      "noPlayers": "Inga spelare",
+      "playerCount": "{count} spelare",
+      "createPlayer": "Skapa spelare",
+      "newPlayerName": "Spelarnamn",
+      "creating": "Skapar...",
+      "create": "Skapa",
+      "editPlayer": "Redigera spelare",
+      "newName": "Nytt namn",
+      "save": "Spara",
+      "saving": "Sparar...",
+      "edit": "Redigera",
+      "nameTooLong": "Namnet är för långt (max 16 tecken)"
     },
     "qrAudit": {
       "title": "QR-kodgranskning",
