@@ -33,6 +33,7 @@ export default function Match({ competitors, match, round }: MatchProps) {
           tournament_id: 0,
           bracket_match: null,
           bracket_seed: null,
+          pool_id: null,
         },
         matches: [],
       };

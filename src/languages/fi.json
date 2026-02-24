@@ -20,8 +20,28 @@
       "tournaments": "Turnaukset",
       "back": "Takaisin",
       "dtEntry": "DT Syöttö",
-      "qrMatch": "QR-ottelu"
+      "qrMatch": "QR-ottelu",
+      "managePools": "Hallitse pooleja"
     }
+  },
+  "Pool": {
+    "title": "Poolien hallinta",
+    "createPool": "Luo uusi pooli",
+    "poolNamePlaceholder": "Poolin nimi (esim. Pooli A)",
+    "creating": "Luodaan...",
+    "pools": "Poolit",
+    "deletePool": "Poista pooli",
+    "deleting": "Poistetaan...",
+    "assignPlayers": "Lisää ottelijoita pooleihin",
+    "poolFor": "Pooli ottelijalle",
+    "noPool": "Ei poolia",
+    "saving": "Tallennetaan...",
+    "close": "Sulje",
+    "noPlayersInPool": "Ei ottelijoita tässä poolissa",
+    "unassigned": "Ilman poolia",
+    "createFailed": "Poolin luominen epäonnistui",
+    "deleteFailed": "Poolin poistaminen epäonnistui",
+    "assignFailed": "Ottelijan lisääminen pooliin epäonnistui"
   },
   "Leaderboard": {
     "title": "Tulostaulu",

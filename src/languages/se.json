@@ -20,8 +20,28 @@
       "tournaments": "Turneringar",
       "back": "Tillbaka",
       "dtEntry": "DT Inmatning",
-      "qrMatch": "QR-match"
+      "qrMatch": "QR-match",
+      "managePools": "Hantera pooler"
     }
+  },
+  "Pool": {
+    "title": "Poolhantering",
+    "createPool": "Skapa pool",
+    "poolNamePlaceholder": "Poolnamn (t.ex. Pool A)",
+    "creating": "Skapar...",
+    "pools": "Pooler",
+    "deletePool": "Ta bort pool",
+    "deleting": "Tar bort...",
+    "assignPlayers": "Tilldela spelare till pooler",
+    "poolFor": "Pool för",
+    "noPool": "Ingen pool",
+    "saving": "Sparar...",
+    "close": "Stäng",
+    "noPlayersInPool": "Inga spelare i den här poolen",
+    "unassigned": "Otilldelad",
+    "createFailed": "Det gick inte att skapa poolen",
+    "deleteFailed": "Det gick inte att ta bort poolen",
+    "assignFailed": "Det gick inte att tilldela spelaren till poolen"
   },
   "Leaderboard": {
     "title": "Topplistan",

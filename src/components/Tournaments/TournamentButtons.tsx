@@ -6,6 +6,7 @@ import AddMatch from "@/components/newmatch";
 import Addplayer from "@/components/addplayer";
 import QRMatchModal from "@/components/QRMatchModal";
 import BulkMatchEntry from "@/components/BulkMatchEntry";
+import PoolManagement from "@/components/PoolManagement";
 import { useTranslations } from "next-intl";
 import { useTournamentContext } from "@/context/TournamentContext";
 import { useUserContext } from "@/context/UserContext";
@@ -80,13 +81,23 @@ const TournamentButtons = () => {
       >
         {t("qrMatch")}
       </button>
-      {context.tournament?.format === "Round Robin" && account.user?.role === "admin" ? (
+      {context.tournament?.format === "Round Robin" &&
+      account.user?.role === "admin" ? (
         <button
           type="button"
           className="p-1 px-5 border rounded-md shadow-xs border-slate-600 bg-amber-50 border-amber-500 text-amber-700"
           onClick={() => openModal(<BulkMatchEntry closeModal={closeModal} />)}
         >
           {t("dtEntry")}
+        </button>
+      ) : null}
+      {isRoundRobin && account.user?.role === "admin" ? (
+        <button
+          type="button"
+          className="p-1 px-5 border rounded-md shadow-xs border-slate-600 bg-purple-50 border-purple-500 text-purple-700"
+          onClick={() => openModal(<PoolManagement closeModal={closeModal} />)}
+        >
+          {t("managePools")}
         </button>
       ) : null}
       <button

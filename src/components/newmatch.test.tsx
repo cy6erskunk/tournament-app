@@ -57,6 +57,7 @@ describe('AddMatch - Priority Wins', () => {
       tournament_id: 1,
       bracket_match: null,
       bracket_seed: null,
+      pool_id: null,
     },
     matches: [],
   };
@@ -66,6 +67,7 @@ describe('AddMatch - Priority Wins', () => {
       tournament_id: 1,
       bracket_match: null,
       bracket_seed: null,
+      pool_id: null,
     },
     matches: [],
   };

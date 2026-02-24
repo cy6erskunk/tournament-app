@@ -36,6 +36,7 @@ const createMockPlayer = (name: string, matches: Player['matches'] = []): Player
     tournament_id: 1,
     bracket_match: null,
     bracket_seed: null,
+    pool_id: null,
   },
   matches,
 });

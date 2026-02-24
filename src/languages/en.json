@@ -20,8 +20,28 @@
       "tournaments": "Tournaments",
       "back": "Back",
       "dtEntry": "DT Entry",
-      "qrMatch": "QR Match"
+      "qrMatch": "QR Match",
+      "managePools": "Manage Pools"
     }
+  },
+  "Pool": {
+    "title": "Pool Management",
+    "createPool": "Create Pool",
+    "poolNamePlaceholder": "Pool name (e.g. Pool A)",
+    "creating": "Creating...",
+    "pools": "Pools",
+    "deletePool": "Delete pool",
+    "deleting": "Deleting...",
+    "assignPlayers": "Assign players to pools",
+    "poolFor": "Pool for",
+    "noPool": "No pool",
+    "saving": "Saving...",
+    "close": "Close",
+    "noPlayersInPool": "No players in this pool",
+    "unassigned": "Unassigned",
+    "createFailed": "Failed to create pool",
+    "deleteFailed": "Failed to delete pool",
+    "assignFailed": "Failed to assign player to pool"
   },
   "Leaderboard": {
     "title": "Leaderboard",

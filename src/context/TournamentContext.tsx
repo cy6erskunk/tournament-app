@@ -5,6 +5,7 @@ import { createContext, useEffect, useMemo, useState } from "react";
 import useContextWrapper from "./hooks/TournamentContextHook";
 import { getTournamentWithId } from "@/database/getTournament";
 import { getTournamentPlayers } from "@/database/getTournamentPlayers";
+import { getPools, PoolRow } from "@/database/getPools";
 import { useParams } from "next/navigation";
 import Tournament from "@/types/Tournament";
 
@@ -19,6 +20,8 @@ export interface TournamentContext {
   setPlayers: React.Dispatch<
     React.SetStateAction<TournamentContext["players"]>
   >;
+  pools: PoolRow[];
+  setPools: React.Dispatch<React.SetStateAction<TournamentContext["pools"]>>;
   loading: boolean;
   setLoading: React.Dispatch<
     React.SetStateAction<TournamentContext["loading"]>
@@ -45,6 +48,7 @@ export function TournamentContextProvider({
   const [tournament, setTournament] =
     useState<TournamentContext["tournament"]>(initialTournament);
   const [players, setPlayers] = useState<TournamentContext["players"]>([]);
+  const [pools, setPools] = useState<TournamentContext["pools"]>([]);
   const [loading, setLoading] = useState<TournamentContext["loading"]>(true);
   const [activeRound, setActiveRound] =
     useState<TournamentContext["activeRound"]>(1);
@@ -56,7 +60,10 @@ export function TournamentContextProvider({
       let tournamentId: number;
 
       // Only use initialTournament if it matches the current params.id
-      if (initialTournament && Number(initialTournament.id) === Number(params.id)) {
+      if (
+        initialTournament &&
+        Number(initialTournament.id) === Number(params.id)
+      ) {
         tournamentId = Number(initialTournament.id);
         // Keep state synchronized with the prop
         setTournament(initialTournament);
@@ -73,12 +80,19 @@ export function TournamentContextProvider({
         tournamentId = Number(tournamentResult.value.id);
       }
 
-      const playerResult = await getTournamentPlayers(tournamentId);
+      const [playerResult, poolResult] = await Promise.all([
+        getTournamentPlayers(tournamentId),
+        getPools(tournamentId),
+      ]);
 
       if (!playerResult.success) {
         console.log("Error: " + playerResult.error);
         setLoading(false);
         return;
+      }
+
+      if (poolResult.success) {
+        setPools(poolResult.value);
       }
 
       setLoading(false);
@@ -94,6 +108,8 @@ export function TournamentContextProvider({
       setTournament,
       players,
       setPlayers,
+      pools,
+      setPools,
       loading,
       setLoading,
       activeRound,
@@ -101,7 +117,7 @@ export function TournamentContextProvider({
       hidden,
       setHidden,
     }),
-    [players, tournament, loading, activeRound, hidden],
+    [players, pools, tournament, loading, activeRound, hidden],
   );
 
   return (
