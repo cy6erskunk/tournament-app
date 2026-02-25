@@ -134,18 +134,26 @@ describe("POST /api/tournament/[tournamentId]/pools", () => {
     expect(createPool).not.toHaveBeenCalled();
   });
 
-  it("should return 400 when pool name is missing", async () => {
+  it("should auto-generate pool name when not provided", async () => {
     (getSession as any).mockResolvedValue({
       success: true,
       value: { role: "admin" },
+    });
+    (getPools as any).mockResolvedValue({
+      success: true,
+      value: [{ id: 1, tournament_id: 1, name: "Pool 1" }],
+    });
+    (createPool as any).mockResolvedValue({
+      success: true,
+      value: { id: 2, tournament_id: 1, name: "Pool 2" },
     });
 
     const response = await POST(makeRequest("POST", {}), {
       params: makeParams("1"),
     });
 
-    expect(response.status).toBe(400);
-    expect(createPool).not.toHaveBeenCalled();
+    expect(response.status).toBe(200);
+    expect(createPool).toHaveBeenCalledWith(1, "Pool 2");
   });
 
   it("should return 400 for invalid tournament ID", async () => {

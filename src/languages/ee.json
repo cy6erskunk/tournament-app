@@ -27,7 +27,7 @@
   "Pool": {
     "title": "Grupihaldus",
     "createPool": "Loo grupp",
-    "poolNamePlaceholder": "Grupi nimi (nt. Grupp A)",
+    "poolNamePlaceholder": "Grupi nimi (valikuline, nt. Grupp A)",
     "creating": "Loomisel...",
     "pools": "Grupid",
     "deletePool": "Kustuta grupp",

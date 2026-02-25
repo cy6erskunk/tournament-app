@@ -21,7 +21,7 @@ export default function PoolManagement({ closeModal }: PoolManagementProps) {
   const tournamentId = context.tournament?.id;
 
   async function handleCreatePool() {
-    if (!newPoolName.trim() || !tournamentId) return;
+    if (!tournamentId) return;
     setCreating(true);
     setError(null);
 
@@ -133,7 +133,7 @@ export default function PoolManagement({ closeModal }: PoolManagementProps) {
         <button
           type="button"
           onClick={handleCreatePool}
-          disabled={creating || !newPoolName.trim()}
+          disabled={creating}
           className="px-4 py-1 bg-blue-600 text-white rounded text-sm disabled:opacity-50"
         >
           {creating ? t("creating") : t("createPool")}

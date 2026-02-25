@@ -27,7 +27,7 @@
   "Pool": {
     "title": "Poolien hallinta",
     "createPool": "Luo uusi pooli",
-    "poolNamePlaceholder": "Poolin nimi (esim. Pooli A)",
+    "poolNamePlaceholder": "Poolin nimi (valinnainen, esim. Pooli A)",
     "creating": "Luodaan...",
     "pools": "Poolit",
     "deletePool": "Poista pooli",

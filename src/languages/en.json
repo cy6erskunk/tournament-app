@@ -27,7 +27,7 @@
   "Pool": {
     "title": "Pool Management",
     "createPool": "Create Pool",
-    "poolNamePlaceholder": "Pool name (e.g. Pool A)",
+    "poolNamePlaceholder": "Pool name (optional, e.g. Pool A)",
     "creating": "Creating...",
     "pools": "Pools",
     "deletePool": "Delete pool",

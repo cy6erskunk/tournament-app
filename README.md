@@ -3,6 +3,7 @@
 Next.js project that serves as an internal full-stack web application (CRUD). Managing events, tournaments and users.
 
 ### Tech stack
+
 - React for the frontend
 - Vercel for hosting
 - PostgreSQL (Neon) as the database.
@@ -40,14 +41,16 @@ bun install
 ```
 
 For local development you will want to create a file named `.env`.
-The `POSTGRES_URL` is important for connecting to the database. The `JWT_SECRET` should be a strong, cryptographically secure random string. 
+The `POSTGRES_URL` is important for connecting to the database. The `JWT_SECRET` should be a strong, cryptographically secure random string.
 **Note:** Changing the `JWT_SECRET` will invalidate all existing user sessions/cookies.
 To generate a strong JWT secret, run:
+
 ```bash
 node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
 ```
 
 Example `.env` file for local development:
+
 ```env
 POSTGRES_URL="postgres://postgres:postgres@localhost:5434/postgres"
 JWT_SECRET="<paste-your-generated-secret-here>"
@@ -104,24 +107,18 @@ npm run migrate:create add_new_column
 This creates a numbered file like `migrations/001_add_new_column.ts` with a template:
 
 ```typescript
-import { Kysely, sql } from 'kysely'
+import { Kysely, sql } from "kysely";
 
 export async function up(db: Kysely<any>): Promise<void> {
   // TODO: Implement migration
   // Example: Add a new column
-  await db.schema
-    .alterTable('matches')
-    .addColumn('notes', 'text')
-    .execute()
+  await db.schema.alterTable("matches").addColumn("notes", "text").execute();
 }
 
 export async function down(db: Kysely<any>): Promise<void> {
   // TODO: Implement rollback
   // Example: Remove the column
-  await db.schema
-    .alterTable('matches')
-    .dropColumn('notes')
-    .execute()
+  await db.schema.alterTable("matches").dropColumn("notes").execute();
 }
 ```
 
@@ -164,6 +161,31 @@ This updates `src/types/Kysely.ts` with the new database schema. Custom helper t
 - **Descriptive names** - Use clear names like `add_user_email_column`
 - **Backup production data** before running migrations
 
+## Multi-Pool Round-Robin Tournaments
+
+Round-robin tournaments support multiple pools (groups) of fencers. All players across pools share a single ranking.
+
+### How It Works
+
+- Admins click **Manage Pools** (visible for round-robin tournaments in the admin view)
+- Create pools with an optional name — if left blank, the app auto-generates "Pool 1", "Pool 2", etc.
+- Assign fencers to pools via the dropdown in the pool management modal
+- Each pool's match table shows only intra-pool opponents; the leaderboard ranks all players together
+
+### API Endpoints
+
+- `GET /api/tournament/:id/pools` — list pools for a tournament
+- `POST /api/tournament/:id/pools` — create a pool (admin only); `name` field is optional
+- `DELETE /api/tournament/:id/pools` — delete a pool by `poolId` in the request body (admin only)
+- `POST /api/tournament/:id/pools/:poolId/players` — assign a player to a pool; use `poolId=0` to remove a player from their pool
+
+### Database
+
+Migration `004_add_pools.ts` adds:
+
+- `pools` table (`id`, `tournament_id`, `name`)
+- `tournament_players.pool_id` nullable FK referencing `pools.id`
+
 ## QR Code Match Integration
 
 The application supports QR code generation for external match result submission. Third-party applications can scan QR codes and submit match results through the API.
@@ -193,6 +215,7 @@ CORS_ALLOWED_ORIGIN="https://your-qr-app.com"
 ```
 
 **Important CORS Limitations:**
+
 - Only a single origin can be specified due to CORS header limitations
 - Wildcard subdomain patterns (e.g., `*.vercel.app`) are not supported
 - If your server needs to support multiple origins, implement dynamic origin validation that returns the specific client's origin in the header
@@ -201,11 +224,13 @@ CORS_ALLOWED_ORIGIN="https://your-qr-app.com"
 ### API Endpoints
 
 **Match Management:**
+
 - `POST /api/qr-match/generate` - Generate QR code data for a match (requires authentication)
 - `POST /api/qr-match/submit` - Submit match results via QR code (supports CORS, optional device token)
 - `OPTIONS /api/qr-match/submit` - CORS preflight support
 
 **Device Registration (Audit Trail):**
+
 - `POST /api/submitter/register` - Register a device for submitter identification
 - `OPTIONS /api/submitter/register` - CORS preflight support
 
@@ -217,15 +242,15 @@ Users should register their device once to enable identity tracking:
 
 ```javascript
 // POST /api/submitter/register
-const response = await fetch('https://your-app.com/api/submitter/register', {
-  method: 'POST',
-  headers: { 'Content-Type': 'application/json' },
-  body: JSON.stringify({ name: "John Doe" })
+const response = await fetch("https://your-app.com/api/submitter/register", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({ name: "John Doe" }),
 });
 
 const { deviceToken } = await response.json();
 // Store deviceToken in localStorage for future submissions
-localStorage.setItem('deviceToken', deviceToken);
+localStorage.setItem("deviceToken", deviceToken);
 ```
 
 #### 2. Scanning QR Code
@@ -251,22 +276,23 @@ Include the device token if the tournament requires it or if available:
 
 ```javascript
 // POST to submitUrl from QR code
-const deviceToken = localStorage.getItem('deviceToken');
+const deviceToken = localStorage.getItem("deviceToken");
 
 await fetch(qrData.submitUrl, {
-  method: 'POST',
-  headers: { 'Content-Type': 'application/json' },
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
   body: JSON.stringify({
     matchId: qrData.matchId,
-    deviceToken: deviceToken,  // Optional, required if tournament requires it
+    deviceToken: deviceToken, // Optional, required if tournament requires it
     player1_hits: 5,
     player2_hits: 3,
-    winner: "Player 1"
-  })
+    winner: "Player 1",
+  }),
 });
 ```
 
 **Response Codes:**
+
 - `200` - Match submitted successfully
 - `400` - Invalid match data
 - `401` - Missing device token when required, or invalid device token
@@ -277,12 +303,14 @@ await fetch(qrData.submitUrl, {
 The audit trail system adds the following tables and columns:
 
 **New Table: `submitter_devices`**
+
 - `device_token` (PK) - Unique device identifier
 - `submitter_name` - Person's name
 - `created_at` - Registration timestamp
 - `last_used` - Last submission timestamp
 
 **Updated Tables:**
+
 - `tournaments.require_submitter_identity` - Boolean flag (default: false)
 - `matches.submitted_by_token` - Reference to submitter device (nullable)
 - `matches.submitted_at` - Submission timestamp (nullable)
@@ -314,6 +342,7 @@ declare interface IntlMessages extends Messages {}
 ```
 
 This means:
+
 - All translation keys must exist in `src/languages/fi.json` for TypeScript to recognize them
 - If you add a new translation key to any language file (en.json, se.json, ee.json), you must also add it to `fi.json` or you'll get TypeScript errors
 - TypeScript will provide autocomplete and type checking for `useTranslations()` based on the Finnish translation file structure
@@ -357,6 +386,7 @@ Removing your node_modules folder and reinstalling fixes this. [Other Possible W
 ## Credits
 
 Originally forked from https://github.com/Miconen/tournament-app, project co-authored by:
+
 - [Mico Rintala](https://github.com/Miconen)
 - [Niko Söder](https://github.com/NikoSoder)
 - [Anton Kiiski](https://github.com/Kiiskii)

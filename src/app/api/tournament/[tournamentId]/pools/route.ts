@@ -3,7 +3,7 @@ import { getSession } from "@/helpers/getsession";
 import { jsonParser } from "@/helpers/jsonParser";
 
 type CreatePoolData = {
-  name: string;
+  name?: string;
 };
 
 type DeletePoolData = {
@@ -53,12 +53,16 @@ export async function POST(
 
   const json = await request.text();
   const data = jsonParser<CreatePoolData>(json);
+  const providedName = data.success ? (data.value.name ?? "").trim() : "";
 
-  if (!data.success || !data.value.name) {
-    return new Response("Pool name is required", { status: 400 });
+  let name = providedName;
+  if (!name) {
+    const existingPools = await getPools(id);
+    const count = existingPools.success ? existingPools.value.length : 0;
+    name = `Pool ${count + 1}`;
   }
 
-  const result = await createPool(id, data.value.name);
+  const result = await createPool(id, name);
 
   if (!result.success) {
     return new Response(result.error, { status: 500 });

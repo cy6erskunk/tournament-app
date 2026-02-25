@@ -27,7 +27,7 @@
   "Pool": {
     "title": "Poolhantering",
     "createPool": "Skapa pool",
-    "poolNamePlaceholder": "Poolnamn (t.ex. Pool A)",
+    "poolNamePlaceholder": "Poolnamn (valfritt, t.ex. Pool A)",
     "creating": "Skapar...",
     "pools": "Pooler",
     "deletePool": "Ta bort pool",
