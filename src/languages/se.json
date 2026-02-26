@@ -27,7 +27,6 @@
   "Pool": {
     "title": "Poolhantering",
     "createPool": "Skapa pool",
-    "poolNamePlaceholder": "Poolnamn (valfritt, t.ex. Pool A)",
     "creating": "Skapar...",
     "pools": "Pooler",
     "deletePool": "Ta bort pool",
@@ -121,7 +120,8 @@
     "edittournamentname": "Redigera turneringens namn",
     "edittournament": "Redigera turnering",
     "tournamentname": "Turneringens namn",
-    "requiresubmitteridentity": "Kräv avsändare identitet"
+    "requiresubmitteridentity": "Kräv avsändare identitet",
+    "pool": "Pool"
   },
   "Select": {
     "selecttournament": "Välj turnering",

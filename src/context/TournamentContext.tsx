@@ -58,6 +58,7 @@ export function TournamentContextProvider({
   useEffect(() => {
     async function fetchTournamentData() {
       let tournamentId: number;
+      let tournamentFormat: string;
 
       // Only use initialTournament if it matches the current params.id
       if (
@@ -65,6 +66,7 @@ export function TournamentContextProvider({
         Number(initialTournament.id) === Number(params.id)
       ) {
         tournamentId = Number(initialTournament.id);
+        tournamentFormat = initialTournament.format;
         // Keep state synchronized with the prop
         setTournament(initialTournament);
       } else {
@@ -78,6 +80,7 @@ export function TournamentContextProvider({
 
         setTournament(tournamentResult.value);
         tournamentId = Number(tournamentResult.value.id);
+        tournamentFormat = tournamentResult.value.format;
       }
 
       const [playerResult, poolResult] = await Promise.all([
@@ -91,10 +94,22 @@ export function TournamentContextProvider({
         return;
       }
 
-      if (poolResult.success) {
-        setPools(poolResult.value);
+      let poolsToSet = poolResult.success ? poolResult.value : [];
+
+      // Round-robin tournaments always have at least one pool. Auto-create if missing.
+      if (tournamentFormat === "Round Robin" && poolsToSet.length === 0) {
+        const createRes = await fetch(`/api/tournament/${tournamentId}/pools`, {
+          method: "POST",
+        });
+        if (createRes.ok) {
+          const newPoolResult = await getPools(tournamentId);
+          if (newPoolResult.success) {
+            poolsToSet = newPoolResult.value;
+          }
+        }
       }
 
+      setPools(poolsToSet);
       setLoading(false);
       setPlayers(playerResult.value);
     }

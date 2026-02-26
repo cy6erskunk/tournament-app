@@ -12,7 +12,6 @@ interface PoolManagementProps {
 export default function PoolManagement({ closeModal }: PoolManagementProps) {
   const t = useTranslations("Pool");
   const context = useTournamentContext();
-  const [newPoolName, setNewPoolName] = useState("");
   const [creating, setCreating] = useState(false);
   const [deleting, setDeleting] = useState<number | null>(null);
   const [assigning, setAssigning] = useState<string | null>(null);
@@ -28,7 +27,6 @@ export default function PoolManagement({ closeModal }: PoolManagementProps) {
     try {
       const res = await fetch(`/api/tournament/${tournamentId}/pools`, {
         method: "POST",
-        body: JSON.stringify({ name: newPoolName.trim() }),
       });
 
       if (!res.ok) {
@@ -38,7 +36,6 @@ export default function PoolManagement({ closeModal }: PoolManagementProps) {
 
       const pool = await res.json();
       context.setPools((prev) => [...prev, pool]);
-      setNewPoolName("");
     } catch {
       setError(t("createFailed"));
     } finally {
@@ -120,25 +117,14 @@ export default function PoolManagement({ closeModal }: PoolManagementProps) {
       {error && <p className="text-red-600 text-sm">{error}</p>}
 
       {/* Create new pool */}
-      <div className="flex gap-2">
-        <input
-          type="text"
-          value={newPoolName}
-          onChange={(e) => setNewPoolName(e.target.value)}
-          placeholder={t("poolNamePlaceholder")}
-          className="border border-slate-300 rounded px-3 py-1 flex-1 text-sm"
-          maxLength={64}
-          onKeyDown={(e) => e.key === "Enter" && handleCreatePool()}
-        />
-        <button
-          type="button"
-          onClick={handleCreatePool}
-          disabled={creating}
-          className="px-4 py-1 bg-blue-600 text-white rounded text-sm disabled:opacity-50"
-        >
-          {creating ? t("creating") : t("createPool")}
-        </button>
-      </div>
+      <button
+        type="button"
+        onClick={handleCreatePool}
+        disabled={creating}
+        className="px-4 py-2 bg-blue-600 text-white rounded text-sm disabled:opacity-50 self-start"
+      >
+        {creating ? t("creating") : t("createPool")}
+      </button>
 
       {/* Existing pools */}
       {context.pools.length > 0 && (

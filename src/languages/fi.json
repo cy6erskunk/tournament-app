@@ -27,7 +27,6 @@
   "Pool": {
     "title": "Poolien hallinta",
     "createPool": "Luo uusi pooli",
-    "poolNamePlaceholder": "Poolin nimi (valinnainen, esim. Pooli A)",
     "creating": "Luodaan...",
     "pools": "Poolit",
     "deletePool": "Poista pooli",
@@ -121,7 +120,8 @@
     "edittournamentname": "Muuta turnauksen nimi",
     "edittournament": "Muokkaa turnausta",
     "tournamentname": "Turnauksen nimi",
-    "requiresubmitteridentity": "Vaadi lähettäjän tunnistus"
+    "requiresubmitteridentity": "Vaadi lähettäjän tunnistus",
+    "pool": "Pooli"
   },
   "Select": {
     "selecttournament": "Valitse turnaus",

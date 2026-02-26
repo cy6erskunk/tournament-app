@@ -167,15 +167,16 @@ Round-robin tournaments support multiple pools (groups) of fencers. All players 
 
 ### How It Works
 
-- Admins click **Manage Pools** (visible for round-robin tournaments in the admin view)
-- Create pools with an optional name — if left blank, the app auto-generates "Pool 1", "Pool 2", etc.
-- Assign fencers to pools via the dropdown in the pool management modal
-- Each pool's match table shows only intra-pool opponents; the leaderboard ranks all players together
+- Every round-robin tournament always has at least one pool. "Pool 1" is created automatically on first load.
+- Admins click **Manage Pools** to add more pools or reassign players between pools. Pools are named automatically ("Pool 1", "Pool 2", …) — no name input needed.
+- When adding a player to a round-robin tournament, a pool dropdown appears to assign them immediately.
+- Each pool renders its own match table; when only one pool exists, the heading is hidden and the layout is unchanged from the classic view.
+- The leaderboard ranks all players across all pools together.
 
 ### API Endpoints
 
 - `GET /api/tournament/:id/pools` — list pools for a tournament
-- `POST /api/tournament/:id/pools` — create a pool (admin only); `name` field is optional
+- `POST /api/tournament/:id/pools` — create a pool (admin only); name is auto-generated
 - `DELETE /api/tournament/:id/pools` — delete a pool by `poolId` in the request body (admin only)
 - `POST /api/tournament/:id/pools/:poolId/players` — assign a player to a pool; use `poolId=0` to remove a player from their pool
 
@@ -185,6 +186,11 @@ Migration `004_add_pools.ts` adds:
 
 - `pools` table (`id`, `tournament_id`, `name`)
 - `tournament_players.pool_id` nullable FK referencing `pools.id`
+
+Migration `005_default_pool_per_rr.ts` backfills:
+
+- Creates "Pool 1" for every existing round-robin tournament
+- Assigns all existing players to that pool
 
 ## QR Code Match Integration
 

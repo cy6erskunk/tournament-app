@@ -27,7 +27,6 @@
   "Pool": {
     "title": "Pool Management",
     "createPool": "Create Pool",
-    "poolNamePlaceholder": "Pool name (optional, e.g. Pool A)",
     "creating": "Creating...",
     "pools": "Pools",
     "deletePool": "Delete pool",
@@ -121,7 +120,8 @@
     "edittournamentname": "Edit tournament name",
     "edittournament": "Edit tournament",
     "tournamentname": "Tournament name",
-    "requiresubmitteridentity": "Require submitter identity"
+    "requiresubmitteridentity": "Require submitter identity",
+    "pool": "Pool"
   },
   "Select": {
     "selecttournament": "Select tournament",

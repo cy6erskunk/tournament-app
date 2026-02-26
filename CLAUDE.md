@@ -14,7 +14,7 @@ Tournament App is a full-stack Next.js application for managing tournaments, eve
 - Run `npm install` first if dependencies are not installed
 - If tests fail, fix them before committing
 - Update test expectations when changing functionality (e.g., cookie settings, API responses)
-- All 231 tests should pass
+- All 232 tests should pass
 
 **Workflow:**
 
@@ -165,28 +165,28 @@ Core tables: `users`, `tournaments`, `players`, `tournament_players`, `matches`,
 
 ## Multi-Pool Round-Robin Tournaments
 
-Round-robin tournaments support multiple pools (groups) of fencers. All players share a single ranking regardless of which pool they belong to.
+Round-robin tournaments always have at least one pool. All players share a single ranking regardless of which pool they belong to.
 
 ### Key Concepts
 
-- **Pools**: Named groups within a tournament (e.g. Pool A, Pool B). Pool names are optional — if omitted, the API auto-generates "Pool N" based on existing pool count.
-- **Player assignment**: Each player in `tournament_players` has an optional `pool_id` FK. Players without a pool appear in an "Unassigned" section.
+- **Pools are mandatory**: Every round-robin tournament has at least one pool. `TournamentContext` auto-creates "Pool 1" on first load if none exist (requires admin session).
+- **Auto-naming**: Pool names are auto-generated ("Pool 1", "Pool 2", …) — no name input required.
+- **Player assignment**: Each player in `tournament_players` has a `pool_id` FK. The "Add Player" form includes a pool dropdown for round-robin tournaments.
 - **Shared ranking**: `LeaderboardBuilder` ranks all players together across pools — no changes needed to ranking logic.
 - **Pool-scoped match matrix**: Each pool's table shows only intra-pool opponent columns (via `poolPlayers` prop on `Player` component).
+- **Single-pool view**: When only one pool exists, the pool heading is hidden and the layout is identical to the original single-table view.
 
 ### Files
 
 - `migrations/004_add_pools.ts` — adds `pools` table and `pool_id` column on `tournament_players`
+- `migrations/005_default_pool_per_rr.ts` — backfills "Pool 1" for all existing round-robin tournaments and assigns their players
 - `src/database/getPools.ts` — `getPools`, `createPool`, `deletePool`, `assignPlayerToPool`
 - `src/app/api/tournament/[tournamentId]/pools/route.ts` — GET/POST/DELETE pools
 - `src/app/api/tournament/[tournamentId]/pools/[poolId]/players/route.ts` — POST assign player; `poolId=0` unassigns
-- `src/components/PoolManagement.tsx` — admin modal for creating/deleting pools and assigning players
-- `src/components/Results/RoundRobin/Tournament.tsx` — groups players by pool and renders per-pool tables
-- `src/context/TournamentContext.tsx` — fetches and exposes `pools` / `setPools` state
-
-### Backward Compatibility
-
-When no pools exist (`context.pools.length === 0`), the original single-table round-robin view renders unchanged.
+- `src/components/PoolManagement.tsx` — admin modal for creating/deleting pools and reassigning players between pools
+- `src/components/Results/RoundRobin/Tournament.tsx` — renders per-pool tables; heading only shown when multiple pools exist
+- `src/context/TournamentContext.tsx` — fetches and exposes `pools` / `setPools`; auto-creates Pool 1 for empty round-robin tournaments
+- `src/components/addplayer.tsx` — shows pool dropdown for round-robin tournaments when adding a player
 
 ## QR Code Match Integration
 

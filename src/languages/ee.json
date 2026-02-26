@@ -27,7 +27,6 @@
   "Pool": {
     "title": "Grupihaldus",
     "createPool": "Loo grupp",
-    "poolNamePlaceholder": "Grupi nimi (valikuline, nt. Grupp A)",
     "creating": "Loomisel...",
     "pools": "Grupid",
     "deletePool": "Kustuta grupp",
@@ -121,7 +120,8 @@
     "edittournamentname": "Muutke turniiri nime",
     "edittournament": "Muuda turniiri",
     "tournamentname": "Turniiri nimi",
-    "requiresubmitteridentity": "Nõua esitaja identiteeti"
+    "requiresubmitteridentity": "Nõua esitaja identiteeti",
+    "pool": "Grupp"
   },
   "Select": {
     "selecttournament": "Valige turniir",
