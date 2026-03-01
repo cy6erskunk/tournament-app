@@ -20,8 +20,27 @@
       "tournaments": "Turniirid",
       "back": "Tagasi",
       "dtEntry": "DT Sisestus",
-      "qrMatch": "QR-matš"
+      "qrMatch": "QR-matš",
+      "managePools": "Halda gruppe"
     }
+  },
+  "Pool": {
+    "title": "Grupihaldus",
+    "createPool": "Loo grupp",
+    "creating": "Loomisel...",
+    "pools": "Grupid",
+    "deletePool": "Kustuta grupp",
+    "deleting": "Kustutamisel...",
+    "assignPlayers": "Lisa mängijaid gruppidesse",
+    "poolFor": "Grupp mängijale",
+    "noPool": "Grupp puudub",
+    "saving": "Salvestamisel...",
+    "close": "Sulge",
+    "noPlayersInPool": "Selles grupis pole mängijaid",
+    "unassigned": "Määramata",
+    "createFailed": "Grupi loomine ebaõnnestus",
+    "deleteFailed": "Grupi kustutamine ebaõnnestus",
+    "assignFailed": "Mängija gruppi lisamine ebaõnnestus"
   },
   "Leaderboard": {
     "title": "Edetabel",
@@ -101,7 +120,8 @@
     "edittournamentname": "Muutke turniiri nime",
     "edittournament": "Muuda turniiri",
     "tournamentname": "Turniiri nimi",
-    "requiresubmitteridentity": "Nõua esitaja identiteeti"
+    "requiresubmitteridentity": "Nõua esitaja identiteeti",
+    "pool": "Grupp"
   },
   "Select": {
     "selecttournament": "Valige turniir",

@@ -2,7 +2,7 @@ import { PlusCircleIcon, TrashIcon } from "@heroicons/react/24/outline";
 import type { Player } from "@/types/Player";
 import { removeTournamentPlayer } from "@/database/removeTournamentPlayer";
 import { useTournamentContext } from "@/context/TournamentContext";
-import { useEffect, useState } from "react";
+import { useMemo } from "react";
 import { useTranslations } from "next-intl";
 import { useUserContext } from "@/context/UserContext";
 
@@ -11,6 +11,8 @@ interface PlayerProps {
   nthRow: number;
   openModal: (player: Player, opponent?: Player) => void;
   openEditModal: (player: Player, opponent: Player) => void;
+  /** When provided, only these players are shown as opponent columns (for pool-scoped tables) */
+  poolPlayers?: Player[];
 }
 
 type Hits = {
@@ -27,12 +29,14 @@ export function Player({
   nthRow,
   openModal,
   openEditModal,
+  poolPlayers,
 }: PlayerProps) {
   const context = useTournamentContext();
   const account = useUserContext();
-  const [hits, setHits] = useState<Hits>({ given: {}, taken: {} });
-  const [matchesByOpponent, setOpponents] = useState<Opponents>({});
   const t = useTranslations("Leaderboard");
+
+  // Use poolPlayers for the opponent columns when provided, otherwise all players
+  const opponentList = poolPlayers ?? context.players;
 
   async function removePlayer() {
     if (window.confirm(`${t("remove")} ${player.player.player_name}?`)) {
@@ -93,7 +97,7 @@ export function Player({
     );
   };
 
-  useEffect(() => {
+  const { hits, matchesByOpponent } = useMemo(() => {
     const newHits: Hits = { given: {}, taken: {} };
     const newOpponents: Opponents = {};
 
@@ -129,9 +133,8 @@ export function Player({
       }
     });
 
-    setHits(newHits);
-    setOpponents(newOpponents);
-  }, [context.players, player.matches, player.player]);
+    return { hits: newHits, matchesByOpponent: newOpponents };
+  }, [player.matches, player.player.player_name]);
 
   return (
     <tr
@@ -149,7 +152,11 @@ export function Player({
         {player.player.player_name}
       </td>
       <td>
-        <button type="button" aria-label={`${t("add")} ${player.player.player_name}`} onClick={() => openModal(player)}>
+        <button
+          type="button"
+          aria-label={`${t("add")} ${player.player.player_name}`}
+          onClick={() => openModal(player)}
+        >
           <PlusCircleIcon className="h-8 w-8 text-blue-700" />
         </button>
       </td>
@@ -162,11 +169,12 @@ export function Player({
         {++nthRow}
       </td>
 
-      {context.players.map((opponent, index) => {
+      {opponentList.map((opponent, index) => {
         if (!opponent) return;
         const key = player.player.player_name + index;
         // Used to set dark bg color if players match, can't play versus self
-        const isHighlighted = index + 1 === nthRow;
+        const isHighlighted =
+          opponent.player.player_name === player.player.player_name;
 
         const matches = matchesByOpponent[opponent.player.player_name];
         const matchData = matches && matches[context.activeRound];

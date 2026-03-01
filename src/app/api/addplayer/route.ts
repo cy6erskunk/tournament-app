@@ -4,42 +4,43 @@ import { getSession } from "@/helpers/getsession";
 import { jsonParser } from "@/helpers/jsonParser";
 
 type PlayerData = {
-  name: string,
-  tournamentId: number,
-}
+  name: string;
+  tournamentId: number;
+  poolId?: number | null;
+};
 
 export async function POST(request: Request) {
-  const json = await request.text()
-  const data = jsonParser<PlayerData>(json)
+  const json = await request.text();
+  const data = jsonParser<PlayerData>(json);
 
-  const token = await getSession()
+  const token = await getSession();
   if (!token.success) {
     return new Response(`Unauthorized access`, {
       status: 401,
     });
   }
 
-  if (token.value.role !== 'admin') {
+  if (token.value.role !== "admin") {
     return new Response(`Unauthorized access`, {
-      status: 403
+      status: 403,
     });
   }
 
   if (!data.success) {
     return new Response(`Error inserting new user`, {
-      status: 400
-    })
+      status: 400,
+    });
   }
 
   if (!data.value.name) {
     return new Response("Name must be set", {
-      status: 500
+      status: 500,
     });
   }
 
   if (!data.value.tournamentId) {
     return new Response("Tournament must be set", {
-      status: 500
+      status: 500,
     });
   }
 
@@ -51,7 +52,13 @@ export async function POST(request: Request) {
   }
 
   // add existing player to tournament_players table
-  const addPlayerToTournament = await addPlayer(data.value.name, data.value.tournamentId);
+  const addPlayerToTournament = await addPlayer(
+    data.value.name,
+    data.value.tournamentId,
+    null,
+    null,
+    data.value.poolId ?? null,
+  );
 
   // check if player was added to tournament_players table
   if (!addPlayerToTournament.success) {
