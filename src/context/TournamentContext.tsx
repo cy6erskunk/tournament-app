@@ -5,7 +5,7 @@ import { createContext, useEffect, useMemo, useState } from "react";
 import useContextWrapper from "./hooks/TournamentContextHook";
 import { getTournamentWithId } from "@/database/getTournament";
 import { getTournamentPlayers } from "@/database/getTournamentPlayers";
-import { getPools, PoolRow } from "@/database/getPools";
+import { getPools, createPool, PoolRow } from "@/database/getPools";
 import { useParams } from "next/navigation";
 import Tournament from "@/types/Tournament";
 
@@ -96,16 +96,12 @@ export function TournamentContextProvider({
 
       let poolsToSet = poolResult.success ? poolResult.value : [];
 
-      // Round-robin tournaments always have at least one pool. Auto-create if missing.
+      // Round-robin tournaments always have at least one pool. Auto-create if missing
+      // (fallback for any edge case where pool wasn't created at tournament creation time).
       if (tournamentFormat === "Round Robin" && poolsToSet.length === 0) {
-        const createRes = await fetch(`/api/tournament/${tournamentId}/pools`, {
-          method: "POST",
-        });
-        if (createRes.ok) {
-          const newPoolResult = await getPools(tournamentId);
-          if (newPoolResult.success) {
-            poolsToSet = newPoolResult.value;
-          }
+        const createResult = await createPool(tournamentId, "Pool 1");
+        if (createResult.success) {
+          poolsToSet = [createResult.value];
         }
       }
 
