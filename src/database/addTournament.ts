@@ -3,7 +3,6 @@
 import { Result } from "@/types/result";
 import { db } from "./database";
 import Tournament from "@/types/Tournament";
-import { createPool } from "./getPools";
 
 // create new tournament with date and format
 export async function createTournament(
@@ -30,7 +29,10 @@ export async function createTournament(
 
     // Round-robin tournaments always have at least one pool
     if (format === "Round Robin") {
-      await createPool(tournament.id as number, "Pool 1");
+      await db
+        .insertInto("pools")
+        .values({ tournament_id: tournament.id as number, name: "Pool 1" })
+        .execute();
     }
 
     return { success: true, value: tournament as Tournament };
