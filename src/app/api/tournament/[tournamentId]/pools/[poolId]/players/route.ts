@@ -1,4 +1,4 @@
-import { assignPlayerToPool } from "@/database/getPools";
+import { assignPlayerToPool, getPools } from "@/database/getPools";
 import { getSession } from "@/helpers/getsession";
 import { jsonParser } from "@/helpers/jsonParser";
 
@@ -37,6 +37,20 @@ export async function POST(
 
   // poolId of 0 means unassign the player from any pool
   const actualPoolId = pId === 0 ? null : pId;
+
+  if (actualPoolId !== null) {
+    const poolsResult = await getPools(tournId);
+    if (!poolsResult.success) {
+      return new Response(poolsResult.error, { status: 500 });
+    }
+    const poolBelongsToTournament = poolsResult.value.some(
+      (pool) => pool.id === actualPoolId,
+    );
+    if (!poolBelongsToTournament) {
+      return new Response("Pool not found", { status: 404 });
+    }
+  }
+
   const result = await assignPlayerToPool(
     data.value.playerName,
     tournId,

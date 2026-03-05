@@ -4,9 +4,17 @@ import { db } from "./database";
 
 vi.mock("./database", () => ({
   db: {
-    insertInto: vi.fn(),
+    transaction: vi.fn(),
   },
 }));
+
+const makeTrxMock = () => ({ insertInto: vi.fn() });
+
+const mockTransaction = (trxMock: ReturnType<typeof makeTrxMock>) => {
+  (db.transaction as ReturnType<typeof vi.fn>).mockReturnValue({
+    execute: vi.fn().mockImplementation(async (fn: (trx: typeof trxMock) => unknown) => fn(trxMock)),
+  });
+};
 
 describe("createTournament", () => {
   const mockTournament = {
@@ -22,8 +30,11 @@ describe("createTournament", () => {
   });
 
   it("creates a Round Robin tournament and inserts Pool 1", async () => {
+    const trxMock = makeTrxMock();
+    mockTransaction(trxMock);
+
     // First call: insert tournament; second call: insert pool
-    (db.insertInto as ReturnType<typeof vi.fn>)
+    (trxMock.insertInto as ReturnType<typeof vi.fn>)
       .mockReturnValueOnce({
         values: vi.fn().mockReturnValue({
           returningAll: vi.fn().mockReturnValue({
@@ -50,15 +61,18 @@ describe("createTournament", () => {
     }
 
     // insertInto must be called twice: once for tournaments, once for pools
-    expect(db.insertInto).toHaveBeenCalledTimes(2);
-    expect(db.insertInto).toHaveBeenNthCalledWith(1, "tournaments");
-    expect(db.insertInto).toHaveBeenNthCalledWith(2, "pools");
+    expect(trxMock.insertInto).toHaveBeenCalledTimes(2);
+    expect(trxMock.insertInto).toHaveBeenNthCalledWith(1, "tournaments");
+    expect(trxMock.insertInto).toHaveBeenNthCalledWith(2, "pools");
   });
 
   it("inserts Pool 1 with correct tournament_id and name", async () => {
+    const trxMock = makeTrxMock();
+    mockTransaction(trxMock);
+
     let capturedPoolValues: unknown = null;
 
-    (db.insertInto as ReturnType<typeof vi.fn>)
+    (trxMock.insertInto as ReturnType<typeof vi.fn>)
       .mockReturnValueOnce({
         values: vi.fn().mockReturnValue({
           returningAll: vi.fn().mockReturnValue({
@@ -82,7 +96,10 @@ describe("createTournament", () => {
   });
 
   it("does NOT insert a pool for a Bracket tournament", async () => {
-    (db.insertInto as ReturnType<typeof vi.fn>).mockReturnValueOnce({
+    const trxMock = makeTrxMock();
+    mockTransaction(trxMock);
+
+    (trxMock.insertInto as ReturnType<typeof vi.fn>).mockReturnValueOnce({
       values: vi.fn().mockReturnValue({
         returningAll: vi.fn().mockReturnValue({
           executeTakeFirst: vi
@@ -100,12 +117,15 @@ describe("createTournament", () => {
 
     expect(result.success).toBe(true);
     // Only one insertInto: for the tournament itself, not for pools
-    expect(db.insertInto).toHaveBeenCalledTimes(1);
-    expect(db.insertInto).toHaveBeenCalledWith("tournaments");
+    expect(trxMock.insertInto).toHaveBeenCalledTimes(1);
+    expect(trxMock.insertInto).toHaveBeenCalledWith("tournaments");
   });
 
   it("returns error when tournament insert returns nothing", async () => {
-    (db.insertInto as ReturnType<typeof vi.fn>).mockReturnValueOnce({
+    const trxMock = makeTrxMock();
+    mockTransaction(trxMock);
+
+    (trxMock.insertInto as ReturnType<typeof vi.fn>).mockReturnValueOnce({
       values: vi.fn().mockReturnValue({
         returningAll: vi.fn().mockReturnValue({
           executeTakeFirst: vi.fn().mockResolvedValue(undefined),
@@ -124,11 +144,14 @@ describe("createTournament", () => {
       expect(result.error).toBe("No tournament returned on insert");
     }
     // Pool insert must not be attempted
-    expect(db.insertInto).toHaveBeenCalledTimes(1);
+    expect(trxMock.insertInto).toHaveBeenCalledTimes(1);
   });
 
   it("returns error when database throws", async () => {
-    (db.insertInto as ReturnType<typeof vi.fn>).mockReturnValueOnce({
+    const trxMock = makeTrxMock();
+    mockTransaction(trxMock);
+
+    (trxMock.insertInto as ReturnType<typeof vi.fn>).mockReturnValueOnce({
       values: vi.fn().mockReturnValue({
         returningAll: vi.fn().mockReturnValue({
           executeTakeFirst: vi.fn().mockRejectedValue(new Error("DB error")),
@@ -144,14 +167,17 @@ describe("createTournament", () => {
 
     expect(result.success).toBe(false);
     if (!result.success) {
-      expect(result.error).toBe("Could not insert new tournament");
+      expect(result.error).toBe("DB error");
     }
   });
 
   it("trims whitespace from tournament name", async () => {
+    const trxMock = makeTrxMock();
+    mockTransaction(trxMock);
+
     let capturedTournamentValues: unknown = null;
 
-    (db.insertInto as ReturnType<typeof vi.fn>)
+    (trxMock.insertInto as ReturnType<typeof vi.fn>)
       .mockReturnValueOnce({
         values: vi.fn().mockImplementation((v) => {
           capturedTournamentValues = v;

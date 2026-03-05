@@ -121,7 +121,7 @@ Core tables: `users`, `tournaments`, `players`, `tournament_players`, `matches`,
 
 - **Migration System**: Kysely's built-in `Migrator` with TypeScript migrations
 - **Runtime**: Uses `tsx` for TypeScript execution with path alias support
-- **Migration Files**: Stored in `/migrations/` directory, auto-numbered (001*, 002*, etc.)
+- **Migration Files**: Stored in `/migrations/` directory, auto-numbered (001_, 002_, etc.)
 - **Workflow**:
   1. Create migration: `npm run migrate:create add_new_column`
   2. Edit generated file in `/migrations/` to implement `up()` and `down()` functions

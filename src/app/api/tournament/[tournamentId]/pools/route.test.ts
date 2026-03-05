@@ -198,6 +198,10 @@ describe("DELETE /api/tournament/[tournamentId]/pools", () => {
       success: true,
       value: { role: "admin" },
     });
+    (getPools as any).mockResolvedValue({
+      success: true,
+      value: [{ id: 1, tournament_id: 1, name: "Pool A" }],
+    });
     (deletePool as any).mockResolvedValue({ success: true, value: undefined });
 
     const response = await DELETE(makeRequest("DELETE", { poolId: 1 }), {
@@ -205,7 +209,25 @@ describe("DELETE /api/tournament/[tournamentId]/pools", () => {
     });
 
     expect(response.status).toBe(200);
-    expect(deletePool).toHaveBeenCalledWith(1);
+    expect(deletePool).toHaveBeenCalledWith(1, 1);
+  });
+
+  it("should return 404 when pool does not belong to tournament", async () => {
+    (getSession as any).mockResolvedValue({
+      success: true,
+      value: { role: "admin" },
+    });
+    (getPools as any).mockResolvedValue({
+      success: true,
+      value: [{ id: 2, tournament_id: 1, name: "Pool B" }],
+    });
+
+    const response = await DELETE(makeRequest("DELETE", { poolId: 1 }), {
+      params: makeParams("1"),
+    });
+
+    expect(response.status).toBe(404);
+    expect(deletePool).not.toHaveBeenCalled();
   });
 
   it("should return 403 when user is not admin", async () => {
@@ -251,6 +273,10 @@ describe("DELETE /api/tournament/[tournamentId]/pools", () => {
     (getSession as any).mockResolvedValue({
       success: true,
       value: { role: "admin" },
+    });
+    (getPools as any).mockResolvedValue({
+      success: true,
+      value: [{ id: 1, tournament_id: 1, name: "Pool A" }],
     });
     (deletePool as any).mockResolvedValue({
       success: false,

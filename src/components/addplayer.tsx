@@ -112,7 +112,9 @@ const Addplayer = ({ closeModal, playerList }: AddplayerProps) => {
       </datalist>
       {isRoundRobin && context.pools.length > 0 && (
         <select
+          id="poolId"
           name="poolId"
+          aria-label={t("pool")}
           required
           className="flex w-full justify-center rounded-md border-0 py-1.5 px-3 shadow-xs ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-blue-500 sm:text-sm sm:leading-6"
         >

@@ -2,8 +2,8 @@
 
 import { db } from "./database";
 import { Result } from "@/types/result";
-import { Selectable } from "kysely";
-import { Pools } from "@/types/Kysely";
+import type { Selectable } from "kysely";
+import type { Pools } from "@/types/Kysely";
 
 export type PoolRow = Selectable<Pools>;
 
@@ -47,9 +47,14 @@ export async function createPool(
 
 export async function deletePool(
   poolId: number,
+  tournamentId: number,
 ): Promise<Result<undefined, string>> {
   try {
-    await db.deleteFrom("pools").where("id", "=", poolId).execute();
+    await db
+      .deleteFrom("pools")
+      .where("id", "=", poolId)
+      .where("tournament_id", "=", tournamentId)
+      .execute();
 
     return { success: true, value: undefined };
   } catch {

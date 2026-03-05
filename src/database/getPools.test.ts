@@ -168,13 +168,15 @@ describe("deletePool", () => {
   it("should delete a pool successfully", async () => {
     const deleteFromMock = vi.fn().mockReturnValue({
       where: vi.fn().mockReturnValue({
-        execute: vi.fn().mockResolvedValue([{ id: 1 }]),
+        where: vi.fn().mockReturnValue({
+          execute: vi.fn().mockResolvedValue([{ id: 1 }]),
+        }),
       }),
     });
 
     (db.deleteFrom as any) = deleteFromMock;
 
-    const result = await deletePool(1);
+    const result = await deletePool(1, 10);
 
     expect(result.success).toBe(true);
   });
@@ -182,13 +184,15 @@ describe("deletePool", () => {
   it("should handle database errors gracefully", async () => {
     const deleteFromMock = vi.fn().mockReturnValue({
       where: vi.fn().mockReturnValue({
-        execute: vi.fn().mockRejectedValue(new Error("Database error")),
+        where: vi.fn().mockReturnValue({
+          execute: vi.fn().mockRejectedValue(new Error("Database error")),
+        }),
       }),
     });
 
     (db.deleteFrom as any) = deleteFromMock;
 
-    const result = await deletePool(1);
+    const result = await deletePool(1, 10);
 
     expect(result.success).toBe(false);
     if (!result.success) {

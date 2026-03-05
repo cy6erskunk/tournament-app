@@ -1,10 +1,11 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { POST } from "./route";
-import { assignPlayerToPool } from "@/database/getPools";
+import { assignPlayerToPool, getPools } from "@/database/getPools";
 import { getSession } from "@/helpers/getsession";
 
 vi.mock("@/database/getPools", () => ({
   assignPlayerToPool: vi.fn(),
+  getPools: vi.fn(),
 }));
 
 vi.mock("@/helpers/getsession", () => ({
@@ -31,6 +32,10 @@ describe("POST /api/tournament/[tournamentId]/pools/[poolId]/players", () => {
       success: true,
       value: { role: "admin" },
     });
+    (getPools as any).mockResolvedValue({
+      success: true,
+      value: [{ id: 2, tournament_id: 1, name: "Pool A" }],
+    });
     (assignPlayerToPool as any).mockResolvedValue({
       success: true,
       value: undefined,
@@ -42,6 +47,24 @@ describe("POST /api/tournament/[tournamentId]/pools/[poolId]/players", () => {
 
     expect(response.status).toBe(200);
     expect(assignPlayerToPool).toHaveBeenCalledWith("Alice", 1, 2);
+  });
+
+  it("should return 404 when pool does not belong to tournament", async () => {
+    (getSession as any).mockResolvedValue({
+      success: true,
+      value: { role: "admin" },
+    });
+    (getPools as any).mockResolvedValue({
+      success: true,
+      value: [{ id: 99, tournament_id: 1, name: "Pool B" }],
+    });
+
+    const response = await POST(makeRequest("POST", { playerName: "Alice" }), {
+      params: makeParams("1", "2"),
+    });
+
+    expect(response.status).toBe(404);
+    expect(assignPlayerToPool).not.toHaveBeenCalled();
   });
 
   it("should return 403 when user is not admin", async () => {
@@ -115,6 +138,10 @@ describe("POST /api/tournament/[tournamentId]/pools/[poolId]/players", () => {
     (getSession as any).mockResolvedValue({
       success: true,
       value: { role: "admin" },
+    });
+    (getPools as any).mockResolvedValue({
+      success: true,
+      value: [{ id: 2, tournament_id: 1, name: "Pool A" }],
     });
     (assignPlayerToPool as any).mockResolvedValue({
       success: false,

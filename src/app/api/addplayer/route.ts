@@ -27,20 +27,20 @@ export async function POST(request: Request) {
   }
 
   if (!data.success) {
-    return new Response(`Error inserting new user`, {
+    return new Response("Invalid request body", {
       status: 400,
     });
   }
 
   if (!data.value.name) {
     return new Response("Name must be set", {
-      status: 500,
+      status: 400,
     });
   }
 
   if (!data.value.tournamentId) {
     return new Response("Tournament must be set", {
-      status: 500,
+      status: 400,
     });
   }
 

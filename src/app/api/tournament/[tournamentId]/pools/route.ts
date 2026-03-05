@@ -99,7 +99,23 @@ export async function DELETE(
     return new Response("Pool ID is required", { status: 400 });
   }
 
-  const result = await deletePool(data.value.poolId);
+  const poolId = data.value.poolId;
+
+  const poolsResult = await getPools(tournId);
+
+  if (!poolsResult.success) {
+    return new Response(poolsResult.error, { status: 500 });
+  }
+
+  const poolBelongsToTournament = poolsResult.value.some(
+    (pool) => pool.id === poolId,
+  );
+
+  if (!poolBelongsToTournament) {
+    return new Response("Pool not found", { status: 404 });
+  }
+
+  const result = await deletePool(poolId, tournId);
 
   if (!result.success) {
     return new Response(result.error, { status: 500 });

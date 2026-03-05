@@ -148,39 +148,74 @@ function Tournament() {
 
   const allPlayers = context.players.filter((p): p is TPlayer => p !== null);
 
-  const renderContent = () => (
-    <div>
-      {context.pools.map((pool) => {
-        const poolPlayers = allPlayers.filter(
-          (p) => p.player.pool_id === pool.id,
-        );
-
-        return (
-          <div key={pool.id} className="mb-6">
-            {context.pools.length > 1 && (
-              <h3 className="text-lg font-semibold mb-2 text-slate-700">
-                {pool.name}
-              </h3>
-            )}
-            {poolPlayers.length === 0 ? (
-              <p className="text-slate-500 italic text-sm">
-                {tPool("noPlayersInPool")}
-              </p>
-            ) : (
-              <PoolTable
-                poolPlayers={poolPlayers}
-                openModal={openModal}
-                openEditModal={openEditModal}
-                getRemovePlayerHeading={getRemovePlayerHeading}
-                activeRound={context.activeRound}
-              />
-            )}
-          </div>
-        );
-      })}
-      <Loading />
-    </div>
+  const unassignedPlayers = allPlayers.filter(
+    (p) => p.player.pool_id === null,
   );
+
+  const renderContent = () => {
+    if (context.pools.length === 0) {
+      return (
+        <div>
+          <PoolTable
+            poolPlayers={allPlayers}
+            openModal={openModal}
+            openEditModal={openEditModal}
+            getRemovePlayerHeading={getRemovePlayerHeading}
+            activeRound={context.activeRound}
+          />
+          <Loading />
+        </div>
+      );
+    }
+
+    return (
+      <div>
+        {context.pools.map((pool) => {
+          const poolPlayers = allPlayers.filter(
+            (p) => p.player.pool_id === pool.id,
+          );
+
+          return (
+            <div key={pool.id} className="mb-6">
+              {context.pools.length > 1 && (
+                <h3 className="text-lg font-semibold mb-2 text-slate-700">
+                  {pool.name}
+                </h3>
+              )}
+              {poolPlayers.length === 0 ? (
+                <p className="text-slate-500 italic text-sm">
+                  {tPool("noPlayersInPool")}
+                </p>
+              ) : (
+                <PoolTable
+                  poolPlayers={poolPlayers}
+                  openModal={openModal}
+                  openEditModal={openEditModal}
+                  getRemovePlayerHeading={getRemovePlayerHeading}
+                  activeRound={context.activeRound}
+                />
+              )}
+            </div>
+          );
+        })}
+        {unassignedPlayers.length > 0 && (
+          <div className="mb-6">
+            <h3 className="text-lg font-semibold mb-2 text-slate-700">
+              {tPool("unassigned")}
+            </h3>
+            <PoolTable
+              poolPlayers={unassignedPlayers}
+              openModal={openModal}
+              openEditModal={openEditModal}
+              getRemovePlayerHeading={getRemovePlayerHeading}
+              activeRound={context.activeRound}
+            />
+          </div>
+        )}
+        <Loading />
+      </div>
+    );
+  };
 
   return (
     <div className="2xl:max-w-fit lg:w-4/5">
