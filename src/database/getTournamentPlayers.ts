@@ -24,7 +24,7 @@ export async function getTournamentPlayers(
       .execute();
 
     if (!tournamentPlayers.length) {
-      return { success: false, error: "No players found in tournament" };
+      return { success: true, value: [] };
     }
   } catch (error) {
     console.log(error);

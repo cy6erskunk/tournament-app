@@ -47,6 +47,7 @@ export async function addPlayer(
   tournamentId: number,
   bracketMatch: number | null = null,
   bracketSeed: number | null = null,
+  poolId: number | null = null,
 ): Promise<Result<Player, string>> {
   try {
     const user = await db
@@ -71,6 +72,7 @@ export async function addPlayer(
         tournament_id: tournamentId,
         bracket_match: bracketMatch,
         bracket_seed: bracketSeed,
+        pool_id: poolId,
       })
       .returningAll()
       .executeTakeFirst()) as TournamentPlayers | undefined;
@@ -112,7 +114,6 @@ export async function addPlayers(
       .insertInto("tournament_players")
       .values(data)
       .executeTakeFirst();
-
 
     console.log(res);
     const count = Number(res.numInsertedOrUpdatedRows);

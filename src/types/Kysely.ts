@@ -1,8 +1,9 @@
 import type { ColumnType } from "kysely";
 
-export type Generated<T> = T extends ColumnType<infer S, infer I, infer U>
-  ? ColumnType<S, I | undefined, U>
-  : ColumnType<T, T | undefined, T>;
+export type Generated<T> =
+  T extends ColumnType<infer S, infer I, infer U>
+    ? ColumnType<S, I | undefined, U>
+    : ColumnType<T, T | undefined, T>;
 
 export type Timestamp = ColumnType<Date, Date | string, Date | string>;
 
@@ -29,6 +30,13 @@ export interface TournamentPlayers {
   bracket_seed: number | null;
   player_name: string;
   tournament_id: number;
+  pool_id: number | null;
+}
+
+export interface Pools {
+  id: Generated<number>;
+  tournament_id: number;
+  name: string;
 }
 
 export interface Tournaments {
@@ -55,6 +63,7 @@ export interface SubmitterDevices {
 export interface DB {
   matches: Matches;
   players: Players;
+  pools: Pools;
   tournament_players: TournamentPlayers;
   tournaments: Tournaments;
   users: Users;

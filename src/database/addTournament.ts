@@ -12,24 +12,38 @@ export async function createTournament(
   requireSubmitterIdentity: boolean = false,
 ): Promise<Result<Tournament, string>> {
   try {
-    const tournament = await db
-      .insertInto("tournaments")
-      .values({
-        name: inputName.trim(),
-        date: date,
-        format: format,
-        require_submitter_identity: requireSubmitterIdentity,
-      })
-      .returningAll()
-      .executeTakeFirst();
+    const tournament = await db.transaction().execute(async (trx) => {
+      const t = await trx
+        .insertInto("tournaments")
+        .values({
+          name: inputName.trim(),
+          date: date,
+          format: format,
+          require_submitter_identity: requireSubmitterIdentity,
+        })
+        .returningAll()
+        .executeTakeFirst();
 
-    if (!tournament) {
-      return { success: false, error: "No tournament returned on insert" };
-    }
+      if (!t) {
+        throw new Error("No tournament returned on insert");
+      }
+
+      // Round-robin tournaments always have at least one pool
+      if (format === "Round Robin") {
+        await trx
+          .insertInto("pools")
+          .values({ tournament_id: t.id as number, name: "Pool 1" })
+          .execute();
+      }
+
+      return t;
+    });
 
     return { success: true, value: tournament as Tournament };
   } catch (error) {
+    const message =
+      error instanceof Error ? error.message : "Could not insert new tournament";
     console.log(error);
-    return { success: false, error: "Could not insert new tournament" };
+    return { success: false, error: message };
   }
 }

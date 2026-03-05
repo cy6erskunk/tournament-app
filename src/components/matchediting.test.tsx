@@ -76,6 +76,7 @@ describe('EditMatch - Priority Wins', () => {
       tournament_id: 1,
       bracket_match: null,
       bracket_seed: null,
+      pool_id: null,
     },
     matches: [existingMatch],
   };
@@ -86,6 +87,7 @@ describe('EditMatch - Priority Wins', () => {
       tournament_id: 1,
       bracket_match: null,
       bracket_seed: null,
+      pool_id: null,
     },
     matches: [existingMatch],
   };
@@ -111,6 +113,7 @@ describe('EditMatch - Priority Wins', () => {
         tournament_id: 1,
         bracket_match: null,
         bracket_seed: null,
+        pool_id: null,
       },
       matches: [drawMatch],
     };
@@ -121,6 +124,7 @@ describe('EditMatch - Priority Wins', () => {
         tournament_id: 1,
         bracket_match: null,
         bracket_seed: null,
+        pool_id: null,
       },
       matches: [drawMatch],
     };
