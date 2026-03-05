@@ -24,6 +24,8 @@ vi.mock('next-intl', () => ({
       'selectWinner': 'Select winner',
       'winner': 'Winner',
       'unresolvedDraws': `${params?.count} draw(s) need resolution`,
+      // Pool namespace keys
+      'unassigned': 'Unassigned',
     };
     return translations[key] || key;
   },
@@ -53,6 +55,8 @@ const mockTournamentContext = {
   loading: false,
   hidden: false,
   setHidden: vi.fn(),
+  pools: [] as { id: number; name: string; tournament_id: number }[],
+  setPools: vi.fn(),
 };
 
 vi.mock('@/context/TournamentContext', () => ({
@@ -79,6 +83,7 @@ describe('BulkMatchEntry', () => {
       createMockPlayer('Bob'),
       createMockPlayer('Charlie'),
     ];
+    mockTournamentContext.pools = [];
     mockUserContext.user = { username: 'admin', role: 'admin' };
     global.fetch = vi.fn();
   });
@@ -589,6 +594,113 @@ describe('BulkMatchEntry', () => {
       fireEvent.click(backButton);
 
       expect(mockCloseModal).toHaveBeenCalled();
+    });
+  });
+
+  describe('Pool Support', () => {
+    const createMockPlayerInPool = (name: string, poolId: number | null, matches: Player['matches'] = []): Player => ({
+      player: {
+        player_name: name,
+        tournament_id: 1,
+        bracket_match: null,
+        bracket_seed: null,
+        pool_id: poolId,
+      },
+      matches,
+    });
+
+    it('should render a single table without pool headings when only one pool exists', () => {
+      mockTournamentContext.pools = [{ id: 1, name: 'Pool 1', tournament_id: 1 }];
+      mockTournamentContext.players = [
+        createMockPlayerInPool('Alice', 1),
+        createMockPlayerInPool('Bob', 1),
+        createMockPlayerInPool('Charlie', 1),
+      ];
+
+      render(<BulkMatchEntry closeModal={mockCloseModal} />);
+
+      // No pool heading for single pool
+      expect(screen.queryByText('Pool 1')).toBeNull();
+      // Players still shown
+      expect(screen.getByText('Alice')).toBeTruthy();
+      expect(screen.getByText('Bob')).toBeTruthy();
+    });
+
+    it('should render separate tables with pool headings when multiple pools exist', () => {
+      mockTournamentContext.pools = [
+        { id: 1, name: 'Pool 1', tournament_id: 1 },
+        { id: 2, name: 'Pool 2', tournament_id: 1 },
+      ];
+      mockTournamentContext.players = [
+        createMockPlayerInPool('Alice', 1),
+        createMockPlayerInPool('Bob', 1),
+        createMockPlayerInPool('Charlie', 2),
+        createMockPlayerInPool('Dave', 2),
+      ];
+
+      render(<BulkMatchEntry closeModal={mockCloseModal} />);
+
+      expect(screen.getByText('Pool 1')).toBeTruthy();
+      expect(screen.getByText('Pool 2')).toBeTruthy();
+    });
+
+    it('should only show intra-pool inputs (not cross-pool) in multi-pool mode', () => {
+      mockTournamentContext.pools = [
+        { id: 1, name: 'Pool 1', tournament_id: 1 },
+        { id: 2, name: 'Pool 2', tournament_id: 1 },
+      ];
+      mockTournamentContext.players = [
+        createMockPlayerInPool('Alice', 1),
+        createMockPlayerInPool('Bob', 1),
+        createMockPlayerInPool('Charlie', 2),
+        createMockPlayerInPool('Dave', 2),
+      ];
+
+      render(<BulkMatchEntry closeModal={mockCloseModal} />);
+
+      // Pool 1: Alice vs Bob = 1 pair → 2 inputs
+      // Pool 2: Charlie vs Dave = 1 pair → 2 inputs
+      // Total: 4 inputs (no cross-pool inputs)
+      const inputs = screen.getAllByRole('spinbutton');
+      expect(inputs).toHaveLength(4);
+    });
+
+    it('should not count cross-pool matches in pending count', async () => {
+      mockTournamentContext.pools = [
+        { id: 1, name: 'Pool 1', tournament_id: 1 },
+        { id: 2, name: 'Pool 2', tournament_id: 1 },
+      ];
+      mockTournamentContext.players = [
+        createMockPlayerInPool('Alice', 1),
+        createMockPlayerInPool('Bob', 1),
+        createMockPlayerInPool('Charlie', 2),
+        createMockPlayerInPool('Dave', 2),
+      ];
+
+      render(<BulkMatchEntry closeModal={mockCloseModal} />);
+
+      const inputs = screen.getAllByRole('spinbutton');
+      // Enter scores for Alice vs Bob (pool 1 intra-match)
+      fireEvent.change(inputs[0], { target: { value: '5' } });
+      fireEvent.change(inputs[1], { target: { value: '3' } });
+
+      await waitFor(() => {
+        expect(screen.getByText('1 matches pending')).toBeTruthy();
+      });
+    });
+
+    it('should show unassigned players section when players have no pool', () => {
+      mockTournamentContext.pools = [{ id: 1, name: 'Pool 1', tournament_id: 1 }];
+      mockTournamentContext.players = [
+        createMockPlayerInPool('Alice', 1),
+        createMockPlayerInPool('Bob', 1),
+        createMockPlayerInPool('Charlie', null),
+      ];
+
+      render(<BulkMatchEntry closeModal={mockCloseModal} />);
+
+      expect(screen.getByText('Unassigned')).toBeTruthy();
+      expect(screen.getByText('Charlie')).toBeTruthy();
     });
   });
 });

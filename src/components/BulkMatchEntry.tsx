@@ -44,8 +44,14 @@ interface ExistingMatchData {
   player2Name: string;
 }
 
+interface PlayerWithIndex {
+  player: Player;
+  globalIndex: number;
+}
+
 export default function BulkMatchEntry({ closeModal }: BulkMatchEntryProps) {
   const t = useTranslations("BulkEntry");
+  const tPool = useTranslations("Pool");
   const context = useTournamentContext();
   const account = useUserContext();
   const [loading, setLoading] = useState(false);
@@ -78,6 +84,22 @@ export default function BulkMatchEntry({ closeModal }: BulkMatchEntryProps) {
     () => context.players.filter((p): p is Player => p !== null),
     [context.players]
   );
+
+  // Pools from context
+  const pools = context.pools;
+
+  // Check if two players (by global index) are in the same pool / match group
+  const areInSamePool = useCallback((pIdx: number, opIdx: number): boolean => {
+    if (pools.length === 0) return true;
+    const p1 = players[pIdx];
+    const p2 = players[opIdx];
+    if (!p1 || !p2) return false;
+    const p1PoolId = p1.player.pool_id;
+    const p2PoolId = p2.player.pool_id;
+    // Both unassigned: treat as same group
+    if (p1PoolId === null && p2PoolId === null) return true;
+    return p1PoolId !== null && p1PoolId === p2PoolId;
+  }, [pools.length, players]);
 
   // Compute existing matches data from context (derived, not state)
   const { initialCellData, existingMatches } = useMemo(() => {
@@ -363,6 +385,9 @@ export default function BulkMatchEntry({ closeModal }: BulkMatchEntryProps) {
       for (let opIdx = 0; opIdx < players.length; opIdx++) {
         if (pIdx === opIdx) continue;
 
+        // Only collect intra-pool matches
+        if (!areInSamePool(pIdx, opIdx)) continue;
+
         const key = getCellKey(pIdx, opIdx);
         const mirrorKey = getCellKey(opIdx, pIdx);
 
@@ -445,7 +470,7 @@ export default function BulkMatchEntry({ closeModal }: BulkMatchEntryProps) {
     }
 
     return matches;
-  }, [players, getMergedCellData, getCellKey, existingMatches]);
+  }, [players, getMergedCellData, getCellKey, existingMatches, areInSamePool]);
 
   // Count draws that need resolution
   const countUnresolvedDraws = useCallback((): number => {
@@ -455,6 +480,9 @@ export default function BulkMatchEntry({ closeModal }: BulkMatchEntryProps) {
     for (let pIdx = 0; pIdx < players.length; pIdx++) {
       for (let opIdx = 0; opIdx < players.length; opIdx++) {
         if (pIdx === opIdx) continue;
+
+        // Only count intra-pool draws
+        if (!areInSamePool(pIdx, opIdx)) continue;
 
         const pairKey = pIdx < opIdx ? `${pIdx}-${opIdx}` : `${opIdx}-${pIdx}`;
         if (processed.has(pairKey)) continue;
@@ -466,7 +494,7 @@ export default function BulkMatchEntry({ closeModal }: BulkMatchEntryProps) {
       }
     }
     return count;
-  }, [players, hasUnresolvedDraw]);
+  }, [players, hasUnresolvedDraw, areInSamePool]);
 
   // Submit all matches
   const handleSubmit = useCallback(async () => {
@@ -579,6 +607,155 @@ export default function BulkMatchEntry({ closeModal }: BulkMatchEntryProps) {
     );
   }
 
+  // Render a match matrix table for a given subset of players (with their global indices)
+  const renderMatchTable = (poolPlayers: PlayerWithIndex[]) => (
+    <div className="overflow-x-auto mb-4">
+      <table className="w-full border-collapse text-sm">
+        <thead>
+          <tr className="bg-gray-100">
+            <th className="border border-gray-300 p-2 sticky left-0 bg-gray-100 z-10">
+              {t("player")}
+            </th>
+            {poolPlayers.map(({ globalIndex }) => (
+              <th key={globalIndex} className="border border-gray-300 p-2 w-12 min-w-12">
+                {globalIndex + 1}
+              </th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {poolPlayers.map(({ player, globalIndex: playerIndex }) => (
+            <tr key={player.player.player_name}>
+              <td className="border border-gray-300 p-2 font-medium sticky left-0 bg-white z-10">
+                <span className="text-gray-500 mr-2">{playerIndex + 1}.</span>
+                {player.player.player_name}
+              </td>
+              {poolPlayers.map(({ globalIndex: opponentIndex }) => {
+                const isSelf = playerIndex === opponentIndex;
+                const cellKey = getCellKey(playerIndex, opponentIndex);
+                const unresolvedDraw = hasUnresolvedDraw(playerIndex, opponentIndex);
+                const drawWinner = getDrawWinner(playerIndex, opponentIndex);
+
+                if (isSelf) {
+                  return (
+                    <td
+                      key={cellKey}
+                      className="border border-gray-300 bg-gray-400"
+                    />
+                  );
+                }
+
+                // Get cell value
+                const cellValue = getCellValue(playerIndex, opponentIndex);
+                const hasValue = cellValue !== "";
+
+                // Determine background color based on win/loss state
+                let bgColor = "";
+
+                if (hasValue && drawWinner) {
+                  // Draw with winner selected
+                  const isWinner = drawWinner === player.player.player_name;
+                  bgColor = isWinner ? "bg-green-100" : "bg-red-100";
+                } else if (hasValue && !unresolvedDraw) {
+                  // Check if there's opponent data to determine winner
+                  const mirrorKey = getCellKey(opponentIndex, playerIndex);
+                  const data = getMergedCellData(cellKey);
+                  const mirrorData = getMergedCellData(mirrorKey);
+
+                  const playerHits = data?.playerHits ?? mirrorData?.opponentHits;
+                  const opponentHits = data?.opponentHits ?? mirrorData?.playerHits;
+
+                  if (
+                    playerHits !== "" && playerHits !== undefined &&
+                    opponentHits !== "" && opponentHits !== undefined
+                  ) {
+                    if (playerHits > opponentHits) {
+                      bgColor = "bg-green-100";
+                    } else if (playerHits < opponentHits) {
+                      bgColor = "bg-red-100";
+                    }
+                  }
+                } else if (unresolvedDraw) {
+                  bgColor = "bg-yellow-100";
+                }
+
+                return (
+                  <td
+                    key={cellKey}
+                    className={`border border-gray-300 p-0 ${bgColor}`}
+                  >
+                    <input
+                      ref={(el) => {
+                        if (el) {
+                          inputRefs.current.set(cellKey, el);
+                        }
+                      }}
+                      type="number"
+                      min="0"
+                      max="99"
+                      className={`w-full h-full p-1 text-center focus:outline-none focus:ring-2 focus:ring-blue-500 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none ${bgColor}`}
+                      value={cellValue}
+                      onChange={(e) =>
+                        handleCellChange(playerIndex, opponentIndex, e.target.value)
+                      }
+                      onKeyDown={(e) => handleKeyDown(e, playerIndex, opponentIndex)}
+                      placeholder=""
+                    />
+                  </td>
+                );
+              })}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+
+  // Build per-pool or flat table layout
+  const renderTables = () => {
+    const playersWithIndex: PlayerWithIndex[] = players.map((p, i) => ({
+      player: p,
+      globalIndex: i,
+    }));
+
+    if (pools.length === 0) {
+      return renderMatchTable(playersWithIndex);
+    }
+
+    const unassigned = playersWithIndex.filter(
+      ({ player }) => player.player.pool_id === null
+    );
+
+    return (
+      <>
+        {pools.map((pool) => {
+          const poolPlayers = playersWithIndex.filter(
+            ({ player }) => player.player.pool_id === pool.id
+          );
+          if (poolPlayers.length === 0) return null;
+          return (
+            <div key={pool.id}>
+              {pools.length > 1 && (
+                <h2 className="text-lg font-semibold mb-2 text-gray-700">
+                  {pool.name}
+                </h2>
+              )}
+              {renderMatchTable(poolPlayers)}
+            </div>
+          );
+        })}
+        {unassigned.length > 0 && (
+          <div>
+            <h2 className="text-lg font-semibold mb-2 text-gray-700">
+              {tPool("unassigned")}
+            </h2>
+            {renderMatchTable(unassigned)}
+          </div>
+        )}
+      </>
+    );
+  };
+
   return (
     <div className="max-h-[80vh] overflow-auto p-1">
       <h1 className="mb-4 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
@@ -635,106 +812,7 @@ export default function BulkMatchEntry({ closeModal }: BulkMatchEntryProps) {
         </div>
       )}
 
-      <div className="overflow-x-auto mb-4">
-        <table className="w-full border-collapse text-sm">
-          <thead>
-            <tr className="bg-gray-100">
-              <th className="border border-gray-300 p-2 sticky left-0 bg-gray-100 z-10">
-                {t("player")}
-              </th>
-              {players.map((_, index) => (
-                <th key={index} className="border border-gray-300 p-2 w-12 min-w-12">
-                  {index + 1}
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {players.map((player, playerIndex) => (
-              <tr key={player.player.player_name}>
-                <td className="border border-gray-300 p-2 font-medium sticky left-0 bg-white z-10">
-                  <span className="text-gray-500 mr-2">{playerIndex + 1}.</span>
-                  {player.player.player_name}
-                </td>
-                {players.map((opponent, opponentIndex) => {
-                  const isSelf = playerIndex === opponentIndex;
-                  const cellKey = getCellKey(playerIndex, opponentIndex);
-                  const unresolvedDraw = hasUnresolvedDraw(playerIndex, opponentIndex);
-                  const drawWinner = getDrawWinner(playerIndex, opponentIndex);
-
-                  if (isSelf) {
-                    return (
-                      <td
-                        key={cellKey}
-                        className="border border-gray-300 bg-gray-400"
-                      />
-                    );
-                  }
-
-                  // Get cell value
-                  const cellValue = getCellValue(playerIndex, opponentIndex);
-                  const hasValue = cellValue !== "";
-
-                  // Determine background color based on win/loss state
-                  let bgColor = "";
-
-                  if (hasValue && drawWinner) {
-                    // Draw with winner selected
-                    const isWinner = drawWinner === player.player.player_name;
-                    bgColor = isWinner ? "bg-green-100" : "bg-red-100";
-                  } else if (hasValue && !unresolvedDraw) {
-                    // Check if there's opponent data to determine winner
-                    const mirrorKey = getCellKey(opponentIndex, playerIndex);
-                    const data = getMergedCellData(cellKey);
-                    const mirrorData = getMergedCellData(mirrorKey);
-
-                    const playerHits = data?.playerHits ?? mirrorData?.opponentHits;
-                    const opponentHits = data?.opponentHits ?? mirrorData?.playerHits;
-
-                    if (
-                      playerHits !== "" && playerHits !== undefined &&
-                      opponentHits !== "" && opponentHits !== undefined
-                    ) {
-                      if (playerHits > opponentHits) {
-                        bgColor = "bg-green-100";
-                      } else if (playerHits < opponentHits) {
-                        bgColor = "bg-red-100";
-                      }
-                    }
-                  } else if (unresolvedDraw) {
-                    bgColor = "bg-yellow-100";
-                  }
-
-                  return (
-                    <td
-                      key={cellKey}
-                      className={`border border-gray-300 p-0 ${bgColor}`}
-                    >
-                      <input
-                        ref={(el) => {
-                          if (el) {
-                            inputRefs.current.set(cellKey, el);
-                          }
-                        }}
-                        type="number"
-                        min="0"
-                        max="99"
-                        className={`w-full h-full p-1 text-center focus:outline-none focus:ring-2 focus:ring-blue-500 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none ${bgColor}`}
-                        value={cellValue}
-                        onChange={(e) =>
-                          handleCellChange(playerIndex, opponentIndex, e.target.value)
-                        }
-                        onKeyDown={(e) => handleKeyDown(e, playerIndex, opponentIndex)}
-                        placeholder=""
-                      />
-                    </td>
-                  );
-                })}
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+      {renderTables()}
 
       <div className="text-center text-sm text-gray-600 mb-4">
         {t("pendingMatches", { count: pendingCount })}
