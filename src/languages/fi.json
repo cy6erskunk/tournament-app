@@ -69,6 +69,7 @@
   },
   "Logout": {
     "logout": "Kirjaudu ulos",
+    "login": "Kirjaudu sisään",
     "newplayer": "Uusi ottelija",
     "returntotournaments": "Turnaukset"
   },

@@ -69,6 +69,7 @@
   },
   "Logout": {
     "logout": "Logout",
+    "login": "Login",
     "newplayer": "New player",
     "returntotournaments": "Tournaments"
   },

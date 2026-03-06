@@ -2,6 +2,7 @@
 
 import { ReactNode } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import "../../node_modules/flag-icons/css/flag-icons.min.css";
 import Languages from "./languages";
 import { useTranslations } from "next-intl";
@@ -42,7 +43,7 @@ const Navbar = ({ children }: NavbarProps) => {
         <Languages />
         <div className="flex flex-col sm:flex-row pt-5 sm:pt-0">
           {children}
-          {account.user && (
+          {account.user ? (
             <button
               type="button"
               onClick={async () => {
@@ -53,6 +54,13 @@ const Navbar = ({ children }: NavbarProps) => {
             >
               {t("logout")}
             </button>
+          ) : (
+            <Link
+              href="/"
+              className="bg-blue-500 hover:bg-blue-700 text-white text-sm font-bold py-2 px-4 border-2 w-full md:w-36 border-white rounded-full m-1 flex justify-center items-center"
+            >
+              {t("login")}
+            </Link>
           )}
         </div>
       </div>

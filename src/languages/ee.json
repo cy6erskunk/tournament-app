@@ -69,6 +69,7 @@
   },
   "Logout": {
     "logout": "Logi välja",
+    "login": "Logi sisse",
     "newplayer": "Uus mängija",
     "returntotournaments": "Turniirid"
   },

@@ -69,6 +69,7 @@
   },
   "Logout": {
     "logout": "Logga ut",
+    "login": "Logga in",
     "newplayer": "Ny spelare",
     "returntotournaments": "Turneringan"
   },
