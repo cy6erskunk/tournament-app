@@ -39,6 +39,8 @@ function EditButton() {
   const t = useTranslations("AddPlayer");
   const [input, setInput] = useState<string>("");
   const [requireIdentity, setRequireIdentity] = useState(false);
+  const [publicResults, setPublicResults] = useState(false);
+  const isRoundRobin = context.tournament?.format === "Round Robin";
 
   const handleSave = async () => {
     if (!context.tournament) return
@@ -47,6 +49,7 @@ function EditButton() {
       name: input.trim(),
       id: Number(context.tournament.id),
       require_submitter_identity: requireIdentity,
+      public_results: isRoundRobin ? publicResults : undefined,
     };
 
     if (!request.name) {
@@ -65,6 +68,7 @@ function EditButton() {
         ...context.tournament,
         name: request.name,
         require_submitter_identity: requireIdentity,
+        ...(isRoundRobin && { public_results: publicResults }),
       } as typeof context.tournament;
       context.setTournament(update);
       setLoading(false);
@@ -80,6 +84,7 @@ function EditButton() {
   const openModal = () => {
     setInput(context.tournament?.name || "");
     setRequireIdentity(context.tournament?.require_submitter_identity || false);
+    setPublicResults(context.tournament?.public_results || false);
     setShowModal(true);
   };
 
@@ -122,6 +127,20 @@ function EditButton() {
               {t("requiresubmitteridentity")}
             </label>
           </div>
+          {isRoundRobin && (
+            <div className="flex gap-3 items-center">
+              <input
+                type="checkbox"
+                name="publicResults"
+                id="edit-publicResults"
+                checked={publicResults}
+                onChange={(e) => setPublicResults(e.target.checked)}
+              />
+              <label htmlFor="edit-publicResults" className="text-sm">
+                {t("publicresults")}
+              </label>
+            </div>
+          )}
           <div className="flex items-center justify-center gap-2 text-sm font-semibold">
             <button
               disabled={loading}

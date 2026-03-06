@@ -3,13 +3,18 @@
 import { Result } from "@/types/result"
 import { db } from "./database"
 
-export async function updateTournamentName(name: string, id: number, requireSubmitterIdentity?: boolean): Promise<Result<string, string>> {
+export async function updateTournamentName(name: string, id: number, requireSubmitterIdentity?: boolean, publicResults?: boolean): Promise<Result<string, string>> {
   try {
-    const updateData: { name: string; require_submitter_identity?: boolean } = { name };
+    const updateData: { name: string; require_submitter_identity?: boolean; public_results?: boolean } = { name };
 
     // Only include require_submitter_identity if it's explicitly provided
     if (requireSubmitterIdentity !== undefined) {
       updateData.require_submitter_identity = requireSubmitterIdentity;
+    }
+
+    // Only include public_results if it's explicitly provided
+    if (publicResults !== undefined) {
+      updateData.public_results = publicResults;
     }
 
     const result = await db

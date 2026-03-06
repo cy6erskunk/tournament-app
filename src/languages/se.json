@@ -121,6 +121,7 @@
     "edittournament": "Redigera turnering",
     "tournamentname": "Turneringens namn",
     "requiresubmitteridentity": "Kräv avsändare identitet",
+    "publicresults": "Offentliga resultat (ingen inloggning krävs)",
     "pool": "Pool"
   },
   "Select": {
@@ -133,6 +134,7 @@
     "remove": "Ta bort",
     "loadMore": "Ladda mer",
     "requiresubmitteridentity": "Kräv avsändare identitet",
+    "publicresults": "Offentliga resultat (ingen inloggning krävs)",
     "edittournament": "Redigera turnering",
     "tournamentname": "Turneringens namn"
   },

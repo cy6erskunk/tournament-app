@@ -121,6 +121,7 @@
     "edittournament": "Muokkaa turnausta",
     "tournamentname": "Turnauksen nimi",
     "requiresubmitteridentity": "Vaadi lähettäjän tunnistus",
+    "publicresults": "Julkiset tulokset (ei kirjautumista vaadittu)",
     "pool": "Pooli"
   },
   "Select": {
@@ -133,6 +134,7 @@
     "remove": "Poista",
     "loadMore": "Lataa lisää",
     "requiresubmitteridentity": "Vaadi lähettäjän tunnistus",
+    "publicresults": "Julkiset tulokset (ei kirjautumista vaadittu)",
     "edittournament": "Muokkaa turnausta",
     "tournamentname": "Turnauksen nimi"
   },

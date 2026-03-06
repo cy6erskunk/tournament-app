@@ -121,6 +121,7 @@
     "edittournament": "Edit tournament",
     "tournamentname": "Tournament name",
     "requiresubmitteridentity": "Require submitter identity",
+    "publicresults": "Public results (no login required)",
     "pool": "Pool"
   },
   "Select": {
@@ -133,6 +134,7 @@
     "remove": "Remove",
     "loadMore": "Load More",
     "requiresubmitteridentity": "Require submitter identity",
+    "publicresults": "Public results (no login required)",
     "edittournament": "Edit tournament",
     "tournamentname": "Tournament name"
   },

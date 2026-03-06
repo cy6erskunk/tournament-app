@@ -9,6 +9,7 @@ type TournamentData = {
   name: string,
   id: number,
   require_submitter_identity?: boolean,
+  public_results?: boolean,
 }
 
 export async function POST(request: Request) {
@@ -37,7 +38,8 @@ export async function POST(request: Request) {
   const status = await updateTournamentName(
     data.value.name,
     data.value.id,
-    data.value.require_submitter_identity
+    data.value.require_submitter_identity,
+    data.value.public_results,
   );
 
   if (!status.success) {

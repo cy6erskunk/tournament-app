@@ -12,11 +12,6 @@ interface PageProps {
 }
 
 const Page = async ({ params }: PageProps) => {
-  const session = await getSession();
-  if (!session.success) {
-    redirect("/");
-  }
-
   const { id } = await params;
   const tournamentResult = await getTournamentWithId(Number(id));
 
@@ -24,9 +19,18 @@ const Page = async ({ params }: PageProps) => {
     notFound();
   }
 
+  const tournament = tournamentResult.value;
+  const session = await getSession();
+  const isPublicRoundRobin =
+    tournament.format === "Round Robin" && tournament.public_results;
+
+  if (!session.success && !isPublicRoundRobin) {
+    redirect("/");
+  }
+
   return (
     <>
-      <TournamentContextProvider initialTournament={tournamentResult.value}>
+      <TournamentContextProvider initialTournament={tournament}>
         <Navbar>
           <TournamentNavbarContent />
         </Navbar>

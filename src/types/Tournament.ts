@@ -5,6 +5,7 @@ import { Tournaments } from "@/types/Kysely";
 type Tournament = Tournaments & {
   id: number;
   date: Date;
+  public_results: boolean;
   require_submitter_identity: boolean;
 };
 export default Tournament;
