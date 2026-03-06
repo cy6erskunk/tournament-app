@@ -42,16 +42,18 @@ const Navbar = ({ children }: NavbarProps) => {
         <Languages />
         <div className="flex flex-col sm:flex-row pt-5 sm:pt-0">
           {children}
-          <button
-            type="button"
-            onClick={async () => {
-              account.setUser(null);
-              await logout();
-            }}
-            className="bg-blue-500 hover:bg-blue-700 text-white text-sm font-bold py-2 px-4 border-2 w-full md:w-36 border-white rounded-full m-1 relative justify-center"
-          >
-            {t("logout")}
-          </button>
+          {account.user && (
+            <button
+              type="button"
+              onClick={async () => {
+                account.setUser(null);
+                await logout();
+              }}
+              className="bg-blue-500 hover:bg-blue-700 text-white text-sm font-bold py-2 px-4 border-2 w-full md:w-36 border-white rounded-full m-1 relative justify-center"
+            >
+              {t("logout")}
+            </button>
+          )}
         </div>
       </div>
     </nav>
