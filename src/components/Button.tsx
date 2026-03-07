@@ -1,6 +1,6 @@
 import { ButtonHTMLAttributes } from "react";
 
-type ButtonVariant = "primary" | "secondary" | "danger" | "admin-primary" | "admin-cancel";
+type ButtonVariant = "primary" | "secondary" | "danger" | "admin-primary" | "admin-cancel" | "outline";
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: ButtonVariant;
@@ -18,6 +18,8 @@ const variantClasses: Record<ButtonVariant, string> = {
     "rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:opacity-50",
   "admin-cancel":
     "rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 disabled:opacity-50",
+  outline:
+    "p-1 px-5 border rounded-md shadow-xs border-slate-600",
 };
 
 export default function Button({

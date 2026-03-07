@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { useTournamentContext } from "@/context/TournamentContext";
 import { TrashIcon } from "@heroicons/react/24/outline";
+import Button from "@/components/Button";
 
 interface PoolManagementProps {
   closeModal: () => void;
@@ -117,14 +118,13 @@ export default function PoolManagement({ closeModal }: PoolManagementProps) {
       {error && <p className="text-red-600 text-sm">{error}</p>}
 
       {/* Create new pool */}
-      <button
-        type="button"
+      <Button
         onClick={handleCreatePool}
         disabled={creating}
-        className="px-4 py-2 bg-blue-600 text-white rounded text-sm disabled:opacity-50 self-start"
+        className="self-start text-sm"
       >
         {creating ? t("creating") : t("createPool")}
-      </button>
+      </Button>
 
       {/* Existing pools */}
       {context.pools.length > 0 && (
@@ -206,13 +206,9 @@ export default function PoolManagement({ closeModal }: PoolManagementProps) {
         </div>
       )}
 
-      <button
-        type="button"
-        onClick={closeModal}
-        className="mt-2 p-2 border rounded-md text-sm text-slate-600 hover:bg-slate-50"
-      >
+      <Button variant="secondary" fullWidth onClick={closeModal} className="mt-2">
         {t("close")}
-      </button>
+      </Button>
     </div>
   );
 }

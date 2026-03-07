@@ -5,6 +5,7 @@ import { useUserContext } from "@/context/UserContext";
 import { useState } from "react";
 import Modal from "../modal";
 import { useTranslations } from "next-intl";
+import Button from "@/components/Button";
 
 export function TournamentTitle() {
   const context = useTournamentContext();
@@ -143,21 +144,12 @@ function EditButton() {
             </div>
           )}
           <div className="flex items-center justify-center gap-2 text-sm font-semibold">
-            <button
-              disabled={loading}
-              onClick={handleSave}
-              type="button"
-              className="disabled:bg-blue-300 bg-blue-500 w-full py-2 px-3 text-white rounded-md shadow-xs focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
-            >
+            <Button disabled={loading} onClick={handleSave} variant="primary" fullWidth>
               {t("submit")}
-            </button>
-            <button
-              onClick={closeModal}
-              className="ring-2 ring-gray-900 ring-inset py-2 w-full rounded-md shadow-xs focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-600"
-              type="button"
-            >
+            </Button>
+            <Button onClick={closeModal} variant="secondary" fullWidth>
               {t("back")}
-            </button>
+            </Button>
           </div>
         </div>
       </Modal>
