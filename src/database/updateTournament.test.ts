@@ -34,9 +34,6 @@ describe("updateTournament", () => {
   });
 
   it("updates name successfully", async () => {
-    (db.updateTable as ReturnType<typeof vi.fn>).mockReturnValue(makeUpdateMock(1).set());
-
-    // Reconstruct full chain
     const updateMock = makeUpdateMock(1);
     (db.updateTable as ReturnType<typeof vi.fn>).mockReturnValue(updateMock);
 

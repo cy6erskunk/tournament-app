@@ -69,7 +69,7 @@ function EditButton() {
           ...context.tournament,
           name: request.name,
           require_submitter_identity: requireIdentity,
-          ...(isRoundRobin && { public_results: publicResults }),
+          ...(isRoundRobin ? { public_results: publicResults } : {}),
         } as typeof context.tournament;
         context.setTournament(update);
       }
