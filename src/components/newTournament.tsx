@@ -11,12 +11,14 @@ function NewTournament() {
   const router = useRouter();
   const [selectedFormat, setSelectedFormat] = useState("Round Robin");
   const [requireIdentity, setRequireIdentity] = useState(false);
+  const [publicResults, setPublicResults] = useState(false);
   const [loading, setLoading] = useState(false);
   const defaultValue = `${selectedFormat} ${new Date().toLocaleDateString(
     "en-GB",
   )}`;
   const onTournamentFormatChange = (e: FormEvent<HTMLInputElement>) => {
     setSelectedFormat(e.currentTarget.value);
+    setPublicResults(false);
   };
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
@@ -25,18 +27,15 @@ function NewTournament() {
     const formData = new FormData(event.currentTarget);
     const currentDate = new Date();
 
-    const tournament = {
-      format: formData.get("format") as string,
-      name: formData.get("tournamentName") as string,
-      date: currentDate,
-      require_submitter_identity: requireIdentity,
-    };
+    const format = formData.get("format") as string;
+    const name = formData.get("tournamentName") as string;
 
     const newTournament = await createTournament(
-      tournament.date,
-      tournament.format,
-      tournament.name.trim() || defaultValue,
-      tournament.require_submitter_identity,
+      currentDate,
+      format,
+      name.trim() || defaultValue,
+      requireIdentity,
+      format === "Round Robin" ? publicResults : false,
     );
 
     if (!newTournament.success) {
@@ -93,6 +92,21 @@ function NewTournament() {
             {t("requiresubmitteridentity")}
           </label>
         </div>
+        {selectedFormat === "Round Robin" && (
+          <div className="flex gap-3 items-center">
+            <input
+              type="checkbox"
+              name="publicResults"
+              id="publicResults"
+              checked={publicResults}
+              onChange={(e) => setPublicResults(e.target.checked)}
+              className="rounded-sm"
+            />
+            <label htmlFor="publicResults" className="text-sm">
+              {t("publicresults")}
+            </label>
+          </div>
+        )}
         <div>
           <Button disabled={loading} type="submit" variant="primary" fullWidth className="font-semibold">
             {t("submit")}

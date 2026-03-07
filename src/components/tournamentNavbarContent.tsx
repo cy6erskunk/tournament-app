@@ -2,14 +2,16 @@
 
 import { useTranslations } from "next-intl";
 import Link from "next/link";
-import { ReactNode, useEffect, useState } from "react";
+import { ReactNode, useState } from "react";
 import Modal from "@/components/modal";
 import NewPlayer from "@/components/newplayer";
 import { useTournamentContext } from "@/context/TournamentContext";
+import { useUserContext } from "@/context/UserContext";
 
 export default function TournamentNavbarContent() {
   const t = useTranslations("Logout");
   const context = useTournamentContext();
+  const account = useUserContext();
   const [showModal, setShowModal] = useState(false);
   const [modalContent, setModalContent] = useState<ReactNode | null>(null);
 
@@ -25,6 +27,10 @@ export default function TournamentNavbarContent() {
     setModalContent(content);
     setShowModal(true);
   };
+
+  if (!account.user) {
+    return null;
+  }
 
   return (
     <>

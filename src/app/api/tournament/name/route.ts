@@ -1,7 +1,7 @@
 "use server"
 
 import { removeTournament } from "@/database/removeTournament";
-import { updateTournamentName } from "@/database/updateTournamentName";
+import { updateTournament } from "@/database/updateTournament";
 import { getSession } from "@/helpers/getsession";
 import { jsonParser } from "@/helpers/jsonParser";
 
@@ -9,6 +9,7 @@ type TournamentData = {
   name: string,
   id: number,
   require_submitter_identity?: boolean,
+  public_results?: boolean,
 }
 
 export async function POST(request: Request) {
@@ -34,11 +35,11 @@ export async function POST(request: Request) {
     })
   }
 
-  const status = await updateTournamentName(
-    data.value.name,
-    data.value.id,
-    data.value.require_submitter_identity
-  );
+  const status = await updateTournament(data.value.id, {
+    name: data.value.name,
+    require_submitter_identity: data.value.require_submitter_identity,
+    public_results: data.value.public_results,
+  });
 
   if (!status.success) {
     return new Response(status.error, {

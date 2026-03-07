@@ -10,6 +10,7 @@ export async function createTournament(
   format: string,
   inputName: string,
   requireSubmitterIdentity: boolean = false,
+  publicResults: boolean = false,
 ): Promise<Result<Tournament, string>> {
   try {
     const tournament = await db.transaction().execute(async (trx) => {
@@ -20,6 +21,7 @@ export async function createTournament(
           date: date,
           format: format,
           require_submitter_identity: requireSubmitterIdentity,
+          public_results: format === "Round Robin" ? publicResults : false,
         })
         .returningAll()
         .executeTakeFirst();

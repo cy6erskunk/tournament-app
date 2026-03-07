@@ -14,7 +14,7 @@ Tournament App is a full-stack Next.js application for managing tournaments, eve
 - Run `npm install` first if dependencies are not installed
 - If tests fail, fix them before committing
 - Update test expectations when changing functionality (e.g., cookie settings, API responses)
-- All 232 tests should pass
+- All 265 tests should pass
 
 **Workflow:**
 

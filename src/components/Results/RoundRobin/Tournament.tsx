@@ -19,12 +19,14 @@ function PoolTable({
   openEditModal,
   getRemovePlayerHeading,
   activeRound,
+  isAuthenticated,
 }: {
   poolPlayers: TPlayer[];
   openModal: (player: TPlayer, opponent?: TPlayer) => void;
   openEditModal: (player: TPlayer, opponent: TPlayer) => void;
   getRemovePlayerHeading: () => ReactElement | undefined;
   activeRound: number;
+  isAuthenticated: boolean;
 }) {
   const t = useTranslations("Leaderboard");
 
@@ -38,7 +40,7 @@ function PoolTable({
             } text-white *:py-4 *:sticky *:top-0 *:z-20 *:transition-all *:duration-300 *:ease-in-out`}
           >
             <th className="w-20 min-w-20">{t("name")}</th>
-            <th className="w-20 min-w-20">{t("add")}</th>
+            {isAuthenticated && <th className="w-20 min-w-20">{t("add")}</th>}
             {getRemovePlayerHeading()}
             <th className="w-20 min-w-20" title="Id">
               #
@@ -83,6 +85,7 @@ function PoolTable({
               openModal={openModal}
               openEditModal={openEditModal}
               poolPlayers={poolPlayers}
+              isAuthenticated={isAuthenticated}
             />
           ))}
         </tbody>
@@ -146,6 +149,7 @@ function Tournament() {
     return <th className="w-20 min-w-20">{t("remove")}</th>;
   };
 
+  const isAuthenticated = account.user !== null;
   const allPlayers = context.players.filter((p): p is TPlayer => p !== null);
 
   const unassignedPlayers = allPlayers.filter(
@@ -162,6 +166,7 @@ function Tournament() {
             openEditModal={openEditModal}
             getRemovePlayerHeading={getRemovePlayerHeading}
             activeRound={context.activeRound}
+            isAuthenticated={isAuthenticated}
           />
           <Loading />
         </div>
@@ -193,6 +198,7 @@ function Tournament() {
                   openEditModal={openEditModal}
                   getRemovePlayerHeading={getRemovePlayerHeading}
                   activeRound={context.activeRound}
+                  isAuthenticated={isAuthenticated}
                 />
               )}
             </div>
@@ -209,6 +215,7 @@ function Tournament() {
               openEditModal={openEditModal}
               getRemovePlayerHeading={getRemovePlayerHeading}
               activeRound={context.activeRound}
+              isAuthenticated={isAuthenticated}
             />
           </div>
         )}

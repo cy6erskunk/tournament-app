@@ -13,6 +13,7 @@ interface PlayerProps {
   openEditModal: (player: Player, opponent: Player) => void;
   /** When provided, only these players are shown as opponent columns (for pool-scoped tables) */
   poolPlayers?: Player[];
+  isAuthenticated: boolean;
 }
 
 type Hits = {
@@ -30,6 +31,7 @@ export function Player({
   openModal,
   openEditModal,
   poolPlayers,
+  isAuthenticated,
 }: PlayerProps) {
   const context = useTournamentContext();
   const account = useUserContext();
@@ -151,15 +153,17 @@ export function Player({
       >
         {player.player.player_name}
       </td>
-      <td>
-        <button
-          type="button"
-          aria-label={`${t("add")} ${player.player.player_name}`}
-          onClick={() => openModal(player)}
-        >
-          <PlusCircleIcon className="h-8 w-8 text-blue-700" />
-        </button>
-      </td>
+      {isAuthenticated && (
+        <td>
+          <button
+            type="button"
+            aria-label={`${t("add")} ${player.player.player_name}`}
+            onClick={() => openModal(player)}
+          >
+            <PlusCircleIcon className="h-8 w-8 text-blue-700" />
+          </button>
+        </td>
+      )}
       {getRemovePlayerButton()}
       <td
         className={`${
@@ -183,18 +187,20 @@ export function Player({
         if (!matchData) {
           return (
             <td
-              className={isHighlighted ? "bg-gray-600" : "group"}
-              onClick={() => !isHighlighted && openModal(player, opponent)}
+              className={isHighlighted ? "bg-gray-600" : isAuthenticated ? "group" : ""}
+              onClick={() => isAuthenticated && !isHighlighted && openModal(player, opponent)}
               key={key}
             >
-              <button
-                type="button"
-                className="invisible group-hover:visible"
-                aria-label={`${player.player.player_name} vs. ${opponent.player.player_name}`}
-                title={`${player.player.player_name} vs. ${opponent.player.player_name}`}
-              >
-                <PlusCircleIcon className="h-8 w-8 text-blue-700" />
-              </button>
+              {isAuthenticated && (
+                <button
+                  type="button"
+                  className="invisible group-hover:visible"
+                  aria-label={`${player.player.player_name} vs. ${opponent.player.player_name}`}
+                  title={`${player.player.player_name} vs. ${opponent.player.player_name}`}
+                >
+                  <PlusCircleIcon className="h-8 w-8 text-blue-700" />
+                </button>
+              )}
             </td>
           );
         }
@@ -217,10 +223,11 @@ export function Player({
             className={
               isHighlighted
                 ? "bg-gray-600"
-                : "" +
-                  " underline decoration-dotted cursor-help underline-offset-2"
+                : isAuthenticated
+                  ? " underline decoration-dotted cursor-help underline-offset-2"
+                  : ""
             }
-            onClick={() => openEditModal(player, opponent)}
+            onClick={() => isAuthenticated && openEditModal(player, opponent)}
           >
             {result}
           </td>

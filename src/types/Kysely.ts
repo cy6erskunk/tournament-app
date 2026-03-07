@@ -44,6 +44,7 @@ export interface Tournaments {
   format: string;
   id: Generated<number>;
   name: string;
+  public_results: Generated<boolean>;
   require_submitter_identity: Generated<boolean>;
 }
 
