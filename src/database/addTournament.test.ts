@@ -171,6 +171,54 @@ describe("createTournament", () => {
     }
   });
 
+  it("persists public_results as true for Round Robin when enabled", async () => {
+    const trxMock = makeTrxMock();
+    mockTransaction(trxMock);
+
+    let capturedValues: unknown = null;
+
+    (trxMock.insertInto as ReturnType<typeof vi.fn>)
+      .mockReturnValueOnce({
+        values: vi.fn().mockImplementation((v) => {
+          capturedValues = v;
+          return {
+            returningAll: vi.fn().mockReturnValue({
+              executeTakeFirst: vi.fn().mockResolvedValue({ ...mockTournament, public_results: true }),
+            }),
+          };
+        }),
+      })
+      .mockReturnValueOnce({
+        values: vi.fn().mockReturnValue({ execute: vi.fn().mockResolvedValue([]) }),
+      });
+
+    await createTournament(new Date("2026-01-01"), "Round Robin", "Test", false, true);
+
+    expect((capturedValues as { public_results: boolean }).public_results).toBe(true);
+  });
+
+  it("coerces public_results to false for non-Round Robin formats", async () => {
+    const trxMock = makeTrxMock();
+    mockTransaction(trxMock);
+
+    let capturedValues: unknown = null;
+
+    (trxMock.insertInto as ReturnType<typeof vi.fn>).mockReturnValueOnce({
+      values: vi.fn().mockImplementation((v) => {
+        capturedValues = v;
+        return {
+          returningAll: vi.fn().mockReturnValue({
+            executeTakeFirst: vi.fn().mockResolvedValue({ ...mockTournament, format: "Brackets", public_results: false }),
+          }),
+        };
+      }),
+    });
+
+    await createTournament(new Date("2026-01-01"), "Brackets", "Bracket Tourney", false, true);
+
+    expect((capturedValues as { public_results: boolean }).public_results).toBe(false);
+  });
+
   it("trims whitespace from tournament name", async () => {
     const trxMock = makeTrxMock();
     mockTransaction(trxMock);
