@@ -23,14 +23,17 @@ export async function updateTournament(
     }
 
     if (data.public_results !== undefined) {
-      // Enforce: public_results may only be true for Round Robin tournaments
-      const tournament = await db
-        .selectFrom("tournaments")
-        .where("id", "=", id)
-        .select("format")
-        .executeTakeFirst();
-      updateData.public_results =
-        tournament?.format === "Round Robin" ? data.public_results : false;
+      if (data.public_results) {
+        // Only validate format when trying to enable public results
+        const tournament = await db
+          .selectFrom("tournaments")
+          .where("id", "=", id)
+          .select("format")
+          .executeTakeFirst();
+        updateData.public_results = tournament?.format === "Round Robin";
+      } else {
+        updateData.public_results = false;
+      }
     }
 
     const result = await db

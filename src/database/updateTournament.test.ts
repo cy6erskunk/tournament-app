@@ -88,11 +88,12 @@ describe("updateTournament", () => {
     expect(setCalls.public_results).toBe(false);
   });
 
-  it("coerces public_results to false when tournament is not found", async () => {
+  it("returns error when tournament is not found (0 rows updated)", async () => {
     (db.selectFrom as ReturnType<typeof vi.fn>).mockReturnValue(
       makeSelectMock(undefined),
     );
-    const updateMock = makeUpdateMock(1);
+    // Tournament doesn't exist — UPDATE affects 0 rows
+    const updateMock = makeUpdateMock(0);
     (db.updateTable as ReturnType<typeof vi.fn>).mockReturnValue(updateMock);
 
     const result = await updateTournament(1, {
@@ -100,7 +101,8 @@ describe("updateTournament", () => {
       public_results: true,
     });
 
-    expect(result.success).toBe(true);
+    expect(result.success).toBe(false);
+    // public_results should have been coerced to false before the UPDATE attempt
     const setCalls = updateMock.set.mock.calls[0][0] as Record<string, unknown>;
     expect(setCalls.public_results).toBe(false);
   });
@@ -110,6 +112,15 @@ describe("updateTournament", () => {
     (db.updateTable as ReturnType<typeof vi.fn>).mockReturnValue(updateMock);
 
     await updateTournament(1, { name: "Any Tournament" });
+
+    expect(db.selectFrom).not.toHaveBeenCalled();
+  });
+
+  it("skips format check when public_results is false", async () => {
+    const updateMock = makeUpdateMock(1);
+    (db.updateTable as ReturnType<typeof vi.fn>).mockReturnValue(updateMock);
+
+    await updateTournament(1, { name: "Any Tournament", public_results: false });
 
     expect(db.selectFrom).not.toHaveBeenCalled();
   });
