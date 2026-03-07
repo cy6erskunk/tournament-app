@@ -6,6 +6,7 @@ import Link from "next/link";
 import "../../node_modules/flag-icons/css/flag-icons.min.css";
 import Languages from "./languages";
 import { useTranslations } from "next-intl";
+import { useLocale } from "next-intl";
 import { logout } from "@/helpers/logout";
 import { useUserContext } from "@/context/UserContext";
 
@@ -15,6 +16,7 @@ interface NavbarProps {
 
 const Navbar = ({ children }: NavbarProps) => {
   const t = useTranslations("Logout");
+  const locale = useLocale();
   const account = useUserContext();
 
   return (
@@ -56,7 +58,7 @@ const Navbar = ({ children }: NavbarProps) => {
             </button>
           ) : (
             <Link
-              href="/"
+              href={`/${locale}`}
               className="bg-blue-500 hover:bg-blue-700 text-white text-sm font-bold py-2 px-4 border-2 w-full md:w-36 border-white rounded-full m-1 flex justify-center items-center"
             >
               {t("login")}
