@@ -1,11 +1,10 @@
 import { Tournaments } from "@/types/Kysely";
 
-// Wrapper type for Tournaments with a normalized id, date, and require_submitter_identity
-// types instead of the generated ones from Kysely
-type Tournament = Tournaments & {
+// Use Omit to properly override Generated<T> columns with their runtime types
+type Tournament = Omit<Tournaments, "id" | "date" | "require_submitter_identity" | "public_results"> & {
   id: number;
   date: Date;
-  public_results: boolean;
   require_submitter_identity: boolean;
+  public_results: boolean;
 };
 export default Tournament;

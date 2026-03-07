@@ -24,6 +24,7 @@ const TournamentButtons = () => {
   const [leaderboardText, setLeaderboardText] = useState(t("leaderboard"));
 
   useEffect(() => {
+    if (!account.user) return;
     async function fetchPlayerNames() {
       const fetchPlayers = await getPlayer();
       if (!fetchPlayers.success) {
@@ -33,7 +34,7 @@ const TournamentButtons = () => {
       setPlayersList(fetchPlayers.value);
     }
     fetchPlayerNames();
-  }, []);
+  }, [account.user]);
 
   const isSeeded = context.players.some(
     (player) => player && player.player.bracket_seed,

@@ -2,7 +2,7 @@
 
 import { useTranslations } from "next-intl";
 import Link from "next/link";
-import { ReactNode, useEffect, useState } from "react";
+import { ReactNode, useState } from "react";
 import Modal from "@/components/modal";
 import NewPlayer from "@/components/newplayer";
 import { useTournamentContext } from "@/context/TournamentContext";

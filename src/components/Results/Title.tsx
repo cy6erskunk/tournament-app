@@ -58,24 +58,25 @@ function EditButton() {
       return;
     }
 
-    const res = await fetch("/api/tournament/name", {
-      method: "POST",
-      body: JSON.stringify(request),
-    });
+    try {
+      const res = await fetch("/api/tournament/name", {
+        method: "POST",
+        body: JSON.stringify(request),
+      });
 
-    if (res.ok) {
-      const update = {
-        ...context.tournament,
-        name: request.name,
-        require_submitter_identity: requireIdentity,
-        ...(isRoundRobin && { public_results: publicResults }),
-      } as typeof context.tournament;
-      context.setTournament(update);
+      if (res.ok) {
+        const update = {
+          ...context.tournament,
+          name: request.name,
+          require_submitter_identity: requireIdentity,
+          ...(isRoundRobin && { public_results: publicResults }),
+        } as typeof context.tournament;
+        context.setTournament(update);
+      }
+    } finally {
       setLoading(false);
+      closeModal();
     }
-
-    setLoading(false);
-    closeModal();
   };
 
   const closeModal = () => {

@@ -13,14 +13,20 @@ interface PageProps {
 
 const Page = async ({ params }: PageProps) => {
   const { id } = await params;
-  const tournamentResult = await getTournamentWithId(Number(id));
+  const [tournamentResult, session] = await Promise.all([
+    getTournamentWithId(Number(id)),
+    getSession(),
+  ]);
 
   if (!tournamentResult.success) {
+    // Don't reveal whether a tournament exists to unauthenticated users
+    if (!session.success) {
+      redirect("/");
+    }
     notFound();
   }
 
   const tournament = tournamentResult.value;
-  const session = await getSession();
   const isPublicRoundRobin =
     tournament.format === "Round Robin" && tournament.public_results;
 
