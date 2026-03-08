@@ -70,7 +70,7 @@ const TournamentButtons = () => {
     <div className="container mx-auto p-2 flex flex-col md:flex-row gap-4">
       {isRoundRobin && isAuthenticated && (
         <Button
-          variant="outline"
+          variant="secondary"
           onClick={() => openModal(<AddMatch closeModal={closeModal} />)}
         >
           {t("addmatch")}
@@ -78,8 +78,7 @@ const TournamentButtons = () => {
       )}
       {isAuthenticated && (
         <Button
-          variant="outline"
-          className="bg-green-50 border-green-500 text-green-700"
+          variant="secondary"
           onClick={() => openModal(<QRMatchModal closeModal={closeModal} />)}
         >
           {t("qrMatch")}
@@ -88,8 +87,7 @@ const TournamentButtons = () => {
       {context.tournament?.format === "Round Robin" &&
       account.user?.role === "admin" ? (
         <Button
-          variant="outline"
-          className="bg-amber-50 border-amber-500 text-amber-700"
+          variant="secondary"
           onClick={() => openModal(<BulkMatchEntry closeModal={closeModal} />)}
         >
           {t("dtEntry")}
@@ -97,8 +95,7 @@ const TournamentButtons = () => {
       ) : null}
       {isRoundRobin && account.user?.role === "admin" ? (
         <Button
-          variant="outline"
-          className="bg-purple-50 border-purple-500 text-purple-700"
+          variant="secondary"
           onClick={() => openModal(<PoolManagement closeModal={closeModal} />)}
         >
           {t("managePools")}
@@ -106,7 +103,7 @@ const TournamentButtons = () => {
       ) : null}
       {isAuthenticated && (
         <Button
-          variant="outline"
+          variant="secondary"
           onClick={() =>
             openModal(
               <Addplayer closeModal={closeModal} playerList={playersList} />,
@@ -117,7 +114,7 @@ const TournamentButtons = () => {
         </Button>
       )}
       <Button
-        variant="outline"
+        variant="secondary"
         className={`text-center${!context.hidden ? " bg-blue-700 border-blue-700 text-white font-bold" : ""}`}
         onClick={toggleLeaderboard}
       >
