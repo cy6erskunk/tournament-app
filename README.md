@@ -31,6 +31,7 @@ git clone <repository-url>
 cd helsingin-miekkailijat
 
 # Install dependencies:
+npm install
 ```
 
 For local development you will want to create a file named `.env`.
