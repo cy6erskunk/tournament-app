@@ -31,13 +31,6 @@ git clone <repository-url>
 cd helsingin-miekkailijat
 
 # Install dependencies:
-npm install
-# or
-yarn
-# or
-pnpm install
-# or
-bun install
 ```
 
 For local development you will want to create a file named `.env`.
@@ -82,6 +75,27 @@ VALUES
     ('admin', '$2b$10$pYjCPeAy8xbSHrI6nevNgOaG1nLadHmlJeDtuHvbk/oWci9EQcqD.', 'admin'),
     ('user', '$2b$10$pYjCPeAy8xbSHrI6nevNgOaG1nLadHmlJeDtuHvbk/oWci9EQcqD.', 'user')
 ```
+
+## Local Development Quickstart
+
+After completing the [Setup](#setup) steps above, run the following to get a fully working local environment. These same commands apply when resuming development after pulling new changes.
+
+```bash
+# 1. Start the local PostgreSQL database (port 5434)
+docker compose up -d
+
+# 2. Apply any pending migrations
+npm run migrate
+
+# 3. Start the development server
+npm run dev
+```
+
+Open [http://localhost:3000](http://localhost:3000) in your browser.
+
+To seed test credentials, run the SQL from the [Admin/Testing credentials](#admintesting-credentials) section in Adminer at [http://localhost:5433](http://localhost:5433) (System: PostgreSQL, Server: `db`, Username/Password: `postgres`).
+
+> **Tip:** Run `npm run test` to verify everything is working correctly.
 
 ## App Router
 
@@ -391,9 +405,4 @@ Removing your node_modules folder and reinstalling fixes this. [Other Possible W
 
 ## Credits
 
-Originally forked from https://github.com/Miconen/tournament-app, project co-authored by:
-
-- [Mico Rintala](https://github.com/Miconen)
-- [Niko Söder](https://github.com/NikoSoder)
-- [Anton Kiiski](https://github.com/Kiiskii)
-- [Kasper Keske](https://github.com/Kaztu)
+Originally forked from https://github.com/Miconen/tournament-app
