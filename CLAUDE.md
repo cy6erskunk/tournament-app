@@ -226,7 +226,7 @@ The QR match submission endpoint supports cross-origin requests with environment
 
 ### Usage
 
-1. Click "Generate QR Match" button in tournament interface
+1. Click "QR Match" button in tournament interface
 2. Select two players for the match
 3. QR code generated with match metadata
 4. Third-party app scans code and submits results to API

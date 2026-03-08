@@ -12,6 +12,27 @@ import {
   SortDirection,
 } from "@/helpers/leaderboardSort";
 
+interface SortButtonProps {
+  col: LeaderboardColumns;
+  onSort: (col: LeaderboardColumns) => void;
+  ariaLabel: string;
+  tooltip?: boolean;
+  children: React.ReactNode;
+}
+
+function SortButton({ col, onSort, ariaLabel, tooltip, children }: SortButtonProps) {
+  return (
+    <button
+      type="button"
+      className={`${tooltip ? "underline decoration-dotted cursor-help underline-offset-2 " : ""}text-white w-full`}
+      onClick={() => onSort(col)}
+      aria-label={ariaLabel}
+    >
+      {children}
+    </button>
+  );
+}
+
 const Leaderboard = () => {
   const t = useTranslations("Leaderboard");
   const context = useTournamentContext();
@@ -71,55 +92,34 @@ const Leaderboard = () => {
             <tr className="text-white *:py-4 *:bg-blue-500">
               <th className="w-28 min-w-28">{t("position")}</th>
               <th className="w-20 min-w-20">
-                <button type="button" className="text-white w-full" onClick={() => sortHandler("name")} aria-label={getAriaLabel(sortCol, "name", t("name"))}>
-                  {t("name")}
-                  {sortIndicator("name")}
-                </button>
+                <SortButton col="name" onSort={sortHandler} ariaLabel={getAriaLabel(sortCol, "name", t("name"))}>
+                  {t("name")}{sortIndicator("name")}
+                </SortButton>
               </th>
-              <th
-                title={t("hoverWin%")}
-                className="w-20 min-w-20"
-              >
-                <button type="button" className="underline decoration-dotted cursor-help underline-offset-2 text-white w-full" onClick={() => sortHandler("percentage")} aria-label={getAriaLabel(sortCol, "percentage", t("win%"))}>
-                  {t("win%")}
-                  {sortIndicator("percentage")}
-                </button>
+              <th title={t("hoverWin%")} className="w-20 min-w-20">
+                <SortButton tooltip col="percentage" onSort={sortHandler} ariaLabel={getAriaLabel(sortCol, "percentage", t("win%"))}>
+                  {t("win%")}{sortIndicator("percentage")}
+                </SortButton>
               </th>
-              <th
-                title={`${t("win")}/${t("loss")}`}
-                className="w-20 min-w-20"
-              >
-                <button type="button" className="underline decoration-dotted cursor-help underline-offset-2 text-white w-full" onClick={() => sortHandler("wins")} aria-label={getAriaLabel(sortCol, "wins", `${t("winShort")}/${t("lossShort")}`)}>
-                  {`${t("winShort")}/${t("lossShort")}`}
-                  {sortIndicator("wins")}
-                </button>
+              <th title={`${t("win")}/${t("loss")}`} className="w-20 min-w-20">
+                <SortButton tooltip col="wins" onSort={sortHandler} ariaLabel={getAriaLabel(sortCol, "wins", `${t("winShort")}/${t("lossShort")}`)}>
+                  {`${t("winShort")}/${t("lossShort")}`}{sortIndicator("wins")}
+                </SortButton>
               </th>
-              <th
-                title={t("hoverHitsGiven")}
-                className="w-20 min-w-20"
-              >
-                <button type="button" className="underline decoration-dotted cursor-help underline-offset-2 text-white w-full" onClick={() => sortHandler("given")} aria-label={getAriaLabel(sortCol, "given", t("hitsGiven"))}>
-                  {t("hitsGiven")}
-                  {sortIndicator("given")}
-                </button>
+              <th title={t("hoverHitsGiven")} className="w-20 min-w-20">
+                <SortButton tooltip col="given" onSort={sortHandler} ariaLabel={getAriaLabel(sortCol, "given", t("hitsGiven"))}>
+                  {t("hitsGiven")}{sortIndicator("given")}
+                </SortButton>
               </th>
-              <th
-                title={t("hoverHitsReceived")}
-                className="w-20 min-w-20"
-              >
-                <button type="button" className="underline decoration-dotted cursor-help underline-offset-2 text-white w-full" onClick={() => sortHandler("taken")} aria-label={getAriaLabel(sortCol, "taken", t("hitsReceived"))}>
-                  {t("hitsReceived")}
-                  {sortIndicator("taken")}
-                </button>
+              <th title={t("hoverHitsReceived")} className="w-20 min-w-20">
+                <SortButton tooltip col="taken" onSort={sortHandler} ariaLabel={getAriaLabel(sortCol, "taken", t("hitsReceived"))}>
+                  {t("hitsReceived")}{sortIndicator("taken")}
+                </SortButton>
               </th>
-              <th
-                title={t("hoverAO-VO")}
-                className="w-20 min-w-20"
-              >
-                <button type="button" className="underline decoration-dotted cursor-help underline-offset-2 text-white w-full" onClick={() => sortHandler("index")} aria-label={getAriaLabel(sortCol, "index", t("AO-VO"))}>
-                  {t("AO-VO")}
-                  {sortIndicator("index")}
-                </button>
+              <th title={t("hoverAO-VO")} className="w-20 min-w-20">
+                <SortButton tooltip col="index" onSort={sortHandler} ariaLabel={getAriaLabel(sortCol, "index", t("AO-VO"))}>
+                  {t("AO-VO")}{sortIndicator("index")}
+                </SortButton>
               </th>
             </tr>
           </thead>

@@ -1,6 +1,7 @@
 import { useTournamentContext } from "@/context/TournamentContext";
 import { useTranslations } from "next-intl";
 import { FormEvent, useState } from "react";
+import Button from "@/components/Button";
 
 type AddplayerProps = {
   closeModal: () => void;
@@ -94,20 +95,12 @@ const Addplayer = ({ closeModal }: AddplayerProps) => {
         className="flex w-full justify-center rounded-md border-0 py-1.5 px-3 shadow-xs ring-1 ring-inset ring-gray-300 placeholder:text-gray-500 focus:ring-2 focus:ring-inset focus:ring-blue-500 sm:text-sm sm:leading-6"
       />
       <div className="flex items-center justify-center gap-2 text-sm font-semibold">
-        <button
-          disabled={loading}
-          type="submit"
-          className="disabled:bg-blue-300 bg-blue-500 w-full py-2 px-3 text-white rounded-md shadow-xs focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
-        >
+        <Button disabled={loading} type="submit" variant="primary" fullWidth>
           {t("submit")}
-        </button>
-        <button
-          onClick={closeModal}
-          className="ring-2 ring-gray-900 ring-inset py-2 w-full rounded-md shadow-xs focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-600"
-          type="button"
-        >
+        </Button>
+        <Button onClick={closeModal} variant="secondary" fullWidth>
           {t("back")}
-        </button>
+        </Button>
       </div>
     </form>
   );

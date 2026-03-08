@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 import { getRecentTournaments } from "@/database/getTournament";
 import { useUserContext } from "@/context/UserContext";
 import { TrashIcon } from "@heroicons/react/24/outline";
+import Button from "@/components/Button";
 
 export default function SelectTournament() {
   const t = useTranslations("Select");
@@ -99,13 +100,9 @@ export default function SelectTournament() {
     }
     return (
       <div className="flex justify-center">
-        <button
-          type="button"
-          className="bg-blue-500 w-full py-2 px-3 text-white rounded-md shadow-xs font-semibold"
-          onClick={loadMoreTournaments}
-        >
+        <Button variant="primary" fullWidth onClick={loadMoreTournaments}>
           {t("loadMore")}
-        </button>
+        </Button>
       </div>
     );
   }

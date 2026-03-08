@@ -11,6 +11,7 @@ import { useTranslations } from "next-intl";
 import { useTournamentContext } from "@/context/TournamentContext";
 import { useUserContext } from "@/context/UserContext";
 import { ChevronLeftIcon } from "@heroicons/react/24/outline";
+import Button from "@/components/Button";
 import { getPlayer } from "@/database/getPlayers";
 
 const TournamentButtons = () => {
@@ -68,46 +69,41 @@ const TournamentButtons = () => {
   return (
     <div className="container mx-auto p-2 flex flex-col md:flex-row gap-4">
       {isRoundRobin && isAuthenticated && (
-        <button
-          type="button"
-          className="p-1 px-5 border rounded-md shadow-xs border-slate-600"
+        <Button
+          variant="secondary"
           onClick={() => openModal(<AddMatch closeModal={closeModal} />)}
         >
           {t("addmatch")}
-        </button>
+        </Button>
       )}
       {isAuthenticated && (
-        <button
-          type="button"
-          className="p-1 px-5 border rounded-md shadow-xs border-slate-600 bg-green-50 border-green-500 text-green-700"
+        <Button
+          variant="secondary"
           onClick={() => openModal(<QRMatchModal closeModal={closeModal} />)}
         >
           {t("qrMatch")}
-        </button>
+        </Button>
       )}
       {context.tournament?.format === "Round Robin" &&
       account.user?.role === "admin" ? (
-        <button
-          type="button"
-          className="p-1 px-5 border rounded-md shadow-xs border-slate-600 bg-amber-50 border-amber-500 text-amber-700"
+        <Button
+          variant="secondary"
           onClick={() => openModal(<BulkMatchEntry closeModal={closeModal} />)}
         >
           {t("dtEntry")}
-        </button>
+        </Button>
       ) : null}
       {isRoundRobin && account.user?.role === "admin" ? (
-        <button
-          type="button"
-          className="p-1 px-5 border rounded-md shadow-xs border-slate-600 bg-purple-50 border-purple-500 text-purple-700"
+        <Button
+          variant="secondary"
           onClick={() => openModal(<PoolManagement closeModal={closeModal} />)}
         >
           {t("managePools")}
-        </button>
+        </Button>
       ) : null}
       {isAuthenticated && (
-        <button
-          type="button"
-          className="p-1 px-5 border rounded-md shadow-xs border-slate-600"
+        <Button
+          variant="secondary"
           onClick={() =>
             openModal(
               <Addplayer closeModal={closeModal} playerList={playersList} />,
@@ -115,11 +111,10 @@ const TournamentButtons = () => {
           }
         >
           {t("addplayer")}
-        </button>
+        </Button>
       )}
-      <button
-        type="button"
-        className={`p-1 px-5 border rounded-md shadow-xs border-slate-600 text-center ${!context.hidden ? "bg-blue-700 border-blue-700 text-white border font-bold" : ""}`}
+      <Button
+        variant={context.hidden ? "secondary" : "primary"}
         onClick={toggleLeaderboard}
       >
         <div className="flex justify-center gap-2">
@@ -128,7 +123,7 @@ const TournamentButtons = () => {
           ) : null}
           {leaderboardText}
         </div>
-      </button>
+      </Button>
       <Modal isOpen={showModal} closeModal={closeModal}>
         {modalContent}
       </Modal>

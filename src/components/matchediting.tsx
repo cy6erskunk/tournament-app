@@ -2,6 +2,7 @@
 
 import { useTranslations } from "next-intl";
 import { FormEvent, useState } from "react";
+import Button from "@/components/Button";
 import {
   TournamentContext,
   useTournamentContext,
@@ -358,32 +359,16 @@ const EditMatch = ({ closeModal, player, opponent }: EditmatchProps) => {
         </div>
         <div className="flex flex-row items-center justify-center gap-2 text-sm font-semibold">
           <div className="flex flex-col w-full gap-1">
-            <button
-              disabled={loading}
-              type="submit"
-              name="buttonClicked"
-              value="Update"
-              className="disabled:bg-blue-300 bg-blue-500 w-full py-2 px-3 text-white rounded-md shadow-xs focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
-            >
+            <Button disabled={loading} type="submit" name="buttonClicked" value="Update" variant="primary" fullWidth>
               {t("submit")}
-            </button>
-            <button
-              disabled={loading}
-              type="submit"
-              name="buttonClicked"
-              value="Delete"
-              className="disabled:bg-red-300 bg-red-400 py-2 px-3 text-white rounded-md shadow-xs mx-auto w-full focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600"
-            >
+            </Button>
+            <Button disabled={loading} type="submit" name="buttonClicked" value="Delete" variant="danger" fullWidth>
               {t("delete")}
-            </button>
+            </Button>
           </div>
-          <button
-            type="button"
-            onClick={closeModal}
-            className="ring-2 ring-gray-900 ring-inset py-2 w-full rounded-md shadow-xs focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-600"
-          >
+          <Button type="button" onClick={closeModal} variant="secondary" fullWidth>
             {t("back")}
-          </button>
+          </Button>
         </div>
       </form>
     </>
