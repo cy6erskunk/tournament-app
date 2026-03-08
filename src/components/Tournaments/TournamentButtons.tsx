@@ -114,8 +114,7 @@ const TournamentButtons = () => {
         </Button>
       )}
       <Button
-        variant="secondary"
-        className={`text-center${!context.hidden ? " bg-blue-700 border-blue-700 text-white font-bold" : ""}`}
+        variant={context.hidden ? "secondary" : "primary"}
         onClick={toggleLeaderboard}
       >
         <div className="flex justify-center gap-2">
