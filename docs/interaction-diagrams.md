@@ -19,51 +19,43 @@ This document illustrates the key interaction flows in the Tournament App using 
 
 ### Login
 
-```
- User              Browser            API (/api/login)       Database
-  │                   │                     │                    │
-  │  Enter creds      │                     │                    │
-  ├──────────────────►│                     │                    │
-  │                   │  POST {user, pass}  │                    │
-  │                   ├────────────────────►│                    │
-  │                   │                     │  SELECT user       │
-  │                   │                     ├───────────────────►│
-  │                   │                     │  user record       │
-  │                   │                     │◄───────────────────┤
-  │                   │                     │                    │
-  │                   │                     │  bcrypt.compare()  │
-  │                   │                     │  (verify password) │
-  │                   │                     │                    │
-  │                   │  Set-Cookie: token  │                    │
-  │                   │  (JWT, HTTP-only)   │                    │
-  │                   │◄────────────────────┤                    │
-  │                   │                     │                    │
-  │  Redirect to      │                     │                    │
-  │  /select           │                     │                    │
-  │◄──────────────────┤                     │                    │
+```mermaid
+sequenceDiagram
+    actor User
+    participant Browser
+    participant API as API (/api/login)
+    participant DB as Database
+
+    User->>Browser: Enter credentials
+    Browser->>API: POST {username, password}
+    API->>DB: SELECT user
+    DB-->>API: user record
+    API->>API: bcrypt.compare() (verify password)
+    API-->>Browser: Set-Cookie: token (JWT, HTTP-only)
+    Browser-->>User: Redirect to /select
 ```
 
 ### Session Verification (on every API call)
 
-```
- Browser            API Route           getSession()         JWT
-  │                   │                     │                  │
-  │  Request +        │                     │                  │
-  │  Cookie: token    │                     │                  │
-  ├──────────────────►│                     │                  │
-  │                   │  Extract cookie     │                  │
-  │                   ├────────────────────►│                  │
-  │                   │                     │  jwt.verify()    │
-  │                   │                     ├─────────────────►│
-  │                   │                     │  {name, role}    │
-  │                   │                     │◄─────────────────┤
-  │                   │  session or null    │                  │
-  │                   │◄────────────────────┤                  │
-  │                   │                     │                  │
-  │                   │  if null → 401      │                  │
-  │                   │  if !admin → 403    │                  │
-  │  Response         │                     │                  │
-  │◄──────────────────┤                     │                  │
+```mermaid
+sequenceDiagram
+    participant Browser
+    participant API as API Route
+    participant GS as getSession()
+    participant JWT
+
+    Browser->>API: Request + Cookie: token
+    API->>GS: Extract cookie
+    GS->>JWT: jwt.verify()
+    JWT-->>GS: {name, role}
+    GS-->>API: session or null
+    alt null
+        API-->>Browser: 401 Unauthorized
+    else !admin
+        API-->>Browser: 403 Forbidden
+    else valid
+        API-->>Browser: Response
+    end
 ```
 
 ---
@@ -72,70 +64,48 @@ This document illustrates the key interaction flows in the Tournament App using 
 
 ### Creating a Tournament
 
-```
- Admin              NewTournament       API                  Database
-  │                   │                  │                     │
-  │  Select format    │                  │                     │
-  │  (RR / Bracket)   │                  │                     │
-  ├──────────────────►│                  │                     │
-  │                   │                  │                     │
-  │  Enter name,      │                  │                     │
-  │  set options      │                  │                     │
-  ├──────────────────►│                  │                     │
-  │                   │                  │                     │
-  │  Click Create     │                  │                     │
-  ├──────────────────►│                  │                     │
-  │                   │  POST /api/      │                     │
-  │                   │  tournament/name │                     │
-  │                   ├─────────────────►│                     │
-  │                   │                  │  INSERT tournament  │
-  │                   │                  ├────────────────────►│
-  │                   │                  │  {id, name, ...}    │
-  │                   │                  │◄────────────────────┤
-  │                   │  201 Created     │                     │
-  │                   │◄─────────────────┤                     │
-  │                   │                  │                     │
-  │  Navigate to      │                  │                     │
-  │  /tournament/{id} │                  │                     │
-  │◄──────────────────┤                  │                     │
+```mermaid
+sequenceDiagram
+    actor Admin
+    participant NT as NewTournament
+    participant API
+    participant DB as Database
+
+    Admin->>NT: Select format (RR / Bracket)
+    Admin->>NT: Enter name, set options
+    Admin->>NT: Click Create
+    NT->>API: POST /api/tournament/name
+    API->>DB: INSERT tournament
+    DB-->>API: {id, name, ...}
+    API-->>NT: 201 Created
+    NT-->>Admin: Navigate to /tournament/{id}
 ```
 
 ### Loading a Tournament Page
 
-```
- Browser            Server Component    TournamentContext     Database
-  │                   │                     │                    │
-  │  GET /fi/         │                     │                    │
-  │  tournament/5     │                     │                    │
-  ├──────────────────►│                     │                    │
-  │                   │  SSR: check auth    │                    │
-  │                   │  + fetch tournament │                    │
-  │                   ├─────────────────────────────────────────►│
-  │                   │  tournament data    │                    │
-  │                   │◄─────────────────────────────────────────┤
-  │                   │                     │                    │
-  │  Render page      │                     │                    │
-  │  (hydrate)        │                     │                    │
-  │◄──────────────────┤                     │                    │
-  │                   │                     │                    │
-  │  Context mounts   │  Fetch players,     │                    │
-  │                   │  pools              │                    │
-  │                   ├────────────────────►│                    │
-  │                   │                     │  GET /api/         │
-  │                   │                     │  tournament/5/     │
-  │                   │                     │  players + pools   │
-  │                   │                     ├───────────────────►│
-  │                   │                     │  data              │
-  │                   │                     │◄───────────────────┤
-  │                   │                     │                    │
-  │                   │                     │  [RR only]         │
-  │                   │                     │  If no pools:      │
-  │                   │                     │  auto-create       │
-  │                   │                     │  "Pool 1"          │
-  │                   │                     │                    │
-  │  Re-render with   │                     │                    │
-  │  full data        │                     │                    │
-  │◄──────────────────┤                     │                    │
+```mermaid
+sequenceDiagram
+    participant Browser
+    participant SC as Server Component
+    participant TC as TournamentContext
+    participant DB as Database
+
+    Browser->>SC: GET /fi/tournament/5
+    SC->>DB: SSR: check auth + fetch tournament
+    DB-->>SC: tournament data
+    SC-->>Browser: Render page (hydrate)
+
+    Note over Browser,TC: Context mounts (client-side)
+
+    SC->>TC: Fetch players, pools
+    TC->>DB: GET /api/tournament/5/players + pools
+    DB-->>TC: data
+
+    opt RR only — no pools exist
+        TC->>TC: Auto-create "Pool 1"
+    end
+
+    TC-->>Browser: Re-render with full data
 ```
 
 ---
@@ -144,122 +114,71 @@ This document illustrates the key interaction flows in the Tournament App using 
 
 ### Single Match Entry
 
-```
- Admin              AddMatch            API (/api/matches)   Database
-  │                   │                     │                    │
-  │  Click "+" on     │                     │                    │
-  │  player cell      │                     │                    │
-  ├──────────────────►│                     │                    │
-  │                   │                     │                    │
-  │  Player 1 & 2     │                     │                    │
-  │  pre-filled       │                     │                    │
-  │◄──────────────────┤                     │                    │
-  │                   │                     │                    │
-  │  Enter hit counts │                     │                    │
-  │  (e.g., 5-3)      │                     │                    │
-  ├──────────────────►│                     │                    │
-  │                   │                     │                    │
-  │  [If tied: select │                     │                    │
-  │   priority winner]│                     │                    │
-  ├──────────────────►│                     │                    │
-  │                   │                     │                    │
-  │  Click Submit     │                     │                    │
-  ├──────────────────►│                     │                    │
-  │                   │  POST {player1,     │                    │
-  │                   │   player2, hits,    │                    │
-  │                   │   winner, round,    │                    │
-  │                   │   tournament_id}    │                    │
-  │                   ├────────────────────►│                    │
-  │                   │                     │  INSERT match      │
-  │                   │                     ├───────────────────►│
-  │                   │                     │  match row         │
-  │                   │                     │◄───────────────────┤
-  │                   │  200 + match data   │                    │
-  │                   │◄────────────────────┤                    │
-  │                   │                     │                    │
-  │                   │  Update context     │                    │
-  │                   │  (players state)    │                    │
-  │                   │                     │                    │
-  │  Table updates    │                     │                    │
-  │  with result      │                     │                    │
-  │◄──────────────────┤                     │                    │
+```mermaid
+sequenceDiagram
+    actor Admin
+    participant AM as AddMatch
+    participant API as API (/api/matches)
+    participant DB as Database
+
+    Admin->>AM: Click "+" on player cell
+    AM-->>Admin: Player 1 & 2 pre-filled
+    Admin->>AM: Enter hit counts (e.g., 5-3)
+    opt If tied
+        Admin->>AM: Select priority winner
+    end
+    Admin->>AM: Click Submit
+    AM->>API: POST {player1, player2, hits, winner, round, tournament_id}
+    API->>DB: INSERT match
+    DB-->>API: match row
+    API-->>AM: 200 + match data
+    AM->>AM: Update context (players state)
+    AM-->>Admin: Table updates with result
 ```
 
 ### Match Editing
 
-```
- Admin              EditMatch           API (/api/matches)   Database
-  │                   │                     │                    │
-  │  Click existing   │                     │                    │
-  │  match result     │                     │                    │
-  ├──────────────────►│                     │                    │
-  │                   │                     │                    │
-  │  Form shows       │                     │                    │
-  │  current data     │                     │                    │
-  │◄──────────────────┤                     │                    │
-  │                   │                     │                    │
-  │  Modify hits      │                     │                    │
-  │  Click Save       │                     │                    │
-  ├──────────────────►│                     │                    │
-  │                   │  PUT {match data}   │                    │
-  │                   ├────────────────────►│                    │
-  │                   │                     │  UPDATE match      │
-  │                   │                     ├───────────────────►│
-  │                   │  200 + updated      │                    │
-  │                   │◄────────────────────┤                    │
-  │                   │                     │                    │
-  │  ── OR ──         │                     │                    │
-  │                   │                     │                    │
-  │  Click Delete     │                     │                    │
-  ├──────────────────►│                     │                    │
-  │                   │  DELETE {match}     │                    │
-  │                   ├────────────────────►│                    │
-  │                   │                     │  DELETE match      │
-  │                   │                     ├───────────────────►│
-  │                   │  200               │                    │
-  │                   │◄────────────────────┤                    │
+```mermaid
+sequenceDiagram
+    actor Admin
+    participant EM as EditMatch
+    participant API as API (/api/matches)
+    participant DB as Database
+
+    Admin->>EM: Click existing match result
+    EM-->>Admin: Form shows current data
+    alt Save
+        Admin->>EM: Modify hits, Click Save
+        EM->>API: PUT {match data}
+        API->>DB: UPDATE match
+        API-->>EM: 200 + updated
+    else Delete
+        Admin->>EM: Click Delete
+        EM->>API: DELETE {match}
+        API->>DB: DELETE match
+        API-->>EM: 200
+    end
 ```
 
 ---
 
 ## Bracket Tournament Seeding
 
-```
- Admin              Seed API            Database
-  │                   │                    │
-  │  Click "Seed      │                    │
-  │  from tournament" │                    │
-  ├──────────────────►│                    │
-  │                   │                    │
-  │  GET /api/        │                    │
-  │  tournament/      │                    │
-  │  {srcId}/seed/    │                    │
-  │  {targetId}       │                    │
-  ├──────────────────►│                    │
-  │                   │  Fetch players +   │
-  │                   │  matches from src  │
-  │                   ├───────────────────►│
-  │                   │  player data       │
-  │                   │◄───────────────────┤
-  │                   │                    │
-  │                   │  Sort by win%      │
-  │                   │  (descending)      │
-  │                   │                    │
-  │                   │  Calculate bracket │
-  │                   │  positions + byes  │
-  │                   │                    │
-  │                   │  INSERT            │
-  │                   │  tournament_players│
-  │                   │  with bracket_match│
-  │                   │  and bracket_seed  │
-  │                   ├───────────────────►│
-  │                   │                    │
-  │  Seeded bracket   │                    │
-  │  data             │                    │
-  │◄──────────────────┤                    │
-  │                   │                    │
-  │  Bracket view     │                    │
-  │  renders matches  │                    │
+```mermaid
+sequenceDiagram
+    actor Admin
+    participant API as Seed API
+    participant DB as Database
+
+    Admin->>API: Click "Seed from tournament"
+    Admin->>API: GET /api/tournament/{srcId}/seed/{targetId}
+    API->>DB: Fetch players + matches from source
+    DB-->>API: player data
+    API->>API: Sort by win% (descending)
+    API->>API: Calculate bracket positions + byes
+    API->>DB: INSERT tournament_players with bracket_match and bracket_seed
+    API-->>Admin: Seeded bracket data
+    Note over Admin: Bracket view renders matches
 ```
 
 ---
@@ -268,248 +187,155 @@ This document illustrates the key interaction flows in the Tournament App using 
 
 This is the complete lifecycle of a QR-code-based match:
 
+```mermaid
+sequenceDiagram
+    actor Admin
+    participant QRM as QRMatchModal
+    participant GEN as Generate API
+    participant MEM as In-Memory Store
+
+    Admin->>QRM: Click "QR Match"
+    Admin->>QRM: Select players
+    Admin->>QRM: Click Generate
+    QRM->>GEN: POST /api/qr-match/generate
+    GEN->>MEM: Generate matchId, store metadata (1hr expiry)
+    GEN-->>QRM: {matchId, submitUrl, ...}
+    QRM-->>Admin: QR code displayed
 ```
- Admin             QRMatchModal       Generate API       In-Memory Store
-  │                   │                   │                    │
-  │  Click "QR Match" │                   │                    │
-  ├──────────────────►│                   │                    │
-  │                   │                   │                    │
-  │  Select players   │                   │                    │
-  ├──────────────────►│                   │                    │
-  │                   │                   │                    │
-  │  Click Generate   │                   │                    │
-  ├──────────────────►│                   │                    │
-  │                   │  POST /api/       │                    │
-  │                   │  qr-match/        │                    │
-  │                   │  generate         │                    │
-  │                   ├──────────────────►│                    │
-  │                   │                   │  Generate matchId  │
-  │                   │                   │  Store metadata    │
-  │                   │                   │  (1hr expiry)      │
-  │                   │                   ├───────────────────►│
-  │                   │                   │                    │
-  │                   │  {matchId,        │                    │
-  │                   │   submitUrl, ...} │                    │
-  │                   │◄──────────────────┤                    │
-  │                   │                   │                    │
-  │  QR code          │                   │                    │
-  │  displayed        │                   │                    │
-  │◄──────────────────┤                   │                    │
 
+```mermaid
+sequenceDiagram
+    participant EXT as External Device
+    participant SUB as Submit API
+    participant MEM as In-Memory Store
+    participant DB as Database
 
- External Device                       Submit API         In-Memory Store    Database
-  │                                       │                    │               │
-  │  Scan QR code                         │                    │               │
-  │  Extract matchId + submitUrl          │                    │               │
-  │                                       │                    │               │
-  │  POST /api/qr-match/submit           │                    │               │
-  │  {matchId, hits, winner,             │                    │               │
-  │   deviceToken?}                       │                    │               │
-  ├──────────────────────────────────────►│                    │               │
-  │                                       │  Lookup matchId    │               │
-  │                                       ├───────────────────►│               │
-  │                                       │  match metadata    │               │
-  │                                       │◄───────────────────┤               │
-  │                                       │                    │               │
-  │                                       │  [If identity      │               │
-  │                                       │   required]        │               │
-  │                                       │  Validate device   │               │
-  │                                       │  token             │               │
-  │                                       ├────────────────────────────────────►│
-  │                                       │  device record     │               │
-  │                                       │◄────────────────────────────────────┤
-  │                                       │                    │               │
-  │                                       │  Zod validation    │               │
-  │                                       │  (hits, winner)    │               │
-  │                                       │                    │               │
-  │                                       │  Upsert match      │               │
-  │                                       ├────────────────────────────────────►│
-  │                                       │  match row         │               │
-  │                                       │◄────────────────────────────────────┤
-  │                                       │                    │               │
-  │                                       │  Remove from store │               │
-  │                                       ├───────────────────►│               │
-  │                                       │                    │               │
-  │  {success: true, match}               │                    │               │
-  │◄──────────────────────────────────────┤                    │               │
+    EXT->>EXT: Scan QR code, extract matchId + submitUrl
+    EXT->>SUB: POST /api/qr-match/submit {matchId, hits, winner, deviceToken?}
+    SUB->>MEM: Lookup matchId
+    MEM-->>SUB: match metadata
+
+    opt Identity required
+        SUB->>DB: Validate device token
+        DB-->>SUB: device record
+    end
+
+    SUB->>SUB: Zod validation (hits, winner)
+    SUB->>DB: Upsert match
+    DB-->>SUB: match row
+    SUB->>MEM: Remove from store
+    SUB-->>EXT: {success: true, match}
 ```
 
 ---
 
 ## Device Registration Flow
 
-```
- External App                          Register API         Database
-  │                                       │                    │
-  │  POST /api/submitter/register         │                    │
-  │  {name: "Referee Tablet 1"}           │                    │
-  ├──────────────────────────────────────►│                    │
-  │                                       │                    │
-  │                                       │  Generate token    │
-  │                                       │  (crypto random)   │
-  │                                       │                    │
-  │                                       │  INSERT device     │
-  │                                       ├───────────────────►│
-  │                                       │  device row        │
-  │                                       │◄───────────────────┤
-  │                                       │                    │
-  │  201 {deviceToken, name, message}     │                    │
-  │◄──────────────────────────────────────┤                    │
-  │                                       │                    │
-  │  Store token locally for              │                    │
-  │  future QR match submissions          │                    │
+```mermaid
+sequenceDiagram
+    participant EXT as External App
+    participant API as Register API
+    participant DB as Database
+
+    EXT->>API: POST /api/submitter/register {name: "Referee Tablet 1"}
+    API->>API: Generate token (crypto random)
+    API->>DB: INSERT device
+    DB-->>API: device row
+    API-->>EXT: 201 {deviceToken, name, message}
+    Note over EXT: Store token locally for future QR match submissions
 ```
 
 ---
 
 ## Pool Management Flow
 
-```
- Admin              PoolManagement      Pool API             Database
-  │                   │                   │                    │
-  │  Open Pool        │                   │                    │
-  │  Management       │                   │                    │
-  ├──────────────────►│                   │                    │
-  │                   │                   │                    │
-  │  Click "Add Pool" │                   │                    │
-  ├──────────────────►│                   │                    │
-  │                   │  POST /api/       │                    │
-  │                   │  tournament/5/    │                    │
-  │                   │  pools            │                    │
-  │                   ├──────────────────►│                    │
-  │                   │                   │  INSERT pool       │
-  │                   │                   │  (auto-name)       │
-  │                   │                   ├───────────────────►│
-  │                   │  {id, name}       │                    │
-  │                   │◄──────────────────┤                    │
-  │                   │                   │                    │
-  │  Pool "Pool 2"    │                   │                    │
-  │  appears          │                   │                    │
-  │◄──────────────────┤                   │                    │
-  │                   │                   │                    │
-  │  Assign player    │                   │                    │
-  │  to Pool 2        │                   │                    │
-  ├──────────────────►│                   │                    │
-  │                   │  POST /api/       │                    │
-  │                   │  tournament/5/    │                    │
-  │                   │  pools/2/players  │                    │
-  │                   │  {playerName}     │                    │
-  │                   ├──────────────────►│                    │
-  │                   │                   │  UPDATE            │
-  │                   │                   │  tournament_players│
-  │                   │                   │  SET pool_id = 2   │
-  │                   │                   ├───────────────────►│
-  │                   │  200 OK           │                    │
-  │                   │◄──────────────────┤                    │
-  │                   │                   │                    │
-  │  Player moves     │                   │                    │
-  │  to Pool 2 table  │                   │                    │
-  │◄──────────────────┤                   │                    │
+```mermaid
+sequenceDiagram
+    actor Admin
+    participant PM as PoolManagement
+    participant API as Pool API
+    participant DB as Database
+
+    Admin->>PM: Open Pool Management
+    Admin->>PM: Click "Add Pool"
+    PM->>API: POST /api/tournament/5/pools
+    API->>DB: INSERT pool (auto-name)
+    API-->>PM: {id, name}
+    PM-->>Admin: Pool "Pool 2" appears
+
+    Admin->>PM: Assign player to Pool 2
+    PM->>API: POST /api/tournament/5/pools/2/players {playerName}
+    API->>DB: UPDATE tournament_players SET pool_id = 2
+    API-->>PM: 200 OK
+    PM-->>Admin: Player moves to Pool 2 table
 ```
 
 ---
 
 ## Bulk Match Entry Flow
 
-```
- Admin              BulkMatchEntry      API (/api/matches)   Database
-  │                   │                     │                    │
-  │  Click "DT Entry" │                     │                    │
-  ├──────────────────►│                     │                    │
-  │                   │                     │                    │
-  │  Matrix table     │                     │                    │
-  │  with hit inputs  │                     │                    │
-  │◄──────────────────┤                     │                    │
-  │                   │                     │                    │
-  │  Fill in hit      │                     │                    │
-  │  counts for       │                     │                    │
-  │  each matchup     │                     │                    │
-  ├──────────────────►│                     │                    │
-  │                   │                     │                    │
-  │  [If any draws]   │                     │                    │
-  │  Select priority  │                     │                    │
-  │  winners          │                     │                    │
-  ├──────────────────►│                     │                    │
-  │                   │                     │                    │
-  │  Click Submit All │                     │                    │
-  ├──────────────────►│                     │                    │
-  │                   │                     │                    │
-  │                   │  For each match:    │                    │
-  │                   │  POST {match data}  │                    │
-  │                   ├────────────────────►│                    │
-  │                   │                     │  INSERT match      │
-  │                   │                     ├───────────────────►│
-  │                   │  200               │                    │
-  │                   │◄────────────────────┤                    │
-  │                   │  ... repeat ...     │                    │
-  │                   │                     │                    │
-  │  All matches      │                     │                    │
-  │  saved            │                     │                    │
-  │◄──────────────────┤                     │                    │
+```mermaid
+sequenceDiagram
+    actor Admin
+    participant BME as BulkMatchEntry
+    participant API as API (/api/matches)
+    participant DB as Database
+
+    Admin->>BME: Click "DT Entry"
+    BME-->>Admin: Matrix table with hit inputs
+    Admin->>BME: Fill in hit counts for each matchup
+    opt Any draws
+        Admin->>BME: Select priority winners
+    end
+    Admin->>BME: Click Submit All
+
+    loop For each match
+        BME->>API: POST {match data}
+        API->>DB: INSERT match
+        API-->>BME: 200
+    end
+
+    BME-->>Admin: All matches saved
 ```
 
 ---
 
 ## Admin User Management Flow
 
-```
- Admin              UserManagement      Admin API            Database
-  │                   │                   │                    │
-  │  Navigate to      │                   │                    │
-  │  /admin/users     │                   │                    │
-  ├──────────────────►│                   │                    │
-  │                   │  GET /api/admin/  │                    │
-  │                   │  users            │                    │
-  │                   ├──────────────────►│                    │
-  │                   │                   │  SELECT * users    │
-  │                   │                   ├───────────────────►│
-  │                   │  [{username,      │                    │
-  │                   │    role}, ...]     │                    │
-  │                   │◄──────────────────┤                    │
-  │                   │                   │                    │
-  │  User table       │                   │                    │
-  │  displayed        │                   │                    │
-  │◄──────────────────┤                   │                    │
-  │                   │                   │                    │
-  │  ── Create ──     │                   │                    │
-  │                   │                   │                    │
-  │  Click Create     │                   │                    │
-  ├──────────────────►│                   │                    │
-  │                   │                   │                    │
-  │  Fill modal       │                   │                    │
-  │  (user/pass/role) │                   │                    │
-  ├──────────────────►│                   │                    │
-  │                   │  POST /api/admin/ │                    │
-  │                   │  users            │                    │
-  │                   │  {username,       │                    │
-  │                   │   password, role} │                    │
-  │                   ├──────────────────►│                    │
-  │                   │                   │  bcrypt hash       │
-  │                   │                   │  INSERT user       │
-  │                   │                   ├───────────────────►│
-  │                   │  201 Created      │                    │
-  │                   │◄──────────────────┤                    │
-  │                   │                   │                    │
-  │  Table refreshes  │                   │                    │
-  │◄──────────────────┤                   │                    │
-  │                   │                   │                    │
-  │  ── Delete ──     │                   │                    │
-  │                   │                   │                    │
-  │  Click Delete     │                   │                    │
-  ├──────────────────►│                   │                    │
-  │                   │                   │                    │
-  │  Confirm in modal │                   │                    │
-  ├──────────────────►│                   │                    │
-  │                   │  DELETE /api/     │                    │
-  │                   │  admin/users/     │                    │
-  │                   │  {username}       │                    │
-  │                   ├──────────────────►│                    │
-  │                   │                   │  Check: not last   │
-  │                   │                   │  admin             │
-  │                   │                   │  DELETE user       │
-  │                   │                   ├───────────────────►│
-  │                   │  200 OK           │                    │
-  │                   │◄──────────────────┤                    │
+```mermaid
+sequenceDiagram
+    actor Admin
+    participant UM as UserManagement
+    participant API as Admin API
+    participant DB as Database
+
+    Admin->>UM: Navigate to /admin/users
+    UM->>API: GET /api/admin/users
+    API->>DB: SELECT * users
+    DB-->>API: user rows
+    API-->>UM: [{username, role}, ...]
+    UM-->>Admin: User table displayed
+
+    rect rgb(240, 248, 255)
+        Note over Admin,DB: Create User
+        Admin->>UM: Click Create
+        Admin->>UM: Fill modal (user/pass/role)
+        UM->>API: POST /api/admin/users {username, password, role}
+        API->>API: bcrypt hash
+        API->>DB: INSERT user
+        API-->>UM: 201 Created
+        UM-->>Admin: Table refreshes
+    end
+
+    rect rgb(255, 240, 240)
+        Note over Admin,DB: Delete User
+        Admin->>UM: Click Delete
+        Admin->>UM: Confirm in modal
+        UM->>API: DELETE /api/admin/users/{username}
+        API->>API: Check: not last admin
+        API->>DB: DELETE user
+        API-->>UM: 200 OK
+    end
 ```
 
 ---
@@ -518,41 +344,43 @@ This is the complete lifecycle of a QR-code-based match:
 
 ### Tournament Page Component Tree
 
-```
-Layout (UserContextProvider)
-  │
-  └── TournamentPage (SSR auth check)
-        │
-        └── TournamentContextProvider
-              │
-              ├── Navbar
-              │   ├── Languages (locale selector)
-              │   ├── AdminNavLink (if admin)
-              │   ├── TournamentNavbarContent
-              │   │   ├── "Back to tournaments" link
-              │   │   └── "New Player" button → NewPlayer modal
-              │   └── Logout/Login button
-              │
-              ├── TournamentButtons
-              │   ├── Leaderboard toggle
-              │   ├── QR Match button → QRMatchModal
-              │   ├── DT Entry button → BulkMatchEntry
-              │   └── Pool Management → PoolManagement modal
-              │
-              ├── Leaderboard (toggleable)
-              │   └── LeaderboardPlayer (for each player)
-              │
-              └── TournamentInfo
-                    │
-                    ├── [Round Robin]
-                    │   ├── Rounds (round navigation)
-                    │   ├── PoolTable (per pool)
-                    │   │   └── Player (row per player)
-                    │   │       └── Match cells (clickable)
-                    │   └── LeaderboardSidebar
-                    │
-                    └── [Bracket]
-                        ├── Round navigation
-                        └── Round
-                            └── Match (per matchup)
+```mermaid
+graph TD
+    Layout["Layout (UserContextProvider)"]
+    TP["TournamentPage (SSR auth check)"]
+    TCP["TournamentContextProvider"]
+
+    Layout --> TP --> TCP
+
+    TCP --> Navbar
+    TCP --> TB["TournamentButtons"]
+    TCP --> LB["Leaderboard (toggleable)"]
+    TCP --> TI["TournamentInfo"]
+
+    Navbar --> Lang["Languages (locale selector)"]
+    Navbar --> ANL["AdminNavLink (if admin)"]
+    Navbar --> TNC["TournamentNavbarContent"]
+    Navbar --> LogBtn["Logout/Login button"]
+    TNC --> BackLink["Back to tournaments link"]
+    TNC --> NPBtn["New Player button → NewPlayer modal"]
+
+    TB --> LBToggle["Leaderboard toggle"]
+    TB --> QRBtn["QR Match button → QRMatchModal"]
+    TB --> DTBtn["DT Entry button → BulkMatchEntry"]
+    TB --> PMBtn["Pool Management → PoolManagement modal"]
+
+    LB --> LBP["LeaderboardPlayer (for each player)"]
+
+    TI --> RR["Round Robin"]
+    TI --> BR["Bracket"]
+
+    RR --> Rounds["Rounds (round navigation)"]
+    RR --> PT["PoolTable (per pool)"]
+    RR --> LBS["LeaderboardSidebar"]
+    PT --> Player["Player (row per player)"]
+    Player --> MC["Match cells (clickable)"]
+
+    BR --> RNav["Round navigation"]
+    BR --> Round["Round"]
+    Round --> Match["Match (per matchup)"]
 ```

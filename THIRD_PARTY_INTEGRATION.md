@@ -12,30 +12,46 @@ The Tournament App supports external match result submission via QR codes. Tourn
 
 ### 1. Basic Flow (No Audit Trail)
 
-```
-1. Tournament admin generates QR code in Tournament App
-2. QR code contains match metadata (players, tournament ID, round, etc.)
-3. Third-party app scans QR code
-4. App parses JSON data from QR code
-5. User enters match results in the app
-6. App submits results to submitUrl endpoint (ONE TIME ONLY)
-7. Tournament App processes and stores results
-8. Match ID is permanently consumed - cannot resubmit
+```mermaid
+sequenceDiagram
+    actor Admin
+    participant App as Tournament App
+    participant QR as QR Code
+    participant TPApp as Third-Party App
+    participant API as Submit API
+
+    Admin->>App: Generate QR code
+    App->>QR: Encode match metadata (players, tournament ID, round, etc.)
+    TPApp->>QR: Scan QR code
+    TPApp->>TPApp: Parse JSON data
+    TPApp->>TPApp: User enters match results
+    TPApp->>API: Submit results to submitUrl (ONE TIME ONLY)
+    API->>API: Process and store results
+    Note over API: Match ID is permanently consumed — cannot resubmit
 ```
 
 ### 2. Flow with Audit Trail (Tournament Requires Identity)
 
-```
-1. User registers device with their name (one-time setup)
-   → POST /api/submitter/register
-   → Receives deviceToken (store securely on device)
+```mermaid
+sequenceDiagram
+    participant TPApp as Third-Party App
+    participant REG as Register API
+    participant Admin
+    participant App as Tournament App
+    participant SUB as Submit API
 
-2. Tournament admin generates QR code
-3. Third-party app scans QR code
-4. App checks requireSubmitterIdentity field
-5. If true, app includes stored deviceToken in submission
-6. App submits results with deviceToken
-7. Tournament App validates token and records submitter identity
+    Note over TPApp,REG: One-time device setup
+    TPApp->>REG: POST /api/submitter/register {name}
+    REG-->>TPApp: {deviceToken} — store securely on device
+
+    Admin->>App: Generate QR code
+    TPApp->>TPApp: Scan QR code
+    TPApp->>TPApp: Check requireSubmitterIdentity field
+    opt requireSubmitterIdentity is true
+        TPApp->>TPApp: Include stored deviceToken in submission
+    end
+    TPApp->>SUB: Submit results with deviceToken
+    SUB->>SUB: Validate token and record submitter identity
 ```
 
 ---

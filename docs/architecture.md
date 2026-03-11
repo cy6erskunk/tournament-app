@@ -4,45 +4,33 @@ This document describes the high-level architecture of the Tournament App, a ful
 
 ## System Architecture
 
-```
-┌─────────────────────────────────────────────────────────────────────┐
-│                        Client (Browser)                             │
-│  ┌──────────────┐  ┌──────────────┐  ┌──────────────────────────┐  │
-│  │  React 19 UI │  │  next-intl   │  │  React Context (State)   │  │
-│  │  Components  │  │  (i18n)      │  │  - TournamentContext     │  │
-│  │              │  │              │  │  - UserContext            │  │
-│  └──────┬───────┘  └──────────────┘  └──────────────────────────┘  │
-└─────────┼──────────────────────────────────────────────────────────-┘
-          │ HTTP (fetch)
-┌─────────┼──────────────────────────────────────────────────────────-┐
-│         ▼          Next.js 16 Server (App Router)                   │
-│  ┌──────────────┐  ┌──────────────┐  ┌──────────────────────────┐  │
-│  │  API Routes  │  │  Middleware   │  │  Server Components       │  │
-│  │  /api/*      │  │  (auth, i18n)│  │  (SSR pages)             │  │
-│  └──────┬───────┘  └──────────────┘  └──────────────────────────┘  │
-│         │                                                           │
-│  ┌──────┴───────┐  ┌──────────────┐  ┌──────────────────────────┐  │
-│  │  Database    │  │  Auth (JWT)  │  │  QR Match In-Memory      │  │
-│  │  Services    │  │  + bcrypt    │  │  Store                   │  │
-│  └──────┬───────┘  └──────────────┘  └──────────────────────────┘  │
-└─────────┼──────────────────────────────────────────────────────────-┘
-          │ SQL (Kysely ORM)
-┌─────────┼──────────────────────────────────────────────────────────-┐
-│         ▼                                                           │
-│  ┌──────────────────────────────────────────────────────────────┐   │
-│  │              PostgreSQL (Neon)                                │   │
-│  │  Tables: users, tournaments, players, tournament_players,    │   │
-│  │          matches, pools, submitter_devices                   │   │
-│  └──────────────────────────────────────────────────────────────┘   │
-└─────────────────────────────────────────────────────────────────────┘
+```mermaid
+graph TD
+    subgraph Client["Client (Browser)"]
+        UI["React 19 UI Components"]
+        I18N["next-intl (i18n)"]
+        CTX["React Context (State)<br/>- TournamentContext<br/>- UserContext"]
+    end
 
-          ┌──────────────────────┐
-          │  External QR Scanner │ ◄── Third-party device/app
-          │  (CORS-enabled)      │     scans QR, submits results
-          └──────────┬───────────┘
-                     │ POST /api/qr-match/submit
-                     ▼
-              Next.js API Routes
+    subgraph Server["Next.js 16 Server (App Router)"]
+        API["API Routes /api/*"]
+        MW["Middleware (auth, i18n)"]
+        SSR["Server Components (SSR pages)"]
+        DB_SVC["Database Services"]
+        AUTH["Auth (JWT + bcrypt)"]
+        QR_STORE["QR Match In-Memory Store"]
+    end
+
+    subgraph Database["PostgreSQL (Neon)"]
+        TABLES["Tables: users, tournaments, players,<br/>tournament_players, matches, pools,<br/>submitter_devices"]
+    end
+
+    EXT["External QR Scanner<br/>(CORS-enabled)"]
+
+    UI -->|"HTTP (fetch)"| API
+    API --> DB_SVC
+    DB_SVC -->|"SQL (Kysely ORM)"| TABLES
+    EXT -->|"POST /api/qr-match/submit"| API
 ```
 
 ## Tech Stack
@@ -127,47 +115,68 @@ tournament-app/
 
 ## Database Schema
 
-```
-┌──────────────────┐     ┌────────────────────────┐     ┌──────────────────┐
-│     users        │     │     tournaments         │     │     players      │
-├──────────────────┤     ├────────────────────────┤     ├──────────────────┤
-│ username (PK)    │     │ id (PK, serial)        │     │ player_name (PK) │
-│ password         │     │ name                   │     └────────┬─────────┘
-│ role             │     │ date                   │              │
-└──────────────────┘     │ format                 │              │
-                         │ public_results         │              │
-                         │ require_submitter_     │              │
-                         │   identity             │              │
-                         └───────────┬────────────┘              │
-                                     │                           │
-                         ┌───────────┴────────────────────────┐  │
-                         │      tournament_players            │  │
-                         ├────────────────────────────────────┤  │
-                         │ player_name (FK → players)     ────┼──┘
-                         │ tournament_id (FK → tournaments)   │
-                         │ bracket_match                      │
-                         │ bracket_seed                       │
-                         │ pool_id (FK → pools, nullable)     │
-                         └──────────────┬─────────────────────┘
-                                        │
-          ┌─────────────────────────────┼───────────────────────┐
-          │                             │                       │
-┌─────────┴────────┐     ┌─────────────┴──────┐     ┌─────────┴────────────┐
-│     matches      │     │      pools          │     │  submitter_devices   │
-├──────────────────┤     ├────────────────────┤     ├──────────────────────┤
-│ id (PK, serial)  │     │ id (PK, serial)    │     │ device_token (PK)    │
-│ tournament_id    │     │ tournament_id (FK)  │     │ submitter_name       │
-│ round            │     │ name               │     │ created_at           │
-│ match            │     └────────────────────┘     │ last_used            │
-│ player1          │                                 └──────────────────────┘
-│ player2          │
-│ player1_hits     │
-│ player2_hits     │
-│ winner           │
-│ submitted_by_    │
-│   token          │
-│ submitted_at     │
-└──────────────────┘
+```mermaid
+erDiagram
+    users {
+        varchar username PK
+        varchar password
+        varchar role
+    }
+
+    tournaments {
+        serial id PK
+        varchar name
+        date date
+        varchar format
+        boolean public_results
+        boolean require_submitter_identity
+    }
+
+    players {
+        varchar player_name PK
+    }
+
+    tournament_players {
+        varchar player_name FK
+        integer tournament_id FK
+        integer bracket_match
+        integer bracket_seed
+        integer pool_id FK "nullable"
+    }
+
+    matches {
+        serial id PK
+        integer tournament_id
+        integer round
+        integer match
+        varchar player1
+        varchar player2
+        integer player1_hits
+        integer player2_hits
+        varchar winner
+        varchar submitted_by_token FK "nullable"
+        timestamp submitted_at
+    }
+
+    pools {
+        serial id PK
+        integer tournament_id FK
+        varchar name
+    }
+
+    submitter_devices {
+        varchar device_token PK
+        varchar submitter_name
+        timestamp created_at
+        timestamp last_used
+    }
+
+    tournaments ||--o{ tournament_players : "has"
+    players ||--o{ tournament_players : "joins"
+    tournaments ||--o{ pools : "has"
+    tournaments ||--o{ matches : "contains"
+    pools ||--o{ tournament_players : "groups"
+    submitter_devices ||--o{ matches : "submits"
 ```
 
 ### Table Relationships
@@ -182,28 +191,30 @@ tournament-app/
 
 ## Authentication Architecture
 
-```
-┌──────────┐    POST /api/login     ┌──────────────┐
-│  Client  │ ─────────────────────► │  Login API   │
-│          │   {username, password} │              │
-│          │ ◄───────────────────── │  Validates   │
-│          │   Set-Cookie: token=   │  bcrypt hash │
-│          │   JWT (HTTP-only)      └──────────────┘
-└──────┬───┘
-       │
-       │  Subsequent requests include
-       │  cookie automatically
-       │
-       ▼
-┌──────────────┐    getSession()    ┌──────────────┐
-│  API Route   │ ──────────────────►│  JWT Verify  │
-│              │                    │              │
-│  Checks:     │ ◄──────────────── │  Returns:    │
-│  - 401 if no │   {name, role}    │  {name, role}│
-│    session   │                    │  or null     │
-│  - 403 if    │                    └──────────────┘
-│    not admin │
-└──────────────┘
+```mermaid
+sequenceDiagram
+    participant C as Client
+    participant L as Login API
+    participant A as API Route
+    participant J as JWT Verify
+
+    C->>L: POST /api/login {username, password}
+    L->>L: bcrypt.compare()
+    L-->>C: Set-Cookie: token=JWT (HTTP-only)
+
+    Note over C: Subsequent requests include cookie automatically
+
+    C->>A: Request + Cookie: token
+    A->>J: getSession()
+    J->>J: jwt.verify()
+    J-->>A: {name, role} or null
+    alt No session
+        A-->>C: 401 Unauthorized
+    else Not admin
+        A-->>C: 403 Forbidden
+    else Valid
+        A-->>C: Response
+    end
 ```
 
 - **JWT tokens** are stored in HTTP-only cookies for security (not accessible to JavaScript).
@@ -226,15 +237,24 @@ The app uses React Context for global state, with two primary providers:
 - Provides: `tournament`, `players`, `pools`, `activeRound`, `hidden` (leaderboard toggle)
 - Auto-creates "Pool 1" for round-robin tournaments with no pools
 
-```
-UserContextProvider (layout.tsx)
-  └── TournamentContextProvider (tournament/[id]/page.tsx)
-        ├── TournamentInfo
-        │   ├── RoundRobin/Tournament (or Brackets/Tournament)
-        │   ├── Leaderboard
-        │   └── LeaderboardSidebar
-        ├── TournamentButtons
-        └── Modals (AddMatch, EditMatch, QRMatch, PoolManagement)
+```mermaid
+graph TD
+    UCP["UserContextProvider (layout.tsx)"]
+    TCP["TournamentContextProvider (tournament/[id]/page.tsx)"]
+    TI["TournamentInfo"]
+    RR["RoundRobin/Tournament or Brackets/Tournament"]
+    LB["Leaderboard"]
+    LBS["LeaderboardSidebar"]
+    TB["TournamentButtons"]
+    MOD["Modals (AddMatch, EditMatch, QRMatch, PoolManagement)"]
+
+    UCP --> TCP
+    TCP --> TI
+    TCP --> TB
+    TCP --> MOD
+    TI --> RR
+    TI --> LB
+    TI --> LBS
 ```
 
 ## Internationalization
@@ -254,17 +274,10 @@ The app supports 4 languages via `next-intl` with URL-based routing:
 
 ## Deployment Architecture
 
-```
-┌─────────────┐     ┌──────────────────┐     ┌──────────────────┐
-│  Developer   │     │     Vercel       │     │    Neon DB       │
-│             │────►│                  │────►│                  │
-│  git push   │     │  1. Build        │     │  PostgreSQL      │
-│             │     │  2. Run tests    │     │  (serverless)    │
-└─────────────┘     │  3. Deploy       │     └──────────────────┘
-                    │  4. Run          │
-                    │     migrations   │
-                    │     (postbuild)  │
-                    └──────────────────┘
+```mermaid
+graph LR
+    DEV["Developer<br/>git push"] --> VERCEL["Vercel<br/>1. Build<br/>2. Run tests<br/>3. Deploy<br/>4. Run migrations (postbuild)"]
+    VERCEL --> NEON["Neon DB<br/>PostgreSQL (serverless)"]
 ```
 
 - **Vercel** hosts the Next.js application with automatic deployments on push
