@@ -19,6 +19,7 @@ export interface Matches {
   winner: string;
   submitted_by_token: string | null;
   submitted_at: Timestamp | null;
+  bracket_section: string | null;
 }
 
 export interface Players {
@@ -46,6 +47,7 @@ export interface Tournaments {
   name: string;
   public_results: Generated<boolean>;
   require_submitter_identity: Generated<boolean>;
+  placement_size: number | null;
 }
 
 export interface Users {

@@ -86,6 +86,7 @@ const EditMatch = ({ closeModal, player, opponent }: EditmatchProps) => {
       winner: formData.get("winner") as string | null,
       tournament_id: Number(context.tournament.id),
       round: context.activeRound,
+      bracket_section: null,
     };
 
     if (!form.player1 || !form.player2) {

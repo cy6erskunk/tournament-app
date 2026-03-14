@@ -6,5 +6,6 @@ type Tournament = Omit<Tournaments, "id" | "date" | "require_submitter_identity"
   date: Date;
   require_submitter_identity: boolean;
   public_results: boolean;
+  placement_size: number | null;
 };
 export default Tournament;

@@ -38,10 +38,13 @@ function EditButton() {
   const [showModal, setShowModal] = useState(false);
   const [loading, setLoading] = useState(false);
   const t = useTranslations("AddPlayer");
+  const tBrackets = useTranslations("Brackets");
   const [input, setInput] = useState<string>("");
   const [requireIdentity, setRequireIdentity] = useState(false);
   const [publicResults, setPublicResults] = useState(false);
+  const [placementSize, setPlacementSize] = useState<number | null>(null);
   const isRoundRobin = context.tournament?.format === "Round Robin";
+  const isBrackets = context.tournament?.format === "Brackets";
 
   const handleSave = async () => {
     if (!context.tournament) return
@@ -51,6 +54,7 @@ function EditButton() {
       id: Number(context.tournament.id),
       require_submitter_identity: requireIdentity,
       public_results: isRoundRobin ? publicResults : undefined,
+      placement_size: isBrackets ? placementSize : undefined,
     };
 
     if (!request.name) {
@@ -71,6 +75,7 @@ function EditButton() {
           name: request.name,
           require_submitter_identity: requireIdentity,
           ...(isRoundRobin ? { public_results: publicResults } : {}),
+          ...(isBrackets ? { placement_size: placementSize } : {}),
         } as typeof context.tournament;
         context.setTournament(update);
       }
@@ -87,6 +92,7 @@ function EditButton() {
     setInput(context.tournament?.name || "");
     setRequireIdentity(context.tournament?.require_submitter_identity || false);
     setPublicResults(context.tournament?.public_results || false);
+    setPlacementSize(context.tournament?.placement_size ?? null);
     setShowModal(true);
   };
 
@@ -141,6 +147,29 @@ function EditButton() {
               <label htmlFor="edit-publicResults" className="text-sm">
                 {t("publicresults")}
               </label>
+            </div>
+          )}
+          {isBrackets && (
+            <div className="flex flex-col gap-2">
+              <label htmlFor="edit-placementSize" className="text-sm font-medium">
+                {tBrackets("placementSize")}
+              </label>
+              <select
+                id="edit-placementSize"
+                name="placementSize"
+                className="rounded-md shadow-xs border border-gray-300 p-2 text-sm"
+                value={placementSize ?? ""}
+                onChange={(e) =>
+                  setPlacementSize(e.target.value ? Number(e.target.value) : null)
+                }
+              >
+                <option value="">{tBrackets("placementSizeNone")}</option>
+                {[4, 8, 16, 32].map((size) => (
+                  <option key={size} value={size}>
+                    {tBrackets("placementSizeLabel", { size })}
+                  </option>
+                ))}
+              </select>
             </div>
           )}
           <div className="flex items-center justify-center gap-2 text-sm font-semibold">

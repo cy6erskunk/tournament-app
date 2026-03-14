@@ -141,7 +141,11 @@
   },
   "Brackets": {
     "selectseed": "Valige turniirilt mängu järjekord",
-    "noRRtournamentsfound": "Ringmänguturniire ei leitud"
+    "noRRtournamentsfound": "Ringmänguturniire ei leitud",
+    "placementSize": "Asetustabel",
+    "placementSizeNone": "Ainult võitjad (standard)",
+    "placementSizeLabel": "Kõik kohad kuni {size}",
+    "consolationTitle": "Asetusmatš"
   },
   "BulkEntry": {
     "title": "DT Tulemuste Sisestus",

@@ -141,7 +141,11 @@
   },
   "Brackets": {
     "selectseed": "Välj matchordning från turneringen",
-    "noRRtournamentsfound": "Inga round robin-turneringar hittades"
+    "noRRtournamentsfound": "Inga round robin-turneringar hittades",
+    "placementSize": "Placeringsschema",
+    "placementSizeNone": "Endast vinnare (standard)",
+    "placementSizeLabel": "Alla platser upp till {size}",
+    "consolationTitle": "Placeringmatch"
   },
   "BulkEntry": {
     "title": "DT Resultatinmatning",

@@ -275,6 +275,7 @@ describe('BulkMatchEntry', () => {
           round: 1,
           submitted_by_token: null,
           submitted_at: null,
+          bracket_section: null,
         }]),
         createMockPlayer('Bob', [{
           id: 1,
@@ -288,6 +289,7 @@ describe('BulkMatchEntry', () => {
           round: 1,
           submitted_by_token: null,
           submitted_at: null,
+          bracket_section: null,
         }]),
         createMockPlayer('Charlie'),
       ];
@@ -321,6 +323,7 @@ describe('BulkMatchEntry', () => {
           round: 1,
           submitted_by_token: null,
           submitted_at: null,
+          bracket_section: null,
         }]),
         createMockPlayer('Bob', [{
           id: 1,
@@ -334,6 +337,7 @@ describe('BulkMatchEntry', () => {
           round: 1,
           submitted_by_token: null,
           submitted_at: null,
+          bracket_section: null,
         }]),
         createMockPlayer('Charlie'),
       ];
@@ -422,6 +426,7 @@ describe('BulkMatchEntry', () => {
         round: 1,
         submitted_by_token: null,
         submitted_at: null,
+        bracket_section: null,
       };
 
       (global.fetch as ReturnType<typeof vi.fn>).mockResolvedValueOnce({
@@ -474,6 +479,7 @@ describe('BulkMatchEntry', () => {
           round: 1,
           submitted_by_token: null,
           submitted_at: null,
+          bracket_section: null,
         }]),
         createMockPlayer('Bob', [{
           id: 42,
@@ -487,6 +493,7 @@ describe('BulkMatchEntry', () => {
           round: 1,
           submitted_by_token: null,
           submitted_at: null,
+          bracket_section: null,
         }]),
         createMockPlayer('Charlie'),
       ];
@@ -503,6 +510,7 @@ describe('BulkMatchEntry', () => {
         round: 1,
         submitted_by_token: null,
         submitted_at: null,
+        bracket_section: null,
       };
 
       (global.fetch as ReturnType<typeof vi.fn>).mockResolvedValueOnce({

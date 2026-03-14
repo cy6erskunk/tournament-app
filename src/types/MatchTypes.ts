@@ -24,6 +24,7 @@ export type MatchForm = {
   tournament_id: number;
   round: number;
   match: number;
+  bracket_section: string | null;
 };
 
 export type MatchFormSubmit = Omit<MatchForm, "winner"> & { winner: string }; // winner is required on submission

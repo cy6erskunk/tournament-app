@@ -11,6 +11,7 @@ export async function createTournament(
   inputName: string,
   requireSubmitterIdentity: boolean = false,
   publicResults: boolean = false,
+  placementSize: number | null = null,
 ): Promise<Result<Tournament, string>> {
   try {
     const tournament = await db.transaction().execute(async (trx) => {
@@ -22,6 +23,7 @@ export async function createTournament(
           format: format,
           require_submitter_identity: requireSubmitterIdentity,
           public_results: format === "Round Robin" ? publicResults : false,
+          placement_size: format === "Brackets" ? placementSize : null,
         })
         .returningAll()
         .executeTakeFirst();

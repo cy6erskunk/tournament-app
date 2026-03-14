@@ -9,6 +9,7 @@ export async function updateTournament(
     name: string;
     require_submitter_identity?: boolean;
     public_results?: boolean;
+    placement_size?: number | null;
   },
 ): Promise<Result<string, string>> {
   try {
@@ -16,6 +17,7 @@ export async function updateTournament(
       name: string;
       require_submitter_identity?: boolean;
       public_results?: boolean;
+      placement_size?: number | null;
     } = { name: data.name };
 
     if (data.require_submitter_identity !== undefined) {
@@ -34,6 +36,10 @@ export async function updateTournament(
       } else {
         updateData.public_results = false;
       }
+    }
+
+    if (data.placement_size !== undefined) {
+      updateData.placement_size = data.placement_size;
     }
 
     const result = await db

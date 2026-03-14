@@ -8,10 +8,12 @@ import Button from "./Button";
 
 function NewTournament() {
   const t = useTranslations("Select");
+  const tBrackets = useTranslations("Brackets");
   const router = useRouter();
   const [selectedFormat, setSelectedFormat] = useState("Round Robin");
   const [requireIdentity, setRequireIdentity] = useState(false);
   const [publicResults, setPublicResults] = useState(false);
+  const [placementSize, setPlacementSize] = useState<number | null>(null);
   const [loading, setLoading] = useState(false);
   const defaultValue = `${selectedFormat} ${new Date().toLocaleDateString(
     "en-GB",
@@ -19,6 +21,7 @@ function NewTournament() {
   const onTournamentFormatChange = (e: FormEvent<HTMLInputElement>) => {
     setSelectedFormat(e.currentTarget.value);
     setPublicResults(false);
+    setPlacementSize(null);
   };
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
@@ -36,6 +39,7 @@ function NewTournament() {
       name.trim() || defaultValue,
       requireIdentity,
       format === "Round Robin" ? publicResults : false,
+      format === "Brackets" ? placementSize : null,
     );
 
     if (!newTournament.success) {
@@ -105,6 +109,31 @@ function NewTournament() {
             <label htmlFor="publicResults" className="text-sm">
               {t("publicresults")}
             </label>
+          </div>
+        )}
+        {selectedFormat === "Brackets" && (
+          <div className="flex flex-col gap-2">
+            <label htmlFor="placementSize" className="text-sm font-medium">
+              {tBrackets("placementSize")}
+            </label>
+            <select
+              id="placementSize"
+              name="placementSize"
+              className="rounded-md shadow-xs border border-black p-2 text-sm"
+              value={placementSize ?? ""}
+              onChange={(e) =>
+                setPlacementSize(
+                  e.target.value ? Number(e.target.value) : null,
+                )
+              }
+            >
+              <option value="">{tBrackets("placementSizeNone")}</option>
+              {[4, 8, 16, 32].map((size) => (
+                <option key={size} value={size}>
+                  {tBrackets("placementSizeLabel", { size })}
+                </option>
+              ))}
+            </select>
           </div>
         )}
         <div>

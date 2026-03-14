@@ -141,7 +141,11 @@
   },
   "Brackets": {
     "selectseed": "Valitse ottelujärjestys turnauksesta",
-    "noRRtournamentsfound": "Ei vanhoja round robin turnauksia"
+    "noRRtournamentsfound": "Ei vanhoja round robin turnauksia",
+    "placementSize": "Sijoitustaulu",
+    "placementSizeNone": "Vain voittajat (standardi)",
+    "placementSizeLabel": "Kaikki sijat {size}:een asti",
+    "consolationTitle": "Sijoitusottelu"
   },
   "BulkEntry": {
     "title": "DT Tulosten Syöttö",

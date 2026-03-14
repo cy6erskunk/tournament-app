@@ -68,6 +68,7 @@ describe('EditMatch - Priority Wins', () => {
     match: 1,
     submitted_by_token: null,
     submitted_at: null,
+    bracket_section: null,
   };
 
   const mockPlayer: Player = {
@@ -219,6 +220,7 @@ describe('EditMatch - Priority Wins', () => {
       match: 1,
       submitted_by_token: null,
       submitted_at: null,
+      bracket_section: null,
     };
 
     (global.fetch as ReturnType<typeof vi.fn>).mockResolvedValueOnce({
@@ -279,6 +281,7 @@ describe('EditMatch - Priority Wins', () => {
       match: 1,
       submitted_by_token: null,
       submitted_at: null,
+      bracket_section: null,
     };
 
     (global.fetch as ReturnType<typeof vi.fn>).mockResolvedValueOnce({
@@ -335,6 +338,7 @@ describe('EditMatch - Priority Wins', () => {
       match: 1,
       submitted_by_token: null,
       submitted_at: null,
+      bracket_section: null,
     };
 
     (global.fetch as ReturnType<typeof vi.fn>).mockResolvedValueOnce({
@@ -475,6 +479,7 @@ describe('EditMatch - Priority Wins', () => {
       match: 1,
       submitted_by_token: null,
       submitted_at: null,
+      bracket_section: null,
     };
 
     (global.fetch as ReturnType<typeof vi.fn>).mockResolvedValueOnce({

@@ -141,7 +141,11 @@
   },
   "Brackets": {
     "selectseed": "Select match order from tournament",
-    "noRRtournamentsfound": "No round robin tournaments found"
+    "noRRtournamentsfound": "No round robin tournaments found",
+    "placementSize": "Placement table",
+    "placementSizeNone": "Winners only (standard)",
+    "placementSizeLabel": "All places up to {size}",
+    "consolationTitle": "Placement match"
   },
   "BulkEntry": {
     "title": "DT Results Entry",

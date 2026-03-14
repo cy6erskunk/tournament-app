@@ -14,6 +14,11 @@ import { useTranslations } from "next-intl";
 import { useUserContext } from "@/context/UserContext";
 import type { RoundRobinCount } from "@/types/RoundRobinCount";
 import { UserIcon } from "@heroicons/react/24/outline";
+import {
+  getAllConsolationSections,
+  parseBracketSection,
+  sectionLabel,
+} from "@/helpers/consolationBracket";
 
 // These types describe a match on the frontend, not 1:1 with
 // database data as this is also used for displaying matches
@@ -39,6 +44,12 @@ type PlayerInfo = {
 };
 
 type Pair = [PlayerInfo, PlayerInfo];
+
+export type ConsolationBracket = {
+  section: string;
+  label: string;
+  rounds: Round[];
+};
 
 export default function Tournament() {
   const t = useTranslations("Brackets");
@@ -71,7 +82,12 @@ export default function Tournament() {
   );
 
   const buildRound = useCallback(
-    (roundNumber: number, tournamentId: number, pairs: Pair[]) => {
+    (
+      roundNumber: number,
+      tournamentId: number,
+      pairs: Pair[],
+      bracketSection: string | null,
+    ) => {
       if (!tournamentId) return;
       const matches = new Map<number, Match>();
 
@@ -83,7 +99,7 @@ export default function Tournament() {
 
         if (!p1 || !p2) continue;
 
-        // If players share a match, add it to the round
+        // If players share a match in this section and round, add it to the round
         const matchIds = p1.matches.map((match) => match.id);
         const hasMatch = p2.matches.find((match) =>
           matchIds.includes(match.id),
@@ -91,8 +107,8 @@ export default function Tournament() {
 
         if (!hasMatch) continue;
         if (hasMatch.round !== roundNumber) continue;
+        if (hasMatch.bracket_section !== bracketSection) continue;
 
-        // matches.set(`${hasMatch.match} ${hasMatch.round}`, castToMatch(hasMatch))
         matches.set(hasMatch.match, castToMatch(hasMatch));
       }
 
@@ -112,6 +128,7 @@ export default function Tournament() {
           winner: "",  // Empty string for unplayed matches
           submitted_by_token: null,
           submitted_at: null,
+          bracket_section: bracketSection,
         };
 
         matches.set(matchId, match);
@@ -130,57 +147,58 @@ export default function Tournament() {
     capacity?: number;
     tournamentId: number;
     players: (Player | null)[];
+    bracketSection: string | null;
+    initialPlayerInfos?: PlayerInfo[];
   };
 
   const buildRounds = useCallback(
-    ({ capacity, tournamentId, players }: RoundProps) => {
-      // Ensure there are enough players to build the tournament
-      if (!players || players.length < 2) {
-        // TODO: Handle insufficient players case
-        return;
+    ({ capacity, tournamentId, players, bracketSection, initialPlayerInfos }: RoundProps) => {
+      // For consolation brackets, initialPlayerInfos may be provided directly
+      // For main bracket, build from players array
+      let playerInfo: PlayerInfo[];
+
+      if (initialPlayerInfos) {
+        playerInfo = initialPlayerInfos;
+      } else {
+        // Ensure there are enough players to build the tournament
+        if (!players || players.length < 2) {
+          return;
+        }
+
+        if (capacity) {
+          playerInfo = new Array<PlayerInfo>(capacity);
+          playerInfo.fill({ player: null, futurePlayer: false });
+        } else {
+          playerInfo = [];
+        }
+
+        players.forEach((player, i) => {
+          playerInfo[i] = { player: player, futurePlayer: Boolean(player) };
+        });
       }
+
+      if (playerInfo.length < 2) return;
 
       const rounds: Round[] = [];
+      const roundCount = Math.ceil(Math.log2(playerInfo.length));
 
-      // If capacity is defined, fill the players array with placeholder data
-      let playerInfo: PlayerInfo[];
-      if (capacity) {
-        playerInfo = new Array<PlayerInfo>(capacity);
-        playerInfo.fill({ player: null, futurePlayer: false });
-      } else {
-        playerInfo = [];
-      }
-
-      // Populate the players array
-      // This will also replace placeholder data if capacity was set
-      players.forEach((player, i) => {
-        playerInfo[i] = { player: player, futurePlayer: Boolean(player) };
-      });
-
-      // Amount of rounds we should have based on players
-      const roundCount = Math.ceil(Math.log2(players.length));
-
-      // Loop through and build each round
       for (let i = 1; i <= roundCount; i++) {
         const pairs: Pair[] = [];
         let latest: PlayerInfo = { player: null, futurePlayer: false };
         playerInfo.forEach((player, i) => {
-          // If i + 1 is an equal number, last should exist and we create a pair
           if ((i + 1) % 2 == 0) {
             pairs.push([latest, player]);
             latest = { player: null, futurePlayer: false };
             return;
           }
-          // Save the player as "latest" for pairing with next player
           latest = player;
           return;
         });
-        // If last is still defined, create an extra match
         if (latest.player) {
           pairs.push([latest, { player: null, futurePlayer: false }]);
         }
 
-        const round = buildRound(i, tournamentId, pairs);
+        const round = buildRound(i, tournamentId, pairs, bracketSection);
         if (!round) continue;
         rounds.push(round);
 
@@ -188,8 +206,6 @@ export default function Tournament() {
         pairs.forEach((pair, i) => {
           const p1 = pair[0];
           const p2 = pair[1];
-          // Helps us catch cases where only one player exists
-          // giving us the existing player
           let p: PlayerInfo;
           if (p1.player) {
             p = p1;
@@ -197,7 +213,6 @@ export default function Tournament() {
             p = p2;
           }
 
-          // If neither exist, pass undefined
           if (!p.player) {
             const res = { player: null, futurePlayer: false };
             advancers.set(i, res);
@@ -209,18 +224,14 @@ export default function Tournament() {
             return;
           }
 
-          // Tries to find if the players have a match between them
           const match = getMatchByPlayer(p.player, round);
 
-          // If no match found, don't advance either player
           if (!match) {
             const res = { player: null, futurePlayer: true };
             advancers.set(i, res);
             return;
           }
 
-          // If no match winner, don't advance either player
-          // FIXME: Matches should always have a winner...?
           if (!match.winner) {
             const res = { player: null, futurePlayer: true };
             advancers.set(i, res);
@@ -246,6 +257,28 @@ export default function Tournament() {
     },
     [buildRound],
   );
+
+  /** Extract losers from a bracket round as PlayerInfo for consolation input. */
+  const getLosersFromRound = useCallback((round: Round): PlayerInfo[] => {
+    return round.matches.map((match) => {
+      const p1 = match.player1;
+      const p2 = match.player2;
+
+      // Bye: one player is null → no loser goes to consolation
+      if (!p1 || !p2) {
+        return { player: null, futurePlayer: false };
+      }
+
+      if (!match.winner) {
+        // Both players exist but result not yet entered → loser unknown but will exist
+        return { player: null, futurePlayer: true };
+      }
+
+      // Return the loser
+      const loser = p1.player.player_name === match.winner ? p2 : p1;
+      return { player: loser, futurePlayer: Boolean(loser) };
+    });
+  }, []);
 
   // Seed this tournament based on another tournament
   async function seedTournament(tournamentId: number) {
@@ -292,7 +325,6 @@ export default function Tournament() {
       const seeded = players.some((player) => player?.player.bracket_seed);
 
       if (seeded) {
-        // Get thes highest player.player.bracket_match value
         const matchCount = Math.max(
           ...players.map((player) => player?.player.bracket_match ?? 0),
         );
@@ -301,7 +333,6 @@ export default function Tournament() {
           (e) => new Array(),
         );
 
-        // Generate pairs of players based on player.player.bracket_match
         players.forEach((player) => {
           console.log(player);
 
@@ -315,7 +346,6 @@ export default function Tournament() {
           }
         });
 
-        // Fill non full matches with nulls
         matches.map((match) => {
           if (match.length % 2 !== 0) {
             match.push(null);
@@ -328,12 +358,11 @@ export default function Tournament() {
       }
     }
 
-    // Populate a tournament with rounds and matches from context.players using a pair of players for each match
-    // If the players already have a match between them in context.players.matches then pair them up, if not
     return buildRounds({
       capacity,
       tournamentId: context.tournament.id,
       players,
+      bracketSection: null,
     }) ?? [];
   }, [
     buildRounds,
@@ -341,6 +370,98 @@ export default function Tournament() {
     context.tournament,
     capacity,
     context.loading,
+  ]);
+
+  /** Build all consolation sections recursively from main bracket rounds. */
+  const consolationSections = useMemo<ConsolationBracket[]>(() => {
+    const placementSize = context.tournament?.placement_size;
+    if (!placementSize || !tournament.length || !context.tournament) return [];
+
+    const currentTournament = context.tournament;
+    const tournamentId = currentTournament.id;
+    const allSections = getAllConsolationSections(placementSize);
+
+    return allSections.map((section) => {
+      const { top, bottom } = parseBracketSection(section, placementSize);
+      const N = bottom - top + 1;
+
+      // Find which parent section and round feeds into this consolation section.
+      // The parent section covers [parentTop, parentBottom] where parentBottom is bottom.
+      // The loser round within the parent is the round R where:
+      //   top = parentTop + parentN / 2^R
+      // We need to find the parent by looking at which section has top/bottom that
+      // generates this consolation section.
+      //
+      // Strategy: for each completed consolation section, find the parent rounds
+      // by identifying who has matches with bracket_section that feeds here.
+      // Simpler: use the player's matches filtered by this section to get players.
+
+      // Collect all players who have at least one match in this consolation section
+      const sectionPlayers = context.players.filter((player) =>
+        player?.matches.some((m) => m.bracket_section === section),
+      );
+
+      if (sectionPlayers.length === 0) {
+        // No matches recorded yet for this section.
+        // Try to derive players from the parent bracket's losers.
+        const parentSection = findParentSection(section, placementSize);
+        // parentSection === undefined means "not found"; parentSection === null means "main bracket is parent"
+        if (parentSection === undefined) return { section, label: sectionLabel(section), rounds: [] };
+
+        const parentRounds = parentSection === null
+          ? tournament
+          : getConsolationRoundsForSection(parentSection, context.players, tournamentId, buildRounds);
+
+        // Find which round of the parent feeds into this section
+        const parentRange = parseBracketSection(parentSection, placementSize);
+        const parentN = parentRange.bottom - parentRange.top + 1;
+
+        // Loser round R: top = parentTop + parentN / 2^R → R = log2(parentN / (top - parentTop))
+        const diff = top - parentRange.top;
+        if (diff <= 0) return { section, label: sectionLabel(section), rounds: [] };
+        const R = Math.round(Math.log2(parentN / diff));
+        if (R < 1 || R >= parentRounds.length + 1) return { section, label: sectionLabel(section), rounds: [] };
+
+        const parentRound = parentRounds[R - 1];
+        if (!parentRound) return { section, label: sectionLabel(section), rounds: [] };
+
+        const loserInfos = getLosersFromRound(parentRound);
+        const hasAnyPlayer = loserInfos.some(
+          (info) => info.player !== null || info.futurePlayer,
+        );
+        if (!hasAnyPlayer) return { section, label: sectionLabel(section), rounds: [] };
+
+        const rounds = buildRounds({
+          tournamentId,
+          players: [],
+          bracketSection: section,
+          initialPlayerInfos: loserInfos,
+        }) ?? [];
+
+        return { section, label: sectionLabel(section), rounds };
+      }
+
+      // Players found via their matches → build rounds from those matches
+      const initialInfos: PlayerInfo[] = sectionPlayers.map((p) => ({
+        player: p,
+        futurePlayer: Boolean(p),
+      }));
+
+      const rounds = buildRounds({
+        tournamentId,
+        players: [],
+        bracketSection: section,
+        initialPlayerInfos: initialInfos,
+      }) ?? [];
+
+      return { section, label: sectionLabel(section), rounds };
+    });
+  }, [
+    tournament,
+    context.tournament,
+    context.players,
+    buildRounds,
+    getLosersFromRound,
   ]);
 
   useEffect(() => {
@@ -354,7 +475,6 @@ export default function Tournament() {
     fetchRRTournaments();
   }, []);
 
-  // TODO: Handle the case where tournament is null
   if (!tournament) {
     return;
   }
@@ -393,9 +513,106 @@ export default function Tournament() {
         </div>
       ) : null}
 
+      {/* Main bracket */}
       <div className="flex mr-3 mt-16 gap-16 mb-10 overflow-x-auto">
         <Rounds tournament={tournament} />
       </div>
+
+      {/* Consolation sections (only for placement tournaments) */}
+      {consolationSections
+        .filter((cs) => cs.rounds.length > 0)
+        .map((cs) => (
+          <div key={cs.section} className="mt-8">
+            <div className="container mx-auto mb-4">
+              <h2 className="text-xl font-semibold text-gray-700 border-b border-gray-300 pb-2">
+                {cs.label}
+              </h2>
+            </div>
+            <div className="flex mr-3 gap-16 mb-10 overflow-x-auto">
+              <Rounds tournament={cs.rounds} />
+            </div>
+          </div>
+        ))}
     </>
   );
+}
+
+// ──────────────────────────────────────────────────────────────
+// Pure helpers (outside component to keep JSX clean)
+// ──────────────────────────────────────────────────────────────
+
+/**
+ * Given a consolation section like "c9-16", find the parent section
+ * string (null = main bracket, or "c5-8" etc.) that generates it.
+ */
+function findParentSection(
+  section: string,
+  placementSize: number,
+): string | null | undefined {
+  const { top, bottom } = parseBracketSection(section, placementSize);
+
+  // Try main bracket as parent
+  const mainN = placementSize;
+  for (let r = 1; r < Math.log2(mainN); r++) {
+    const consTop = 1 + mainN / Math.pow(2, r);
+    const consBottom = 1 + mainN / Math.pow(2, r - 1) - 1;
+    if (Math.round(consTop) === top && Math.round(consBottom) === bottom) {
+      return null; // parent is main bracket
+    }
+  }
+
+  // Try each consolation section as parent
+  const allSections = getAllConsolationSections(placementSize);
+  for (const parentCandidate of allSections) {
+    if (parentCandidate === section) continue;
+    const parentRange = parseBracketSection(parentCandidate, placementSize);
+    const parentN = parentRange.bottom - parentRange.top + 1;
+
+    for (let r = 1; r < Math.log2(parentN); r++) {
+      const consTop = parentRange.top + parentN / Math.pow(2, r);
+      const consBottom = parentRange.top + parentN / Math.pow(2, r - 1) - 1;
+      if (Math.round(consTop) === top && Math.round(consBottom) === bottom) {
+        return parentCandidate;
+      }
+    }
+  }
+
+  return undefined; // not found
+}
+
+/**
+ * Build rounds for a given consolation section by filtering players
+ * who have matches in that section and calling buildRounds.
+ * This is used to get the rounds of a parent consolation section
+ * when we need to extract its losers.
+ */
+function getConsolationRoundsForSection(
+  section: string,
+  allPlayers: (Player | null)[],
+  tournamentId: number,
+  buildRoundsFn: (props: {
+    capacity?: number;
+    tournamentId: number;
+    players: (Player | null)[];
+    bracketSection: string | null;
+    initialPlayerInfos?: { player: Player | null; futurePlayer: boolean }[];
+  }) => Round[] | undefined,
+): Round[] {
+  const sectionPlayers = allPlayers.filter((player) =>
+    player?.matches.some((m) => m.bracket_section === section),
+  );
+
+  if (sectionPlayers.length === 0) return [];
+
+  const initialInfos = sectionPlayers.map((p) => ({
+    player: p,
+    futurePlayer: Boolean(p),
+  }));
+
+  return buildRoundsFn({
+    tournamentId,
+    players: [],
+    bracketSection: section,
+    initialPlayerInfos: initialInfos,
+  }) ?? [];
 }

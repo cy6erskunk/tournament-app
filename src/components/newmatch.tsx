@@ -77,6 +77,7 @@ const AddMatch = ({
       winner: formData.get("winner") as string | null,
       tournament_id: Number(context.tournament.id),
       round: bracketMatch?.round ?? context.activeRound,
+      bracket_section: bracketMatch?.bracket_section ?? null,
     };
 
     if (!form.player1.trim() || !form.player2.trim()) {

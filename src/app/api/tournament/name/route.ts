@@ -10,6 +10,7 @@ type TournamentData = {
   id: number,
   require_submitter_identity?: boolean,
   public_results?: boolean,
+  placement_size?: number | null,
 }
 
 export async function POST(request: Request) {
@@ -39,6 +40,7 @@ export async function POST(request: Request) {
     name: data.value.name,
     require_submitter_identity: data.value.require_submitter_identity,
     public_results: data.value.public_results,
+    placement_size: data.value.placement_size,
   });
 
   if (!status.success) {

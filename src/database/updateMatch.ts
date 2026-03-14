@@ -30,6 +30,11 @@ export async function updateMatch(
       )
       .where("tournament_id", "=", form.tournament_id)
       .where("round", "=", form.round)
+      .$if(form.bracket_section !== undefined, (qb) =>
+        form.bracket_section
+          ? qb.where("bracket_section", "=", form.bracket_section!)
+          : qb.where("bracket_section", "is", null),
+      )
       .executeTakeFirst();
 
     let p1 = form.player1;
@@ -57,6 +62,11 @@ export async function updateMatch(
       .where("player2", "=", p2)
       .where("tournament_id", "=", form.tournament_id)
       .where("round", "=", form.round)
+      .$if(form.bracket_section !== undefined, (qb) =>
+        form.bracket_section
+          ? qb.where("bracket_section", "=", form.bracket_section!)
+          : qb.where("bracket_section", "is", null),
+      )
       .returningAll()
       .executeTakeFirst();
     if (!res) {

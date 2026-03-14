@@ -237,6 +237,7 @@ describe('POST /api/qr-match/submit - Input Validation', () => {
           winner: 'Player One',
           submitted_by_token: null,
           submitted_at: new Date(),
+          bracket_section: null,
         },
       });
 
@@ -324,6 +325,7 @@ describe('POST /api/qr-match/submit - Input Validation', () => {
           winner: 'Alice',
           submitted_by_token: null,
           submitted_at: new Date(),
+          bracket_section: null,
         },
       });
 
@@ -372,6 +374,7 @@ describe('POST /api/qr-match/submit - Input Validation', () => {
           winner: 'Bob',
           submitted_by_token: null,
           submitted_at: new Date(),
+          bracket_section: null,
         },
       });
 
@@ -543,6 +546,7 @@ describe('Match Logic & Database Interactions', () => {
           winner: 'Alice',
           submitted_by_token: null,
           submitted_at: new Date(),
+          bracket_section: null,
         },
       });
 

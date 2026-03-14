@@ -40,6 +40,7 @@ function makeMatch(
     round,
     submitted_by_token: null,
     submitted_at: null,
+    bracket_section: null,
   };
 }
 
