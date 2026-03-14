@@ -34,7 +34,7 @@
     "zod": "4.3.6"
   },
   "devDependencies": {
-    "@eslint/eslintrc": "3.3.4",
+    "@eslint/eslintrc": "3.3.5",
     "@tailwindcss/postcss": "4.2.1",
     "@testing-library/react": "16.3.2",
     "@types/bcrypt": "6.0.0",
