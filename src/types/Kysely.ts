@@ -7,6 +7,14 @@ export type Generated<T> =
 
 export type Timestamp = ColumnType<Date, Date | string, Date | string>;
 
+export interface Stages {
+  id: Generated<number>;
+  tournament_id: number;
+  stage_order: number;
+  type: string;
+  name: string;
+}
+
 export interface Matches {
   id: Generated<number>;
   match: number;
@@ -16,6 +24,7 @@ export interface Matches {
   player2_hits: Generated<number>;
   round: number;
   tournament_id: number;
+  stage_id: number | null;
   winner: string;
   submitted_by_token: string | null;
   submitted_at: Timestamp | null;
@@ -36,6 +45,7 @@ export interface TournamentPlayers {
 export interface Pools {
   id: Generated<number>;
   tournament_id: number;
+  stage_id: number | null;
   name: string;
 }
 
@@ -65,6 +75,7 @@ export interface DB {
   matches: Matches;
   players: Players;
   pools: Pools;
+  stages: Stages;
   tournament_players: TournamentPlayers;
   tournaments: Tournaments;
   users: Users;
