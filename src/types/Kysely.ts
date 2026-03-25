@@ -13,6 +13,7 @@ export interface Stages {
   stage_order: number;
   type: string;
   name: string;
+  rounds: Generated<number>;
 }
 
 export interface Matches {

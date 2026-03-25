@@ -98,6 +98,7 @@ describe("createStage", () => {
       stage_order: 1,
       type: "pools",
       name: "",
+      rounds: 1,
     };
 
     (db.insertInto as any) = vi.fn().mockReturnValue({
@@ -125,6 +126,7 @@ describe("createStage", () => {
       stage_order: 2,
       type: "elimination",
       name: "Playoffs",
+      rounds: 1,
     };
 
     (db.insertInto as any) = vi.fn().mockReturnValue({
@@ -228,6 +230,7 @@ describe("updateStage", () => {
       stage_order: 1,
       type: "pools",
       name: "Group Stage",
+      rounds: 1,
     };
 
     (db.updateTable as any) = vi.fn().mockReturnValue({

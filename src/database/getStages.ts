@@ -30,11 +30,12 @@ export async function createStage(
   type: StageType,
   stageOrder: number,
   name: string = "",
+  rounds: number = 1,
 ): Promise<Result<StageRow, string>> {
   try {
     const stage = await db
       .insertInto("stages")
-      .values({ tournament_id: tournamentId, type, stage_order: stageOrder, name })
+      .values({ tournament_id: tournamentId, type, stage_order: stageOrder, name, rounds })
       .returningAll()
       .executeTakeFirst();
 
@@ -67,7 +68,7 @@ export async function deleteStage(
 
 export async function updateStage(
   stageId: number,
-  data: Partial<Pick<StageRow, "name" | "stage_order" | "type">>,
+  data: Partial<Pick<StageRow, "name" | "stage_order" | "type" | "rounds">>,
 ): Promise<Result<StageRow, string>> {
   try {
     const stage = await db
