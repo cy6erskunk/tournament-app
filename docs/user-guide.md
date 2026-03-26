@@ -20,9 +20,9 @@ A comprehensive guide for users of the Tournament App — covering all use cases
 
 The Tournament App is a web application for managing fencing tournaments for Helsingin Miekkailijat (Helsinki Fencers). It supports:
 
-- **Round-robin tournaments** — every player fences every other player
-- **Bracket (elimination) tournaments** — single-elimination brackets with seeding
-- **Multi-pool round-robin** — players divided into groups, with shared rankings
+- **Round-based tournament model** — tournaments are composed of ordered rounds, each typed as `pools` (round-robin) or `elimination` (bracket)
+- **Round-robin pools** — every player in a pool fences every other player; multiple pools share a single ranking
+- **Bracket (elimination) rounds** — single-elimination brackets with seeding
 - **QR code match submissions** — external devices submit match results by scanning QR codes
 - **Multi-language interface** — Finnish, English, Swedish, Estonian
 
@@ -58,30 +58,31 @@ The URL updates to reflect the language (e.g., `/fi/select`, `/en/select`).
 
 ## Tournament Types
 
-### Round-Robin
+Tournaments are structured as an ordered list of **rounds**. Each round has a type:
 
-In a round-robin tournament, every player plays against every other player. Results are tracked in a matrix table.
+| Round type    | Description |
+|---------------|-------------|
+| `pools`       | Round-robin group phase — every player in a pool plays every other player |
+| `elimination` | Single-elimination bracket — losers are out, winners advance |
 
-**Best for**:
-- Club practice sessions
-- League-style play where everyone needs to face everyone
-- Small to medium groups (4-16 players)
+By combining rounds you can model many common tournament formats:
+
+### Single Pool Round (simple round-robin)
+
+One `pools` round, all players in a single pool. Every player fences every other player.
+
+**Best for**: Club practice sessions, small to medium groups (4–16 players).
 
 **Features**:
 - Matrix table showing all matchups
 - Live leaderboard with win percentage ranking
-- Support for multiple rounds
-- Optional pool divisions for larger groups
 - Bulk match entry for quick data input
 
 ### Multi-Pool Round-Robin
 
-For larger groups, players can be divided into pools (groups). Each pool has its own match table, but all players share a single unified ranking.
+One or two `pools` rounds, with players divided into groups. Each pool has its own match table, but all players share a single unified ranking.
 
-**Best for**:
-- Large groups (16+ players) where full round-robin is impractical
-- Qualifying rounds before elimination brackets
-- Club nights with many fencers
+**Best for**: Large groups (16+ players), qualifying rounds, club nights with many fencers.
 
 **Features**:
 - Create 2+ pools with auto-generated names (Pool 1, Pool 2, ...)
@@ -90,20 +91,23 @@ For larger groups, players can be divided into pools (groups). Each pool has its
 - Single leaderboard ranks all players across all pools
 - Players can be reassigned between pools
 
+A **double round-robin** is represented as two separate `pools` rounds — players fence the same opponents twice, once in each round.
+
 ### Bracket (Elimination)
 
-Single-elimination bracket tournament. Players are seeded based on results from a previous tournament (typically a round-robin qualifier).
+One `elimination` round. Players are seeded based on results from a previous tournament (typically a round-robin qualifier).
 
-**Best for**:
-- Finals and championship rounds
-- Follow-up to round-robin qualifiers
-- Quick resolution with clear winner
+**Best for**: Finals and championship rounds, follow-up to round-robin qualifiers, quick resolution with a clear winner.
 
 **Features**:
 - Automatic seeding from qualifying tournament results
 - Proper bye calculation for non-power-of-2 player counts
 - Visual bracket display with round-by-round navigation
 - Winners advance automatically
+
+### Pools + Elimination (common club championship format)
+
+Run pool round(s) first, then seed an elimination bracket from the standings. This is done by creating two separate tournaments — a round-robin for the group stage and a brackets tournament for the finals — and using the seeding tool to transfer results.
 
 ---
 
@@ -401,7 +405,7 @@ When the number of players isn't a power of 2 (4, 8, 16, ...), the system automa
 
 ### Can I change a tournament's format after creating it?
 
-No. The format (Round Robin or Bracket) is set at creation time. Create a new tournament if you need a different format.
+No. The format (Round Robin or Brackets) and its rounds are set at creation time. Create a new tournament if you need a different format.
 
 ### How do I export results?
 

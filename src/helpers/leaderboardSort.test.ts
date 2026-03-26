@@ -38,6 +38,7 @@ function makeMatch(
     winner,
     tournament_id: tournamentId,
     round,
+    round_id: null,
     submitted_by_token: null,
     submitted_at: null,
   };
