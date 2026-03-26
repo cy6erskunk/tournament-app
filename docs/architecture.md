@@ -22,7 +22,7 @@ graph TD
     end
 
     subgraph Database["PostgreSQL (Neon)"]
-        TABLES["Tables: users, tournaments, players,<br/>tournament_players, matches, pools,<br/>submitter_devices"]
+        TABLES["Tables: users, tournaments, players,<br/>tournament_players, matches, pools,<br/>rounds, submitter_devices"]
     end
 
     EXT["External QR Scanner<br/>(CORS-enabled)"]
@@ -144,10 +144,18 @@ erDiagram
         integer pool_id FK "nullable"
     }
 
+    rounds {
+        serial id PK
+        integer tournament_id FK
+        integer round_order
+        varchar type
+    }
+
     matches {
         serial id PK
         integer tournament_id
         integer round
+        integer round_id FK "nullable"
         integer match
         varchar player1
         varchar player2
@@ -174,19 +182,22 @@ erDiagram
     tournaments ||--o{ tournament_players : "has"
     players ||--o{ tournament_players : "joins"
     tournaments ||--o{ pools : "has"
+    tournaments ||--o{ rounds : "has"
     tournaments ||--o{ matches : "contains"
     pools ||--o{ tournament_players : "groups"
+    rounds ||--o{ matches : "groups"
     submitter_devices ||--o{ matches : "submits"
 ```
 
 ### Table Relationships
 
 - **users**: Standalone table for authentication. No FK relationships.
-- **tournaments**: Central entity. Referenced by matches, tournament_players, and pools.
+- **tournaments**: Central entity. Referenced by matches, tournament_players, pools, and rounds.
 - **players**: Global player registry. Referenced by tournament_players.
 - **tournament_players**: Join table linking players to tournaments. Holds bracket positioning and pool assignment.
-- **matches**: Records individual match results within a tournament.
-- **pools**: Groups within round-robin tournaments. Players are assigned to pools via tournament_players.pool_id.
+- **rounds**: Ordered list of rounds for a tournament. Each round has a `type` (`pools` or `elimination`) and a `round_order`. Round-robin tournaments have 2 pool rounds by default; bracket tournaments have 1 elimination round.
+- **matches**: Records individual match results within a tournament. `round_id` links to the `rounds` row; `round` (integer) tracks the pool-round number for legacy bracket rendering.
+- **pools**: Groups within round-robin tournaments. Players are assigned to pools via tournament_players.pool_id. Pools are at tournament level and span all pool-type rounds.
 - **submitter_devices**: Registered external devices for QR match submission. Referenced by matches.submitted_by_token.
 
 ## Authentication Architecture
@@ -232,9 +243,9 @@ The app uses React Context for global state, with two primary providers:
 - Used by navbar, admin guards, and permission checks
 
 ### TournamentContext
-- Holds current tournament data, players, pools, and UI state
+- Holds current tournament data, players, pools, rounds, and UI state
 - Fetched when a tournament page loads
-- Provides: `tournament`, `players`, `pools`, `activeRound`, `hidden` (leaderboard toggle)
+- Provides: `tournament`, `players`, `pools`, `rounds`, `activeRound`, `hidden` (leaderboard toggle)
 - Auto-creates "Pool 1" for round-robin tournaments with no pools
 
 ```mermaid

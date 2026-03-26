@@ -66,7 +66,7 @@ describe('EditMatch - Priority Wins', () => {
     tournament_id: 1,
     round: 1,
     match: 1,
-    stage_id: null,
+    round_id: null,
     submitted_by_token: null,
     submitted_at: null,
   };
@@ -218,7 +218,7 @@ describe('EditMatch - Priority Wins', () => {
       tournament_id: 1,
       round: 1,
       match: 1,
-      stage_id: null,
+      round_id: null,
       submitted_by_token: null,
       submitted_at: null,
     };
@@ -279,7 +279,7 @@ describe('EditMatch - Priority Wins', () => {
       tournament_id: 1,
       round: 1,
       match: 1,
-      stage_id: null,
+      round_id: null,
       submitted_by_token: null,
       submitted_at: null,
     };
@@ -336,7 +336,7 @@ describe('EditMatch - Priority Wins', () => {
       tournament_id: 1,
       round: 1,
       match: 1,
-      stage_id: null,
+      round_id: null,
       submitted_by_token: null,
       submitted_at: null,
     };
@@ -477,7 +477,7 @@ describe('EditMatch - Priority Wins', () => {
       tournament_id: 1,
       round: 1,
       match: 1,
-      stage_id: null,
+      round_id: null,
       submitted_by_token: null,
       submitted_at: null,
     };

@@ -366,6 +366,65 @@ Assign a player to a pool. Use `poolId=0` to unassign.
 
 ---
 
+## Round Endpoints
+
+> **Coming in Step 2** — The `rounds` table and database functions exist as of Step 1, but the API endpoints are not yet implemented. The routes below describe the planned interface.
+
+### GET `/api/tournament/[tournamentId]/rounds`
+
+Get all rounds for a tournament, ordered by `round_order`.
+
+**Auth**: Optional
+
+**Response** `200`:
+```json
+[
+  { "id": 1, "tournament_id": 5, "round_order": 1, "type": "pools" },
+  { "id": 2, "tournament_id": 5, "round_order": 2, "type": "pools" }
+]
+```
+
+---
+
+### POST `/api/tournament/[tournamentId]/rounds`
+
+Create a new round.
+
+**Auth**: Admin required
+
+**Request Body**:
+```json
+{
+  "type": "pools",
+  "round_order": 3
+}
+```
+
+`type` must be `"pools"` or `"elimination"`.
+
+**Response** `200`: Created round object
+
+---
+
+### DELETE `/api/tournament/[tournamentId]/rounds`
+
+Delete a round.
+
+**Auth**: Admin required
+
+**Request Body**:
+```json
+{
+  "roundId": 2
+}
+```
+
+**Response** `200`: "OK"
+
+**Errors**: `404` round not found
+
+---
+
 ## QR Match Endpoints
 
 ### POST `/api/qr-match/generate`

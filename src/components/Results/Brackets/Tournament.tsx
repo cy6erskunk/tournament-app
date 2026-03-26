@@ -109,7 +109,7 @@ export default function Tournament() {
           player2_hits: 0,
           round: roundNumber,
           tournament_id: tournamentId,
-          stage_id: null,
+          round_id: null,
           winner: "",  // Empty string for unplayed matches
           submitted_by_token: null,
           submitted_at: null,

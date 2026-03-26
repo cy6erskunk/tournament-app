@@ -1,10 +1,10 @@
 import { describe, it, expect, beforeEach, vi } from "vitest";
 import {
-  getStages,
-  createStage,
-  deleteStage,
-  updateStage,
-} from "./getStages";
+  getRounds,
+  createRound,
+  deleteRound,
+  updateRound,
+} from "./getRounds";
 import { db } from "./database";
 
 vi.mock("./database", () => ({
@@ -16,38 +16,39 @@ vi.mock("./database", () => ({
   },
 }));
 
-describe("getStages", () => {
+describe("getRounds", () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
 
-  it("should return all stages for a tournament ordered by stage_order", async () => {
-    const mockStages = [
-      { id: 1, tournament_id: 1, stage_order: 1, type: "pools", name: "" },
-      { id: 2, tournament_id: 1, stage_order: 2, type: "elimination", name: "" },
+  it("should return all rounds for a tournament ordered by round_order", async () => {
+    const mockRounds = [
+      { id: 1, tournament_id: 1, round_order: 1, type: "pools" },
+      { id: 2, tournament_id: 1, round_order: 2, type: "pools" },
     ];
 
     (db.selectFrom as any) = vi.fn().mockReturnValue({
       selectAll: vi.fn().mockReturnValue({
         where: vi.fn().mockReturnValue({
           orderBy: vi.fn().mockReturnValue({
-            execute: vi.fn().mockResolvedValue(mockStages),
+            execute: vi.fn().mockResolvedValue(mockRounds),
           }),
         }),
       }),
     });
 
-    const result = await getStages(1);
+    const result = await getRounds(1);
 
     expect(result.success).toBe(true);
     if (result.success) {
       expect(result.value).toHaveLength(2);
       expect(result.value[0].type).toBe("pools");
-      expect(result.value[1].type).toBe("elimination");
+      expect(result.value[0].round_order).toBe(1);
+      expect(result.value[1].round_order).toBe(2);
     }
   });
 
-  it("should return empty array when no stages exist", async () => {
+  it("should return empty array when no rounds exist", async () => {
     (db.selectFrom as any) = vi.fn().mockReturnValue({
       selectAll: vi.fn().mockReturnValue({
         where: vi.fn().mockReturnValue({
@@ -58,7 +59,7 @@ describe("getStages", () => {
       }),
     });
 
-    const result = await getStages(1);
+    const result = await getRounds(1);
 
     expect(result.success).toBe(true);
     if (result.success) {
@@ -77,76 +78,61 @@ describe("getStages", () => {
       }),
     });
 
-    const result = await getStages(1);
+    const result = await getRounds(1);
 
     expect(result.success).toBe(false);
     if (!result.success) {
-      expect(result.error).toBe("Could not fetch stages");
+      expect(result.error).toBe("Could not fetch rounds");
     }
   });
 });
 
-describe("createStage", () => {
+describe("createRound", () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
 
-  it("should create a pools stage successfully", async () => {
-    const mockStage = {
-      id: 1,
-      tournament_id: 1,
-      stage_order: 1,
-      type: "pools",
-      name: "",
-      rounds: 1,
-    };
+  it("should create a pools round successfully", async () => {
+    const mockRound = { id: 1, tournament_id: 1, round_order: 1, type: "pools" };
 
     (db.insertInto as any) = vi.fn().mockReturnValue({
       values: vi.fn().mockReturnValue({
         returningAll: vi.fn().mockReturnValue({
-          executeTakeFirst: vi.fn().mockResolvedValue(mockStage),
+          executeTakeFirst: vi.fn().mockResolvedValue(mockRound),
         }),
       }),
     });
 
-    const result = await createStage(1, "pools", 1);
+    const result = await createRound(1, "pools", 1);
 
     expect(result.success).toBe(true);
     if (result.success) {
       expect(result.value.type).toBe("pools");
-      expect(result.value.stage_order).toBe(1);
+      expect(result.value.round_order).toBe(1);
       expect(result.value.tournament_id).toBe(1);
     }
   });
 
-  it("should create an elimination stage with a name", async () => {
-    const mockStage = {
-      id: 2,
-      tournament_id: 1,
-      stage_order: 2,
-      type: "elimination",
-      name: "Playoffs",
-      rounds: 1,
-    };
+  it("should create an elimination round successfully", async () => {
+    const mockRound = { id: 2, tournament_id: 1, round_order: 1, type: "elimination" };
 
     (db.insertInto as any) = vi.fn().mockReturnValue({
       values: vi.fn().mockReturnValue({
         returningAll: vi.fn().mockReturnValue({
-          executeTakeFirst: vi.fn().mockResolvedValue(mockStage),
+          executeTakeFirst: vi.fn().mockResolvedValue(mockRound),
         }),
       }),
     });
 
-    const result = await createStage(1, "elimination", 2, "Playoffs");
+    const result = await createRound(1, "elimination", 1);
 
     expect(result.success).toBe(true);
     if (result.success) {
       expect(result.value.type).toBe("elimination");
-      expect(result.value.name).toBe("Playoffs");
     }
   });
 
-  it("should return error when stage creation returns nothing", async () => {
+  it("should return error when round creation returns nothing", async () => {
     (db.insertInto as any) = vi.fn().mockReturnValue({
       values: vi.fn().mockReturnValue({
         returningAll: vi.fn().mockReturnValue({
@@ -155,11 +141,11 @@ describe("createStage", () => {
       }),
     });
 
-    const result = await createStage(1, "pools", 1);
+    const result = await createRound(1, "pools", 1);
 
     expect(result.success).toBe(false);
     if (!result.success) {
-      expect(result.error).toBe("Could not create stage");
+      expect(result.error).toBe("Could not create round");
     }
   });
 
@@ -172,21 +158,21 @@ describe("createStage", () => {
       }),
     });
 
-    const result = await createStage(1, "pools", 1);
+    const result = await createRound(1, "pools", 1);
 
     expect(result.success).toBe(false);
     if (!result.success) {
-      expect(result.error).toBe("Could not create stage");
+      expect(result.error).toBe("Could not create round");
     }
   });
 });
 
-describe("deleteStage", () => {
+describe("deleteRound", () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
 
-  it("should delete a stage successfully", async () => {
+  it("should delete a round successfully", async () => {
     (db.deleteFrom as any) = vi.fn().mockReturnValue({
       where: vi.fn().mockReturnValue({
         where: vi.fn().mockReturnValue({
@@ -195,7 +181,7 @@ describe("deleteStage", () => {
       }),
     });
 
-    const result = await deleteStage(1, 10);
+    const result = await deleteRound(1, 10);
 
     expect(result.success).toBe(true);
   });
@@ -209,49 +195,42 @@ describe("deleteStage", () => {
       }),
     });
 
-    const result = await deleteStage(1, 10);
+    const result = await deleteRound(1, 10);
 
     expect(result.success).toBe(false);
     if (!result.success) {
-      expect(result.error).toBe("Could not delete stage");
+      expect(result.error).toBe("Could not delete round");
     }
   });
 });
 
-describe("updateStage", () => {
+describe("updateRound", () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
 
-  it("should update a stage name successfully", async () => {
-    const mockStage = {
-      id: 1,
-      tournament_id: 1,
-      stage_order: 1,
-      type: "pools",
-      name: "Group Stage",
-      rounds: 1,
-    };
+  it("should update a round order successfully", async () => {
+    const mockRound = { id: 1, tournament_id: 1, round_order: 2, type: "pools" };
 
     (db.updateTable as any) = vi.fn().mockReturnValue({
       set: vi.fn().mockReturnValue({
         where: vi.fn().mockReturnValue({
           returningAll: vi.fn().mockReturnValue({
-            executeTakeFirst: vi.fn().mockResolvedValue(mockStage),
+            executeTakeFirst: vi.fn().mockResolvedValue(mockRound),
           }),
         }),
       }),
     });
 
-    const result = await updateStage(1, { name: "Group Stage" });
+    const result = await updateRound(1, { round_order: 2 });
 
     expect(result.success).toBe(true);
     if (result.success) {
-      expect(result.value.name).toBe("Group Stage");
+      expect(result.value.round_order).toBe(2);
     }
   });
 
-  it("should return error when stage is not found", async () => {
+  it("should return error when round is not found", async () => {
     (db.updateTable as any) = vi.fn().mockReturnValue({
       set: vi.fn().mockReturnValue({
         where: vi.fn().mockReturnValue({
@@ -262,11 +241,11 @@ describe("updateStage", () => {
       }),
     });
 
-    const result = await updateStage(999, { name: "Nonexistent" });
+    const result = await updateRound(999, { type: "elimination" });
 
     expect(result.success).toBe(false);
     if (!result.success) {
-      expect(result.error).toBe("Stage not found");
+      expect(result.error).toBe("Round not found");
     }
   });
 
@@ -281,11 +260,11 @@ describe("updateStage", () => {
       }),
     });
 
-    const result = await updateStage(1, { name: "x" });
+    const result = await updateRound(1, { type: "pools" });
 
     expect(result.success).toBe(false);
     if (!result.success) {
-      expect(result.error).toBe("Could not update stage");
+      expect(result.error).toBe("Could not update round");
     }
   });
 });
