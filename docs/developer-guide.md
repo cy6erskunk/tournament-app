@@ -154,7 +154,7 @@ api/
 │       │   └── [poolId]/
 │       │       └── players/route.ts  # POST (assign player)
 │       ├── rounds/
-│       │   └── route.ts      # GET, POST, DELETE (coming in Step 2)
+│       │   └── route.ts      # GET, POST, DELETE
 │       └── seed/
 │           └── [currentId]/route.ts  # GET
 ├── qr-match/

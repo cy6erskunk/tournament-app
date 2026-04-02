@@ -30,11 +30,24 @@ export async function createTournament(
         throw new Error("No tournament returned on insert");
       }
 
-      // Round-robin tournaments always have at least one pool
       if (format === "Round Robin") {
+        // Round-robin tournaments always start with one pool and two pool rounds
         await trx
           .insertInto("pools")
           .values({ tournament_id: t.id as number, name: "Pool 1" })
+          .execute();
+
+        await trx
+          .insertInto("rounds")
+          .values([
+            { tournament_id: t.id as number, round_order: 1, type: "pools" },
+            { tournament_id: t.id as number, round_order: 2, type: "pools" },
+          ])
+          .execute();
+      } else if (format === "Brackets") {
+        await trx
+          .insertInto("rounds")
+          .values({ tournament_id: t.id as number, round_order: 1, type: "elimination" })
           .execute();
       }
 

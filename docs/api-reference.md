@@ -368,8 +368,6 @@ Assign a player to a pool. Use `poolId=0` to unassign.
 
 ## Round Endpoints
 
-> **Coming in Step 2** — The `rounds` table and database functions exist as of Step 1, but the API endpoints are not yet implemented. The routes below describe the planned interface.
-
 ### GET `/api/tournament/[tournamentId]/rounds`
 
 Get all rounds for a tournament, ordered by `round_order`.
