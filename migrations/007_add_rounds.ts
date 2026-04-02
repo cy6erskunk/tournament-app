@@ -9,6 +9,14 @@ export async function up(db: Kysely<any>): Promise<void> {
     )
     .addColumn("round_order", "integer", (col) => col.notNull().defaultTo(1))
     .addColumn("type", "varchar(32)", (col) => col.notNull())
+    .addUniqueConstraint("rounds_tournament_id_round_order_key", [
+      "tournament_id",
+      "round_order",
+    ])
+    .addCheckConstraint(
+      "rounds_type_check",
+      sql`type IN ('pools', 'elimination')`,
+    )
     .execute();
 
   // Backfill: Round Robin tournaments always have exactly 2 pool rounds

@@ -66,13 +66,15 @@ export async function deleteRound(
 
 export async function updateRound(
   roundId: number,
-  data: Partial<Pick<RoundRow, "round_order" | "type">>,
+  tournamentId: number,
+  data: Partial<{ round_order: number; type: RoundType }>,
 ): Promise<Result<RoundRow, string>> {
   try {
     const round = await db
       .updateTable("rounds")
       .set(data)
       .where("id", "=", roundId)
+      .where("tournament_id", "=", tournamentId)
       .returningAll()
       .executeTakeFirst();
 

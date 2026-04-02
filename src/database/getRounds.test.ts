@@ -211,18 +211,21 @@ describe("updateRound", () => {
 
   it("should update a round order successfully", async () => {
     const mockRound = { id: 1, tournament_id: 1, round_order: 2, type: "pools" };
+    const mockWhere = vi.fn().mockReturnValue({
+      returningAll: vi.fn().mockReturnValue({
+        executeTakeFirst: vi.fn().mockResolvedValue(mockRound),
+      }),
+    });
 
     (db.updateTable as any) = vi.fn().mockReturnValue({
       set: vi.fn().mockReturnValue({
         where: vi.fn().mockReturnValue({
-          returningAll: vi.fn().mockReturnValue({
-            executeTakeFirst: vi.fn().mockResolvedValue(mockRound),
-          }),
+          where: mockWhere,
         }),
       }),
     });
 
-    const result = await updateRound(1, { round_order: 2 });
+    const result = await updateRound(1, 1, { round_order: 2 });
 
     expect(result.success).toBe(true);
     if (result.success) {
@@ -231,17 +234,21 @@ describe("updateRound", () => {
   });
 
   it("should return error when round is not found", async () => {
+    const mockWhere = vi.fn().mockReturnValue({
+      returningAll: vi.fn().mockReturnValue({
+        executeTakeFirst: vi.fn().mockResolvedValue(undefined),
+      }),
+    });
+
     (db.updateTable as any) = vi.fn().mockReturnValue({
       set: vi.fn().mockReturnValue({
         where: vi.fn().mockReturnValue({
-          returningAll: vi.fn().mockReturnValue({
-            executeTakeFirst: vi.fn().mockResolvedValue(undefined),
-          }),
+          where: mockWhere,
         }),
       }),
     });
 
-    const result = await updateRound(999, { type: "elimination" });
+    const result = await updateRound(999, 1, { type: "elimination" });
 
     expect(result.success).toBe(false);
     if (!result.success) {
@@ -250,17 +257,21 @@ describe("updateRound", () => {
   });
 
   it("should handle database errors gracefully", async () => {
+    const mockWhere = vi.fn().mockReturnValue({
+      returningAll: vi.fn().mockReturnValue({
+        executeTakeFirst: vi.fn().mockRejectedValue(new Error("DB error")),
+      }),
+    });
+
     (db.updateTable as any) = vi.fn().mockReturnValue({
       set: vi.fn().mockReturnValue({
         where: vi.fn().mockReturnValue({
-          returningAll: vi.fn().mockReturnValue({
-            executeTakeFirst: vi.fn().mockRejectedValue(new Error("DB error")),
-          }),
+          where: mockWhere,
         }),
       }),
     });
 
-    const result = await updateRound(1, { type: "pools" });
+    const result = await updateRound(1, 1, { type: "pools" });
 
     expect(result.success).toBe(false);
     if (!result.success) {
