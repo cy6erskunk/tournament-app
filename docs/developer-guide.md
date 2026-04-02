@@ -153,6 +153,8 @@ api/
 │       │   ├── route.ts      # GET, POST, DELETE
 │       │   └── [poolId]/
 │       │       └── players/route.ts  # POST (assign player)
+│       ├── rounds/
+│       │   └── route.ts      # GET, POST, DELETE (coming in Step 2)
 │       └── seed/
 │           └── [currentId]/route.ts  # GET
 ├── qr-match/
@@ -183,6 +185,7 @@ Each file provides functions for a specific domain:
 | `getTournaments.ts`  | Tournament CRUD operations                               |
 | `getMatches.ts`      | Match CRUD (create, update, delete, get by tournament)   |
 | `getPools.ts`        | Pool management (get, create, delete, assign player)     |
+| `getRounds.ts`       | Round management (get, create, delete, update)           |
 | `getUsers.ts`        | User management (CRUD, role updates, password changes)   |
 | `getDevices.ts`      | Device management (register, list, delete)               |
 | `getQRAuditLogs.ts`  | QR audit log retrieval                                   |
@@ -291,7 +294,9 @@ After applying migrations, regenerate the TypeScript types:
 npm run db:codegen
 ```
 
-This updates `src/types/Kysely.ts` with the latest schema types. **Do not manually edit this file** — it's auto-generated.
+This updates `src/types/Kysely.ts` with the latest schema types.
+
+> **Note**: During active schema migrations (e.g. the rounds refactor), `src/types/Kysely.ts` is maintained manually until the migration is applied to the live database and codegen can be re-run. In that case, edit it directly and treat it as the source of truth until `npm run db:codegen` is unblocked.
 
 Custom types that need to survive codegen should go in `src/types/MatchTypes.ts`.
 

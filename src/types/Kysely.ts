@@ -7,6 +7,13 @@ export type Generated<T> =
 
 export type Timestamp = ColumnType<Date, Date | string, Date | string>;
 
+export interface Rounds {
+  id: Generated<number>;
+  tournament_id: number;
+  round_order: number;
+  type: string;
+}
+
 export interface Matches {
   id: Generated<number>;
   match: number;
@@ -16,6 +23,7 @@ export interface Matches {
   player2_hits: Generated<number>;
   round: number;
   tournament_id: number;
+  round_id: number | null;
   winner: string;
   submitted_by_token: string | null;
   submitted_at: Timestamp | null;
@@ -65,6 +73,7 @@ export interface DB {
   matches: Matches;
   players: Players;
   pools: Pools;
+  rounds: Rounds;
   tournament_players: TournamentPlayers;
   tournaments: Tournaments;
   users: Users;

@@ -76,7 +76,8 @@ sequenceDiagram
     Admin->>NT: Click Create
     NT->>API: POST /api/tournament/name
     API->>DB: INSERT tournament
-    DB-->>API: {id, name, ...}
+    DB-->>API: {id, name, format, ...}
+    Note over API,DB: Round rows created by migration backfill (Step 1).<br/>Automatic creation on new tournaments planned for Step 2.
     API-->>NT: 201 Created
     NT-->>Admin: Navigate to /tournament/{id}
 ```
@@ -97,7 +98,7 @@ sequenceDiagram
 
     Note over Browser,TC: Context mounts (client-side)
 
-    SC->>TC: Fetch players, pools
+    SC->>TC: Fetch players, pools (rounds fetch planned for Step 2)
     TC->>DB: GET /api/tournament/5/players + pools
     DB-->>TC: data
 
