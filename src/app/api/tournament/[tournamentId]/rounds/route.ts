@@ -65,7 +65,16 @@ export async function POST(
   }
 
   const existingRounds = await getRounds(id);
-  const nextOrder = existingRounds.success ? existingRounds.value.length + 1 : 1;
+
+  if (!existingRounds.success) {
+    return new Response(existingRounds.error, { status: 500 });
+  }
+
+  const maxOrder = existingRounds.value.reduce(
+    (max, r) => Math.max(max, r.round_order),
+    0,
+  );
+  const nextOrder = maxOrder + 1;
 
   const result = await createRound(id, type, nextOrder);
 
