@@ -55,7 +55,11 @@ export async function POST(
   const json = await request.text();
   const data = jsonParser<CreateRoundData>(json);
 
-  if (!data.success || !data.value.type) {
+  if (!data.success) {
+    return new Response("Invalid JSON", { status: 400 });
+  }
+
+  if (!data.value.type) {
     return new Response("Round type is required", { status: 400 });
   }
 
@@ -97,7 +101,13 @@ export async function DELETE(
   const json = await request.text();
   const data = jsonParser<DeleteRoundData>(json);
 
-  if (!data.success || !data.value.roundId) {
+  if (!data.success) {
+    return new Response("Invalid JSON", { status: 400 });
+  }
+
+  const roundId = Number(data.value.roundId);
+
+  if (!Number.isSafeInteger(roundId) || roundId <= 0) {
     return new Response("Round ID is required", { status: 400 });
   }
 
@@ -108,14 +118,14 @@ export async function DELETE(
   }
 
   const roundBelongsToTournament = roundsResult.value.some(
-    (r) => r.id === data.value.roundId,
+    (r) => r.id === roundId,
   );
 
   if (!roundBelongsToTournament) {
     return new Response("Round not found", { status: 404 });
   }
 
-  const result = await deleteRound(data.value.roundId, tournId);
+  const result = await deleteRound(roundId, tournId);
 
   if (!result.success) {
     return new Response(result.error, { status: 500 });

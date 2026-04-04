@@ -9,6 +9,15 @@ import type { Rounds } from "@/types/Kysely";
 export type RoundRow = Selectable<Rounds>;
 export type RoundType = "pools" | "elimination";
 
+const CREATE_ROUND_NEXT_MAX_RETRIES = 3;
+
+function isUniqueViolation(error: unknown): boolean {
+  if (!error || typeof error !== "object") return false;
+  const e = error as { code?: unknown; cause?: unknown };
+  if (e.code === "23505") return true;
+  return isUniqueViolation(e.cause);
+}
+
 export async function getRounds(
   tournamentId: number,
 ): Promise<Result<RoundRow[], string>> {
@@ -66,30 +75,34 @@ export async function deleteRound(
 }
 
 // Inserts a new round with round_order computed atomically as MAX(round_order)+1,
-// avoiding race conditions between concurrent POST requests.
+// and retries on unique-constraint violations to handle concurrent POST requests.
 export async function createRoundNext(
   tournamentId: number,
   type: RoundType,
 ): Promise<Result<RoundRow, string>> {
-  try {
-    const round = await db
-      .insertInto("rounds")
-      .values({
-        tournament_id: tournamentId,
-        type,
-        round_order: sql<number>`(SELECT COALESCE(MAX(round_order), 0) + 1 FROM rounds WHERE tournament_id = ${tournamentId})`,
-      })
-      .returningAll()
-      .executeTakeFirst();
+  for (let attempt = 0; attempt < CREATE_ROUND_NEXT_MAX_RETRIES; attempt++) {
+    try {
+      const round = await db
+        .insertInto("rounds")
+        .values({
+          tournament_id: tournamentId,
+          type,
+          round_order: sql<number>`(SELECT COALESCE(MAX(round_order), 0) + 1 FROM rounds WHERE tournament_id = ${tournamentId})`,
+        })
+        .returningAll()
+        .executeTakeFirst();
 
-    if (!round) {
+      if (!round) {
+        return { success: false, error: "Could not create round" };
+      }
+
+      return { success: true, value: round };
+    } catch (error) {
+      if (isUniqueViolation(error) && attempt < CREATE_ROUND_NEXT_MAX_RETRIES - 1) continue;
       return { success: false, error: "Could not create round" };
     }
-
-    return { success: true, value: round };
-  } catch {
-    return { success: false, error: "Could not create round" };
   }
+  return { success: false, error: "Could not create round" };
 }
 
 export async function updateRound(
