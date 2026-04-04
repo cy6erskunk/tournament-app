@@ -4,6 +4,9 @@ import { Result } from "@/types/result";
 import { db } from "./database";
 import Tournament from "@/types/Tournament";
 
+const VALID_FORMATS = ["Round Robin", "Brackets"] as const;
+type TournamentFormat = (typeof VALID_FORMATS)[number];
+
 // create new tournament with date and format
 export async function createTournament(
   date: Date,
@@ -12,6 +15,10 @@ export async function createTournament(
   requireSubmitterIdentity: boolean = false,
   publicResults: boolean = false,
 ): Promise<Result<Tournament, string>> {
+  if (!VALID_FORMATS.includes(format as TournamentFormat)) {
+    return { success: false, error: `Unknown tournament format: "${format}"` };
+  }
+
   try {
     const tournament = await db.transaction().execute(async (trx) => {
       const t = await trx

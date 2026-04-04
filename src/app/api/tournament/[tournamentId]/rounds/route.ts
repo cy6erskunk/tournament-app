@@ -1,4 +1,4 @@
-import { getRounds, createRound, deleteRound } from "@/database/getRounds";
+import { getRounds, createRoundNext, deleteRound } from "@/database/getRounds";
 import { getSession } from "@/helpers/getsession";
 import { jsonParser } from "@/helpers/jsonParser";
 import type { RoundType } from "@/database/getRounds";
@@ -64,19 +64,7 @@ export async function POST(
     return new Response("Invalid round type", { status: 400 });
   }
 
-  const existingRounds = await getRounds(id);
-
-  if (!existingRounds.success) {
-    return new Response(existingRounds.error, { status: 500 });
-  }
-
-  const maxOrder = existingRounds.value.reduce(
-    (max, r) => Math.max(max, r.round_order),
-    0,
-  );
-  const nextOrder = maxOrder + 1;
-
-  const result = await createRound(id, type, nextOrder);
+  const result = await createRoundNext(id, type);
 
   if (!result.success) {
     return new Response(result.error, { status: 500 });

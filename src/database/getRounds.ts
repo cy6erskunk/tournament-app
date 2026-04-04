@@ -1,6 +1,7 @@
 "use server";
 
 import { db } from "./database";
+import { sql } from "kysely";
 import { Result } from "@/types/result";
 import type { Selectable } from "kysely";
 import type { Rounds } from "@/types/Kysely";
@@ -61,6 +62,33 @@ export async function deleteRound(
     return { success: true, value: undefined };
   } catch {
     return { success: false, error: "Could not delete round" };
+  }
+}
+
+// Inserts a new round with round_order computed atomically as MAX(round_order)+1,
+// avoiding race conditions between concurrent POST requests.
+export async function createRoundNext(
+  tournamentId: number,
+  type: RoundType,
+): Promise<Result<RoundRow, string>> {
+  try {
+    const round = await db
+      .insertInto("rounds")
+      .values({
+        tournament_id: tournamentId,
+        type,
+        round_order: sql<number>`(SELECT COALESCE(MAX(round_order), 0) + 1 FROM rounds WHERE tournament_id = ${tournamentId})`,
+      })
+      .returningAll()
+      .executeTakeFirst();
+
+    if (!round) {
+      return { success: false, error: "Could not create round" };
+    }
+
+    return { success: true, value: round };
+  } catch {
+    return { success: false, error: "Could not create round" };
   }
 }
 

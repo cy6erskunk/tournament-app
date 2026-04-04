@@ -147,6 +147,23 @@ describe("createTournament", () => {
     });
   });
 
+  it("returns error immediately for an unknown format without touching the DB", async () => {
+    const trxMock = makeTrxMock();
+    mockTransaction(trxMock);
+
+    const result = await createTournament(
+      new Date("2026-01-01"),
+      "Bracket",
+      "Typo Tournament",
+    );
+
+    expect(result.success).toBe(false);
+    if (!result.success) {
+      expect(result.error).toContain("Bracket");
+    }
+    expect(db.transaction).not.toHaveBeenCalled();
+  });
+
   it("returns error when tournament insert returns nothing", async () => {
     const trxMock = makeTrxMock();
     mockTransaction(trxMock);
