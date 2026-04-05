@@ -74,8 +74,9 @@ export async function deleteRound(
   }
 }
 
-// Inserts a new round with round_order computed atomically as MAX(round_order)+1,
-// and retries on unique-constraint violations to handle concurrent POST requests.
+// Inserts a new round with round_order computed in the INSERT statement as
+// MAX(round_order)+1, and retries on unique-constraint violations to handle
+// concurrent POST requests optimistically.
 export async function createRoundNext(
   tournamentId: number,
   type: RoundType,
