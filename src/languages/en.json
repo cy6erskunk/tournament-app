@@ -21,8 +21,23 @@
       "back": "Back",
       "dtEntry": "DT Entry",
       "qrMatch": "QR Match",
-      "managePools": "Manage Pools"
+      "managePools": "Manage Pools",
+      "manageRounds": "Manage Rounds"
     }
+  },
+  "Round": {
+    "title": "Round Management",
+    "createRound": "Create Round",
+    "creating": "Creating...",
+    "rounds": "Rounds",
+    "deleteRound": "Delete round",
+    "deleting": "Deleting...",
+    "close": "Close",
+    "createFailed": "Failed to create round",
+    "deleteFailed": "Failed to delete round",
+    "typePool": "Pool Round",
+    "typeElimination": "Elimination Round",
+    "selectType": "Select type"
   },
   "Pool": {
     "title": "Pool Management",

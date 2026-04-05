@@ -21,8 +21,23 @@
       "back": "Takaisin",
       "dtEntry": "DT Syöttö",
       "qrMatch": "QR-ottelu",
-      "managePools": "Hallitse pooleja"
+      "managePools": "Hallitse pooleja",
+      "manageRounds": "Hallitse kierroksia"
     }
+  },
+  "Round": {
+    "title": "Kierrosten hallinta",
+    "createRound": "Luo uusi kierros",
+    "creating": "Luodaan...",
+    "rounds": "Kierrokset",
+    "deleteRound": "Poista kierros",
+    "deleting": "Poistetaan...",
+    "close": "Sulje",
+    "createFailed": "Kierroksen luominen epäonnistui",
+    "deleteFailed": "Kierroksen poistaminen epäonnistui",
+    "typePool": "Pooli kierros",
+    "typeElimination": "Pudotus kierros",
+    "selectType": "Valitse tyyppi"
   },
   "Pool": {
     "title": "Poolien hallinta",
