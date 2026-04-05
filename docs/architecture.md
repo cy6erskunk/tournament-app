@@ -243,11 +243,10 @@ The app uses React Context for global state, with two primary providers:
 - Used by navbar, admin guards, and permission checks
 
 ### TournamentContext
-- Holds current tournament data, players, pools, and UI state
+- Holds current tournament data, players, pools, rounds, and UI state
 - Fetched when a tournament page loads
-- Provides: `tournament`, `players`, `pools`, `activeRound`, `hidden` (leaderboard toggle)
+- Provides: `tournament`, `players`, `pools`, `rounds`, `activeRound`, `hidden` (leaderboard toggle)
 - Auto-creates "Pool 1" for round-robin tournaments with no pools
-- _(Planned — Step 2)_: will also expose `rounds` once the rounds API endpoint is added
 
 ```mermaid
 graph TD

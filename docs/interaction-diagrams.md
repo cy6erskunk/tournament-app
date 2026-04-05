@@ -75,9 +75,15 @@ sequenceDiagram
     Admin->>NT: Enter name, set options
     Admin->>NT: Click Create
     NT->>API: POST /api/tournament/name
-    API->>DB: INSERT tournament
+    API->>DB: INSERT tournament (in transaction)
+    alt Round Robin
+        API->>DB: INSERT pool "Pool 1"
+        API->>DB: INSERT rounds (order=1, type='pools')
+        API->>DB: INSERT rounds (order=2, type='pools')
+    else Brackets
+        API->>DB: INSERT rounds (order=1, type='elimination')
+    end
     DB-->>API: {id, name, format, ...}
-    Note over API,DB: Round rows created by migration backfill (Step 1).<br/>Automatic creation on new tournaments planned for Step 2.
     API-->>NT: 201 Created
     NT-->>Admin: Navigate to /tournament/{id}
 ```
@@ -98,8 +104,8 @@ sequenceDiagram
 
     Note over Browser,TC: Context mounts (client-side)
 
-    SC->>TC: Fetch players, pools (rounds fetch planned for Step 2)
-    TC->>DB: GET /api/tournament/5/players + pools
+    SC->>TC: Fetch players, pools, rounds
+    TC->>DB: GET /api/tournament/5/players + pools + rounds
     DB-->>TC: data
 
     opt RR only — no pools exist

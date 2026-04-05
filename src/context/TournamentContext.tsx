@@ -6,6 +6,7 @@ import useContextWrapper from "./hooks/TournamentContextHook";
 import { getTournamentWithId } from "@/database/getTournament";
 import { getTournamentPlayers } from "@/database/getTournamentPlayers";
 import { getPools, PoolRow } from "@/database/getPools";
+import { getRounds, RoundRow } from "@/database/getRounds";
 import { useParams } from "next/navigation";
 import Tournament from "@/types/Tournament";
 
@@ -22,6 +23,8 @@ export interface TournamentContext {
   >;
   pools: PoolRow[];
   setPools: React.Dispatch<React.SetStateAction<TournamentContext["pools"]>>;
+  rounds: RoundRow[];
+  setRounds: React.Dispatch<React.SetStateAction<TournamentContext["rounds"]>>;
   loading: boolean;
   setLoading: React.Dispatch<
     React.SetStateAction<TournamentContext["loading"]>
@@ -49,6 +52,7 @@ export function TournamentContextProvider({
     useState<TournamentContext["tournament"]>(initialTournament);
   const [players, setPlayers] = useState<TournamentContext["players"]>([]);
   const [pools, setPools] = useState<TournamentContext["pools"]>([]);
+  const [rounds, setRounds] = useState<TournamentContext["rounds"]>([]);
   const [loading, setLoading] = useState<TournamentContext["loading"]>(true);
   const [activeRound, setActiveRound] =
     useState<TournamentContext["activeRound"]>(1);
@@ -83,9 +87,10 @@ export function TournamentContextProvider({
         tournamentFormat = tournamentResult.value.format;
       }
 
-      const [playerResult, poolResult] = await Promise.all([
+      const [playerResult, poolResult, roundResult] = await Promise.all([
         getTournamentPlayers(tournamentId),
         getPools(tournamentId),
+        getRounds(tournamentId),
       ]);
 
       if (!playerResult.success) {
@@ -110,6 +115,7 @@ export function TournamentContextProvider({
       }
 
       setPools(poolsToSet);
+      setRounds(roundResult.success ? roundResult.value : []);
       setLoading(false);
       setPlayers(playerResult.value);
     }
@@ -125,6 +131,8 @@ export function TournamentContextProvider({
       setPlayers,
       pools,
       setPools,
+      rounds,
+      setRounds,
       loading,
       setLoading,
       activeRound,
@@ -132,7 +140,7 @@ export function TournamentContextProvider({
       hidden,
       setHidden,
     }),
-    [players, pools, tournament, loading, activeRound, hidden],
+    [players, pools, rounds, tournament, loading, activeRound, hidden],
   );
 
   return (

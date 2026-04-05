@@ -4,6 +4,9 @@ import { Result } from "@/types/result";
 import { db } from "./database";
 import Tournament from "@/types/Tournament";
 
+const VALID_FORMATS = ["Round Robin", "Brackets"] as const;
+type TournamentFormat = (typeof VALID_FORMATS)[number];
+
 // create new tournament with date and format
 export async function createTournament(
   date: Date,
@@ -12,6 +15,10 @@ export async function createTournament(
   requireSubmitterIdentity: boolean = false,
   publicResults: boolean = false,
 ): Promise<Result<Tournament, string>> {
+  if (!VALID_FORMATS.includes(format as TournamentFormat)) {
+    return { success: false, error: `Unknown tournament format: "${format}"` };
+  }
+
   try {
     const tournament = await db.transaction().execute(async (trx) => {
       const t = await trx
@@ -30,11 +37,24 @@ export async function createTournament(
         throw new Error("No tournament returned on insert");
       }
 
-      // Round-robin tournaments always have at least one pool
       if (format === "Round Robin") {
+        // Round-robin tournaments always start with one pool and two pool rounds
         await trx
           .insertInto("pools")
           .values({ tournament_id: t.id as number, name: "Pool 1" })
+          .execute();
+
+        await trx
+          .insertInto("rounds")
+          .values([
+            { tournament_id: t.id as number, round_order: 1, type: "pools" },
+            { tournament_id: t.id as number, round_order: 2, type: "pools" },
+          ])
+          .execute();
+      } else if (format === "Brackets") {
+        await trx
+          .insertInto("rounds")
+          .values({ tournament_id: t.id as number, round_order: 1, type: "elimination" })
           .execute();
       }
 

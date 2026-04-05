@@ -2,6 +2,7 @@ import { describe, it, expect, beforeEach, vi } from "vitest";
 import {
   getRounds,
   createRound,
+  createRoundNext,
   deleteRound,
   updateRound,
 } from "./getRounds";
@@ -164,6 +165,115 @@ describe("createRound", () => {
     if (!result.success) {
       expect(result.error).toBe("Could not create round");
     }
+  });
+});
+
+describe("createRoundNext", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  it("should create a round with order computed by DB subquery", async () => {
+    const mockRound = { id: 3, tournament_id: 1, round_order: 3, type: "pools" };
+
+    (db.insertInto as any) = vi.fn().mockReturnValue({
+      values: vi.fn().mockReturnValue({
+        returningAll: vi.fn().mockReturnValue({
+          executeTakeFirst: vi.fn().mockResolvedValue(mockRound),
+        }),
+      }),
+    });
+
+    const result = await createRoundNext(1, "pools");
+
+    expect(result.success).toBe(true);
+    if (result.success) {
+      expect(result.value.round_order).toBe(3);
+      expect(result.value.type).toBe("pools");
+    }
+    expect(db.insertInto).toHaveBeenCalledWith("rounds");
+  });
+
+  it("should return error when insert returns nothing", async () => {
+    (db.insertInto as any) = vi.fn().mockReturnValue({
+      values: vi.fn().mockReturnValue({
+        returningAll: vi.fn().mockReturnValue({
+          executeTakeFirst: vi.fn().mockResolvedValue(undefined),
+        }),
+      }),
+    });
+
+    const result = await createRoundNext(1, "elimination");
+
+    expect(result.success).toBe(false);
+    if (!result.success) {
+      expect(result.error).toBe("Could not create round");
+    }
+  });
+
+  it("should handle database errors gracefully", async () => {
+    (db.insertInto as any) = vi.fn().mockReturnValue({
+      values: vi.fn().mockReturnValue({
+        returningAll: vi.fn().mockReturnValue({
+          executeTakeFirst: vi.fn().mockRejectedValue(new Error("DB error")),
+        }),
+      }),
+    });
+
+    const result = await createRoundNext(1, "pools");
+
+    expect(result.success).toBe(false);
+    if (!result.success) {
+      expect(result.error).toBe("Could not create round");
+    }
+  });
+
+  it("should retry on unique-constraint violation and succeed on next attempt", async () => {
+    const mockRound = { id: 3, tournament_id: 1, round_order: 2, type: "pools" };
+    const uniqueViolationError = Object.assign(new Error("unique violation"), {
+      code: "23505",
+    });
+    const executeTakeFirst = vi
+      .fn()
+      .mockRejectedValueOnce(uniqueViolationError)
+      .mockResolvedValueOnce(mockRound);
+
+    (db.insertInto as any) = vi.fn().mockReturnValue({
+      values: vi.fn().mockReturnValue({
+        returningAll: vi.fn().mockReturnValue({ executeTakeFirst }),
+      }),
+    });
+
+    const result = await createRoundNext(1, "pools");
+
+    expect(result.success).toBe(true);
+    if (result.success) {
+      expect(result.value).toEqual(mockRound);
+    }
+    expect(executeTakeFirst).toHaveBeenCalledTimes(2);
+  });
+
+  it("should fail after exhausting all retries on repeated unique-constraint violations", async () => {
+    const uniqueViolationError = Object.assign(new Error("unique violation"), {
+      code: "23505",
+    });
+    const executeTakeFirst = vi
+      .fn()
+      .mockRejectedValue(uniqueViolationError);
+
+    (db.insertInto as any) = vi.fn().mockReturnValue({
+      values: vi.fn().mockReturnValue({
+        returningAll: vi.fn().mockReturnValue({ executeTakeFirst }),
+      }),
+    });
+
+    const result = await createRoundNext(1, "pools");
+
+    expect(result.success).toBe(false);
+    if (!result.success) {
+      expect(result.error).toBe("Could not create round");
+    }
+    expect(executeTakeFirst).toHaveBeenCalledTimes(3);
   });
 });
 
