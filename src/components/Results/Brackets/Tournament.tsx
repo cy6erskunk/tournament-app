@@ -8,6 +8,7 @@ import type { Player } from "@/types/Player";
 import type { MatchRow } from "@/types/MatchTypes";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import Rounds from "./Rounds";
+import RoundNav from "@/components/rounds";
 import { jsonParser } from "@/helpers/jsonParser";
 import { getTournamentsForSeeding } from "@/database/getTournament";
 import { useTranslations } from "next-intl";
@@ -362,8 +363,9 @@ export default function Tournament() {
 
   return (
     <>
-      <div className="container mx-auto sm:my-2 items-center text-xl sm:text-4xl font-bold flex justify-between">
+      <div className="container mx-auto sm:my-2 items-center text-xl sm:text-4xl font-bold flex justify-between gap-4">
         <TournamentTitle />
+        <RoundNav />
       </div>
 
       {/* select seed from any tournament */}
