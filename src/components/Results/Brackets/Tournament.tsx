@@ -9,7 +9,7 @@ import type { MatchRow } from "@/types/MatchTypes";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import Rounds from "./Rounds";
 import { jsonParser } from "@/helpers/jsonParser";
-import { getRoundRobinTournaments } from "@/database/getTournament";
+import { getTournamentsForSeeding } from "@/database/getTournament";
 import { useTranslations } from "next-intl";
 import { useUserContext } from "@/context/UserContext";
 import type { RoundRobinCount } from "@/types/RoundRobinCount";
@@ -345,14 +345,14 @@ export default function Tournament() {
   ]);
 
   useEffect(() => {
-    async function fetchRRTournaments() {
-      const roundRobinTournaments = await getRoundRobinTournaments();
-      if (roundRobinTournaments.success) {
-        setRrTournaments(roundRobinTournaments.value);
+    async function fetchTournamentsForSeeding() {
+      const tournaments = await getTournamentsForSeeding();
+      if (tournaments.success) {
+        setRrTournaments(tournaments.value);
         return;
       }
     }
-    fetchRRTournaments();
+    fetchTournamentsForSeeding();
   }, []);
 
   // TODO: Handle the case where tournament is null
@@ -366,23 +366,23 @@ export default function Tournament() {
         <TournamentTitle />
       </div>
 
-      {/* select seed from round robin tournament */}
+      {/* select seed from any tournament */}
       {!context.players.length && account.user?.role === "admin" ? (
         <div className="container mx-auto w-full space-y-5">
           <h1 className="text-2xl font-bold">{t("selectseed")}</h1>
           {rrTournaments.length > 0 ? (
             <ul className="flex flex-col gap-8">
-              {rrTournaments.map((rrTour) => (
-                <li className="max-w-sm" key={rrTour.id}>
+              {rrTournaments.map((tour) => (
+                <li className="max-w-sm" key={tour.id}>
                   <button
                     type="button"
                     className="flex justify-between gap-4 py-4 px-3 rounded-md shadow-xs border border-black hover:bg-gray-100 w-full"
-                    onClick={() => seedTournament(rrTour.id)}
+                    onClick={() => seedTournament(tour.id)}
                   >
-                    {rrTour.name}
+                    {tour.name}
                     <div className="flex items-center">
                       <UserIcon className="h-5 w-5" />
-                      {rrTour.playersCount}
+                      {tour.playersCount}
                     </div>
                   </button>
                 </li>

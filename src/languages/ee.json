@@ -156,7 +156,7 @@
   },
   "Brackets": {
     "selectseed": "Valige turniirilt mängu järjekord",
-    "noRRtournamentsfound": "Ringmänguturniire ei leitud"
+    "noRRtournamentsfound": "Turniire ei leitud"
   },
   "BulkEntry": {
     "title": "DT Tulemuste Sisestus",

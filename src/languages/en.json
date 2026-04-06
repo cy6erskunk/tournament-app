@@ -156,7 +156,7 @@
   },
   "Brackets": {
     "selectseed": "Select match order from tournament",
-    "noRRtournamentsfound": "No round robin tournaments found"
+    "noRRtournamentsfound": "No tournaments found"
   },
   "BulkEntry": {
     "title": "DT Results Entry",

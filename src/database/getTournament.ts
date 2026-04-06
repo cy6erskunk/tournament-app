@@ -94,8 +94,8 @@ export async function getRecentTournaments(getOffset: number): Promise<
   }
 }
 
-// get round robin tournaments and player count for brackets seeding
-export async function getRoundRobinTournaments(): Promise<
+// get all tournaments with players for brackets seeding (any format)
+export async function getTournamentsForSeeding(): Promise<
   Result<RoundRobinCount[], string>
 > {
   try {
@@ -111,7 +111,6 @@ export async function getRoundRobinTournaments(): Promise<
         "tournaments.name",
         sql`count(tournament_players.player_name)`.as("playersCount"),
       ])
-      .where("format", "=", "Round Robin")
       .groupBy("tournaments.id")
       .having((eb) => eb.fn.count("tournament_players.player_name"), ">", 0)
       .limit(10)

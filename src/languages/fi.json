@@ -156,7 +156,7 @@
   },
   "Brackets": {
     "selectseed": "Valitse ottelujärjestys turnauksesta",
-    "noRRtournamentsfound": "Ei vanhoja round robin turnauksia"
+    "noRRtournamentsfound": "Ei turnauksia löydetty"
   },
   "BulkEntry": {
     "title": "DT Tulosten Syöttö",
