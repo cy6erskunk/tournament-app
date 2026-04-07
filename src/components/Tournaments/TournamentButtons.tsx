@@ -44,6 +44,10 @@ const TournamentButtons = () => {
 
   const isRoundRobin = context.tournament?.format === "Round Robin";
   const isAuthenticated = account.user !== null;
+  // When players are seeded, hide match/player entry actions but keep
+  // admin management buttons (Manage Rounds, Manage Pools) and the
+  // leaderboard toggle visible.
+  const showEntryActions = !isSeeded;
 
   const closeModal = () => {
     setShowModal(false);
@@ -63,13 +67,9 @@ const TournamentButtons = () => {
     }
   };
 
-  if (isSeeded) {
-    return null;
-  }
-
   return (
     <div className="container mx-auto p-2 flex flex-col md:flex-row gap-4">
-      {isRoundRobin && isAuthenticated && (
+      {showEntryActions && isRoundRobin && isAuthenticated && (
         <Button
           variant="secondary"
           onClick={() => openModal(<AddMatch closeModal={closeModal} />)}
@@ -77,7 +77,7 @@ const TournamentButtons = () => {
           {t("addmatch")}
         </Button>
       )}
-      {isAuthenticated && (
+      {showEntryActions && isAuthenticated && (
         <Button
           variant="secondary"
           onClick={() => openModal(<QRMatchModal closeModal={closeModal} />)}
@@ -85,7 +85,8 @@ const TournamentButtons = () => {
           {t("qrMatch")}
         </Button>
       )}
-      {context.tournament?.format === "Round Robin" &&
+      {showEntryActions &&
+      context.tournament?.format === "Round Robin" &&
       account.user?.role === "admin" ? (
         <Button
           variant="secondary"
@@ -110,7 +111,7 @@ const TournamentButtons = () => {
           {t("manageRounds")}
         </Button>
       ) : null}
-      {isAuthenticated && (
+      {showEntryActions && isAuthenticated && (
         <Button
           variant="secondary"
           onClick={() =>
