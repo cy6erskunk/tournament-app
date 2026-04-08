@@ -10,6 +10,7 @@ interface GenerateQRRequest {
   tournamentId: number;
   round: number;
   match: number;
+  round_id?: number | null;
 }
 
 export async function POST(request: Request) {
@@ -35,7 +36,7 @@ export async function POST(request: Request) {
     });
   }
 
-  const { player1, player2, tournamentId, round, match } = data.value;
+  const { player1, player2, tournamentId, round, match, round_id = null } = data.value;
 
   // Fetch tournament settings to check if submitter identity is required
   const tournament = await db
@@ -84,6 +85,7 @@ export async function POST(request: Request) {
     player2,
     round,
     match,
+    round_id,
   });
 
   if (!storeResult.success) {

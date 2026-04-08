@@ -9,6 +9,7 @@ interface QRMatchPending {
   player2: string;
   round: number;
   match: number;
+  round_id: number | null;
   created_at: Date;
 }
 

@@ -57,6 +57,8 @@ const mockTournamentContext = {
   setHidden: vi.fn(),
   pools: [] as { id: number; name: string; tournament_id: number }[],
   setPools: vi.fn(),
+  rounds: [] as { id: number; tournament_id: number; round_order: number; type: string }[],
+  setRounds: vi.fn(),
 };
 
 vi.mock('@/context/TournamentContext', () => ({

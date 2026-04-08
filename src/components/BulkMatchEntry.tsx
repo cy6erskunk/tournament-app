@@ -525,6 +525,9 @@ export default function BulkMatchEntry({ closeModal }: BulkMatchEntryProps) {
         winner: match.winner,
         tournament_id: context.tournament!.id,
         round: context.activeRound,
+        round_id:
+          context.rounds.find((r) => r.round_order === context.activeRound)
+            ?.id ?? null,
       };
 
       try {

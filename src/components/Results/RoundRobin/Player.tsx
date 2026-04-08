@@ -123,7 +123,11 @@ export function Player({
           if (!newOpponents[opponentName]) {
             newOpponents[opponentName] = [];
           }
-          newOpponents[opponentName][match.round] = {
+          // Index by round_id when available so match lookup works correctly
+          // across mixed-type rounds; fall back to round number for legacy
+          // matches that pre-date the rounds table.
+          const roundKey = match.round_id ?? match.round;
+          newOpponents[opponentName][roundKey] = {
             winner: match.winner,
             hits: playerHits,
           };
@@ -181,7 +185,15 @@ export function Player({
           opponent.player.player_name === player.player.player_name;
 
         const matches = matchesByOpponent[opponent.player.player_name];
-        const matchData = matches && matches[context.activeRound];
+        // Prefer round_id-keyed entry (new matches); fall back to numeric
+        // round_order for legacy matches without round_id.
+        const activeRoundId = context.rounds.find(
+          (r) => r.round_order === context.activeRound,
+        )?.id;
+        const matchData =
+          matches &&
+          ((activeRoundId ? matches[activeRoundId] : undefined) ??
+            matches[context.activeRound]);
 
         // Early return if no match data found between players
         if (!matchData) {

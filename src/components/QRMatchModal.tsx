@@ -53,6 +53,9 @@ export default function QRMatchModal({ closeModal, player1, player2 }: QRMatchMo
           tournamentId: context.tournament.id,
           round: context.activeRound,
           match: 1, // Default match number, could be calculated
+          round_id:
+            context.rounds.find((r) => r.round_order === context.activeRound)
+              ?.id ?? null,
         }),
       });
 
