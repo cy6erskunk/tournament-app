@@ -37,6 +37,8 @@ const messages = {
       back: "Back",
       qrMatch: "QR Match",
       dtEntry: "DT Entry",
+      managePools: "Manage Pools",
+      manageRounds: "Manage Rounds",
     },
   },
 };
@@ -114,7 +116,7 @@ describe("TournamentButtons", () => {
     expect(screen.getByText("Add player")).toBeTruthy();
   });
 
-  it("should return null when players are seeded", () => {
+  it("should hide entry actions but keep admin management buttons when players are seeded", () => {
     mockUseTournamentContext.mockReturnValue({
       ...defaultTournamentContextValue,
       players: [
@@ -131,12 +133,18 @@ describe("TournamentButtons", () => {
       tournament: { id: 1, format: "Round Robin" },
     });
 
-    const { container } = render(
+    render(
       <NextIntlClientProvider locale="en" messages={messages}>
         <TournamentButtons />
       </NextIntlClientProvider>,
     );
 
-    expect(container.firstChild).toBeNull();
+    // Entry-action buttons should be hidden when seeded
+    expect(screen.queryByText("Add match")).toBeNull();
+    expect(screen.queryByText("QR Match")).toBeNull();
+    expect(screen.queryByText("Add player")).toBeNull();
+    // Admin management and leaderboard buttons should remain visible
+    expect(screen.getByText("Manage Rounds")).toBeTruthy();
+    expect(screen.getByText("Leaderboard")).toBeTruthy();
   });
 });

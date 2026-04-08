@@ -8,18 +8,29 @@ import { default as Brackets } from "@/components/Results/Brackets/Tournament";
 
 const TournamentInfo = () => {
   const context = useTournamentContext();
+  const activeRoundData = context.rounds.find(
+    (r) => r.round_order === context.activeRound,
+  );
+  // Derive which UI to show from the active round's type; fall back to
+  // tournament.format for tournaments that have no rounds yet.
+  const showRoundRobin = activeRoundData
+    ? activeRoundData.type === "pools"
+    : context.tournament?.format === "Round Robin";
+  const showBrackets = activeRoundData
+    ? activeRoundData.type === "elimination"
+    : context.tournament?.format === "Brackets";
   return (
     <>
       {context.hidden ? (
         <>
-          {context.tournament?.format === "Round Robin" ? (
+          {showRoundRobin ? (
             <section className="mx-auto p-2 flex flex-col lg:flex-row justify-center gap-3">
               <RoundRobin />
               <LeaderboardSidebar />
             </section>
           ) : null}
 
-          {context.tournament?.format === "Brackets" ? (
+          {showBrackets ? (
             <section className="p-2">
               <Brackets />
             </section>

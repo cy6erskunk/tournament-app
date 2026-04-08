@@ -21,8 +21,23 @@
       "back": "Tagasi",
       "dtEntry": "DT Sisestus",
       "qrMatch": "QR-matš",
-      "managePools": "Halda gruppe"
+      "managePools": "Halda gruppe",
+      "manageRounds": "Halda voore"
     }
+  },
+  "Round": {
+    "title": "Voorude haldus",
+    "createRound": "Loo voor",
+    "creating": "Loomisel...",
+    "rounds": "Voorud",
+    "deleteRound": "Kustuta voor",
+    "deleting": "Kustutamisel...",
+    "close": "Sulge",
+    "createFailed": "Vooru loomine ebaõnnestus",
+    "deleteFailed": "Vooru kustutamine ebaõnnestus",
+    "typePool": "Grupivoor",
+    "typeElimination": "Eliminatsioonivoor",
+    "selectType": "Vali tüüp"
   },
   "Pool": {
     "title": "Grupihaldus",
@@ -141,7 +156,7 @@
   },
   "Brackets": {
     "selectseed": "Valige turniirilt mängu järjekord",
-    "noRRtournamentsfound": "Ringmänguturniire ei leitud"
+    "noRRtournamentsfound": "Turniire ei leitud"
   },
   "BulkEntry": {
     "title": "DT Tulemuste Sisestus",

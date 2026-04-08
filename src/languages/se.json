@@ -21,8 +21,23 @@
       "back": "Tillbaka",
       "dtEntry": "DT Inmatning",
       "qrMatch": "QR-match",
-      "managePools": "Hantera pooler"
+      "managePools": "Hantera pooler",
+      "manageRounds": "Hantera omgångar"
     }
+  },
+  "Round": {
+    "title": "Omgångshantering",
+    "createRound": "Skapa omgång",
+    "creating": "Skapar...",
+    "rounds": "Omgångar",
+    "deleteRound": "Ta bort omgång",
+    "deleting": "Tar bort...",
+    "close": "Stäng",
+    "createFailed": "Det gick inte att skapa omgången",
+    "deleteFailed": "Det gick inte att ta bort omgången",
+    "typePool": "Poolrunda",
+    "typeElimination": "Elimineringsrunda",
+    "selectType": "Välj typ"
   },
   "Pool": {
     "title": "Poolhantering",
@@ -141,7 +156,7 @@
   },
   "Brackets": {
     "selectseed": "Välj matchordning från turneringen",
-    "noRRtournamentsfound": "Inga round robin-turneringar hittades"
+    "noRRtournamentsfound": "Inga turneringar hittades"
   },
   "BulkEntry": {
     "title": "DT Resultatinmatning",

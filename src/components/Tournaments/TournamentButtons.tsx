@@ -7,6 +7,7 @@ import Addplayer from "@/components/addplayer";
 import QRMatchModal from "@/components/QRMatchModal";
 import BulkMatchEntry from "@/components/BulkMatchEntry";
 import PoolManagement from "@/components/PoolManagement";
+import RoundManagement from "@/components/RoundManagement";
 import { useTranslations } from "next-intl";
 import { useTournamentContext } from "@/context/TournamentContext";
 import { useUserContext } from "@/context/UserContext";
@@ -43,6 +44,10 @@ const TournamentButtons = () => {
 
   const isRoundRobin = context.tournament?.format === "Round Robin";
   const isAuthenticated = account.user !== null;
+  // When players are seeded, hide match/player entry actions but keep
+  // admin management buttons (Manage Rounds, Manage Pools) and the
+  // leaderboard toggle visible.
+  const showEntryActions = !isSeeded;
 
   const closeModal = () => {
     setShowModal(false);
@@ -62,13 +67,9 @@ const TournamentButtons = () => {
     }
   };
 
-  if (isSeeded) {
-    return null;
-  }
-
   return (
     <div className="container mx-auto p-2 flex flex-col md:flex-row gap-4">
-      {isRoundRobin && isAuthenticated && (
+      {showEntryActions && isRoundRobin && isAuthenticated && (
         <Button
           variant="secondary"
           onClick={() => openModal(<AddMatch closeModal={closeModal} />)}
@@ -76,7 +77,7 @@ const TournamentButtons = () => {
           {t("addmatch")}
         </Button>
       )}
-      {isAuthenticated && (
+      {showEntryActions && isAuthenticated && (
         <Button
           variant="secondary"
           onClick={() => openModal(<QRMatchModal closeModal={closeModal} />)}
@@ -84,7 +85,8 @@ const TournamentButtons = () => {
           {t("qrMatch")}
         </Button>
       )}
-      {context.tournament?.format === "Round Robin" &&
+      {showEntryActions &&
+      context.tournament?.format === "Round Robin" &&
       account.user?.role === "admin" ? (
         <Button
           variant="secondary"
@@ -101,7 +103,15 @@ const TournamentButtons = () => {
           {t("managePools")}
         </Button>
       ) : null}
-      {isAuthenticated && (
+      {account.user?.role === "admin" ? (
+        <Button
+          variant="secondary"
+          onClick={() => openModal(<RoundManagement closeModal={closeModal} />)}
+        >
+          {t("manageRounds")}
+        </Button>
+      ) : null}
+      {showEntryActions && isAuthenticated && (
         <Button
           variant="secondary"
           onClick={() =>
