@@ -13,7 +13,7 @@ import { jsonParser } from "@/helpers/jsonParser";
 import { getTournamentsForSeeding } from "@/database/getTournament";
 import { useTranslations } from "next-intl";
 import { useUserContext } from "@/context/UserContext";
-import type { TournamentPlayersCount } from "@/types/RoundRobinCount";
+import type { TournamentPlayersCount } from "@/types/TournamentPlayersCount";
 import { UserIcon } from "@heroicons/react/24/outline";
 
 // These types describe a match on the frontend, not 1:1 with

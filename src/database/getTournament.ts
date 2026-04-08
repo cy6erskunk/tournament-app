@@ -4,7 +4,7 @@ import { Result } from "@/types/result";
 import { db } from "./database";
 import Tournament from "@/types/Tournament";
 import { sql } from "kysely";
-import { TournamentPlayersCount } from "@/types/RoundRobinCount";
+import { TournamentPlayersCount } from "@/types/TournamentPlayersCount";
 
 export async function getTournament(
   name: string,
