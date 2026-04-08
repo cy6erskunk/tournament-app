@@ -62,15 +62,18 @@ export default function RoundManagement({ closeModal }: RoundManagementProps) {
         return;
       }
 
-      context.setRounds((prev) => prev.filter((r) => r.id !== roundId));
-      // If the deleted round was active, move to the first remaining round
-      const deleted = context.rounds.find((r) => r.id === roundId);
-      if (deleted && deleted.round_order === context.activeRound) {
-        const remaining = context.rounds.filter((r) => r.id !== roundId);
-        if (remaining.length > 0) {
-          context.setActiveRound(remaining[0].round_order);
+      context.setRounds((prev) => {
+        const deleted = prev.find((r) => r.id === roundId);
+        const remaining = prev.filter((r) => r.id !== roundId);
+        // If the deleted round was active, switch to the first remaining
+        // round, or reset to 0 when no rounds remain.
+        if (deleted && deleted.round_order === context.activeRound) {
+          context.setActiveRound(
+            remaining.length > 0 ? remaining[0].round_order : 0,
+          );
         }
-      }
+        return remaining;
+      });
     } catch {
       setError(t("deleteFailed"));
     } finally {

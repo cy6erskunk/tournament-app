@@ -4,7 +4,7 @@ import { Result } from "@/types/result";
 import { db } from "./database";
 import Tournament from "@/types/Tournament";
 import { sql } from "kysely";
-import { RoundRobinCount } from "@/types/RoundRobinCount";
+import { TournamentPlayersCount } from "@/types/TournamentPlayersCount";
 
 export async function getTournament(
   name: string,
@@ -96,7 +96,7 @@ export async function getRecentTournaments(getOffset: number): Promise<
 
 // get all tournaments with players for brackets seeding (any format)
 export async function getTournamentsForSeeding(): Promise<
-  Result<RoundRobinCount[], string>
+  Result<TournamentPlayersCount[], string>
 > {
   try {
     const tournaments = await db
@@ -121,7 +121,7 @@ export async function getTournamentsForSeeding(): Promise<
       return { success: false, error: "No tournaments found" };
     }
 
-    return { success: true, value: tournaments as RoundRobinCount[] };
+    return { success: true, value: tournaments as TournamentPlayersCount[] };
   } catch (error) {
     console.log(error);
     return { success: false, error: "Could not fetch tournaments" };

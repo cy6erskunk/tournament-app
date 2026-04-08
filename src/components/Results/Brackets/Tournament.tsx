@@ -13,7 +13,7 @@ import { jsonParser } from "@/helpers/jsonParser";
 import { getTournamentsForSeeding } from "@/database/getTournament";
 import { useTranslations } from "next-intl";
 import { useUserContext } from "@/context/UserContext";
-import type { RoundRobinCount } from "@/types/RoundRobinCount";
+import type { TournamentPlayersCount } from "@/types/RoundRobinCount";
 import { UserIcon } from "@heroicons/react/24/outline";
 
 // These types describe a match on the frontend, not 1:1 with
@@ -45,7 +45,7 @@ export default function Tournament() {
   const t = useTranslations("Brackets");
   const context = useTournamentContext();
   const [capacity, setCapacity] = useState<number | undefined>(undefined);
-  const [rrTournaments, setRrTournaments] = useState<RoundRobinCount[]>([]);
+  const [seedTournaments, setSeedTournaments] = useState<TournamentPlayersCount[]>([]);
   const account = useUserContext();
 
   const getMatchByPlayer = (player: Player, round: Round) => {
@@ -349,7 +349,7 @@ export default function Tournament() {
     async function fetchTournamentsForSeeding() {
       const tournaments = await getTournamentsForSeeding();
       if (tournaments.success) {
-        setRrTournaments(tournaments.value);
+        setSeedTournaments(tournaments.value);
         return;
       }
     }
@@ -372,9 +372,9 @@ export default function Tournament() {
       {!context.players.length && account.user?.role === "admin" ? (
         <div className="container mx-auto w-full space-y-5">
           <h1 className="text-2xl font-bold">{t("selectseed")}</h1>
-          {rrTournaments.length > 0 ? (
+          {seedTournaments.length > 0 ? (
             <ul className="flex flex-col gap-8">
-              {rrTournaments.map((tour) => (
+              {seedTournaments.map((tour) => (
                 <li className="max-w-sm" key={tour.id}>
                   <button
                     type="button"
