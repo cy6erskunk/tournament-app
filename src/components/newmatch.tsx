@@ -68,6 +68,14 @@ const AddMatch = ({
       return;
     }
 
+    // round_id always comes from context.activeRound (the rounds-table row for the
+    // current tab). For bracket matches, bracketMatch.round is the bracket stage
+    // depth (1 = final, 2 = semi, …), which is a different concept — using it for
+    // the rounds-table lookup would return the wrong row.
+    const round_id =
+      context.rounds.find((r) => r.round_order === context.activeRound)?.id ??
+      null;
+
     const form: MatchForm = {
       match: bracketMatch?.match ?? 1,
       player1: formData.get("player1") as string,
@@ -77,9 +85,7 @@ const AddMatch = ({
       winner: formData.get("winner") as string | null,
       tournament_id: Number(context.tournament.id),
       round: bracketMatch?.round ?? context.activeRound,
-      round_id:
-        context.rounds.find((r) => r.round_order === context.activeRound)?.id ??
-        null,
+      round_id,
     };
 
     if (!form.player1.trim() || !form.player2.trim()) {
