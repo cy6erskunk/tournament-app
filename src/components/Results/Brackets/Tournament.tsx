@@ -288,7 +288,30 @@ export default function Tournament() {
     if (context.loading) return [];
     if (!context.tournament) return [];
 
-    let players: (Player | null)[] = context.players;
+    // Find the active round's DB id to scope match lookup.
+    const activeRoundId = context.rounds.find(
+      (r) => r.round_order === context.activeRound,
+    )?.id;
+
+    // When multiple elimination rounds exist, filter each player's matches to
+    // only those belonging to the currently active round so that switching tabs
+    // shows a different bracket. For a single elimination round (or legacy data
+    // where round_id is null) we skip filtering to preserve the original behaviour.
+    const eliminationRoundCount = context.rounds.filter(
+      (r) => r.type === "elimination",
+    ).length;
+
+    let players: (Player | null)[] =
+      activeRoundId && eliminationRoundCount > 1
+        ? context.players.map((p) =>
+            p
+              ? {
+                  ...p,
+                  matches: p.matches.filter((m) => m.round_id === activeRoundId),
+                }
+              : null,
+          )
+        : context.players;
 
     if (!players.some((player) => player === null)) {
       const seeded = players.some((player) => player?.player.bracket_seed);
@@ -343,6 +366,8 @@ export default function Tournament() {
     context.tournament,
     capacity,
     context.loading,
+    context.activeRound,
+    context.rounds,
   ]);
 
   useEffect(() => {
