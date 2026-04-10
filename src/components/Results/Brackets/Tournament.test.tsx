@@ -232,6 +232,35 @@ describe("Brackets/Tournament — multi-elimination round switching", () => {
     expect(screen.getByText("Bob")).toBeTruthy();
   });
 
+  it("falls back to all matches when no matches have the active round_id (legacy data with multiple elimination rounds)", () => {
+    // Matches exist but all have round_id = null (migrated before Step 4).
+    // The bracket should not go blank.
+    const legacyAlice: Player = {
+      player: { ...alice.player },
+      matches: [{ ...elim1Match, round_id: null }],
+    };
+    const legacyBob: Player = {
+      player: { ...bob.player },
+      matches: [{ ...elim1Match, round_id: null }],
+    };
+
+    mockUseTournamentContext.mockReturnValue({
+      ...baseTournamentContext,
+      activeRound: 2, // round_id=10, but no matches carry it
+      players: [legacyAlice, legacyBob],
+    });
+
+    render(
+      <NextIntlClientProvider locale="en" messages={messages}>
+        <Tournament />
+      </NextIntlClientProvider>,
+    );
+
+    // Both players should still appear (fallback to unfiltered)
+    expect(screen.getByText("Alice")).toBeTruthy();
+    expect(screen.getByText("Bob")).toBeTruthy();
+  });
+
   it("renders an empty bracket when there are no players", () => {
     mockUseTournamentContext.mockReturnValue({
       ...baseTournamentContext,
@@ -239,7 +268,7 @@ describe("Brackets/Tournament — multi-elimination round switching", () => {
       players: [],
     });
 
-    const { container } = render(
+    render(
       <NextIntlClientProvider locale="en" messages={messages}>
         <Tournament />
       </NextIntlClientProvider>,

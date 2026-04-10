@@ -9,7 +9,9 @@ interface QRMatchPending {
   player2: string;
   round: number;
   match: number;
-  round_id: number | null;
+  // Optional so that QR codes generated before round_id was introduced
+  // (or mocked in tests without it) still deserialise correctly.
+  round_id?: number | null;
   created_at: Date;
 }
 

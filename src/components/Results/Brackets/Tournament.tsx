@@ -303,14 +303,25 @@ export default function Tournament() {
 
     let players: (Player | null)[] =
       activeRoundId && eliminationRoundCount > 1
-        ? context.players.map((p) =>
-            p
-              ? {
-                  ...p,
-                  matches: p.matches.filter((m) => m.round_id === activeRoundId),
-                }
-              : null,
-          )
+        ? (() => {
+            const filtered = context.players.map((p) =>
+              p
+                ? {
+                    ...p,
+                    matches: p.matches.filter(
+                      (m) => m.round_id === activeRoundId,
+                    ),
+                  }
+                : null,
+            );
+            // Only use the filtered list when at least one player actually has
+            // matches for this round. If every player's list is empty (e.g.,
+            // legacy data where round_id was never populated) fall back to the
+            // unfiltered set so the bracket doesn't render blank.
+            return filtered.some((p) => p && p.matches.length > 0)
+              ? filtered
+              : context.players;
+          })()
         : context.players;
 
     if (!players.some((player) => player === null)) {

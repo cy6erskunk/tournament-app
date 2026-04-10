@@ -111,7 +111,7 @@ export async function POST(request: Request) {
     tournament_id: matchData.tournament_id,
     round: matchData.round,
     match: matchData.match,
-    round_id: matchData.round_id,
+    round_id: matchData.round_id ?? null,
     player1_hits,
     player2_hits,
     winner,
