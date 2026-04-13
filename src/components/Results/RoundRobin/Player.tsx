@@ -22,7 +22,7 @@ type Hits = {
 };
 
 interface Opponents {
-  [key: string]: { winner: string | null; hits: number }[];
+  [key: string]: Record<number, { winner: string | null; hits: number }>;
 }
 
 export function Player({
@@ -121,9 +121,13 @@ export function Player({
 
         if (opponentName) {
           if (!newOpponents[opponentName]) {
-            newOpponents[opponentName] = [];
+            newOpponents[opponentName] = {};
           }
-          newOpponents[opponentName][match.round] = {
+          // Index by round_id when available so match lookup works correctly
+          // across mixed-type rounds; fall back to round number for legacy
+          // matches that pre-date the rounds table.
+          const roundKey = match.round_id ?? match.round;
+          newOpponents[opponentName][roundKey] = {
             winner: match.winner,
             hits: playerHits,
           };
@@ -173,7 +177,14 @@ export function Player({
         {++nthRow}
       </td>
 
-      {opponentList.map((opponent, index) => {
+      {(() => {
+        // Compute once outside the per-opponent loop to avoid an O(n) find on
+        // every cell render (which would be O(players²) overall).
+        const activeRoundId = context.rounds.find(
+          (r) => r.round_order === context.activeRound,
+        )?.id;
+
+        return opponentList.map((opponent, index) => {
         if (!opponent) return;
         const key = player.player.player_name + index;
         // Used to set dark bg color if players match, can't play versus self
@@ -181,7 +192,12 @@ export function Player({
           opponent.player.player_name === player.player.player_name;
 
         const matches = matchesByOpponent[opponent.player.player_name];
-        const matchData = matches && matches[context.activeRound];
+        // Prefer round_id-keyed entry (new matches); fall back to numeric
+        // round_order for legacy matches without round_id.
+        const matchData =
+          matches &&
+          ((activeRoundId ? matches[activeRoundId] : undefined) ??
+            matches[context.activeRound]);
 
         // Early return if no match data found between players
         if (!matchData) {
@@ -232,7 +248,8 @@ export function Player({
             {result}
           </td>
         );
-      })}
+        });
+      })()}
 
       {/* calculate win percentage based on matches associated with player */}
       <td

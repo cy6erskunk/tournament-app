@@ -154,6 +154,7 @@ describe('POST /api/qr-match/generate - Admin Authorization', () => {
       player2: 'Player Two',
       round: 1,
       match: 1,
+      round_id: null,
     });
   });
 
