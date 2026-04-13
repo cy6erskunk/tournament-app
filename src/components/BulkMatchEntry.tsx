@@ -166,7 +166,7 @@ export default function BulkMatchEntry({ closeModal }: BulkMatchEntryProps) {
     });
 
     return { initialCellData: newCellData, existingMatches: newExistingMatches };
-  }, [players, context.activeRound]);
+  }, [players, context.activeRound, context.rounds]);
 
   // Get cell key
   const getCellKey = useCallback((playerIndex: number, opponentIndex: number) =>
