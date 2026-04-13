@@ -17,7 +17,6 @@ describe('generateMatchId', () => {
       'Player 1',
       'Player 2',
       1,
-      2,
       'https://example.com',
       false
     );
@@ -26,7 +25,6 @@ describe('generateMatchId', () => {
     expect(qrData).toHaveProperty('player1', 'Player 1');
     expect(qrData).toHaveProperty('player2', 'Player 2');
     expect(qrData).toHaveProperty('tournamentId', 1);
-    expect(qrData).toHaveProperty('round', 2);
     expect(qrData).toHaveProperty('baseUri', 'https://example.com');
     expect(qrData).toHaveProperty('submitUrl', 'https://example.com/api/qr-match/submit');
     expect(qrData).toHaveProperty('requireSubmitterIdentity', false);

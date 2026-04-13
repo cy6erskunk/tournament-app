@@ -46,7 +46,7 @@ const createMockPlayer = (name: string, matches: Player['matches'] = []): Player
 // Mock TournamentContext
 const mockSetPlayers = vi.fn();
 const mockTournamentContext = {
-  tournament: { id: 1, name: 'Test Tournament', format: 'Round Robin', date: new Date() },
+  tournament: { id: 1, name: 'Test Tournament', date: new Date() },
   setTournament: vi.fn(),
   players: [] as (Player | null)[],
   setPlayers: mockSetPlayers,

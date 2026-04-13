@@ -12,14 +12,17 @@ const LeaderboardSidebar = () => {
   const context = useTournamentContext();
 
   const players = useMemo(() => {
-    const filteredPlayers: Player[] = context.players.filter((player) => player !== null) as NonNullable<Player>[]
+    const filteredPlayers: Player[] = context.players.filter((player) => player !== null) as NonNullable<Player>[];
+    const activeRoundId =
+      context.rounds.find((r) => r.round_order === context.activeRound)?.id ??
+      null;
     return new LeaderboardBuilder()
       .players(filteredPlayers)
-      .round(context.activeRound)
+      .round(activeRoundId)
       .ascending()
       .column("percentage")
       .sort();
-  }, [context.activeRound, context.players]);
+  }, [context.activeRound, context.players, context.rounds]);
 
   return (
     <div className="lg:max-w-sm lg:w-1/5 border-2 rounded-md shadow-md border-gray-400">

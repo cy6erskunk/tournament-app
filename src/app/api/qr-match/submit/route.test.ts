@@ -43,7 +43,6 @@ describe('POST /api/qr-match/submit - Input Validation', () => {
           player1: 'Player One',
           player2: 'Player Two',
           tournament_id: 1,
-          round: 1,
           match: 1,
         },
       });
@@ -203,7 +202,6 @@ describe('POST /api/qr-match/submit - Input Validation', () => {
           player1: 'Player One',
           player2: 'Player Two',
           tournament_id: 1,
-          round: 1,
           match: 1,
         },
       });
@@ -230,7 +228,6 @@ describe('POST /api/qr-match/submit - Input Validation', () => {
           player1: 'Player One',
           player2: 'Player Two',
           tournament_id: 1,
-          round: 1,
           match: 1,
           player1_hits: 0,
           player2_hits: 0,
@@ -267,7 +264,6 @@ describe('POST /api/qr-match/submit - Input Validation', () => {
           player1: 'Alice',
           player2: 'Bob',
           tournament_id: 1,
-          round: 1,
           match: 1,
         },
       });
@@ -318,7 +314,6 @@ describe('POST /api/qr-match/submit - Input Validation', () => {
           player1: 'Alice',
           player2: 'Bob',
           tournament_id: 1,
-          round: 1,
           match: 1,
           player1_hits: 15,
           player2_hits: 8,
@@ -367,7 +362,6 @@ describe('POST /api/qr-match/submit - Input Validation', () => {
           player1: 'Alice',
           player2: 'Bob',
           tournament_id: 1,
-          round: 1,
           match: 1,
           player1_hits: 8,
           player2_hits: 15,
@@ -417,7 +411,6 @@ describe('Match Logic & Database Interactions', () => {
           player1: 'Alice',
           player2: 'Bob',
           tournament_id: 1,
-          round: 1,
           match: 1,
         },
       });
@@ -504,7 +497,6 @@ describe('Match Logic & Database Interactions', () => {
           player1: 'Alice',
           player2: 'Bob',
           tournament_id: 1,
-          round: 1,
           match: 1,
         },
       });
@@ -539,7 +531,6 @@ describe('Match Logic & Database Interactions', () => {
           player1: 'Alice',
           player2: 'Bob',
           tournament_id: 1,
-          round: 1,
           match: 1,
           player1_hits: 10,
           player2_hits: 8,
@@ -585,7 +576,6 @@ describe('Match Logic & Database Interactions', () => {
           player1: 'Alice',
           player2: 'Bob',
           tournament_id: 1,
-          round: 1,
           match: 1,
         },
       });

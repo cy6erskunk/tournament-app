@@ -51,7 +51,6 @@ export default function QRMatchModal({ closeModal, player1, player2 }: QRMatchMo
           player1: selectedPlayer1,
           player2: selectedPlayer2,
           tournamentId: context.tournament.id,
-          round: context.activeRound,
           match: 1, // Default match number, could be calculated
           round_id:
             context.rounds.find((r) => r.round_order === context.activeRound)
@@ -74,11 +73,14 @@ export default function QRMatchModal({ closeModal, player1, player2 }: QRMatchMo
   };
 
   const getAvailableOpponents = (selectedPlayer: string) => {
+    const activeRoundId =
+      context.rounds.find((r) => r.round_order === context.activeRound)?.id ??
+      null;
     return context.players.filter(player => {
       if (!player || player.player.player_name === selectedPlayer) return false;
 
       // Check if players have already played against each other in current round
-      const playerMatches = player.matches.filter(match => match.round === context.activeRound);
+      const playerMatches = player.matches.filter(match => match.round_id === activeRoundId);
       const hasPlayedAgainst = playerMatches.some(match =>
         match.player1 === selectedPlayer || match.player2 === selectedPlayer
       );

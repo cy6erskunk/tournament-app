@@ -11,14 +11,8 @@ const TournamentInfo = () => {
   const activeRoundData = context.rounds.find(
     (r) => r.round_order === context.activeRound,
   );
-  // Derive which UI to show from the active round's type; fall back to
-  // tournament.format for tournaments that have no rounds yet.
-  const showRoundRobin = activeRoundData
-    ? activeRoundData.type === "pools"
-    : context.tournament?.format === "Round Robin";
-  const showBrackets = activeRoundData
-    ? activeRoundData.type === "elimination"
-    : context.tournament?.format === "Brackets";
+  const showRoundRobin = activeRoundData?.type === "pools";
+  const showBrackets = activeRoundData?.type === "elimination";
   return (
     <>
       {context.hidden ? (

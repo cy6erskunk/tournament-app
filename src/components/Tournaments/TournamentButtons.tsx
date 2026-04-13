@@ -42,7 +42,10 @@ const TournamentButtons = () => {
     (player) => player && player.player.bracket_seed,
   );
 
-  const isRoundRobin = context.tournament?.format === "Round Robin";
+  const activeRoundType = context.rounds.find(
+    (r) => r.round_order === context.activeRound,
+  )?.type;
+  const isRoundRobin = activeRoundType === "pools";
   const isAuthenticated = account.user !== null;
   // When players are seeded, hide match/player entry actions but keep
   // admin management buttons (Manage Rounds, Manage Pools) and the
@@ -86,7 +89,7 @@ const TournamentButtons = () => {
         </Button>
       )}
       {showEntryActions &&
-      context.tournament?.format === "Round Robin" &&
+      isRoundRobin &&
       account.user?.role === "admin" ? (
         <Button
           variant="secondary"

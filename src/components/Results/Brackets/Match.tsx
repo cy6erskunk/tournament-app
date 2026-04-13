@@ -47,7 +47,7 @@ export default function Match({ competitors, match, round }: MatchProps) {
     const isLoser =
       match.winner && match.winner !== competitor.player.player_name;
     const isWinnerByBye =
-      match.round === 1 &&
+      round.id === 1 &&
       (match.player1 === null || match.player2 === null) &&
       competitor.player.player_name;
 
@@ -77,7 +77,7 @@ export default function Match({ competitors, match, round }: MatchProps) {
             </div>
             <div className="flex items-center gap-2 text-sm *:text-nowrap">
               <span>{`${t("match")}: ${match.match}`}</span>
-              <span>{`${t("title")}: ${match.round}`}</span>
+              <span>{`${t("title")}: ${round.id}`}</span>
             </div>
           </div>
         </div>
@@ -91,7 +91,7 @@ export default function Match({ competitors, match, round }: MatchProps) {
 
   return (
     <div className="flex justify-center items-center gap-2">
-      <span className="text-slate-400 py-8">{match.round}</span>
+      <span className="text-slate-400 py-8">{round.id}</span>
       <div className="overflow-auto w-full flex gap-2 flex-col">
         {competitors.map((player, index) => getMatch(player, index))}
       </div>

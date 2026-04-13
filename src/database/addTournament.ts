@@ -26,7 +26,6 @@ export async function createTournament(
         .values({
           name: inputName.trim(),
           date: date,
-          format: format,
           require_submitter_identity: requireSubmitterIdentity,
           public_results: format === "Round Robin" ? publicResults : false,
         })

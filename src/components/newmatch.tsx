@@ -68,10 +68,6 @@ const AddMatch = ({
       return;
     }
 
-    // round_id always comes from context.activeRound (the rounds-table row for the
-    // current tab). For bracket matches, bracketMatch.round is the bracket stage
-    // depth (1 = final, 2 = semi, …), which is a different concept — using it for
-    // the rounds-table lookup would return the wrong row.
     const round_id =
       context.rounds.find((r) => r.round_order === context.activeRound)?.id ??
       null;
@@ -84,7 +80,6 @@ const AddMatch = ({
       player2_hits: Number(formData.get("points2")) ?? 0,
       winner: formData.get("winner") as string | null,
       tournament_id: Number(context.tournament.id),
-      round: bracketMatch?.round ?? context.activeRound,
       round_id,
     };
 
@@ -166,7 +161,7 @@ const AddMatch = ({
           return alert(
             `${t("matchexists1")} (${form.player1} & ${form.player2}) ${t(
               "matchexists2",
-            )} (${form.round})`,
+            )}`,
           );
 
         default:
@@ -214,7 +209,7 @@ const AddMatch = ({
     );
   }
 
-  if (context.tournament?.format === "Brackets") {
+  if (context.rounds.some((r) => r.type === "elimination")) {
     return (
       <>
         <h1 className="mb-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">

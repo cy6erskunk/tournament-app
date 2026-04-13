@@ -41,7 +41,7 @@ function EditButton() {
   const [input, setInput] = useState<string>("");
   const [requireIdentity, setRequireIdentity] = useState(false);
   const [publicResults, setPublicResults] = useState(false);
-  const isRoundRobin = context.tournament?.format === "Round Robin";
+  const isRoundRobin = context.rounds.some((r) => r.type === "pools");
 
   const handleSave = async () => {
     if (!context.tournament) return

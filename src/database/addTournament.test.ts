@@ -35,7 +35,6 @@ describe("createTournament", () => {
     id: 42,
     name: "Test Tournament",
     date: new Date("2026-01-01"),
-    format: "Round Robin",
     require_submitter_identity: false,
   };
 
@@ -61,7 +60,6 @@ describe("createTournament", () => {
     expect(result.success).toBe(true);
     if (result.success) {
       expect(result.value.id).toBe(42);
-      expect(result.value.format).toBe("Round Robin");
     }
 
     expect(trxMock.insertInto).toHaveBeenCalledTimes(3);
@@ -122,7 +120,7 @@ describe("createTournament", () => {
     let capturedRoundValues: unknown = null;
 
     (trxMock.insertInto as ReturnType<typeof vi.fn>)
-      .mockReturnValueOnce(makeTournamentInsertMock({ ...mockTournament, format: "Brackets" }))
+      .mockReturnValueOnce(makeTournamentInsertMock({ ...mockTournament }))
       .mockReturnValueOnce({
         values: vi.fn().mockImplementation((v) => {
           capturedRoundValues = v;
@@ -250,7 +248,7 @@ describe("createTournament", () => {
           capturedValues = v;
           return {
             returningAll: vi.fn().mockReturnValue({
-              executeTakeFirst: vi.fn().mockResolvedValue({ ...mockTournament, format: "Brackets", public_results: false }),
+              executeTakeFirst: vi.fn().mockResolvedValue({ ...mockTournament, public_results: false }),
             }),
           };
         }),

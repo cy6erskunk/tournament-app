@@ -91,7 +91,6 @@ export default function Tournament() {
         );
 
         if (!hasMatch) continue;
-        if (hasMatch.round !== roundNumber) continue;
 
         // matches.set(`${hasMatch.match} ${hasMatch.round}`, castToMatch(hasMatch))
         matches.set(hasMatch.match, castToMatch(hasMatch));
@@ -108,7 +107,6 @@ export default function Tournament() {
           player2: pairs[i][1].player,
           player1_hits: 0,
           player2_hits: 0,
-          round: roundNumber,
           tournament_id: tournamentId,
           round_id: null,
           winner: "",  // Empty string for unplayed matches

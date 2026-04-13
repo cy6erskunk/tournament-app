@@ -37,7 +37,6 @@ describe('POST /api/qr-match/generate - Admin Authorization', () => {
       player1: 'Player One',
       player2: 'Player Two',
       tournamentId: 1,
-      round: 1,
       match: 1,
     };
 
@@ -66,7 +65,6 @@ describe('POST /api/qr-match/generate - Admin Authorization', () => {
       player1: 'Player One',
       player2: 'Player Two',
       tournamentId: 1,
-      round: 1,
       match: 1,
     };
 
@@ -111,7 +109,6 @@ describe('POST /api/qr-match/generate - Admin Authorization', () => {
       player1: 'Player One',
       player2: 'Player Two',
       tournamentId: 1,
-      round: 1,
       submitUrl: 'http://localhost:3000/api/qr-match/submit',
     };
     (generateQRMatchData as any).mockReturnValue(mockQRData);
@@ -126,7 +123,6 @@ describe('POST /api/qr-match/generate - Admin Authorization', () => {
       player1: 'Player One',
       player2: 'Player Two',
       tournamentId: 1,
-      round: 1,
       match: 1,
     };
 
@@ -143,7 +139,6 @@ describe('POST /api/qr-match/generate - Admin Authorization', () => {
       'Player One',
       'Player Two',
       1,
-      1,
       expect.any(String),
       false
     );
@@ -152,7 +147,6 @@ describe('POST /api/qr-match/generate - Admin Authorization', () => {
       tournament_id: 1,
       player1: 'Player One',
       player2: 'Player Two',
-      round: 1,
       match: 1,
       round_id: null,
     });
@@ -225,7 +219,6 @@ describe('POST /api/qr-match/generate - Admin Authorization', () => {
       player1: 'Player One',
       player2: 'Player Two',
       tournamentId: 1,
-      round: 1,
       submitUrl: 'http://localhost:3000/api/qr-match/submit',
     };
     (generateQRMatchData as any).mockReturnValue(mockQRData);
@@ -240,7 +233,6 @@ describe('POST /api/qr-match/generate - Admin Authorization', () => {
       player1: 'Player One',
       player2: 'Player Two',
       tournamentId: 1,
-      round: 1,
       match: 1,
     };
 

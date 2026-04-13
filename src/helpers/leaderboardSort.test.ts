@@ -24,7 +24,7 @@ function makeMatch(
   player1Hits: number,
   player2Hits: number,
   tournamentId: number = 1,
-  round: number = 1,
+  roundId: number | null = null,
   matchId: number = 1,
 ) {
   const winner = player1Hits > player2Hits ? player1 : player2;
@@ -37,8 +37,7 @@ function makeMatch(
     player2_hits: player2Hits,
     winner,
     tournament_id: tournamentId,
-    round,
-    round_id: null,
+    round_id: roundId,
     submitted_by_token: null,
     submitted_at: null,
   };
@@ -78,7 +77,7 @@ describe("LeaderboardBuilder - shared ranking across pools", () => {
 
     const allPlayers = [alice, bob, carol, dave, eve, frank];
 
-    const sorted = new LeaderboardBuilder().players(allPlayers).round(0).sort();
+    const sorted = new LeaderboardBuilder().players(allPlayers).round(null).sort();
 
     // Alice and Dave both have 100% win rate - ranked first
     expect(sorted[0].player.player_name).toSatisfy(
@@ -242,37 +241,38 @@ describe("LeaderboardBuilder - shared ranking across pools", () => {
 });
 
 describe("LeaderboardBuilder - round filtering with pools", () => {
-  it("should filter by round for multi-pool tournaments", () => {
+  it("should filter by round_id for multi-pool tournaments", () => {
+    // round_id 10 = first round, round_id 20 = second round
     // Pool A: Alice, Bob, Carol each play 2 matches per round
-    const r1m1 = makeMatch("Alice", "Bob", 5, 2, 1, 1, 1); // Alice wins round 1
-    const r1m2 = makeMatch("Alice", "Carol", 5, 1, 1, 1, 2); // Alice wins round 1
-    const r1m3 = makeMatch("Bob", "Carol", 3, 5, 1, 1, 3); // Carol wins round 1
+    const r1m1 = makeMatch("Alice", "Bob", 5, 2, 1, 10, 1); // Alice wins round 1
+    const r1m2 = makeMatch("Alice", "Carol", 5, 1, 1, 10, 2); // Alice wins round 1
+    const r1m3 = makeMatch("Bob", "Carol", 3, 5, 1, 10, 3); // Carol wins round 1
 
-    const r2m1 = makeMatch("Alice", "Bob", 2, 5, 1, 2, 4); // Bob wins round 2
-    const r2m2 = makeMatch("Alice", "Carol", 1, 5, 1, 2, 5); // Carol wins round 2
-    const r2m3 = makeMatch("Bob", "Carol", 5, 3, 1, 2, 6); // Bob wins round 2
+    const r2m1 = makeMatch("Alice", "Bob", 2, 5, 1, 20, 4); // Bob wins round 2
+    const r2m2 = makeMatch("Alice", "Carol", 1, 5, 1, 20, 5); // Carol wins round 2
+    const r2m3 = makeMatch("Bob", "Carol", 5, 3, 1, 20, 6); // Bob wins round 2
 
     const alice = makePlayer("Alice", [r1m1, r1m2, r2m1, r2m2], 1);
     const bob = makePlayer("Bob", [r1m1, r1m3, r2m1, r2m3], 1);
     const carol = makePlayer("Carol", [r1m2, r1m3, r2m2, r2m3], 1);
 
     // Pool B: Dave, Eve, Frank each play 2 matches per round
-    const r1m4 = makeMatch("Dave", "Eve", 5, 1, 1, 1, 7); // Dave wins round 1
-    const r1m5 = makeMatch("Dave", "Frank", 5, 2, 1, 1, 8); // Dave wins round 1
-    const r1m6 = makeMatch("Eve", "Frank", 3, 5, 1, 1, 9); // Frank wins round 1
+    const r1m4 = makeMatch("Dave", "Eve", 5, 1, 1, 10, 7); // Dave wins round 1
+    const r1m5 = makeMatch("Dave", "Frank", 5, 2, 1, 10, 8); // Dave wins round 1
+    const r1m6 = makeMatch("Eve", "Frank", 3, 5, 1, 10, 9); // Frank wins round 1
 
-    const r2m4 = makeMatch("Dave", "Eve", 1, 5, 1, 2, 10); // Eve wins round 2
-    const r2m5 = makeMatch("Dave", "Frank", 2, 5, 1, 2, 11); // Frank wins round 2
-    const r2m6 = makeMatch("Eve", "Frank", 5, 3, 1, 2, 12); // Eve wins round 2
+    const r2m4 = makeMatch("Dave", "Eve", 1, 5, 1, 20, 10); // Eve wins round 2
+    const r2m5 = makeMatch("Dave", "Frank", 2, 5, 1, 20, 11); // Frank wins round 2
+    const r2m6 = makeMatch("Eve", "Frank", 5, 3, 1, 20, 12); // Eve wins round 2
 
     const dave = makePlayer("Dave", [r1m4, r1m5, r2m4, r2m5], 2);
     const eve = makePlayer("Eve", [r1m4, r1m6, r2m4, r2m6], 2);
     const frank = makePlayer("Frank", [r1m5, r1m6, r2m5, r2m6], 2);
 
-    // Filter to round 1: Alice and Dave won 100%, Carol and Frank won 50%
+    // Filter to round_id 10: Alice and Dave won 100%
     const round1Sorted = new LeaderboardBuilder()
       .players([alice, bob, carol, dave, eve, frank])
-      .round(1)
+      .round(10)
       .sort();
 
     expect(round1Sorted[0].player.player_name).toSatisfy(
@@ -282,10 +282,10 @@ describe("LeaderboardBuilder - round filtering with pools", () => {
       (name: string) => name === "Alice" || name === "Dave",
     );
 
-    // Filter to round 2: Bob and Eve won 100%
+    // Filter to round_id 20: Bob and Eve won 100%
     const round2Sorted = new LeaderboardBuilder()
       .players([alice, bob, carol, dave, eve, frank])
-      .round(2)
+      .round(20)
       .sort();
 
     expect(round2Sorted[0].player.player_name).toSatisfy(

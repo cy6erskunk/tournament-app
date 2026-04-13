@@ -101,7 +101,6 @@ const elim1Match = {
   player1_hits: 5,
   player2_hits: 3,
   winner: "Alice",
-  round: 1, // bracket stage depth (final)
   match: 1,
   round_id: 10,
 };
@@ -118,7 +117,6 @@ const elim2Match = {
   player1_hits: 2,
   player2_hits: 7,
   winner: "Bob",
-  round: 1, // bracket stage depth (final)
   match: 1,
   round_id: 11,
 };
@@ -154,7 +152,6 @@ const baseTournamentContext = {
   tournament: {
     id: 1,
     name: "Test Tournament",
-    format: "Brackets",
     date: new Date(),
   },
   setTournament: vi.fn(),

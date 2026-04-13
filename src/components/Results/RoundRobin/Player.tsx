@@ -113,10 +113,10 @@ export function Player({
         const playerHits = isPlayer1 ? match.player1_hits : match.player2_hits;
         const opponentName = isPlayer1 ? match.player2 : match.player1;
 
-        newHits.given[match.round] =
-          (newHits.given[match.round] || 0) + playerHits;
-        newHits.taken[match.round] =
-          (newHits.taken[match.round] || 0) +
+        const roundKey = match.round_id ?? 0;
+        newHits.given[roundKey] = (newHits.given[roundKey] || 0) + playerHits;
+        newHits.taken[roundKey] =
+          (newHits.taken[roundKey] || 0) +
           (isPlayer1 ? match.player2_hits : match.player1_hits);
 
         if (opponentName) {
@@ -252,43 +252,52 @@ export function Player({
       })()}
 
       {/* calculate win percentage based on matches associated with player */}
-      <td
-        className={`${
-          context.activeRound === 1 ? "bg-blue-50" : "bg-violet-50"
-        }`}
-      >
-        {player.matches.reduce((n, match) => {
-          if (
-            match.round === context.activeRound &&
-            match.winner === player.player.player_name
-          ) {
-            return n + 1;
-          }
-          return n;
-        }, 0)}
-      </td>
-      <td
-        className={`${
-          context.activeRound === 1 ? "bg-blue-50" : "bg-violet-50"
-        }`}
-      >
-        {hits.given[context.activeRound] ?? 0}
-      </td>
-      <td
-        className={`${
-          context.activeRound === 1 ? "bg-blue-50" : "bg-violet-50"
-        }`}
-      >
-        {hits.taken[context.activeRound] ?? 0}
-      </td>
-      <td
-        className={`${
-          context.activeRound === 1 ? "bg-blue-50" : "bg-violet-50"
-        }`}
-      >
-        {(hits.given[context.activeRound] ?? 0) -
-          (hits.taken[context.activeRound] ?? 0)}
-      </td>
+      {(() => {
+        const activeRoundId =
+          context.rounds.find((r) => r.round_order === context.activeRound)
+            ?.id ?? 0;
+        const roundKey = activeRoundId;
+        return (
+          <>
+            <td
+              className={`${
+                context.activeRound === 1 ? "bg-blue-50" : "bg-violet-50"
+              }`}
+            >
+              {player.matches.reduce((n, match) => {
+                if (
+                  match.round_id === activeRoundId &&
+                  match.winner === player.player.player_name
+                ) {
+                  return n + 1;
+                }
+                return n;
+              }, 0)}
+            </td>
+            <td
+              className={`${
+                context.activeRound === 1 ? "bg-blue-50" : "bg-violet-50"
+              }`}
+            >
+              {hits.given[roundKey] ?? 0}
+            </td>
+            <td
+              className={`${
+                context.activeRound === 1 ? "bg-blue-50" : "bg-violet-50"
+              }`}
+            >
+              {hits.taken[roundKey] ?? 0}
+            </td>
+            <td
+              className={`${
+                context.activeRound === 1 ? "bg-blue-50" : "bg-violet-50"
+              }`}
+            >
+              {(hits.given[roundKey] ?? 0) - (hits.taken[roundKey] ?? 0)}
+            </td>
+          </>
+        );
+      })()}
     </tr>
   );
 }
