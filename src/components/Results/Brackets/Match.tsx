@@ -102,7 +102,7 @@ export default function Match({ competitors, match, round }: MatchProps) {
             <PlusCircleIcon className="h-8 w-8 hover:text-blue-600" />
           </button>
           <Modal isOpen={showModal} closeModal={closeModal}>
-            <AddMatch closeModal={closeModal} bracketMatch={match} />
+            <AddMatch closeModal={closeModal} bracketMatch={match} bracketRound={round.id} />
           </Modal>
         </>
       ) : null}

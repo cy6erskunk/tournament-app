@@ -215,7 +215,7 @@ export default function QRAuditLog() {
                         {log.tournament_name}
                       </td>
                       <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                        {log.round}
+                        {log.round_id}
                       </td>
                       <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
                         {log.match_number}

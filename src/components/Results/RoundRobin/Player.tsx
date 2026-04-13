@@ -123,10 +123,7 @@ export function Player({
           if (!newOpponents[opponentName]) {
             newOpponents[opponentName] = {};
           }
-          // Index by round_id when available so match lookup works correctly
-          // across mixed-type rounds; fall back to round number for legacy
-          // matches that pre-date the rounds table.
-          const roundKey = match.round_id ?? match.round;
+          const roundKey = match.round_id ?? 0;
           newOpponents[opponentName][roundKey] = {
             winner: match.winner,
             hits: playerHits,

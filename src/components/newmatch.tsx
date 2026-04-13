@@ -11,6 +11,7 @@ import Button from "./Button";
 type AddmatchProps = {
   closeModal: () => void;
   bracketMatch?: Match;
+  bracketRound?: number;
   player?: Player;
   opponent?: Player;
 };
@@ -18,6 +19,7 @@ type AddmatchProps = {
 const AddMatch = ({
   closeModal,
   bracketMatch,
+  bracketRound,
   player,
   opponent,
 }: AddmatchProps) => {
@@ -38,12 +40,12 @@ const AddMatch = ({
 
     // Check if player already played against opponent in current round
     if (player?.matches && player.matches.length > 0) {
+      const activeRoundId =
+        context.rounds.find((r) => r.round_order === context.activeRound)?.id ?? null;
       for (const match of player?.matches) {
         if (
-          (match.player1 === opponentName &&
-            context.activeRound === match.round) ||
-          (match.player2 === opponentName &&
-            context.activeRound === match.round)
+          match.round_id === activeRoundId &&
+          (match.player1 === opponentName || match.player2 === opponentName)
         ) {
           return null;
         }
@@ -213,7 +215,7 @@ const AddMatch = ({
     return (
       <>
         <h1 className="mb-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
-          {`${bracketMatch?.round}. ${t("title")}`}
+          {bracketRound != null ? `${bracketRound}. ` : ""}{t("title")}
         </h1>
         <form onSubmit={handleSubmit} className="flex flex-col gap-6">
           <div className="flex *:grow gap-3">

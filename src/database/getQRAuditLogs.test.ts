@@ -260,7 +260,7 @@ describe("getQRAuditLogs", () => {
         tournament_id: 5,
         tournament_name: "Test Tournament",
         match_number: 10,
-        round: 3,
+        round_id: 3,
         player1: "John Doe",
         player2: "Jane Smith",
         player1_hits: 7,
@@ -297,7 +297,7 @@ describe("getQRAuditLogs", () => {
       expect(log.tournament_id).toBe(5);
       expect(log.tournament_name).toBe("Test Tournament");
       expect(log.match_number).toBe(10);
-      expect(log.round).toBe(3);
+      expect(log.round_id).toBe(3);
       expect(log.player1).toBe("John Doe");
       expect(log.player2).toBe("Jane Smith");
       expect(log.player1_hits).toBe(7);

@@ -7,7 +7,7 @@ export interface QRAuditLog {
   tournament_id: number;
   tournament_name: string;
   match_number: number;
-  round: number;
+  round_id: number | null;
   player1: string;
   player2: string;
   player1_hits: number;
@@ -35,7 +35,7 @@ export async function getQRAuditLogs(): Promise<
         "matches.tournament_id",
         "tournaments.name as tournament_name",
         "matches.match as match_number",
-        "matches.round",
+        "matches.round_id",
         "matches.player1",
         "matches.player2",
         "matches.player1_hits",
