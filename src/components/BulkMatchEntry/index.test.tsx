@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import BulkMatchEntry from './BulkMatchEntry';
+import BulkMatchEntry from '.';
 import { Player } from '@/types/Player';
 
 // Mock next-intl
