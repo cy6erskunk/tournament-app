@@ -211,7 +211,11 @@ const AddMatch = ({
     );
   }
 
-  if (context.rounds.some((r) => r.type === "elimination")) {
+  const activeRoundType = context.rounds.find(
+    (r) => r.round_order === context.activeRound,
+  )?.type;
+
+  if (activeRoundType === "elimination") {
     return (
       <>
         <h1 className="mb-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
