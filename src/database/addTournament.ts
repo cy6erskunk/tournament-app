@@ -27,7 +27,7 @@ export async function createTournament(
           name: inputName.trim(),
           date: date,
           require_submitter_identity: requireSubmitterIdentity,
-          public_results: format === "Round Robin" ? publicResults : false,
+          public_results: publicResults,
         })
         .returningAll()
         .executeTakeFirst();

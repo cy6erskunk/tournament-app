@@ -236,7 +236,7 @@ describe("createTournament", () => {
     expect((capturedValues as { public_results: boolean }).public_results).toBe(true);
   });
 
-  it("coerces public_results to false for non-Round Robin formats", async () => {
+  it("persists public_results as true for Brackets tournaments when enabled", async () => {
     const trxMock = makeTrxMock();
     mockTransaction(trxMock);
 
@@ -248,7 +248,7 @@ describe("createTournament", () => {
           capturedValues = v;
           return {
             returningAll: vi.fn().mockReturnValue({
-              executeTakeFirst: vi.fn().mockResolvedValue({ ...mockTournament, public_results: false }),
+              executeTakeFirst: vi.fn().mockResolvedValue({ ...mockTournament, public_results: true }),
             }),
           };
         }),
@@ -257,7 +257,7 @@ describe("createTournament", () => {
 
     await createTournament(new Date("2026-01-01"), "Brackets", "Bracket Tourney", false, true);
 
-    expect((capturedValues as { public_results: boolean }).public_results).toBe(false);
+    expect((capturedValues as { public_results: boolean }).public_results).toBe(true);
   });
 
   it("trims whitespace from tournament name", async () => {

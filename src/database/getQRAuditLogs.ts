@@ -7,7 +7,8 @@ export interface QRAuditLog {
   tournament_id: number;
   tournament_name: string;
   match_number: number;
-  round_id: number | null;
+  round_order: number | null;
+  round_type: string | null;
   player1: string;
   player2: string;
   player1_hits: number;
@@ -25,6 +26,7 @@ export async function getQRAuditLogs(): Promise<
     const logs = await db
       .selectFrom("matches")
       .innerJoin("tournaments", "matches.tournament_id", "tournaments.id")
+      .leftJoin("rounds", "matches.round_id", "rounds.id")
       .leftJoin(
         "submitter_devices",
         "matches.submitted_by_token",
@@ -35,7 +37,8 @@ export async function getQRAuditLogs(): Promise<
         "matches.tournament_id",
         "tournaments.name as tournament_name",
         "matches.match as match_number",
-        "matches.round_id",
+        "rounds.round_order",
+        "rounds.type as round_type",
         "matches.player1",
         "matches.player2",
         "matches.player1_hits",
@@ -49,7 +52,7 @@ export async function getQRAuditLogs(): Promise<
       .orderBy("matches.submitted_at", "desc")
       .execute();
 
-    return { success: true, value: logs };
+    return { success: true, value: logs as QRAuditLog[] };
   } catch (error) {
     console.error("Error fetching QR audit logs:", error);
     return { success: false, error: "Error fetching QR audit logs" };
