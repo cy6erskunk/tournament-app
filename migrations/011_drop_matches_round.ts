@@ -20,12 +20,21 @@ export async function down(db: Kysely<any>): Promise<void> {
     DROP INDEX IF EXISTS matches_unique_players_tournament_round_id_idx
   `.execute(db);
 
-  // Restore the column with a default of 1; exact values cannot be recovered
-  // without the format column (dropped in 010), so this is best-effort.
+  // Restore the column with a default of 1, then backfill from rounds.round_order
+  // via matches.round_id where possible (falls back to 1 when round_id is NULL
+  // or the referenced round row is missing).
   await db.schema
     .alterTable("matches")
     .addColumn("round", "integer", (col) => col.notNull().defaultTo(1))
     .execute();
+
+  await sql`
+    UPDATE matches
+    SET round = COALESCE(
+      (SELECT rounds.round_order FROM rounds WHERE rounds.id = matches.round_id),
+      1
+    )
+  `.execute(db);
 
   await sql`
     CREATE UNIQUE INDEX matches_unique_players_tournament_round_idx
