@@ -23,6 +23,7 @@ export async function up(db: Kysely<any>): Promise<void> {
     WHERE r.tournament_id = m.tournament_id
       AND m.round_id IS NULL
       AND r.type = 'elimination'
+      AND r.round_order = 1
       AND t.format = 'Brackets'
   `.execute(db);
 

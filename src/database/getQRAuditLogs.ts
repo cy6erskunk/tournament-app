@@ -23,7 +23,7 @@ export async function getQRAuditLogs(): Promise<
   Result<QRAuditLog[], string>
 > {
   try {
-    const logs = await db
+    const logs: QRAuditLog[] = await db
       .selectFrom("matches")
       .innerJoin("tournaments", "matches.tournament_id", "tournaments.id")
       .leftJoin("rounds", "matches.round_id", "rounds.id")
@@ -52,7 +52,7 @@ export async function getQRAuditLogs(): Promise<
       .orderBy("matches.submitted_at", "desc")
       .execute();
 
-    return { success: true, value: logs as QRAuditLog[] };
+    return { success: true, value: logs };
   } catch (error) {
     console.error("Error fetching QR audit logs:", error);
     return { success: false, error: "Error fetching QR audit logs" };
