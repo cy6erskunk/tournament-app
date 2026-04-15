@@ -11,6 +11,7 @@
     "wronguserorpassword": "Wrong username or password"
   },
   "Tournament": {
+    "loading": "Loading tournament information...",
     "Buttons": {
       "addmatch": "Add match",
       "addplayer": "Add player",
@@ -103,7 +104,7 @@
     "duplicateplayers": "Selected players can not be the same",
     "addmatchfailed": "Failed to add match",
     "matchexists1": "Match between",
-    "matchexists2": "already exists for round",
+    "matchexists2": "already exists",
     "unexpectederror": "Unexpected error",
     "nodraws": "No draws allowed",
     "matchupdated": "Match updated",

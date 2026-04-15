@@ -5,9 +5,11 @@ import Leaderboard from "@/components/Leaderboards/Leaderboard";
 import LeaderboardSidebar from "@/components/Leaderboards/LeaderboardSidebar";
 import { default as RoundRobin } from "@/components/Results/RoundRobin/Tournament";
 import { default as Brackets } from "@/components/Results/Brackets/Tournament";
+import { useTranslations } from "next-intl";
 
 const TournamentInfo = () => {
   const context = useTournamentContext();
+  const t = useTranslations("Tournament");
   const activeRoundData = context.rounds.find(
     (r) => r.round_order === context.activeRound,
   );
@@ -24,7 +26,7 @@ const TournamentInfo = () => {
   if (context.loading) {
     return (
       <section className="container mx-auto p-2">
-        <div className="p-4 text-center">Loading tournament information...</div>
+        <div className="p-4 text-center">{t("loading")}</div>
       </section>
     );
   }

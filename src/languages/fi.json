@@ -11,6 +11,7 @@
     "wronguserorpassword": "Väärä käyttäjätunnus tai salasana"
   },
   "Tournament": {
+    "loading": "Ladataan turnauksen tietoja...",
     "Buttons": {
       "addmatch": "Lisää ottelu",
       "addplayer": "Lisää ottelija",
@@ -103,7 +104,7 @@
     "duplicateplayers": "Valitut pelaajat eivät voi olla samat",
     "addmatchfailed": "Ottelun lisääminen epäonnistui",
     "matchexists1": "Ottelu pelaajien",
-    "matchexists2": "välillä on jo olemassa kierroksella",
+    "matchexists2": "välillä on jo olemassa",
     "unexpectederror": "Odottamaton virhe",
     "nodraws": "Tasapelit ei sallituja",
     "matchupdated": "Ottelu päivitetty",

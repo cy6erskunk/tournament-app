@@ -11,6 +11,7 @@
     "wronguserorpassword": "Vale kasutajanimi või parool"
   },
   "Tournament": {
+    "loading": "Turniiri teabe laadimine...",
     "Buttons": {
       "addmatch": "Lisa vaste",
       "addplayer": "Lisa mängija",
