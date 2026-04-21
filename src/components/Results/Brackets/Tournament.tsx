@@ -291,36 +291,17 @@ export default function Tournament() {
       (r) => r.round_order === context.activeRound,
     )?.id;
 
-    // When multiple elimination rounds exist, filter each player's matches to
-    // only those belonging to the currently active round so that switching tabs
-    // shows a different bracket. For a single elimination round (or legacy data
-    // where round_id is null) we skip filtering to preserve the original behaviour.
-    const eliminationRoundCount = context.rounds.filter(
-      (r) => r.type === "elimination",
-    ).length;
-
-    let players: (Player | null)[] =
-      activeRoundId && eliminationRoundCount > 1
-        ? (() => {
-            const filtered = context.players.map((p) =>
-              p
-                ? {
-                    ...p,
-                    matches: p.matches.filter(
-                      (m) => m.round_id === activeRoundId,
-                    ),
-                  }
-                : null,
-            );
-            // Only use the filtered list when at least one player actually has
-            // matches for this round. If every player's list is empty (e.g.,
-            // legacy data where round_id was never populated) fall back to the
-            // unfiltered set so the bracket doesn't render blank.
-            return filtered.some((p) => p && p.matches.length > 0)
-              ? filtered
-              : context.players;
-          })()
-        : context.players;
+    // Filter each player's matches to only those belonging to the active
+    // elimination round. Without this, pool matches from other rounds bleed
+    // into the bracket. A new empty elimination round correctly renders as
+    // an empty bracket (no matches yet).
+    let players: (Player | null)[] = activeRoundId
+      ? context.players.map((p) =>
+          p
+            ? { ...p, matches: p.matches.filter((m) => m.round_id === activeRoundId) }
+            : null,
+        )
+      : context.players;
 
     if (!players.some((player) => player === null)) {
       const seeded = players.some((player) => player?.player.bracket_seed);
