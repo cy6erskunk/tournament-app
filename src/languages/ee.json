@@ -38,7 +38,15 @@
     "deleteFailed": "Vooru kustutamine ebaõnnestus",
     "typePool": "Grupivoor",
     "typeElimination": "Eliminatsioonivoor",
-    "selectType": "Vali tüüp"
+    "selectType": "Vali tüüp",
+    "presets": "Eelseaded",
+    "presetPools": "Ainult grupid",
+    "presetDoublePools": "Topeltgrupid",
+    "presetElimination": "Ainult eliminatsioon",
+    "presetPoolsElim": "Grupid + Eliminatsioon",
+    "presetDoublePoolsElim": "Topeltgrupid + Eliminatsioon",
+    "addPoolRound": "Lisa grupivoor",
+    "addEliminationRound": "Lisa eliminatsioonivoor"
   },
   "Pool": {
     "title": "Grupihaldus",
@@ -153,7 +161,18 @@
     "requiresubmitteridentity": "Nõua esitaja identiteeti",
     "publicresults": "Avalikud tulemused (sisselogimine pole vajalik)",
     "edittournament": "Muuda turniiri",
-    "tournamentname": "Turniiri nimi"
+    "tournamentname": "Turniiri nimi",
+    "next": "Järgmine: Lisa mängijaid",
+    "back": "Tagasi",
+    "playersStep": "Lisa mängijaid (valikuline)",
+    "playerNamesPlaceholder": "Üks nimi rea kohta",
+    "addingPlayers": "Lisamisel...",
+    "playersAdded": "{count} mängijat lisatud",
+    "skipPlayers": "Vahele jätta",
+    "done": "Valmis",
+    "addPlayersButton": "Lisa mängijaid",
+    "roundsHeading": "Voorud",
+    "addPlayersFailed": "Mõnda mängijat ei saanud lisada"
   },
   "Brackets": {
     "selectseed": "Valige turniirilt mängu järjekord",

@@ -4,19 +4,24 @@ import { Result } from "@/types/result";
 import { db } from "./database";
 import Tournament from "@/types/Tournament";
 
-const VALID_FORMATS = ["Round Robin", "Brackets"] as const;
-type TournamentFormat = (typeof VALID_FORMATS)[number];
+export type RoundConfig = { type: "pools" | "elimination" };
 
-// create new tournament with date and format
 export async function createTournament(
   date: Date,
-  format: string,
+  rounds: RoundConfig[],
   inputName: string,
   requireSubmitterIdentity: boolean = false,
   publicResults: boolean = false,
 ): Promise<Result<Tournament, string>> {
-  if (!VALID_FORMATS.includes(format as TournamentFormat)) {
-    return { success: false, error: `Unknown tournament format: "${format}"` };
+  if (!rounds || rounds.length === 0) {
+    return { success: false, error: "At least one round is required" };
+  }
+
+  const invalidRound = rounds.find(
+    (r) => r.type !== "pools" && r.type !== "elimination",
+  );
+  if (invalidRound) {
+    return { success: false, error: `Unknown round type: "${invalidRound.type}"` };
   }
 
   try {
@@ -36,26 +41,25 @@ export async function createTournament(
         throw new Error("No tournament returned on insert");
       }
 
-      if (format === "Round Robin") {
-        // Round-robin tournaments always start with one pool and two pool rounds
+      // Create Pool 1 whenever the configuration includes any pool round
+      const hasPoolRound = rounds.some((r) => r.type === "pools");
+      if (hasPoolRound) {
         await trx
           .insertInto("pools")
           .values({ tournament_id: t.id as number, name: "Pool 1" })
           .execute();
-
-        await trx
-          .insertInto("rounds")
-          .values([
-            { tournament_id: t.id as number, round_order: 1, type: "pools" },
-            { tournament_id: t.id as number, round_order: 2, type: "pools" },
-          ])
-          .execute();
-      } else if (format === "Brackets") {
-        await trx
-          .insertInto("rounds")
-          .values({ tournament_id: t.id as number, round_order: 1, type: "elimination" })
-          .execute();
       }
+
+      await trx
+        .insertInto("rounds")
+        .values(
+          rounds.map((r, i) => ({
+            tournament_id: t.id as number,
+            round_order: i + 1,
+            type: r.type,
+          })),
+        )
+        .execute();
 
       return t;
     });

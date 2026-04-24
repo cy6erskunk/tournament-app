@@ -38,7 +38,15 @@
     "deleteFailed": "Failed to delete round",
     "typePool": "Pool Round",
     "typeElimination": "Elimination Round",
-    "selectType": "Select type"
+    "selectType": "Select type",
+    "presets": "Presets",
+    "presetPools": "Pools only",
+    "presetDoublePools": "Double pools",
+    "presetElimination": "Elimination only",
+    "presetPoolsElim": "Pools + Elimination",
+    "presetDoublePoolsElim": "Double Pools + Elimination",
+    "addPoolRound": "Add pool round",
+    "addEliminationRound": "Add elimination round"
   },
   "Pool": {
     "title": "Pool Management",
@@ -153,7 +161,18 @@
     "requiresubmitteridentity": "Require submitter identity",
     "publicresults": "Public results (no login required)",
     "edittournament": "Edit tournament",
-    "tournamentname": "Tournament name"
+    "tournamentname": "Tournament name",
+    "next": "Next: Add players",
+    "back": "Back",
+    "playersStep": "Add players (optional)",
+    "playerNamesPlaceholder": "One name per line",
+    "addingPlayers": "Adding...",
+    "playersAdded": "{count} players added",
+    "skipPlayers": "Skip",
+    "done": "Done",
+    "addPlayersButton": "Add players",
+    "roundsHeading": "Rounds",
+    "addPlayersFailed": "Some players could not be added"
   },
   "Brackets": {
     "selectseed": "Select match order from tournament",

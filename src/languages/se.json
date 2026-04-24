@@ -38,7 +38,15 @@
     "deleteFailed": "Det gick inte att ta bort omgången",
     "typePool": "Poolrunda",
     "typeElimination": "Elimineringsrunda",
-    "selectType": "Välj typ"
+    "selectType": "Välj typ",
+    "presets": "Förinställningar",
+    "presetPools": "Endast pooler",
+    "presetDoublePools": "Dubbla pooler",
+    "presetElimination": "Endast eliminering",
+    "presetPoolsElim": "Pooler + Eliminering",
+    "presetDoublePoolsElim": "Dubbla pooler + Eliminering",
+    "addPoolRound": "Lägg till poolrunda",
+    "addEliminationRound": "Lägg till elimineringsrunda"
   },
   "Pool": {
     "title": "Poolhantering",
@@ -153,7 +161,18 @@
     "requiresubmitteridentity": "Kräv avsändare identitet",
     "publicresults": "Offentliga resultat (ingen inloggning krävs)",
     "edittournament": "Redigera turnering",
-    "tournamentname": "Turneringens namn"
+    "tournamentname": "Turneringens namn",
+    "next": "Nästa: Lägg till spelare",
+    "back": "Tillbaka",
+    "playersStep": "Lägg till spelare (valfritt)",
+    "playerNamesPlaceholder": "Ett namn per rad",
+    "addingPlayers": "Lägger till...",
+    "playersAdded": "{count} spelare tillagda",
+    "skipPlayers": "Hoppa över",
+    "done": "Klar",
+    "addPlayersButton": "Lägg till spelare",
+    "roundsHeading": "Omgångar",
+    "addPlayersFailed": "Vissa spelare kunde inte läggas till"
   },
   "Brackets": {
     "selectseed": "Välj matchordning från turneringen",
