@@ -291,17 +291,37 @@ export default function Tournament() {
       (r) => r.round_order === context.activeRound,
     )?.id;
 
-    // Filter each player's matches to only those belonging to the active
-    // elimination round. Without this, pool matches from other rounds bleed
-    // into the bracket. A new empty elimination round correctly renders as
-    // an empty bracket (no matches yet).
-    let players: (Player | null)[] = activeRoundId
-      ? context.players.map((p) =>
-          p
-            ? { ...p, matches: p.matches.filter((m) => m.round_id === activeRoundId) }
-            : null,
-        )
-      : context.players;
+    // Scope player matches to the active elimination round. If no matches exist
+    // for that round yet, fall back to legacy null-round_id matches only (data
+    // that pre-dates the rounds table). This prevents pool-round matches from
+    // bleeding into the bracket while keeping old single-round tournaments working.
+    let players: (Player | null)[] = context.players;
+    if (activeRoundId) {
+      const filtered = context.players.map((p) =>
+        p
+          ? { ...p, matches: p.matches.filter((m) => m.round_id === activeRoundId) }
+          : null,
+      );
+      const hasActiveMatches = filtered.some((p) => p && p.matches.length > 0);
+      if (hasActiveMatches) {
+        players = filtered;
+      } else if (context.rounds.length === 1) {
+        // Single-round tournament only: fall back to legacy null-round_id matches
+        // so pre-rounds-table data still renders. For multi-round tournaments this
+        // fallback is skipped — null round_id could be pool matches, and a new
+        // empty elimination round should render as an empty bracket.
+        const hasLegacyMatches = context.players.some(
+          (p) => p && p.matches.some((m) => m.round_id == null),
+        );
+        players = hasLegacyMatches
+          ? context.players.map((p) =>
+              p ? { ...p, matches: p.matches.filter((m) => m.round_id == null) } : null,
+            )
+          : filtered;
+      } else {
+        players = filtered;
+      }
+    }
 
     if (!players.some((player) => player === null)) {
       const seeded = players.some((player) => player?.player.bracket_seed);

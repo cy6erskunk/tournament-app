@@ -34,28 +34,26 @@ export async function POST(
     return new Response("Invalid request body", { status: 400 });
   }
 
-  const names = data.value.names
-    .map((n) => n.trim())
-    .filter((n) => n.length > 0);
+  const names = [...new Set(
+    data.value.names
+      .map((n) => n.trim())
+      .filter((n) => n.length > 0),
+  )];
 
   if (names.length === 0) {
     return Response.json({ added: [], errors: [] });
   }
 
-  const added: string[] = [];
-  const errors: string[] = [];
+  // Ensure all names exist in the global players table in parallel
+  await Promise.all(names.map((name) => newPlayer(name)));
 
-  for (const name of names) {
-    // Ensure player exists in the global players table (no-op if already there)
-    await newPlayer(name);
+  // Add all players to the tournament in parallel
+  const addResults = await Promise.all(
+    names.map(async (name) => ({ name, result: await addPlayer(name, id) })),
+  );
 
-    const result = await addPlayer(name, id);
-    if (result.success) {
-      added.push(name);
-    } else {
-      errors.push(name);
-    }
-  }
+  const added = addResults.filter(({ result }) => result.success).map(({ name }) => name);
+  const errors = addResults.filter(({ result }) => !result.success).map(({ name }) => name);
 
   return Response.json({ added, errors });
 }

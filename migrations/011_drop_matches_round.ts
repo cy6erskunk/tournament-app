@@ -23,6 +23,9 @@ export async function down(db: Kysely<any>): Promise<void> {
   // Restore the column with a default of 1, then backfill from rounds.round_order
   // via matches.round_id where possible (falls back to 1 when round_id is NULL
   // or the referenced round row is missing).
+  // Note: matches.round was used as a pool-round counter (1 or 2 for double pools)
+  // and was always 1 for elimination matches. rounds.round_order maps 1:1 to that
+  // historic meaning, so this backfill is semantically correct for both formats.
   await db.schema
     .alterTable("matches")
     .addColumn("round", "integer", (col) => col.notNull().defaultTo(1))
