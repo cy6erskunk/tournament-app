@@ -25,7 +25,11 @@ export async function deleteMatch(
         ]),
       )
       .where("tournament_id", "=", form.tournament_id)
-      .where("round", "=", form.round)
+      .where((eb) =>
+        form.round_id != null
+          ? eb("round_id", "=", form.round_id)
+          : eb("round_id", "is", null),
+      )
       .executeTakeFirst();
 
     let p1 = form.player1;
@@ -41,7 +45,11 @@ export async function deleteMatch(
       .where("player1", "=", p1)
       .where("player2", "=", p2)
       .where("tournament_id", "=", form.tournament_id)
-      .where("round", "=", form.round)
+      .where((eb) =>
+        form.round_id != null
+          ? eb("round_id", "=", form.round_id)
+          : eb("round_id", "is", null),
+      )
       .executeTakeFirst();
 
     const count = Number(res.numDeletedRows);

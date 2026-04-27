@@ -27,10 +27,8 @@ const Page = async ({ params }: PageProps) => {
   }
 
   const tournament = tournamentResult.value;
-  const isPublicRoundRobin =
-    tournament.format === "Round Robin" && tournament.public_results;
 
-  if (!session.success && !isPublicRoundRobin) {
+  if (!session.success && !tournament.public_results) {
     redirect("/");
   }
 

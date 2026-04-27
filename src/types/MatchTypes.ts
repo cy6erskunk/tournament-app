@@ -22,9 +22,8 @@ export type MatchForm = {
   player2_hits: number;
   winner: string | null;  // Can be null during form creation, determined before submission
   tournament_id: number;
-  round: number;
   match: number;
-  round_id?: number | null; // FK to rounds table; null for legacy matches without round tracking
+  round_id: number | null; // FK to rounds table
 };
 
 export type MatchFormSubmit = Omit<MatchForm, "winner"> & { winner: string }; // winner is required on submission

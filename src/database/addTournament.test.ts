@@ -16,12 +16,10 @@ const mockTransaction = (trxMock: ReturnType<typeof makeTrxMock>) => {
   });
 };
 
-// Returns a chainable mock: insertInto → values → execute (for pool/rounds inserts)
 const makeInsertMock = () => ({
   values: vi.fn().mockReturnValue({ execute: vi.fn().mockResolvedValue([]) }),
 });
 
-// Returns a chainable mock: insertInto → values → returningAll → executeTakeFirst (for tournament insert)
 const makeTournamentInsertMock = (returnValue: unknown) => ({
   values: vi.fn().mockReturnValue({
     returningAll: vi.fn().mockReturnValue({
@@ -35,7 +33,6 @@ describe("createTournament", () => {
     id: 42,
     name: "Test Tournament",
     date: new Date("2026-01-01"),
-    format: "Round Robin",
     require_submitter_identity: false,
   };
 
@@ -43,34 +40,30 @@ describe("createTournament", () => {
     vi.clearAllMocks();
   });
 
-  it("creates a Round Robin tournament with pool and two rounds", async () => {
+  it("creates a double-pools tournament with Pool 1 and two rounds", async () => {
     const trxMock = makeTrxMock();
     mockTransaction(trxMock);
 
     (trxMock.insertInto as ReturnType<typeof vi.fn>)
-      .mockReturnValueOnce(makeTournamentInsertMock(mockTournament)) // tournaments
-      .mockReturnValueOnce(makeInsertMock())                         // pools
-      .mockReturnValueOnce(makeInsertMock());                        // rounds
+      .mockReturnValueOnce(makeTournamentInsertMock(mockTournament))
+      .mockReturnValueOnce(makeInsertMock())  // pools
+      .mockReturnValueOnce(makeInsertMock()); // rounds
 
     const result = await createTournament(
       new Date("2026-01-01"),
-      "Round Robin",
+      [{ type: "pools" }, { type: "pools" }],
       "Test Tournament",
     );
 
     expect(result.success).toBe(true);
-    if (result.success) {
-      expect(result.value.id).toBe(42);
-      expect(result.value.format).toBe("Round Robin");
-    }
-
+    if (result.success) expect(result.value.id).toBe(42);
     expect(trxMock.insertInto).toHaveBeenCalledTimes(3);
     expect(trxMock.insertInto).toHaveBeenNthCalledWith(1, "tournaments");
     expect(trxMock.insertInto).toHaveBeenNthCalledWith(2, "pools");
     expect(trxMock.insertInto).toHaveBeenNthCalledWith(3, "rounds");
   });
 
-  it("inserts Pool 1 with correct tournament_id and name for Round Robin", async () => {
+  it("inserts Pool 1 with correct tournament_id and name for pool rounds", async () => {
     const trxMock = makeTrxMock();
     mockTransaction(trxMock);
 
@@ -86,12 +79,12 @@ describe("createTournament", () => {
       })
       .mockReturnValueOnce(makeInsertMock());
 
-    await createTournament(new Date("2026-01-01"), "Round Robin", "Test");
+    await createTournament(new Date("2026-01-01"), [{ type: "pools" }], "Test");
 
     expect(capturedPoolValues).toEqual({ tournament_id: 42, name: "Pool 1" });
   });
 
-  it("inserts two pool rounds for Round Robin", async () => {
+  it("inserts correct round rows for double-pools config", async () => {
     const trxMock = makeTrxMock();
     mockTransaction(trxMock);
 
@@ -107,7 +100,7 @@ describe("createTournament", () => {
         }),
       });
 
-    await createTournament(new Date("2026-01-01"), "Round Robin", "Test");
+    await createTournament(new Date("2026-01-01"), [{ type: "pools" }, { type: "pools" }], "Test");
 
     expect(capturedRoundValues).toEqual([
       { tournament_id: 42, round_order: 1, type: "pools" },
@@ -115,14 +108,14 @@ describe("createTournament", () => {
     ]);
   });
 
-  it("creates a Brackets tournament with one elimination round and no pool", async () => {
+  it("creates an elimination-only tournament with one round and no pool", async () => {
     const trxMock = makeTrxMock();
     mockTransaction(trxMock);
 
     let capturedRoundValues: unknown = null;
 
     (trxMock.insertInto as ReturnType<typeof vi.fn>)
-      .mockReturnValueOnce(makeTournamentInsertMock({ ...mockTournament, format: "Brackets" }))
+      .mockReturnValueOnce(makeTournamentInsertMock({ ...mockTournament }))
       .mockReturnValueOnce({
         values: vi.fn().mockImplementation((v) => {
           capturedRoundValues = v;
@@ -132,7 +125,7 @@ describe("createTournament", () => {
 
     const result = await createTournament(
       new Date("2026-01-01"),
-      "Brackets",
+      [{ type: "elimination" }],
       "Bracket Tournament",
     );
 
@@ -140,27 +133,59 @@ describe("createTournament", () => {
     expect(trxMock.insertInto).toHaveBeenCalledTimes(2);
     expect(trxMock.insertInto).toHaveBeenNthCalledWith(1, "tournaments");
     expect(trxMock.insertInto).toHaveBeenNthCalledWith(2, "rounds");
-    expect(capturedRoundValues).toEqual({
-      tournament_id: 42,
-      round_order: 1,
-      type: "elimination",
-    });
+    expect(capturedRoundValues).toEqual([
+      { tournament_id: 42, round_order: 1, type: "elimination" },
+    ]);
   });
 
-  it("returns error immediately for an unknown format without touching the DB", async () => {
+  it("creates a pools + elimination tournament inserting Pool 1", async () => {
     const trxMock = makeTrxMock();
     mockTransaction(trxMock);
 
+    let capturedRoundValues: unknown = null;
+
+    (trxMock.insertInto as ReturnType<typeof vi.fn>)
+      .mockReturnValueOnce(makeTournamentInsertMock(mockTournament))
+      .mockReturnValueOnce(makeInsertMock()) // pools
+      .mockReturnValueOnce({
+        values: vi.fn().mockImplementation((v) => {
+          capturedRoundValues = v;
+          return { execute: vi.fn().mockResolvedValue([]) };
+        }),
+      });
+
     const result = await createTournament(
       new Date("2026-01-01"),
-      "Bracket",
-      "Typo Tournament",
+      [{ type: "pools" }, { type: "elimination" }],
+      "Mixed Tournament",
+    );
+
+    expect(result.success).toBe(true);
+    expect(trxMock.insertInto).toHaveBeenCalledTimes(3);
+    expect(trxMock.insertInto).toHaveBeenNthCalledWith(2, "pools");
+    expect(capturedRoundValues).toEqual([
+      { tournament_id: 42, round_order: 1, type: "pools" },
+      { tournament_id: 42, round_order: 2, type: "elimination" },
+    ]);
+  });
+
+  it("returns error immediately for empty rounds array without touching the DB", async () => {
+    const result = await createTournament(new Date("2026-01-01"), [], "Test");
+
+    expect(result.success).toBe(false);
+    if (!result.success) expect(result.error).toContain("least one round");
+    expect(db.transaction).not.toHaveBeenCalled();
+  });
+
+  it("returns error for unknown round type without touching the DB", async () => {
+    const result = await createTournament(
+      new Date("2026-01-01"),
+      [{ type: "unknown" as "pools" }],
+      "Test",
     );
 
     expect(result.success).toBe(false);
-    if (!result.success) {
-      expect(result.error).toContain("Bracket");
-    }
+    if (!result.success) expect(result.error).toContain("Unknown round type");
     expect(db.transaction).not.toHaveBeenCalled();
   });
 
@@ -178,14 +203,12 @@ describe("createTournament", () => {
 
     const result = await createTournament(
       new Date("2026-01-01"),
-      "Round Robin",
+      [{ type: "pools" }],
       "Test",
     );
 
     expect(result.success).toBe(false);
-    if (!result.success) {
-      expect(result.error).toBe("No tournament returned on insert");
-    }
+    if (!result.success) expect(result.error).toBe("No tournament returned on insert");
     expect(trxMock.insertInto).toHaveBeenCalledTimes(1);
   });
 
@@ -203,17 +226,15 @@ describe("createTournament", () => {
 
     const result = await createTournament(
       new Date("2026-01-01"),
-      "Round Robin",
+      [{ type: "pools" }],
       "Test",
     );
 
     expect(result.success).toBe(false);
-    if (!result.success) {
-      expect(result.error).toBe("DB error");
-    }
+    if (!result.success) expect(result.error).toBe("DB error");
   });
 
-  it("persists public_results as true for Round Robin when enabled", async () => {
+  it("persists public_results: true", async () => {
     const trxMock = makeTrxMock();
     mockTransaction(trxMock);
 
@@ -233,33 +254,9 @@ describe("createTournament", () => {
       .mockReturnValueOnce(makeInsertMock())
       .mockReturnValueOnce(makeInsertMock());
 
-    await createTournament(new Date("2026-01-01"), "Round Robin", "Test", false, true);
+    await createTournament(new Date("2026-01-01"), [{ type: "pools" }], "Test", false, true);
 
     expect((capturedValues as { public_results: boolean }).public_results).toBe(true);
-  });
-
-  it("coerces public_results to false for non-Round Robin formats", async () => {
-    const trxMock = makeTrxMock();
-    mockTransaction(trxMock);
-
-    let capturedValues: unknown = null;
-
-    (trxMock.insertInto as ReturnType<typeof vi.fn>)
-      .mockReturnValueOnce({
-        values: vi.fn().mockImplementation((v) => {
-          capturedValues = v;
-          return {
-            returningAll: vi.fn().mockReturnValue({
-              executeTakeFirst: vi.fn().mockResolvedValue({ ...mockTournament, format: "Brackets", public_results: false }),
-            }),
-          };
-        }),
-      })
-      .mockReturnValueOnce(makeInsertMock());
-
-    await createTournament(new Date("2026-01-01"), "Brackets", "Bracket Tourney", false, true);
-
-    expect((capturedValues as { public_results: boolean }).public_results).toBe(false);
   });
 
   it("trims whitespace from tournament name", async () => {
@@ -282,7 +279,7 @@ describe("createTournament", () => {
       .mockReturnValueOnce(makeInsertMock())
       .mockReturnValueOnce(makeInsertMock());
 
-    await createTournament(new Date("2026-01-01"), "Round Robin", "  Padded  ");
+    await createTournament(new Date("2026-01-01"), [{ type: "pools" }], "  Padded  ");
 
     expect((capturedTournamentValues as { name: string }).name).toBe("Padded");
   });

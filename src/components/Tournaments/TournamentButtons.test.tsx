@@ -54,6 +54,10 @@ const defaultTournamentContextValue = {
   setActiveRound: vi.fn(),
   hidden: true,
   setHidden: vi.fn(),
+  rounds: [] as { id: number; tournament_id: number; round_order: number; type: string }[],
+  setRounds: vi.fn(),
+  pools: [] as { id: number; tournament_id: number; name: string }[],
+  setPools: vi.fn(),
 };
 
 describe("TournamentButtons", () => {
@@ -65,7 +69,8 @@ describe("TournamentButtons", () => {
   it("should show Add match button for Round Robin tournaments", () => {
     mockUseTournamentContext.mockReturnValue({
       ...defaultTournamentContextValue,
-      tournament: { id: 1, format: "Round Robin" },
+      tournament: { id: 1 },
+      rounds: [{ id: 1, tournament_id: 1, round_order: 1, type: "pools" }],
     });
 
     render(
@@ -83,7 +88,8 @@ describe("TournamentButtons", () => {
   it("should not show Add match button for non-Round Robin tournaments", () => {
     mockUseTournamentContext.mockReturnValue({
       ...defaultTournamentContextValue,
-      tournament: { id: 1, format: "Bracket" },
+      tournament: { id: 1 },
+      rounds: [{ id: 1, tournament_id: 1, round_order: 1, type: "elimination" }],
     });
 
     render(
@@ -130,7 +136,8 @@ describe("TournamentButtons", () => {
           matches: [],
         },
       ],
-      tournament: { id: 1, format: "Round Robin" },
+      tournament: { id: 1 },
+      rounds: [{ id: 1, tournament_id: 1, round_order: 1, type: "pools" }],
     });
 
     render(

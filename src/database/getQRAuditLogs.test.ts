@@ -8,6 +8,29 @@ vi.mock("./database", () => ({
   },
 }));
 
+/** Build a mock db chain: selectFrom → innerJoin → leftJoin (rounds) → leftJoin (submitter_devices) → select → where → orderBy → execute */
+function makeSelectMock(resolvedValue: any[], rejectWith?: Error) {
+  const execute = rejectWith
+    ? vi.fn().mockRejectedValue(rejectWith)
+    : vi.fn().mockResolvedValue(resolvedValue);
+
+  const innerChain = {
+    select: vi.fn().mockReturnValue({
+      where: vi.fn().mockReturnValue({
+        orderBy: vi.fn().mockReturnValue({ execute }),
+      }),
+    }),
+  };
+
+  return vi.fn().mockReturnValue({
+    innerJoin: vi.fn().mockReturnValue({
+      leftJoin: vi.fn().mockReturnValue({
+        leftJoin: vi.fn().mockReturnValue(innerChain),
+      }),
+    }),
+  });
+}
+
 describe("getQRAuditLogs", () => {
   beforeEach(() => {
     vi.clearAllMocks();
@@ -20,7 +43,8 @@ describe("getQRAuditLogs", () => {
         tournament_id: 1,
         tournament_name: "Summer Championship",
         match_number: 5,
-        round: 2,
+        round_order: 2,
+        round_type: "pools",
         player1: "Alice Smith",
         player2: "Bob Jones",
         player1_hits: 5,
@@ -35,7 +59,8 @@ describe("getQRAuditLogs", () => {
         tournament_id: 2,
         tournament_name: "Winter Open",
         match_number: 3,
-        round: 1,
+        round_order: 1,
+        round_type: "elimination",
         player1: "Charlie Brown",
         player2: "Diana Prince",
         player1_hits: 4,
@@ -47,21 +72,7 @@ describe("getQRAuditLogs", () => {
       },
     ];
 
-    const selectFromMock = vi.fn().mockReturnValue({
-      innerJoin: vi.fn().mockReturnValue({
-        leftJoin: vi.fn().mockReturnValue({
-          select: vi.fn().mockReturnValue({
-            where: vi.fn().mockReturnValue({
-              orderBy: vi.fn().mockReturnValue({
-                execute: vi.fn().mockResolvedValue(mockLogs),
-              }),
-            }),
-          }),
-        }),
-      }),
-    });
-
-    (db.selectFrom as any) = selectFromMock;
+    (db.selectFrom as any) = makeSelectMock(mockLogs);
 
     const result = await getQRAuditLogs();
 
@@ -73,7 +84,7 @@ describe("getQRAuditLogs", () => {
       expect(result.value[0].submitter_name).toBe("Tablet 1");
     }
 
-    expect(selectFromMock).toHaveBeenCalledWith("matches");
+    expect(db.selectFrom).toHaveBeenCalledWith("matches");
   });
 
   it("should return logs with null submitter_name for unregistered devices", async () => {
@@ -83,7 +94,8 @@ describe("getQRAuditLogs", () => {
         tournament_id: 1,
         tournament_name: "Fall Tournament",
         match_number: 2,
-        round: 1,
+        round_order: 1,
+        round_type: "pools",
         player1: "Eve Adams",
         player2: "Frank Miller",
         player1_hits: 5,
@@ -95,21 +107,7 @@ describe("getQRAuditLogs", () => {
       },
     ];
 
-    const selectFromMock = vi.fn().mockReturnValue({
-      innerJoin: vi.fn().mockReturnValue({
-        leftJoin: vi.fn().mockReturnValue({
-          select: vi.fn().mockReturnValue({
-            where: vi.fn().mockReturnValue({
-              orderBy: vi.fn().mockReturnValue({
-                execute: vi.fn().mockResolvedValue(mockLogs),
-              }),
-            }),
-          }),
-        }),
-      }),
-    });
-
-    (db.selectFrom as any) = selectFromMock;
+    (db.selectFrom as any) = makeSelectMock(mockLogs);
 
     const result = await getQRAuditLogs();
 
@@ -121,21 +119,7 @@ describe("getQRAuditLogs", () => {
   });
 
   it("should return empty array when no QR submissions exist", async () => {
-    const selectFromMock = vi.fn().mockReturnValue({
-      innerJoin: vi.fn().mockReturnValue({
-        leftJoin: vi.fn().mockReturnValue({
-          select: vi.fn().mockReturnValue({
-            where: vi.fn().mockReturnValue({
-              orderBy: vi.fn().mockReturnValue({
-                execute: vi.fn().mockResolvedValue([]),
-              }),
-            }),
-          }),
-        }),
-      }),
-    });
-
-    (db.selectFrom as any) = selectFromMock;
+    (db.selectFrom as any) = makeSelectMock([]);
 
     const result = await getQRAuditLogs();
 
@@ -146,21 +130,7 @@ describe("getQRAuditLogs", () => {
   });
 
   it("should handle database errors gracefully", async () => {
-    const selectFromMock = vi.fn().mockReturnValue({
-      innerJoin: vi.fn().mockReturnValue({
-        leftJoin: vi.fn().mockReturnValue({
-          select: vi.fn().mockReturnValue({
-            where: vi.fn().mockReturnValue({
-              orderBy: vi.fn().mockReturnValue({
-                execute: vi.fn().mockRejectedValue(new Error("Database error")),
-              }),
-            }),
-          }),
-        }),
-      }),
-    });
-
-    (db.selectFrom as any) = selectFromMock;
+    (db.selectFrom as any) = makeSelectMock([], new Error("Database error"));
 
     const result = await getQRAuditLogs();
 
@@ -177,7 +147,8 @@ describe("getQRAuditLogs", () => {
         tournament_id: 1,
         tournament_name: "Tournament A",
         match_number: 1,
-        round: 1,
+        round_order: 1,
+        round_type: "pools",
         player1: "Player 1",
         player2: "Player 2",
         player1_hits: 5,
@@ -192,7 +163,8 @@ describe("getQRAuditLogs", () => {
         tournament_id: 1,
         tournament_name: "Tournament A",
         match_number: 2,
-        round: 1,
+        round_order: 1,
+        round_type: "pools",
         player1: "Player 3",
         player2: "Player 4",
         player1_hits: 4,
@@ -207,7 +179,8 @@ describe("getQRAuditLogs", () => {
         tournament_id: 1,
         tournament_name: "Tournament A",
         match_number: 3,
-        round: 1,
+        round_order: 1,
+        round_type: "pools",
         player1: "Player 5",
         player2: "Player 6",
         player1_hits: 5,
@@ -219,21 +192,7 @@ describe("getQRAuditLogs", () => {
       },
     ];
 
-    const selectFromMock = vi.fn().mockReturnValue({
-      innerJoin: vi.fn().mockReturnValue({
-        leftJoin: vi.fn().mockReturnValue({
-          select: vi.fn().mockReturnValue({
-            where: vi.fn().mockReturnValue({
-              orderBy: vi.fn().mockReturnValue({
-                execute: vi.fn().mockResolvedValue(mockLogs),
-              }),
-            }),
-          }),
-        }),
-      }),
-    });
-
-    (db.selectFrom as any) = selectFromMock;
+    (db.selectFrom as any) = makeSelectMock(mockLogs);
 
     const result = await getQRAuditLogs();
 
@@ -260,7 +219,8 @@ describe("getQRAuditLogs", () => {
         tournament_id: 5,
         tournament_name: "Test Tournament",
         match_number: 10,
-        round: 3,
+        round_order: 2,
+        round_type: "pools",
         player1: "John Doe",
         player2: "Jane Smith",
         player1_hits: 7,
@@ -272,21 +232,7 @@ describe("getQRAuditLogs", () => {
       },
     ];
 
-    const selectFromMock = vi.fn().mockReturnValue({
-      innerJoin: vi.fn().mockReturnValue({
-        leftJoin: vi.fn().mockReturnValue({
-          select: vi.fn().mockReturnValue({
-            where: vi.fn().mockReturnValue({
-              orderBy: vi.fn().mockReturnValue({
-                execute: vi.fn().mockResolvedValue(mockLogs),
-              }),
-            }),
-          }),
-        }),
-      }),
-    });
-
-    (db.selectFrom as any) = selectFromMock;
+    (db.selectFrom as any) = makeSelectMock(mockLogs);
 
     const result = await getQRAuditLogs();
 
@@ -297,7 +243,8 @@ describe("getQRAuditLogs", () => {
       expect(log.tournament_id).toBe(5);
       expect(log.tournament_name).toBe("Test Tournament");
       expect(log.match_number).toBe(10);
-      expect(log.round).toBe(3);
+      expect(log.round_order).toBe(2);
+      expect(log.round_type).toBe("pools");
       expect(log.player1).toBe("John Doe");
       expect(log.player2).toBe("Jane Smith");
       expect(log.player1_hits).toBe(7);

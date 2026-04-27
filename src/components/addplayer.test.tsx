@@ -25,10 +25,11 @@ vi.mock("next-intl", () => ({
 // Mock TournamentContext
 const mockSetPlayers = vi.fn();
 const mockTournamentContext = {
-  tournament: { id: 1, name: "Test Tournament", format: "Round Robin" },
+  tournament: { id: 1, name: "Test Tournament" },
   players: [] as unknown[],
   setPlayers: mockSetPlayers,
   pools: [{ id: 1, tournament_id: 1, name: "Pool 1" }],
+  rounds: [{ id: 1, tournament_id: 1, round_order: 1, type: "pools" }] as { id: number; tournament_id: number; round_order: number; type: string }[],
   loading: false,
 };
 
@@ -43,11 +44,8 @@ describe("Addplayer - pool dropdown", () => {
     vi.clearAllMocks();
     global.fetch = vi.fn();
     global.alert = vi.fn();
-    mockTournamentContext.tournament = {
-      id: 1,
-      name: "Test Tournament",
-      format: "Round Robin",
-    };
+    mockTournamentContext.tournament = { id: 1, name: "Test Tournament" };
+    mockTournamentContext.rounds = [{ id: 1, tournament_id: 1, round_order: 1, type: "pools" }];
     mockTournamentContext.players = [];
     mockTournamentContext.pools = [{ id: 1, tournament_id: 1, name: "Pool 1" }];
   });
@@ -75,11 +73,8 @@ describe("Addplayer - pool dropdown", () => {
   });
 
   it("hides pool dropdown for non-Round Robin tournament even when pools exist", () => {
-    mockTournamentContext.tournament = {
-      id: 1,
-      name: "Test Tournament",
-      format: "Bracket",
-    };
+    mockTournamentContext.tournament = { id: 1, name: "Test Tournament" };
+    mockTournamentContext.rounds = [];
 
     const { container } = render(
       <Addplayer closeModal={mockCloseModal} playerList={[]} />,
@@ -131,11 +126,8 @@ describe("Addplayer - pool dropdown", () => {
   });
 
   it("does not submit poolId for non-Round Robin tournament", async () => {
-    mockTournamentContext.tournament = {
-      id: 1,
-      name: "Test Tournament",
-      format: "Bracket",
-    };
+    mockTournamentContext.tournament = { id: 1, name: "Test Tournament" };
+    mockTournamentContext.rounds = [];
     mockTournamentContext.pools = [{ id: 1, tournament_id: 1, name: "Pool 1" }];
 
     (global.fetch as ReturnType<typeof vi.fn>).mockResolvedValueOnce({

@@ -11,6 +11,7 @@
     "wronguserorpassword": "Väärä käyttäjätunnus tai salasana"
   },
   "Tournament": {
+    "loading": "Ladataan turnauksen tietoja...",
     "Buttons": {
       "addmatch": "Lisää ottelu",
       "addplayer": "Lisää ottelija",
@@ -37,7 +38,15 @@
     "deleteFailed": "Kierroksen poistaminen epäonnistui",
     "typePool": "Pooli kierros",
     "typeElimination": "Pudotus kierros",
-    "selectType": "Valitse tyyppi"
+    "selectType": "Valitse tyyppi",
+    "presets": "Esiasetukset",
+    "presetPools": "Vain poolit",
+    "presetDoublePools": "Kaksinkertainen pooli",
+    "presetElimination": "Vain pudotus",
+    "presetPoolsElim": "Pooli + Pudotus",
+    "presetDoublePoolsElim": "Kaksoispooli + Pudotus",
+    "addPoolRound": "Lisää poolikierros",
+    "addEliminationRound": "Lisää pudotuskierros"
   },
   "Pool": {
     "title": "Poolien hallinta",
@@ -103,7 +112,7 @@
     "duplicateplayers": "Valitut pelaajat eivät voi olla samat",
     "addmatchfailed": "Ottelun lisääminen epäonnistui",
     "matchexists1": "Ottelu pelaajien",
-    "matchexists2": "välillä on jo olemassa kierroksella",
+    "matchexists2": "välillä on jo olemassa",
     "unexpectederror": "Odottamaton virhe",
     "nodraws": "Tasapelit ei sallituja",
     "matchupdated": "Ottelu päivitetty",
@@ -152,7 +161,18 @@
     "requiresubmitteridentity": "Vaadi lähettäjän tunnistus",
     "publicresults": "Julkiset tulokset (ei kirjautumista vaadita)",
     "edittournament": "Muokkaa turnausta",
-    "tournamentname": "Turnauksen nimi"
+    "tournamentname": "Turnauksen nimi",
+    "next": "Seuraava: Lisää pelaajia",
+    "back": "Takaisin",
+    "playersStep": "Lisää pelaajia (valinnainen)",
+    "playerNamesPlaceholder": "Yksi nimi per rivi",
+    "addingPlayers": "Lisätään...",
+    "playersAdded": "{count} pelaajaa lisätty",
+    "skipPlayers": "Ohita",
+    "done": "Valmis",
+    "addPlayersButton": "Lisää pelaajia",
+    "roundsHeading": "Kierrokset",
+    "addPlayersFailed": "Joitain pelaajia ei voitu lisätä"
   },
   "Brackets": {
     "selectseed": "Valitse ottelujärjestys turnauksesta",

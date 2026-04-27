@@ -11,6 +11,7 @@ import Button from "./Button";
 type AddmatchProps = {
   closeModal: () => void;
   bracketMatch?: Match;
+  bracketRound?: number;
   player?: Player;
   opponent?: Player;
 };
@@ -18,6 +19,7 @@ type AddmatchProps = {
 const AddMatch = ({
   closeModal,
   bracketMatch,
+  bracketRound,
   player,
   opponent,
 }: AddmatchProps) => {
@@ -38,12 +40,12 @@ const AddMatch = ({
 
     // Check if player already played against opponent in current round
     if (player?.matches && player.matches.length > 0) {
+      const activeRoundId =
+        context.rounds.find((r) => r.round_order === context.activeRound)?.id ?? null;
       for (const match of player?.matches) {
         if (
-          (match.player1 === opponentName &&
-            context.activeRound === match.round) ||
-          (match.player2 === opponentName &&
-            context.activeRound === match.round)
+          match.round_id === activeRoundId &&
+          (match.player1 === opponentName || match.player2 === opponentName)
         ) {
           return null;
         }
@@ -68,10 +70,6 @@ const AddMatch = ({
       return;
     }
 
-    // round_id always comes from context.activeRound (the rounds-table row for the
-    // current tab). For bracket matches, bracketMatch.round is the bracket stage
-    // depth (1 = final, 2 = semi, …), which is a different concept — using it for
-    // the rounds-table lookup would return the wrong row.
     const round_id =
       context.rounds.find((r) => r.round_order === context.activeRound)?.id ??
       null;
@@ -84,7 +82,6 @@ const AddMatch = ({
       player2_hits: Number(formData.get("points2")) ?? 0,
       winner: formData.get("winner") as string | null,
       tournament_id: Number(context.tournament.id),
-      round: bracketMatch?.round ?? context.activeRound,
       round_id,
     };
 
@@ -166,7 +163,7 @@ const AddMatch = ({
           return alert(
             `${t("matchexists1")} (${form.player1} & ${form.player2}) ${t(
               "matchexists2",
-            )} (${form.round})`,
+            )}`,
           );
 
         default:
@@ -214,11 +211,15 @@ const AddMatch = ({
     );
   }
 
-  if (context.tournament?.format === "Brackets") {
+  const activeRoundType = context.rounds.find(
+    (r) => r.round_order === context.activeRound,
+  )?.type;
+
+  if (activeRoundType === "elimination") {
     return (
       <>
         <h1 className="mb-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
-          {`${bracketMatch?.round}. ${t("title")}`}
+          {bracketRound != null ? `${bracketRound}. ` : ""}{t("title")}
         </h1>
         <form onSubmit={handleSubmit} className="flex flex-col gap-6">
           <div className="flex *:grow gap-3">

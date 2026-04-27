@@ -107,9 +107,13 @@ export default function BulkMatchEntry({ closeModal }: BulkMatchEntryProps) {
     const newExistingMatches = new Map<string, ExistingMatchData>();
     const processed = new Set<string>();
 
+    const activeRoundId =
+      context.rounds.find((r) => r.round_order === context.activeRound)?.id ??
+      null;
+
     players.forEach((player, playerIndex) => {
       player.matches.forEach((match) => {
-        if (match.round !== context.activeRound) return;
+        if (match.round_id !== activeRoundId) return;
 
         // Find opponent index
         const opponentName = match.player1 === player.player.player_name
@@ -162,7 +166,7 @@ export default function BulkMatchEntry({ closeModal }: BulkMatchEntryProps) {
     });
 
     return { initialCellData: newCellData, existingMatches: newExistingMatches };
-  }, [players, context.activeRound]);
+  }, [players, context.activeRound, context.rounds]);
 
   // Get cell key
   const getCellKey = useCallback((playerIndex: number, opponentIndex: number) =>
@@ -524,7 +528,6 @@ export default function BulkMatchEntry({ closeModal }: BulkMatchEntryProps) {
         player2_hits: match.player2_hits,
         winner: match.winner,
         tournament_id: context.tournament!.id,
-        round: context.activeRound,
         round_id:
           context.rounds.find((r) => r.round_order === context.activeRound)
             ?.id ?? null,

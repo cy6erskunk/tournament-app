@@ -91,7 +91,6 @@ export default function Tournament() {
         );
 
         if (!hasMatch) continue;
-        if (hasMatch.round !== roundNumber) continue;
 
         // matches.set(`${hasMatch.match} ${hasMatch.round}`, castToMatch(hasMatch))
         matches.set(hasMatch.match, castToMatch(hasMatch));
@@ -108,7 +107,6 @@ export default function Tournament() {
           player2: pairs[i][1].player,
           player1_hits: 0,
           player2_hits: 0,
-          round: roundNumber,
           tournament_id: tournamentId,
           round_id: null,
           winner: "",  // Empty string for unplayed matches
@@ -293,36 +291,37 @@ export default function Tournament() {
       (r) => r.round_order === context.activeRound,
     )?.id;
 
-    // When multiple elimination rounds exist, filter each player's matches to
-    // only those belonging to the currently active round so that switching tabs
-    // shows a different bracket. For a single elimination round (or legacy data
-    // where round_id is null) we skip filtering to preserve the original behaviour.
-    const eliminationRoundCount = context.rounds.filter(
-      (r) => r.type === "elimination",
-    ).length;
-
-    let players: (Player | null)[] =
-      activeRoundId && eliminationRoundCount > 1
-        ? (() => {
-            const filtered = context.players.map((p) =>
-              p
-                ? {
-                    ...p,
-                    matches: p.matches.filter(
-                      (m) => m.round_id === activeRoundId,
-                    ),
-                  }
-                : null,
-            );
-            // Only use the filtered list when at least one player actually has
-            // matches for this round. If every player's list is empty (e.g.,
-            // legacy data where round_id was never populated) fall back to the
-            // unfiltered set so the bracket doesn't render blank.
-            return filtered.some((p) => p && p.matches.length > 0)
-              ? filtered
-              : context.players;
-          })()
-        : context.players;
+    // Scope player matches to the active elimination round. If no matches exist
+    // for that round yet, fall back to legacy null-round_id matches only (data
+    // that pre-dates the rounds table). This prevents pool-round matches from
+    // bleeding into the bracket while keeping old single-round tournaments working.
+    let players: (Player | null)[] = context.players;
+    if (activeRoundId) {
+      const filtered = context.players.map((p) =>
+        p
+          ? { ...p, matches: p.matches.filter((m) => m.round_id === activeRoundId) }
+          : null,
+      );
+      const hasActiveMatches = filtered.some((p) => p && p.matches.length > 0);
+      if (hasActiveMatches) {
+        players = filtered;
+      } else if (context.rounds.length === 1) {
+        // Single-round tournament only: fall back to legacy null-round_id matches
+        // so pre-rounds-table data still renders. For multi-round tournaments this
+        // fallback is skipped — null round_id could be pool matches, and a new
+        // empty elimination round should render as an empty bracket.
+        const hasLegacyMatches = context.players.some(
+          (p) => p && p.matches.some((m) => m.round_id == null),
+        );
+        players = hasLegacyMatches
+          ? context.players.map((p) =>
+              p ? { ...p, matches: p.matches.filter((m) => m.round_id == null) } : null,
+            )
+          : filtered;
+      } else {
+        players = filtered;
+      }
+    }
 
     if (!players.some((player) => player === null)) {
       const seeded = players.some((player) => player?.player.bracket_seed);

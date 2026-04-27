@@ -21,7 +21,6 @@ export interface Matches {
   player1_hits: Generated<number>;
   player2: string;
   player2_hits: Generated<number>;
-  round: number;
   tournament_id: number;
   round_id: number | null;
   winner: string;
@@ -49,7 +48,6 @@ export interface Pools {
 
 export interface Tournaments {
   date: Timestamp;
-  format: string;
   id: Generated<number>;
   name: string;
   public_results: Generated<boolean>;

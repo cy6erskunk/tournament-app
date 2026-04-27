@@ -17,12 +17,12 @@ interface PlayerProps {
 }
 
 type Hits = {
-  given: Record<number, number>;
-  taken: Record<number, number>;
+  given: Map<number | null, number>;
+  taken: Map<number | null, number>;
 };
 
 interface Opponents {
-  [key: string]: Record<number, { winner: string | null; hits: number }>;
+  [key: string]: Map<number | null, { winner: string | null; hits: number }>;
 }
 
 export function Player({
@@ -100,11 +100,9 @@ export function Player({
   };
 
   const { hits, matchesByOpponent } = useMemo(() => {
-    const newHits: Hits = { given: {}, taken: {} };
+    const newHits: Hits = { given: new Map(), taken: new Map() };
     const newOpponents: Opponents = {};
 
-    // TODO: Make this look less hideous, currently it's very undreadable
-    // for such an important piece of code
     player.matches.forEach((match) => {
       const isPlayer1 = player.player.player_name === match.player1;
       const isPlayer2 = player.player.player_name === match.player2;
@@ -112,25 +110,23 @@ export function Player({
       if (isPlayer1 || isPlayer2) {
         const playerHits = isPlayer1 ? match.player1_hits : match.player2_hits;
         const opponentName = isPlayer1 ? match.player2 : match.player1;
+        const roundKey = match.round_id; // null for legacy matches without a round
 
-        newHits.given[match.round] =
-          (newHits.given[match.round] || 0) + playerHits;
-        newHits.taken[match.round] =
-          (newHits.taken[match.round] || 0) +
-          (isPlayer1 ? match.player2_hits : match.player1_hits);
+        newHits.given.set(roundKey, (newHits.given.get(roundKey) ?? 0) + playerHits);
+        newHits.taken.set(
+          roundKey,
+          (newHits.taken.get(roundKey) ?? 0) +
+            (isPlayer1 ? match.player2_hits : match.player1_hits),
+        );
 
         if (opponentName) {
           if (!newOpponents[opponentName]) {
-            newOpponents[opponentName] = {};
+            newOpponents[opponentName] = new Map();
           }
-          // Index by round_id when available so match lookup works correctly
-          // across mixed-type rounds; fall back to round number for legacy
-          // matches that pre-date the rounds table.
-          const roundKey = match.round_id ?? match.round;
-          newOpponents[opponentName][roundKey] = {
+          newOpponents[opponentName].set(roundKey, {
             winner: match.winner,
             hits: playerHits,
-          };
+          });
         }
       } else {
         console.log(
@@ -180,9 +176,9 @@ export function Player({
       {(() => {
         // Compute once outside the per-opponent loop to avoid an O(n) find on
         // every cell render (which would be O(players²) overall).
-        const activeRoundId = context.rounds.find(
-          (r) => r.round_order === context.activeRound,
-        )?.id;
+        const activeRoundId: number | null =
+          context.rounds.find((r) => r.round_order === context.activeRound)
+            ?.id ?? null;
 
         return opponentList.map((opponent, index) => {
         if (!opponent) return;
@@ -192,12 +188,7 @@ export function Player({
           opponent.player.player_name === player.player.player_name;
 
         const matches = matchesByOpponent[opponent.player.player_name];
-        // Prefer round_id-keyed entry (new matches); fall back to numeric
-        // round_order for legacy matches without round_id.
-        const matchData =
-          matches &&
-          ((activeRoundId ? matches[activeRoundId] : undefined) ??
-            matches[context.activeRound]);
+        const matchData = matches?.get(activeRoundId);
 
         // Early return if no match data found between players
         if (!matchData) {
@@ -252,43 +243,53 @@ export function Player({
       })()}
 
       {/* calculate win percentage based on matches associated with player */}
-      <td
-        className={`${
-          context.activeRound === 1 ? "bg-blue-50" : "bg-violet-50"
-        }`}
-      >
-        {player.matches.reduce((n, match) => {
-          if (
-            match.round === context.activeRound &&
-            match.winner === player.player.player_name
-          ) {
-            return n + 1;
-          }
-          return n;
-        }, 0)}
-      </td>
-      <td
-        className={`${
-          context.activeRound === 1 ? "bg-blue-50" : "bg-violet-50"
-        }`}
-      >
-        {hits.given[context.activeRound] ?? 0}
-      </td>
-      <td
-        className={`${
-          context.activeRound === 1 ? "bg-blue-50" : "bg-violet-50"
-        }`}
-      >
-        {hits.taken[context.activeRound] ?? 0}
-      </td>
-      <td
-        className={`${
-          context.activeRound === 1 ? "bg-blue-50" : "bg-violet-50"
-        }`}
-      >
-        {(hits.given[context.activeRound] ?? 0) -
-          (hits.taken[context.activeRound] ?? 0)}
-      </td>
+      {(() => {
+        const activeRoundId: number | null =
+          context.rounds.find((r) => r.round_order === context.activeRound)
+            ?.id ?? null;
+        const given = hits.given.get(activeRoundId) ?? 0;
+        const taken = hits.taken.get(activeRoundId) ?? 0;
+        return (
+          <>
+            <td
+              className={`${
+                context.activeRound === 1 ? "bg-blue-50" : "bg-violet-50"
+              }`}
+            >
+              {player.matches.reduce((n, match) => {
+                if (
+                  match.round_id === activeRoundId &&
+                  match.winner === player.player.player_name
+                ) {
+                  return n + 1;
+                }
+                return n;
+              }, 0)}
+            </td>
+            <td
+              className={`${
+                context.activeRound === 1 ? "bg-blue-50" : "bg-violet-50"
+              }`}
+            >
+              {given}
+            </td>
+            <td
+              className={`${
+                context.activeRound === 1 ? "bg-blue-50" : "bg-violet-50"
+              }`}
+            >
+              {taken}
+            </td>
+            <td
+              className={`${
+                context.activeRound === 1 ? "bg-blue-50" : "bg-violet-50"
+              }`}
+            >
+              {given - taken}
+            </td>
+          </>
+        );
+      })()}
     </tr>
   );
 }

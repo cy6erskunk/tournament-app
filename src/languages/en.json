@@ -11,6 +11,7 @@
     "wronguserorpassword": "Wrong username or password"
   },
   "Tournament": {
+    "loading": "Loading tournament information...",
     "Buttons": {
       "addmatch": "Add match",
       "addplayer": "Add player",
@@ -37,7 +38,15 @@
     "deleteFailed": "Failed to delete round",
     "typePool": "Pool Round",
     "typeElimination": "Elimination Round",
-    "selectType": "Select type"
+    "selectType": "Select type",
+    "presets": "Presets",
+    "presetPools": "Pools only",
+    "presetDoublePools": "Double pools",
+    "presetElimination": "Elimination only",
+    "presetPoolsElim": "Pools + Elimination",
+    "presetDoublePoolsElim": "Double Pools + Elimination",
+    "addPoolRound": "Add pool round",
+    "addEliminationRound": "Add elimination round"
   },
   "Pool": {
     "title": "Pool Management",
@@ -103,7 +112,7 @@
     "duplicateplayers": "Selected players can not be the same",
     "addmatchfailed": "Failed to add match",
     "matchexists1": "Match between",
-    "matchexists2": "already exists for round",
+    "matchexists2": "already exists",
     "unexpectederror": "Unexpected error",
     "nodraws": "No draws allowed",
     "matchupdated": "Match updated",
@@ -152,7 +161,18 @@
     "requiresubmitteridentity": "Require submitter identity",
     "publicresults": "Public results (no login required)",
     "edittournament": "Edit tournament",
-    "tournamentname": "Tournament name"
+    "tournamentname": "Tournament name",
+    "next": "Next: Add players",
+    "back": "Back",
+    "playersStep": "Add players (optional)",
+    "playerNamesPlaceholder": "One name per line",
+    "addingPlayers": "Adding...",
+    "playersAdded": "{count} players added",
+    "skipPlayers": "Skip",
+    "done": "Done",
+    "addPlayersButton": "Add players",
+    "roundsHeading": "Rounds",
+    "addPlayersFailed": "Some players could not be added"
   },
   "Brackets": {
     "selectseed": "Select match order from tournament",
