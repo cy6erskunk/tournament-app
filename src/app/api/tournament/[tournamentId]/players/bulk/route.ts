@@ -3,8 +3,6 @@ import { newPlayer, addPlayer } from "@/database/newPlayer";
 import { getSession } from "@/helpers/getsession";
 import { jsonParser } from "@/helpers/jsonParser";
 
-type BulkBody = { names: string[] };
-
 export async function POST(
   request: Request,
   { params }: { params: Promise<{ tournamentId: string }> },
@@ -19,7 +17,7 @@ export async function POST(
 
   const { tournamentId } = await params;
   const id = Number(tournamentId);
-  if (!id) {
+  if (!Number.isSafeInteger(id) || id <= 0) {
     return new Response("Invalid tournament id", { status: 400 });
   }
 
@@ -29,13 +27,23 @@ export async function POST(
   }
 
   const json = await request.text();
-  const data = jsonParser<BulkBody>(json);
+  const data = jsonParser<unknown>(json);
   if (!data.success) {
     return new Response("Invalid request body", { status: 400 });
   }
 
+  const body = data.value;
+  if (
+    typeof body !== "object" ||
+    body === null ||
+    !Array.isArray((body as { names?: unknown }).names) ||
+    !(body as { names: unknown[] }).names.every((n) => typeof n === "string")
+  ) {
+    return new Response("Body must be { names: string[] }", { status: 400 });
+  }
+
   const names = [...new Set(
-    data.value.names
+    (body as { names: string[] }).names
       .map((n) => n.trim())
       .filter((n) => n.length > 0),
   )];
