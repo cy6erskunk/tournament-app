@@ -41,8 +41,6 @@ function EditButton() {
   const [input, setInput] = useState<string>("");
   const [requireIdentity, setRequireIdentity] = useState(false);
   const [publicResults, setPublicResults] = useState(false);
-  const isRoundRobin = context.tournament?.format === "Round Robin";
-
   const handleSave = async () => {
     if (!context.tournament) return
     setLoading(true);
@@ -50,7 +48,7 @@ function EditButton() {
       name: input.trim(),
       id: Number(context.tournament.id),
       require_submitter_identity: requireIdentity,
-      public_results: isRoundRobin ? publicResults : undefined,
+      public_results: publicResults,
     };
 
     if (!request.name) {
@@ -70,7 +68,7 @@ function EditButton() {
           ...context.tournament,
           name: request.name,
           require_submitter_identity: requireIdentity,
-          ...(isRoundRobin ? { public_results: publicResults } : {}),
+          public_results: publicResults,
         } as typeof context.tournament;
         context.setTournament(update);
       }
@@ -129,20 +127,18 @@ function EditButton() {
               {t("requiresubmitteridentity")}
             </label>
           </div>
-          {isRoundRobin && (
-            <div className="flex gap-3 items-center">
-              <input
-                type="checkbox"
-                name="publicResults"
-                id="edit-publicResults"
-                checked={publicResults}
-                onChange={(e) => setPublicResults(e.target.checked)}
-              />
-              <label htmlFor="edit-publicResults" className="text-sm">
-                {t("publicresults")}
-              </label>
-            </div>
-          )}
+          <div className="flex gap-3 items-center">
+            <input
+              type="checkbox"
+              name="publicResults"
+              id="edit-publicResults"
+              checked={publicResults}
+              onChange={(e) => setPublicResults(e.target.checked)}
+            />
+            <label htmlFor="edit-publicResults" className="text-sm">
+              {t("publicresults")}
+            </label>
+          </div>
           <div className="flex items-center justify-center gap-2 text-sm font-semibold">
             <Button disabled={loading} onClick={handleSave} variant="primary" fullWidth>
               {t("submit")}

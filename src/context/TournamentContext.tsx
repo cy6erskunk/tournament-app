@@ -62,7 +62,6 @@ export function TournamentContextProvider({
   useEffect(() => {
     async function fetchTournamentData() {
       let tournamentId: number;
-      let tournamentFormat: string;
 
       // Only use initialTournament if it matches the current params.id
       if (
@@ -70,7 +69,6 @@ export function TournamentContextProvider({
         Number(initialTournament.id) === Number(params.id)
       ) {
         tournamentId = Number(initialTournament.id);
-        tournamentFormat = initialTournament.format;
         // Keep state synchronized with the prop
         setTournament(initialTournament);
       } else {
@@ -84,7 +82,6 @@ export function TournamentContextProvider({
 
         setTournament(tournamentResult.value);
         tournamentId = Number(tournamentResult.value.id);
-        tournamentFormat = tournamentResult.value.format;
       }
 
       const [playerResult, poolResult, roundResult] = await Promise.all([
@@ -101,10 +98,12 @@ export function TournamentContextProvider({
 
       let poolsToSet = poolResult.success ? poolResult.value : [];
 
-      // Round-robin tournaments always have at least one pool. Auto-create if missing
+      // Pool-round tournaments always have at least one pool. Auto-create if missing
       // (fallback for any edge case where pool wasn't created at tournament creation time).
       // Requires admin session; uses fetch to avoid server-action cross-module issues.
-      if (tournamentFormat === "Round Robin" && poolsToSet.length === 0) {
+      const rounds = roundResult.success ? roundResult.value : [];
+      const hasPoolsRound = rounds.some((r) => r.type === "pools");
+      if (hasPoolsRound && poolsToSet.length === 0) {
         const createRes = await fetch(`/api/tournament/${tournamentId}/pools`, {
           method: "POST",
         });
@@ -115,7 +114,7 @@ export function TournamentContextProvider({
       }
 
       setPools(poolsToSet);
-      setRounds(roundResult.success ? roundResult.value : []);
+      setRounds(rounds);
       setLoading(false);
       setPlayers(playerResult.value);
     }

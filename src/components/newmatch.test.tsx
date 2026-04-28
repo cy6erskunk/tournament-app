@@ -37,7 +37,7 @@ const mockSetPlayers = vi.fn((updater) => {
   }
 });
 const mockTournamentContext = {
-  tournament: { id: 1, name: 'Test Tournament', format: 'Round-robin', date: new Date() },
+  tournament: { id: 1, name: 'Test Tournament', date: new Date() },
   setTournament: vi.fn(),
   players: [] as (Player | null)[],
   setPlayers: mockSetPlayers,
@@ -167,7 +167,6 @@ describe('AddMatch - Priority Wins', () => {
       player2_hits: 5,
       winner: 'Alice',
       tournament_id: 1,
-      round: 1,
       match: 1,
     };
 
@@ -221,7 +220,6 @@ describe('AddMatch - Priority Wins', () => {
       player2_hits: 3,
       winner: 'Alice',
       tournament_id: 1,
-      round: 1,
       match: 1,
     };
 
@@ -271,7 +269,6 @@ describe('AddMatch - Priority Wins', () => {
       player2_hits: 7,
       winner: 'Bob',
       tournament_id: 1,
-      round: 1,
       match: 1,
     };
 
@@ -321,7 +318,6 @@ describe('AddMatch - Priority Wins', () => {
       player2_hits: 5,
       winner: 'Bob',
       tournament_id: 1,
-      round: 1,
       match: 1,
     };
 

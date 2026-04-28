@@ -5,20 +5,32 @@ import Leaderboard from "@/components/Leaderboards/Leaderboard";
 import LeaderboardSidebar from "@/components/Leaderboards/LeaderboardSidebar";
 import { default as RoundRobin } from "@/components/Results/RoundRobin/Tournament";
 import { default as Brackets } from "@/components/Results/Brackets/Tournament";
+import { useTranslations } from "next-intl";
 
 const TournamentInfo = () => {
   const context = useTournamentContext();
+  const t = useTranslations("Tournament");
   const activeRoundData = context.rounds.find(
     (r) => r.round_order === context.activeRound,
   );
-  // Derive which UI to show from the active round's type; fall back to
-  // tournament.format for tournaments that have no rounds yet.
+
+  // While loading, or when the active round can't be identified yet, fall back
+  // to a tournament-level check so the page doesn't render blank.
   const showRoundRobin = activeRoundData
     ? activeRoundData.type === "pools"
-    : context.tournament?.format === "Round Robin";
+    : context.rounds.some((r) => r.type === "pools");
   const showBrackets = activeRoundData
     ? activeRoundData.type === "elimination"
-    : context.tournament?.format === "Brackets";
+    : context.rounds.some((r) => r.type === "elimination");
+
+  if (context.loading) {
+    return (
+      <section className="container mx-auto p-2">
+        <div className="p-4 text-center">{t("loading")}</div>
+      </section>
+    );
+  }
+
   return (
     <>
       {context.hidden ? (

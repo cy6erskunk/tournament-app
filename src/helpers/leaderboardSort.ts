@@ -16,14 +16,14 @@ export class LeaderboardBuilder {
   private asc: boolean = true;
   private col: LeaderboardColumns = "percentage";
   private p: Player[] = [];
-  private r: number = 0;
+  private r: number | null = null;
 
   players(players: Player[]): LeaderboardBuilder {
     this.p = structuredClone(players);
     return this;
   }
 
-  round(round: number): LeaderboardBuilder {
+  round(round: number | null): LeaderboardBuilder {
     this.r = round;
     return this;
   }
@@ -73,10 +73,10 @@ export class LeaderboardBuilder {
       compareFunction = this.sortIndex;
     }
 
-    if (this.r !== 0) {
+    if (this.r !== null) {
       this.p.forEach((player) => {
         player.matches = player.matches.filter(
-          (match) => match.round === this.r,
+          (match) => match.round_id === this.r,
         );
       });
     }

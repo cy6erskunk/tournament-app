@@ -31,7 +31,6 @@ export function generateQRMatchData(
   player1: string,
   player2: string,
   tournamentId: number,
-  round: number,
   baseUri: string,
   requireSubmitterIdentity: boolean
 ) {
@@ -43,7 +42,6 @@ export function generateQRMatchData(
     player1,
     player2,
     tournamentId,
-    round,
     baseUri,
     submitUrl,
     requireSubmitterIdentity

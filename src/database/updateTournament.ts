@@ -23,17 +23,7 @@ export async function updateTournament(
     }
 
     if (data.public_results !== undefined) {
-      if (data.public_results) {
-        // Only validate format when trying to enable public results
-        const tournament = await db
-          .selectFrom("tournaments")
-          .where("id", "=", id)
-          .select("format")
-          .executeTakeFirst();
-        updateData.public_results = tournament?.format === "Round Robin";
-      } else {
-        updateData.public_results = false;
-      }
+      updateData.public_results = data.public_results;
     }
 
     const result = await db

@@ -12,7 +12,7 @@ const Addplayer = ({ closeModal, playerList }: AddplayerProps) => {
   const [loading, setLoading] = useState(false);
   const t = useTranslations("AddPlayer");
   const context = useTournamentContext();
-  const isRoundRobin = context.tournament?.format === "Round Robin";
+  const isRoundRobin = context.rounds.some((r) => r.type === "pools");
   const submitForm = async (event: FormEvent<HTMLFormElement>) => {
     setLoading(true);
     event.preventDefault();

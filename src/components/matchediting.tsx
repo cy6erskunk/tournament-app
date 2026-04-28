@@ -20,11 +20,14 @@ function findSharedMatch(
   opponent: Player,
   context: TournamentContext
 ) {
+  const activeRoundId =
+    context.rounds.find((r) => r.round_order === context.activeRound)?.id ??
+    null;
   // If players share a match, add it to the round
   const matchIds = player.matches.map((match) => match.id);
   const match = opponent.matches.find(
     (match) =>
-      matchIds.includes(match.id) && match.round === context.activeRound
+      matchIds.includes(match.id) && match.round_id === activeRoundId
   );
 
   if (!match) return match;
@@ -77,6 +80,10 @@ const EditMatch = ({ closeModal, player, opponent }: EditmatchProps) => {
     const submitter = (event.nativeEvent as SubmitEvent).submitter as HTMLButtonElement;
     const buttonValue = submitter?.value || "";
 
+    const round_id =
+      context.rounds.find((r) => r.round_order === context.activeRound)?.id ??
+      null;
+
     const form: MatchForm = {
       match: 1,
       player1: formData.get("player1") as string,
@@ -85,7 +92,7 @@ const EditMatch = ({ closeModal, player, opponent }: EditmatchProps) => {
       player2_hits: Number(formData.get("points2")),
       winner: formData.get("winner") as string | null,
       tournament_id: Number(context.tournament.id),
-      round: context.activeRound,
+      round_id,
     };
 
     if (!form.player1 || !form.player2) {
@@ -142,7 +149,7 @@ const EditMatch = ({ closeModal, player, opponent }: EditmatchProps) => {
           return alert(
             `${t("matchexists1")} (${formData.player1} & ${
               formData.player2
-            }) ${t("matchexists2")} (${formData.round})`
+            }) ${t("matchexists2")}`
           );
 
         default:
@@ -210,7 +217,7 @@ const EditMatch = ({ closeModal, player, opponent }: EditmatchProps) => {
           return alert(
             `${t("matchexists1")} (${form.player1} & ${form.player2}) ${t(
               "matchexists2"
-            )} (${form.round})`
+            )}`
           );
 
         default:
@@ -237,7 +244,7 @@ const EditMatch = ({ closeModal, player, opponent }: EditmatchProps) => {
 
           if (m.player1 !== form[p1]) return true;
           if (m.player2 !== form[p2]) return true;
-          if (m.round !== form.round) return true;
+          if (m.round_id !== form.round_id) return true;
           return false;
         });
 
