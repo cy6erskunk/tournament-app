@@ -12,8 +12,9 @@ vi.mock("@/database/getTournament", () => ({
     .mockResolvedValue({ success: true, value: [] }),
 }));
 
+const mockUseUserContext = vi.fn(() => ({ user: null, setUser: vi.fn() }));
 vi.mock("@/context/UserContext", () => ({
-  useUserContext: () => ({ user: null, setUser: vi.fn() }),
+  useUserContext: () => mockUseUserContext(),
 }));
 
 vi.mock("next/navigation", () => ({
@@ -55,6 +56,7 @@ const messages = {
   Brackets: {
     selectseed: "Select a tournament to seed from",
     noRRtournamentsfound: "No tournaments found",
+    seedFromPools: "Seed bracket from pools round",
   },
   NewMatch: {
     match: "Match",
@@ -274,5 +276,114 @@ describe("Brackets/Tournament — multi-elimination round switching", () => {
     // No player cells should appear
     expect(screen.queryByText("Alice")).toBeNull();
     expect(screen.queryByText("Bob")).toBeNull();
+  });
+});
+
+// ── Seed-from-pools tests ───────────────────────────────────────────────────
+
+const adminUser = { user: { role: "admin", username: "admin" }, setUser: vi.fn() };
+
+const poolsRound = { id: 5, tournament_id: 1, round_order: 1, type: "pools" };
+const elimRound = { id: 6, tournament_id: 1, round_order: 2, type: "elimination" };
+
+const poolMatch = {
+  ...{ tournament_id: 1, submitted_by_token: null, submitted_at: null },
+  id: 99,
+  player1: "Alice",
+  player2: "Bob",
+  player1_hits: 5,
+  player2_hits: 2,
+  winner: "Alice",
+  match: 1,
+  round_id: 5,
+};
+
+const aliceWithPoolMatch: Player = {
+  player: { player_name: "Alice", tournament_id: 1, bracket_match: null, bracket_seed: null, pool_id: null },
+  matches: [poolMatch],
+};
+const bobWithPoolMatch: Player = {
+  player: { player_name: "Bob", tournament_id: 1, bracket_match: null, bracket_seed: null, pool_id: null },
+  matches: [poolMatch],
+};
+
+describe("Brackets/Tournament — seed from pools round", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    mockUseUserContext.mockReturnValue({ user: null, setUser: vi.fn() });
+  });
+
+  it("shows 'seed from pools' button when admin views unseeded elimination round that follows a pools round", () => {
+    mockUseTournamentContext.mockReturnValue({
+      ...baseTournamentContext,
+      activeRound: 2,
+      rounds: [poolsRound, elimRound],
+      players: [aliceWithPoolMatch, bobWithPoolMatch],
+    });
+    mockUseUserContext.mockReturnValue(adminUser);
+
+    render(
+      <NextIntlClientProvider locale="en" messages={messages}>
+        <Tournament />
+      </NextIntlClientProvider>,
+    );
+
+    expect(screen.getByText("Seed bracket from pools round")).toBeTruthy();
+  });
+
+  it("does not show 'seed from pools' button when players are already seeded", () => {
+    mockUseTournamentContext.mockReturnValue({
+      ...baseTournamentContext,
+      activeRound: 2,
+      rounds: [poolsRound, elimRound],
+      players: [
+        { ...aliceWithPoolMatch, player: { ...aliceWithPoolMatch.player, bracket_seed: 1 } },
+        { ...bobWithPoolMatch, player: { ...bobWithPoolMatch.player, bracket_seed: 2 } },
+      ],
+    });
+    mockUseUserContext.mockReturnValue(adminUser);
+
+    render(
+      <NextIntlClientProvider locale="en" messages={messages}>
+        <Tournament />
+      </NextIntlClientProvider>,
+    );
+
+    expect(screen.queryByText("Seed bracket from pools round")).toBeNull();
+  });
+
+  it("does not show 'seed from pools' button for non-admin users", () => {
+    mockUseTournamentContext.mockReturnValue({
+      ...baseTournamentContext,
+      activeRound: 2,
+      rounds: [poolsRound, elimRound],
+      players: [aliceWithPoolMatch, bobWithPoolMatch],
+    });
+
+    render(
+      <NextIntlClientProvider locale="en" messages={messages}>
+        <Tournament />
+      </NextIntlClientProvider>,
+    );
+
+    expect(screen.queryByText("Seed bracket from pools round")).toBeNull();
+  });
+
+  it("does not show 'seed from pools' button when the active round has no preceding pools round", () => {
+    mockUseTournamentContext.mockReturnValue({
+      ...baseTournamentContext,
+      activeRound: 2,
+      rounds: twoEliminationRounds,
+      players: [alice, bob],
+    });
+    mockUseUserContext.mockReturnValue(adminUser);
+
+    render(
+      <NextIntlClientProvider locale="en" messages={messages}>
+        <Tournament />
+      </NextIntlClientProvider>,
+    );
+
+    expect(screen.queryByText("Seed bracket from pools round")).toBeNull();
   });
 });

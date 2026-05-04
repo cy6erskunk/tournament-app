@@ -6,6 +6,7 @@ import { useTranslations } from "next-intl";
 import { LeaderboardPlayer } from "@/components/Leaderboards/LeaderboardPlayer";
 import { useMemo, useState } from "react";
 import { Player } from "@/types/Player";
+import { PoolRow } from "@/database/getPools";
 import {
   LeaderboardBuilder,
   LeaderboardColumns,
@@ -33,22 +34,25 @@ function SortButton({ col, onSort, ariaLabel, tooltip, children }: SortButtonPro
   );
 }
 
-const Leaderboard = () => {
+interface LeaderboardTableProps {
+  players: Player[];
+  heading?: string;
+}
+
+function LeaderboardTable({ players, heading }: LeaderboardTableProps) {
   const t = useTranslations("Leaderboard");
-  const context = useTournamentContext();
   const [sortCol, setSortCol] = useState<LeaderboardColumns>("percentage");
   const [direction, setDirection] = useState<SortDirection>("DEFAULT");
 
-  const players = useMemo(() => {
-    const filteredPlayers: Player[] = context.players.filter(
-      (player) => player !== null,
-    ) as NonNullable<Player>[];
-    return new LeaderboardBuilder()
-      .players(filteredPlayers)
-      .direction(direction)
-      .column(sortCol)
-      .sort();
-  }, [context.players, direction, sortCol]);
+  const sorted = useMemo(
+    () =>
+      new LeaderboardBuilder()
+        .players(players)
+        .direction(direction)
+        .column(sortCol)
+        .sort(),
+    [players, direction, sortCol],
+  );
 
   function sortHandler(col: LeaderboardColumns) {
     if (sortCol === col && direction !== "DEFAULT") {
@@ -59,33 +63,28 @@ const Leaderboard = () => {
       setSortCol("percentage");
       return;
     }
-
     setDirection("ASC");
     setSortCol(col);
   }
 
   function sortIndicator(col: LeaderboardColumns) {
     if (sortCol !== col) return;
-
     if (direction === "ASC") return <span>↑</span>;
     if (direction === "DESC") return <span>↓</span>;
   }
 
-  function getAriaLabel(sortCol: LeaderboardColumns, col: LeaderboardColumns, label: string) {
-    if (sortCol === col && direction !== "DEFAULT") {
+  function getAriaLabel(active: LeaderboardColumns, col: LeaderboardColumns, label: string) {
+    if (active === col && direction !== "DEFAULT") {
       return `${label}, ${direction === "ASC" ? t("sortAscending") : t("sortDescending")}`;
     }
     return label;
   }
 
   return (
-    <div className="w-full md:w-2/3">
-      <div className="my-2 text-4xl font-bold flex justify-between">
-        <span className={context.loading ? "invisible" : ""}>
-          {context.loading ? "Lorem ipsum" : context.tournament?.name}
-        </span>
-      </div>
-
+    <div className="mb-6">
+      {heading && (
+        <h3 className="text-xl font-semibold mb-2 text-slate-700">{heading}</h3>
+      )}
       <div className="overflow-auto border-2 border-slate-500 rounded-md shadow-md">
         <table className="w-full border-collapse border">
           <thead>
@@ -123,20 +122,65 @@ const Leaderboard = () => {
               </th>
             </tr>
           </thead>
-          {!context.loading ? (
-            <tbody>
-              {players.map((player, i) => (
-                <LeaderboardPlayer
-                  key={player.player.player_name}
-                  player={player}
-                  nthRow={i}
-                />
-              ))}
-            </tbody>
-          ) : null}
+          <tbody>
+            {sorted.map((player, i) => (
+              <LeaderboardPlayer
+                key={player.player.player_name}
+                player={player}
+                nthRow={i}
+              />
+            ))}
+          </tbody>
         </table>
         <Loading />
       </div>
+    </div>
+  );
+}
+
+const Leaderboard = () => {
+  const context = useTournamentContext();
+
+  const allPlayers = useMemo(
+    () =>
+      context.players.filter((player) => player !== null) as NonNullable<Player>[],
+    [context.players],
+  );
+
+  const multiplePools = context.pools.length > 1;
+
+  if (context.loading) return null;
+
+  if (multiplePools) {
+    return (
+      <div className="w-full md:w-2/3">
+        <div className="my-2 text-4xl font-bold">
+          <span>{context.tournament?.name}</span>
+        </div>
+        {context.pools.map((pool: PoolRow) => {
+          const poolPlayers = allPlayers.filter(
+            (p) => p.player.pool_id === pool.id,
+          );
+          return (
+            <LeaderboardTable
+              key={pool.id}
+              players={poolPlayers}
+              heading={pool.name}
+            />
+          );
+        })}
+      </div>
+    );
+  }
+
+  return (
+    <div className="w-full md:w-2/3">
+      <div className="my-2 text-4xl font-bold flex justify-between">
+        <span className={context.loading ? "invisible" : ""}>
+          {context.loading ? "Lorem ipsum" : context.tournament?.name}
+        </span>
+      </div>
+      <LeaderboardTable players={allPlayers} />
     </div>
   );
 };
