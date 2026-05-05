@@ -1,4 +1,5 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
+import { fireEvent, waitFor } from "@testing-library/react";
 import { render, screen } from "@testing-library/react";
 import { NextIntlClientProvider } from "next-intl";
 import Tournament from "./Tournament";
@@ -386,4 +387,49 @@ describe("Brackets/Tournament — seed from pools round", () => {
 
     expect(screen.queryByText("Seed bracket from pools round")).toBeNull();
   });
+
+  it("calls the seed-from-pools endpoint and updates context players when button is clicked", async () => {
+    const setPlayers = vi.fn();
+    const setLoading = vi.fn();
+    mockUseTournamentContext.mockReturnValue({
+      ...baseTournamentContext,
+      activeRound: 2,
+      rounds: [poolsRound, elimRound],
+      players: [aliceWithPoolMatch, bobWithPoolMatch],
+      setPlayers,
+      setLoading,
+    });
+    mockUseUserContext.mockReturnValue(adminUser);
+
+    const seededPlayers = [
+      { ...aliceWithPoolMatch, player: { ...aliceWithPoolMatch.player, bracket_seed: 1, bracket_match: 1 } },
+      { ...bobWithPoolMatch, player: { ...bobWithPoolMatch.player, bracket_seed: 2, bracket_match: 1 } },
+    ];
+
+    const fetchMock = vi.fn().mockResolvedValue({
+      ok: true,
+      text: vi.fn().mockResolvedValue(JSON.stringify(seededPlayers)),
+    });
+    vi.stubGlobal("fetch", fetchMock);
+
+    render(
+      <NextIntlClientProvider locale="en" messages={messages}>
+        <Tournament />
+      </NextIntlClientProvider>,
+    );
+
+    fireEvent.click(screen.getByText("Seed bracket from pools round"));
+
+    await waitFor(() => {
+      expect(fetchMock).toHaveBeenCalledWith(
+        `/api/tournament/1/seed-from-pools/${poolsRound.id}`,
+        { method: "POST" },
+      );
+      expect(setPlayers).toHaveBeenCalledWith(seededPlayers);
+    });
+  });
+});
+
+afterEach(() => {
+  vi.unstubAllGlobals();
 });

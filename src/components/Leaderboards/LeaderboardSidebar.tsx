@@ -67,6 +67,7 @@ function PoolSection({ pool, players, activeRoundId }: PoolSectionProps) {
 
 const LeaderboardSidebar = () => {
   const t = useTranslations("Leaderboard");
+  const tPool = useTranslations("Pool");
   const context = useTournamentContext();
 
   const activeRoundId = useMemo(
@@ -83,6 +84,11 @@ const LeaderboardSidebar = () => {
   );
 
   const multiplePools = context.pools.length > 1;
+
+  const unassignedPlayers = useMemo(
+    () => (multiplePools ? allPlayers.filter((p) => p.player.pool_id === null) : []),
+    [allPlayers, multiplePools],
+  );
 
   const sortedPlayers = useMemo(() => {
     if (multiplePools) return [];
@@ -105,14 +111,25 @@ const LeaderboardSidebar = () => {
         </thead>
         <tbody>
           {multiplePools
-            ? context.pools.map((pool) => (
-                <PoolSection
-                  key={pool.id}
-                  pool={pool}
-                  players={allPlayers.filter((p) => p.player.pool_id === pool.id)}
-                  activeRoundId={activeRoundId}
-                />
-              ))
+            ? (
+              <>
+                {context.pools.map((pool) => (
+                  <PoolSection
+                    key={pool.id}
+                    pool={pool}
+                    players={allPlayers.filter((p) => p.player.pool_id === pool.id)}
+                    activeRoundId={activeRoundId}
+                  />
+                ))}
+                {unassignedPlayers.length > 0 && (
+                  <PoolSection
+                    pool={{ id: -1, tournament_id: -1, name: tPool("unassigned") }}
+                    players={unassignedPlayers}
+                    activeRoundId={activeRoundId}
+                  />
+                )}
+              </>
+            )
             : sortedPlayers.map((player, index) => (
                 <PlayerRow
                   key={player.player.player_name}

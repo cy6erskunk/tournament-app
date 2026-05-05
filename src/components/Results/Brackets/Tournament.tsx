@@ -255,6 +255,7 @@ export default function Tournament() {
     try {
       const res = await fetch(
         `/api/tournament/${context.tournament.id}/seed-from-pools/${poolsRoundId}`,
+        { method: "POST" },
       );
 
       if (!res.ok) {

@@ -2,8 +2,10 @@
 
 import { getTournamentPlayers } from "@/database/getTournamentPlayers";
 import { updatePlayersBracketSeeding } from "@/database/newPlayer";
+import { getRounds } from "@/database/getRounds";
 import { getSession } from "@/helpers/getsession";
 import winPercentage from "@/helpers/winPercentage";
+import { hitIndex } from "@/helpers/hitIndex";
 import { Player } from "@/types/Player";
 
 type Params = {
@@ -16,7 +18,6 @@ type Params = {
 function seeding(players: Player[]) {
   const participantsCount = players.length;
   const rounds = Math.ceil(Math.log(participantsCount) / Math.log(2));
-  const bracketSize = Math.pow(2, rounds);
 
   if (participantsCount < 2) {
     return [];
@@ -29,19 +30,17 @@ function seeding(players: Player[]) {
     const sum = Math.pow(2, round + 1) + 1;
 
     for (let i = 0; i < matches.length; i++) {
-      const home = changeIntoBye(matches[i][0], participantsCount);
-      const away = changeIntoBye(sum - matches[i][0], participantsCount);
-      roundMatches.push([home, away]);
-
-      const home2 = changeIntoBye(sum - matches[i][1], participantsCount);
-      const away2 = changeIntoBye(matches[i][1], participantsCount);
-      roundMatches.push([home2, away2]);
+      roundMatches.push([
+        changeIntoBye(matches[i][0], participantsCount),
+        changeIntoBye(sum - matches[i][0], participantsCount),
+      ]);
+      roundMatches.push([
+        changeIntoBye(sum - matches[i][1], participantsCount),
+        changeIntoBye(matches[i][1], participantsCount),
+      ]);
     }
     matches = roundMatches;
   }
-
-  // suppress unused variable warning from bracketSize
-  void bracketSize;
 
   return matches;
 }
@@ -50,7 +49,7 @@ function changeIntoBye(seed: number, playerCount: number) {
   return seed <= playerCount ? seed : -1;
 }
 
-export async function GET(request: Request, { params }: Params) {
+export async function POST(request: Request, { params }: Params) {
   const { tournamentId, poolsRoundId } = await params;
 
   const token = await getSession();
@@ -65,6 +64,16 @@ export async function GET(request: Request, { params }: Params) {
     return new Response("Invalid parameters", { status: 400 });
   }
 
+  // Verify the round belongs to this tournament and is actually a pools round
+  const roundsResult = await getRounds(tid);
+  if (!roundsResult.success) {
+    return new Response("Could not fetch rounds", { status: 400 });
+  }
+  const targetRound = roundsResult.value.find((r) => r.id === rid);
+  if (!targetRound || targetRound.type !== "pools") {
+    return new Response("Round not found or not a pools round", { status: 400 });
+  }
+
   const status = await getTournamentPlayers(tid);
   if (!status.success) {
     return new Response(status.error, { status: 400 });
@@ -76,12 +85,12 @@ export async function GET(request: Request, { params }: Params) {
     matches: p.matches.filter((m) => m.round_id === rid),
   }));
 
-  // Sort by win percentage in the pools round (descending)
+  // Sort by win percentage, with hit index as tiebreaker (matches leaderboard logic)
   playersWithPoolMatches.sort((a, b) => {
     const aRate = winPercentage(a);
     const bRate = winPercentage(b);
     if (aRate !== bRate) return bRate - aRate;
-    return 0;
+    return hitIndex(b) - hitIndex(a);
   });
 
   const seedPairs = seeding(playersWithPoolMatches);
@@ -113,7 +122,7 @@ export async function GET(request: Request, { params }: Params) {
     return new Response(updated.error, { status: 400 });
   }
 
-  // Build a map of updated bracket data to apply to the full player list
+  // Apply updated bracket data to the full player list and return
   const bracketMap = new Map(
     seededPlayers.map((p) => [
       p.player.player_name,

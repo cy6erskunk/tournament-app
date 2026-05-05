@@ -139,6 +139,7 @@ function LeaderboardTable({ players, heading }: LeaderboardTableProps) {
 }
 
 const Leaderboard = () => {
+  const t = useTranslations("Pool");
   const context = useTournamentContext();
 
   const allPlayers = useMemo(
@@ -148,6 +149,11 @@ const Leaderboard = () => {
   );
 
   const multiplePools = context.pools.length > 1;
+
+  const unassignedPlayers = useMemo(
+    () => (multiplePools ? allPlayers.filter((p) => p.player.pool_id === null) : []),
+    [allPlayers, multiplePools],
+  );
 
   if (context.loading) return null;
 
@@ -169,6 +175,9 @@ const Leaderboard = () => {
             />
           );
         })}
+        {unassignedPlayers.length > 0 && (
+          <LeaderboardTable players={unassignedPlayers} heading={t("unassigned")} />
+        )}
       </div>
     );
   }
