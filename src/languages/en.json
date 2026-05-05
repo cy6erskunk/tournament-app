@@ -176,7 +176,8 @@
   },
   "Brackets": {
     "selectseed": "Select match order from tournament",
-    "noRRtournamentsfound": "No tournaments found"
+    "noRRtournamentsfound": "No tournaments found",
+    "seedFromPools": "Seed bracket from pools round"
   },
   "BulkEntry": {
     "title": "DT Results Entry",
