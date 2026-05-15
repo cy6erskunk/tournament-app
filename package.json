@@ -47,7 +47,7 @@
     "@types/ws": "8.18.1",
     "@vitejs/plugin-react": "6.0.1",
     "eslint": "9.39.4",
-    "eslint-config-next": "16.2.5",
+    "eslint-config-next": "16.2.6",
     "eslint-plugin-i18next": "6.1.4",
     "jsdom": "29.1.1",
     "kysely-codegen": "0.20.0",
