@@ -24,7 +24,7 @@
     "flag-icons": "7.5.0",
     "jsonwebtoken": "9.0.3",
     "kysely": "0.28.17",
-    "next": "16.2.7",
+    "next": "16.2.9",
     "next-intl": "4.13.0",
     "pg": "8.21.0",
     "qrcode": "1.5.4",
