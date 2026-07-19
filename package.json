@@ -51,7 +51,7 @@
     "eslint-plugin-i18next": "6.1.5",
     "jsdom": "29.1.1",
     "kysely-codegen": "0.20.0",
-    "postcss": "8.5.17",
+    "postcss": "8.5.18",
     "tailwindcss": "4.3.2",
     "tsx": "4.23.0",
     "typescript": "6.0.3",
