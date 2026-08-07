@@ -176,7 +176,8 @@
   },
   "Brackets": {
     "selectseed": "Valige turniirilt mängu järjekord",
-    "noRRtournamentsfound": "Turniire ei leitud"
+    "noRRtournamentsfound": "Turniire ei leitud",
+    "seedFromPools": "Seedi brakett poolivoorust"
   },
   "BulkEntry": {
     "title": "DT Tulemuste Sisestus",

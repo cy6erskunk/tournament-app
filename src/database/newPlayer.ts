@@ -95,6 +95,32 @@ export async function addPlayer(
   }
 }
 
+export async function updatePlayersBracketSeeding(
+  players: Player[],
+): Promise<Result<number, string>> {
+  const toUpdate = players.filter((p) => p && p.player.bracket_match !== null);
+  if (!toUpdate.length) return { success: true, value: 0 };
+
+  try {
+    await db.transaction().execute(async (trx) => {
+      for (const player of toUpdate) {
+        await trx
+          .updateTable("tournament_players")
+          .set({
+            bracket_match: player.player.bracket_match,
+            bracket_seed: player.player.bracket_seed,
+          })
+          .where("player_name", "=", player.player.player_name)
+          .where("tournament_id", "=", player.player.tournament_id)
+          .execute();
+      }
+    });
+    return { success: true, value: toUpdate.length };
+  } catch {
+    return { success: false, error: "Error updating player bracket seeding" };
+  }
+}
+
 export async function addPlayers(
   players: Player[],
 ): Promise<Result<number, string>> {

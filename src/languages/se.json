@@ -176,7 +176,8 @@
   },
   "Brackets": {
     "selectseed": "Välj matchordning från turneringen",
-    "noRRtournamentsfound": "Inga turneringar hittades"
+    "noRRtournamentsfound": "Inga turneringar hittades",
+    "seedFromPools": "Placera bracket från poolrunda"
   },
   "BulkEntry": {
     "title": "DT Resultatinmatning",

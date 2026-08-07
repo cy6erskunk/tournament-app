@@ -176,7 +176,8 @@
   },
   "Brackets": {
     "selectseed": "Valitse ottelujärjestys turnauksesta",
-    "noRRtournamentsfound": "Ei turnauksia löydetty"
+    "noRRtournamentsfound": "Ei turnauksia löydetty",
+    "seedFromPools": "Laske sijoitukset poolikierroksesta"
   },
   "BulkEntry": {
     "title": "DT Tulosten Syöttö",
