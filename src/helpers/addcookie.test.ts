@@ -20,40 +20,20 @@ import { addCookie } from './addcookie';
 const COOKIE_MAX_AGE = 8 * 60 * 60; // 8 hours in seconds
 
 describe('addCookie', () => {
-  let originalNodeEnv: string | undefined;
-  let originalJwtSecret: string | undefined;
-  let originalVercelEnv: string | undefined;
-
   beforeEach(() => {
     vi.clearAllMocks();
-    // Store original environment variables
-    originalNodeEnv = process.env.NODE_ENV;
-    originalJwtSecret = process.env.JWT_SECRET;
-    originalVercelEnv = process.env.VERCEL_ENV;
-    // Set test values
-    process.env.JWT_SECRET = 'test-secret';
-    process.env.NODE_ENV = 'production';
+    // Set test values. `next` augments ProcessEnv to declare NODE_ENV as a
+    // readonly property, so stub the environment through vitest rather than
+    // assigning to it directly.
+    vi.stubEnv('JWT_SECRET', 'test-secret');
+    vi.stubEnv('NODE_ENV', 'production');
     // Clear VERCEL_ENV by default
-    delete process.env.VERCEL_ENV;
+    vi.stubEnv('VERCEL_ENV', undefined);
   });
 
   afterEach(() => {
-    // Restore original environment variables
-    if (originalNodeEnv !== undefined) {
-      process.env.NODE_ENV = originalNodeEnv;
-    } else {
-      delete process.env.NODE_ENV;
-    }
-    if (originalJwtSecret !== undefined) {
-      process.env.JWT_SECRET = originalJwtSecret;
-    } else {
-      delete process.env.JWT_SECRET;
-    }
-    if (originalVercelEnv !== undefined) {
-      process.env.VERCEL_ENV = originalVercelEnv;
-    } else {
-      delete process.env.VERCEL_ENV;
-    }
+    // Restore every environment variable stubbed during the test
+    vi.unstubAllEnvs();
   });
 
   it('should set cookie with secure flags in production', async () => {
@@ -71,7 +51,7 @@ describe('addCookie', () => {
   });
 
   it('should set cookie with secure=false in development', async () => {
-    process.env.NODE_ENV = 'development';
+    vi.stubEnv('NODE_ENV', 'development');
 
     const result = await addCookie('testuser', 'user');
 
@@ -87,8 +67,8 @@ describe('addCookie', () => {
   });
 
   it('should set cookie with secure=true when VERCEL_ENV is production', async () => {
-    process.env.VERCEL_ENV = 'production';
-    process.env.NODE_ENV = 'production'; // NODE_ENV is always production on Vercel
+    vi.stubEnv('VERCEL_ENV', 'production');
+    vi.stubEnv('NODE_ENV', 'production'); // NODE_ENV is always production on Vercel
 
     const result = await addCookie('testuser', 'admin');
 
@@ -104,8 +84,8 @@ describe('addCookie', () => {
   });
 
   it('should set cookie with secure=false when VERCEL_ENV is preview', async () => {
-    process.env.VERCEL_ENV = 'preview';
-    process.env.NODE_ENV = 'production'; // NODE_ENV is always production on Vercel
+    vi.stubEnv('VERCEL_ENV', 'preview');
+    vi.stubEnv('NODE_ENV', 'production'); // NODE_ENV is always production on Vercel
 
     const result = await addCookie('testuser', 'user');
 
@@ -121,8 +101,8 @@ describe('addCookie', () => {
   });
 
   it('should set cookie with secure=false when VERCEL_ENV is development', async () => {
-    process.env.VERCEL_ENV = 'development';
-    process.env.NODE_ENV = 'production'; // NODE_ENV is always production on Vercel
+    vi.stubEnv('VERCEL_ENV', 'development');
+    vi.stubEnv('NODE_ENV', 'production'); // NODE_ENV is always production on Vercel
 
     const result = await addCookie('testuser', 'user');
 
@@ -147,7 +127,7 @@ describe('addCookie', () => {
   });
 
   it('should return error if JWT_SECRET is not set', async () => {
-    delete process.env.JWT_SECRET;
+    vi.stubEnv('JWT_SECRET', undefined);
 
     const result = await addCookie('testuser', 'admin');
 

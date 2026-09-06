@@ -1,7 +1,7 @@
 import { DB } from "@/types/Kysely";
 import { Pool } from "pg";
 import { Pool as NeonPool, neonConfig } from "@neondatabase/serverless";
-import { Kysely, PostgresDialect } from "kysely";
+import { Kysely, PostgresDialect, type PostgresPool } from "kysely";
 import ws from "ws";
 
 neonConfig.webSocketConstructor = ws;
@@ -17,7 +17,14 @@ function getConnection() {
   if (env === "production") {
     return new Kysely<DB>({
       dialect: new PostgresDialect({
-        pool: new NeonPool({ connectionString: process.env.POSTGRES_URL }),
+        // Neon's `Pool` is a drop-in for pg's, but it exposes a `Client` member
+        // typing `connect()` as `Promise<void>`, while kysely's `PostgresClient`
+        // declares `Promise<PostgresClient>`. Kysely only awaits that promise
+        // (the client is used for query cancellation) and never reads its value,
+        // so the pool is compatible at runtime and the cast bridges the gap.
+        pool: new NeonPool({
+          connectionString: process.env.POSTGRES_URL,
+        }) as unknown as PostgresPool,
       }),
     });
   }
