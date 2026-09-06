@@ -247,6 +247,36 @@ export default function Tournament() {
     [buildRound],
   );
 
+  // Seed this elimination round from the results of a preceding pools round
+  async function seedFromPools(poolsRoundId: number) {
+    if (context.loading || !context.tournament) return;
+
+    context.setLoading(true);
+    try {
+      const res = await fetch(
+        `/api/tournament/${context.tournament.id}/seed-from-pools/${poolsRoundId}`,
+        { method: "POST" },
+      );
+
+      if (!res.ok) {
+        context.setLoading(false);
+        return;
+      }
+
+      const players = jsonParser<Player[]>(await res.text());
+      if (!players.success) {
+        context.setLoading(false);
+        return;
+      }
+
+      context.setPlayers(players.value);
+    } catch (error) {
+      console.error(error);
+    }
+
+    context.setLoading(false);
+  }
+
   // Seed this tournament based on another tournament
   async function seedTournament(tournamentId: number) {
     if (context.loading) return;
@@ -396,6 +426,16 @@ export default function Tournament() {
     return;
   }
 
+  const activeRoundData = context.rounds.find(
+    (r) => r.round_order === context.activeRound,
+  );
+  const precedingPoolsRound = activeRoundData?.type === "elimination"
+    ? context.rounds
+        .filter((r) => r.type === "pools" && r.round_order < activeRoundData.round_order)
+        .sort((a, b) => b.round_order - a.round_order)[0]
+    : undefined;
+  const alreadySeeded = context.players.some((p) => p?.player.bracket_seed);
+
   return (
     <>
       <div className="container mx-auto sm:my-2 items-center text-xl sm:text-4xl font-bold flex justify-between gap-4">
@@ -428,6 +468,19 @@ export default function Tournament() {
           ) : (
             <p>{t("noRRtournamentsfound")}</p>
           )}
+        </div>
+      ) : null}
+
+      {/* seed elimination bracket from preceding pools round */}
+      {precedingPoolsRound && !alreadySeeded && account.user?.role === "admin" ? (
+        <div className="container mx-auto w-full space-y-5">
+          <button
+            type="button"
+            className="py-4 px-6 rounded-md shadow-xs border border-black hover:bg-gray-100"
+            onClick={() => seedFromPools(precedingPoolsRound.id)}
+          >
+            {t("seedFromPools")}
+          </button>
         </div>
       ) : null}
 
