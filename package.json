@@ -20,7 +20,7 @@
   },
   "dependencies": {
     "@heroicons/react": "2.2.0",
-    "@neondatabase/serverless": "1.1.0",
+    "@neondatabase/serverless": "1.2.0",
     "bcrypt": "6.0.0",
     "flag-icons": "7.5.0",
     "jsonwebtoken": "9.0.3",
